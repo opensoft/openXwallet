@@ -1,0 +1,216 @@
+schema_version: 1
+kind: contract_manifest
+
+# ============================================================================
+# openXwallet contract manifest — the neutral wallet standard's own bundle.
+#
+# openXwallet was carved out of openxFactory as a BYTE-IDENTICAL PURE MOVE, so
+# every `sha256:` on an owned row below is the value openxFactory recorded at
+# the NAMED CARVE COMMIT, unchanged. That is not a courtesy: a move whose diff
+# is not provably empty cannot be bisected against, and openxFactory's atomic
+# consume-and-shed rests on exactly that property. The proof lives in
+# docs/byte-identity-wallet-v1.0.md.
+#
+# The ONLY field rewritten from openxFactory's rows is `source_path:`, which
+# names the repository a consumer vendors FROM -- and that repository changed.
+# Machine keys do NOT move in v1 (R2, LOCKED): paths, ids, the
+# `xfactory_wallet_*` kind prefix, finding codes and filenames are unchanged,
+# because LedgerxFactory pins five kinds and several finding-code strings by
+# name and a rename inside the move is unbisectable.
+#
+# `adapter_owner: openxFactory` is likewise carried verbatim on owned rows: it
+# records who owns the adapter obligation for this contract class in the
+# family's history, and rewriting it would be a rename inside a move whose
+# safety rests on an empty diff. It is revisited by a later change in this
+# repository, never by the carve.
+# ============================================================================
+
+contract_bundle_version: wallet-v1.0
+
+# The machine-read one of THREE provenance records for the carve. The other two
+# are `carve_commit:` in openxFactory's contracts/openxwallet-pin.yaml (at P3)
+# and the procedure in docs/openxwallet-cutover-runbook.md. There is
+# deliberately NO bare CARVE_COMMIT file: an unschema'd file nothing reads is
+# the failure class of a governance floor whose source of truth is loose
+# markdown.
+carved_from:
+  repository: opensoft/openxFactory
+  commit: 30565e48ffe3d8a9773e10af33425701845e10f6
+
+# ---------------------------------------------------------------------------
+# RELEASE-SURFACE SELECTION RULE, declared rather than inferred.
+#
+#   wallet-vN.M.digests.yaml  selects  { row | row.member_class == "owned" }
+#
+# Exclusion is by DECLARED FIELD, never by a `contracts/schemas/` path
+# heuristic -- that heuristic breaks the day openXwallet publishes a schema of
+# its OWN there. A row with no `member_class:` is OWNED (the eight below); the
+# one consumed member declares itself.
+# ---------------------------------------------------------------------------
+
+contracts:
+  # ---- openxWallet core + agent profile — contract-v1.31 registration (add-openxwallet, feature 006-openxwallet-contracts) ----
+  # The packaged corpus (contracts/openxwallet*/examples/, 16 valid + 33
+  # intended-invalid) and the strict validator (scripts/validate-openxwallet.py)
+  # are content-addressed by commit; no per-file digest (the possibles-register
+  # and ideation-routing precedent). Five digests below refreshed 2026-08-08
+  # (docs-truth pass, pre-tag: description/comment corrections only — see
+  # specs/006-openxwallet-contracts/traceability.yaml `review_docs`).
+  - id: openxwallet-record
+    path: contracts/openxwallet/openxwallet-record.schema.yaml
+    source_path: openXwallet/contracts/openxwallet/openxwallet-record.schema.yaml
+    type: schema
+    schema_version: 1
+    sha256: 2012ef432616e73ddaead17c5e79aefacef712c2049ff649c15d7230b1d4eb08
+    compatibility: canonical_openxfactory_contract
+    adapter_owner: openxFactory
+    consumption_rule: >-
+      The wallet record: holder, a key REFERENCE, and a declared custody model. Every object closes additionalProperties so no key-shaped property can be added at any depth.
+      Registered at contract-v1.31; digest refreshed by the additive
+      signature-algorithm widening (rsa-2048-sha256, rsa-3072-sha256 —
+      measured against BC 28.3 AL by the first consumer), which was
+      pending in the CHANGELOG's Unreleased block and is FOLDED INTO the
+      contract-v1.32 cut; the digest itself is unchanged by that fold.
+      Consumed through the
+      pinned openxFactory checkout with per-file sha256 verified before
+      any copy is treated as current.
+  - id: openxwallet-custody-registry-schema
+    path: contracts/openxwallet/openxwallet-custody-registry.schema.yaml
+    source_path: openXwallet/contracts/openxwallet/openxwallet-custody-registry.schema.yaml
+    type: schema
+    schema_version: 1
+    sha256: df72638497a7f90c2a4dff47c429cb794bc4b6e270ce2dd2b17116478ae3b51a
+    compatibility: canonical_openxfactory_contract
+    adapter_owner: openxFactory
+    consumption_rule: >-
+      The shape of the closed custody enumeration, including the derivation that makes `evidences` checkable rather than asserted.
+      Registered at contract-v1.31; consumed through the pinned
+      openxFactory checkout with per-file sha256 verified before any
+      copy is treated as current.
+  - id: openxwallet-custody-registry
+    path: contracts/openxwallet/openxwallet-custody.registry.yaml
+    source_path: openXwallet/contracts/openxwallet/openxwallet-custody.registry.yaml
+    type: registry
+    schema_version: 1
+    sha256: 94d631d6ee76dab015628a1856afd82582b98d6a3733622c9afe8b13b5278539
+    compatibility: canonical_openxfactory_contract
+    adapter_owner: openxFactory
+    consumption_rule: >-
+      THE CLOSED CUSTODY SET and the ordered authority ladder it caps: three members, what each evidences, and the two deliberate non-members (asserted identity, shared credentials).
+      Registered at contract-v1.31; consumed through the pinned
+      openxFactory checkout with per-file sha256 verified before any
+      copy is treated as current.
+  - id: openxwallet-grant
+    path: contracts/openxwallet/openxwallet-grant.schema.yaml
+    source_path: openXwallet/contracts/openxwallet/openxwallet-grant.schema.yaml
+    type: schema
+    schema_version: 1
+    sha256: fde433c5821e2e6f62926a72c58a67a784961d2e9e27e9f2b3520fcc8e738e88
+    compatibility: canonical_openxfactory_contract
+    adapter_owner: openxFactory
+    consumption_rule: >-
+      The attenuated capability grant: audience, scope, expiry, optional parent. Carries no key and no bearer token; possession confers nothing.
+      Registered at contract-v1.31; consumed through the pinned
+      openxFactory checkout with per-file sha256 verified before any
+      copy is treated as current.
+  - id: openxwallet-grant-exercise
+    path: contracts/openxwallet/openxwallet-grant-exercise.schema.yaml
+    source_path: openXwallet/contracts/openxwallet/openxwallet-grant-exercise.schema.yaml
+    type: schema
+    schema_version: 1
+    sha256: f16ad31246186cec36e142ae39bd831d98fbc5c0afd48685057bc39e113c8858
+    compatibility: canonical_openxfactory_contract
+    adapter_owner: openxFactory
+    consumption_rule: >-
+      The exercise record: proof of possession, event class, key attribution, the revocation check performed at use, and distinct-holder evaluations.
+      Registered at contract-v1.31; consumed through the pinned
+      openxFactory checkout with per-file sha256 verified before any
+      copy is treated as current.
+  - id: openxwallet-distinct-holder-constraint
+    path: contracts/openxwallet/openxwallet-distinct-holder-constraint.schema.yaml
+    source_path: openXwallet/contracts/openxwallet/openxwallet-distinct-holder-constraint.schema.yaml
+    type: schema
+    schema_version: 1
+    sha256: c2a6d2fd23fb3743fdaf0e165dabc4cb1dff24e52a8262a38c86ed1482374b25
+    compatibility: canonical_openxfactory_contract
+    adapter_owner: openxFactory
+    consumption_rule: >-
+      A consuming capability's opt-in declaration that two named acts on one object must be exercised by different holders.
+      Registered at contract-v1.31; consumed through the pinned
+      openxFactory checkout with per-file sha256 verified before any
+      copy is treated as current.
+  - id: openxwallet-subject-attestation
+    path: contracts/openxwallet/openxwallet-subject-attestation.schema.yaml
+    source_path: openXwallet/contracts/openxwallet/openxwallet-subject-attestation.schema.yaml
+    type: schema
+    schema_version: 1
+    sha256: d29eca519462aff7871de3786f19c820e9fc3b95115ce30e57d1f1cc2bc0c0b2
+    compatibility: canonical_openxfactory_contract
+    adapter_owner: openxFactory
+    consumption_rule: >-
+      The optional wallet reference a subject may carry: attestation, never identity, with the wrong reading made unrepresentable.
+      Registered at contract-v1.31; consumed through the pinned
+      openxFactory checkout with per-file sha256 verified before any
+      copy is treated as current.
+  - id: openxwallet-agent-composition
+    path: contracts/openxwallet-agent-profile/openxwallet-agent-composition.schema.yaml
+    source_path: openXwallet/contracts/openxwallet-agent-profile/openxwallet-agent-composition.schema.yaml
+    type: schema
+    schema_version: 1
+    sha256: aed3978e8ae952f3ff5b3de1f672bba5da350d5aaeb442feafaa870b4de4be91
+    compatibility: canonical_openxfactory_contract
+    adapter_owner: openxFactory
+    consumption_rule: >-
+      The agent profile's composition declaration: the hash, the component set it covers, and each component's binding mode (content digests it; reference covers a corpus's identity and governing configuration but not its contents).
+      Registered at contract-v1.31; consumed through the pinned
+      openxFactory checkout with per-file sha256 verified before any
+      copy is treated as current.
+
+  # ---- CONSUMED member: the one openxFactory artifact openXwallet vendors ----
+  # openXwallet owns the wallet standard. It vendors exactly one thing it did
+  # not write, and this row is how that is said without lying in either
+  # direction.
+  #
+  # `shared-contract-ownership:142` requires all publisher markers TOGETHER, so
+  # the file cannot simply be omitted; recording it as OWNED would falsely claim
+  # an openxFactory contract. The third option -- a consumed member carrying the
+  # publisher's nine fields plus three declared ones -- is the ratified one
+  # (clarification N8).
+  #
+  # THE DIGEST IS COMPUTED, NOT COPIED. openxFactory's own manifest row for this
+  # artifact carries NO `sha256:` at all: it is
+  # `compatibility: copied_from_source_commit` with
+  # `adapter_owner: Omnigent-Install`, content-addressed by commit from
+  # opensoft/Omnigent-Install. So the digest below is recomputed over the pinned
+  # bytes at the carve commit -- the digest of the pinned openxFactory artifact,
+  # recomputed rather than transcribed. It equals contract_pin.yaml's recorded
+  # value, so the verifier and this manifest cannot disagree.
+  #
+  # The upstream chain is two hops: Omnigent-Install -> openxFactory ->
+  # openXwallet. `adapter_owner: openxFactory` names the hop openXwallet
+  # actually pins, has a resync runbook for, and can verify against; naming
+  # Omnigent-Install would describe a repository this pin cannot reach.
+  #
+  # THE PATH IS LOAD-BEARING: identical repository-relative path, so
+  # ENVELOPE_SCHEMA_PATH (scripts/validate-openxwallet.py:218) and its
+  # .relative_to(ROOT) print need no edit and the empty-diff proof survives.
+  # Added by the SCAFFOLD commit, never by the carve.
+  - id: hermes-job-envelope
+    path: contracts/schemas/hermes-job-envelope.schema.yaml
+    source_path: openxFactory/contracts/schemas/hermes-job-envelope.schema.yaml
+    type: schema
+    schema_version: 1
+    sha256: 8ce2c89903a2f5a68ce3d73a7b8eb4f47cdef913da038b9a68e22735ee96cb7c
+    compatibility: canonical_openxfactory_contract
+    adapter_owner: openxFactory
+    consumption_rule: >-
+      The canonical Hermes job envelope, consumed READ-ONLY at a digest pin.
+      scripts/validate-openxwallet.py rule (g) reads the approval-scope
+      vocabulary out of this file, and main() checks only that it EXISTS --
+      presence, not identity -- so scripts/verify-contract-pin.py verifies this
+      digest as the FIRST step of the wallet-validation job, before the
+      validator runs. Re-sync through docs/pin-resync-runbook.md; never edit
+      this file in place.
+    member_class: consumed
+    release_surface: false
+    pinned_openxfactory_bundle: contract-v1.44

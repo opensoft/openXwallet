@@ -1,0 +1,69 @@
+schema_version: 1
+kind: pinned_contract_manifest
+
+# ============================================================================
+# contract_pin.yaml — content-addressed consumption of the ONE openxFactory
+# artifact openXwallet vendors.
+#
+# openXwallet owns the wallet standard. It owns exactly one thing it did not
+# write: contracts/schemas/hermes-job-envelope.schema.yaml, from which
+# scripts/validate-openxwallet.py rule (g) reads the approval-scope vocabulary.
+# R4 (LOCKED) makes that consumption a commit pin plus a per-file digest, in a
+# repository that is itself commit-pinned by openxFactory — both directions are
+# read-only content-addressed consumption, so nothing builds in a loop.
+#
+# THE PATH IS LOAD-BEARING. The vendored copy sits at the IDENTICAL
+# repository-relative path it holds in openxFactory, because
+# ENVELOPE_SCHEMA_PATH is ROOT-relative in the validator and the validator's
+# bytes are inside the byte-identity floor. A different path here would mean a
+# source edit there, and the empty-diff proof would not survive it.
+#
+# FAIL-CLOSED PRE-SYNC (openAvatar's doctrine, openAvatar/contract_pin.yaml):
+#   * rule 1 — an empty or absent `commit` is not content-addressed -> reject;
+#   * rule 2 — a recomputed digest can never equal an empty recorded digest
+#              -> drift -> fail BEFORE any test runs.
+# The named verifier below enforces both, and it runs as the FIRST step of the
+# wallet-validation job: the validator checks only that the file EXISTS
+# (ENVELOPE_SCHEMA_PATH.is_file()) -- presence, not identity -- while rule (g)
+# reads the approval-scope vocabulary out of it. An unverified swap would
+# silently redefine the vocabulary the gate enforces.
+#
+# OFFLINE LAW: the verifier reads this file and the files it names. It never
+# reads the network, never reads an upstream tree, and never reads
+# contracts/manifest.yaml -- the live manifest cross-check is a SYNC-TIME
+# obligation (docs/pin-resync-runbook.md), never a CI read.
+# ============================================================================
+
+source_repository: opensoft/openxFactory
+revision_kind: commit
+
+# The NAMED CARVE COMMIT. Exactly 40 hex characters, never a branch and never a
+# movable tag -- "a movable branch or tag is not a compatibility pin".
+commit: "30565e48ffe3d8a9773e10af33425701845e10f6"
+
+# The openxFactory contract bundle this pin consumes from. Recorded for the
+# manifest's `pinned_openxfactory_bundle:` and for the resync runbook; resolved
+# at pin time, never guessed.
+pinned_bundle: contract-v1.44
+
+# The verifier is NAMED here so the pin is running code rather than an
+# obligation stated in prose (clarification N3: both directions must be
+# verified by a tool, each with its own realization evidence).
+verify_pin: scripts/verify-contract-pin.py
+
+files:
+  # openxFactory's own manifest row for this artifact carries NO per-file
+  # sha256: it is `compatibility: copied_from_source_commit` from
+  # opensoft/Omnigent-Install and content-addressed by commit. The digest below
+  # is therefore COMPUTED over the pinned bytes at the carve commit -- which is
+  # the digest of the pinned openxFactory artifact, recomputed rather than
+  # transcribed. openXwallet's contracts/manifest.yaml carries the same value on
+  # the consumed row, so the verifier and the manifest cannot disagree.
+  - path: contracts/schemas/hermes-job-envelope.schema.yaml
+    sha256: "8ce2c89903a2f5a68ce3d73a7b8eb4f47cdef913da038b9a68e22735ee96cb7c"
+
+# Present and EMPTY, deliberately. Exactly one file is pinned and it carries a
+# per-file digest, so nothing is pinned by commit alone. The key exists so the
+# distinction is DECLARED rather than absent -- an absent key reads as "this pin
+# has not considered the question".
+pinned_by_commit_only: []

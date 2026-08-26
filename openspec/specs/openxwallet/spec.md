@@ -1,11 +1,11 @@
 # openxwallet Specification
 
 ## Purpose
-TBD - created by archiving change add-openxwallet. Update Purpose after archive.
+The neutral wallet: a signing key anchored to a decentralized identifier and held by a HOLDER of any subject class the family recognises. This capability owns the holder-agnostic core — the wallet record, the closed custody registry, the attenuated grant, the exercise record, the distinct-holder constraint and the subject attestation — and the rules that make a key a wallet's REFERENCE rather than its content.
 ## Requirements
 ### Requirement: A wallet is a key, never a record of a key
 
-openxFactory SHALL define a neutral wallet as a signing key anchored to a
+openXwallet SHALL define a neutral wallet as a signing key anchored to a
 decentralized identifier and held by a HOLDER, where a holder is any
 subject class the family recognises — a person, a practitioner, an
 organisation, or an agent. The wallet record carries the holder's
@@ -27,7 +27,7 @@ disclosed to it.
 
 ### Requirement: Authority travels as attenuated grants, never as keys
 
-openxFactory SHALL express every authority a wallet confers as a capability
+openXwallet SHALL express every authority a wallet confers as a capability
 GRANT rather than as access to the key itself, because a raw key can be
 neither expired nor revoked and a shared key destroys attribution. A grant
 names its audience, its scope, and its expiry; derivation from a grant is
@@ -48,7 +48,7 @@ and may never widen either.
 
 ### Requirement: Use requires proof of possession, not presentation
 
-openxFactory SHALL require that exercising a grant carries a signature from
+openXwallet SHALL require that exercising a grant carries a signature from
 the holder's wallet key over the request, so that possession of the grant
 alone is insufficient. A grant presented without proof of possession is
 refused, and the refusal names the missing proof rather than the missing
@@ -70,7 +70,7 @@ request, since the two describe different events.
 
 ### Requirement: Custody is declared and bounds what a signature evidences
 
-openxFactory SHALL require every wallet to declare its key-custody model
+openXwallet SHALL require every wallet to declare its key-custody model
 from a closed set, SHALL state what each model evidences, and SHALL cap the
 authority a wallet may hold by that model. A signature proves only what its
 custody permits: a key readable by the holder's own execution context
@@ -92,7 +92,7 @@ presented as equivalent.
 
 ### Requirement: Every exercise is key-attributed
 
-openxFactory SHALL record, for every exercise of a grant, the key that
+openXwallet SHALL record, for every exercise of a grant, the key that
 presented it alongside the grant and the act, so attribution is
 cryptographic rather than inferred from a shared account. An act
 attributable only to a shared credential SHALL be recorded as
@@ -112,7 +112,7 @@ unattributed rather than assigned to a holder.
 
 ### Requirement: Revocation propagates through the chain
 
-openxFactory SHALL make revocation effective through derivation: revoking a
+openXwallet SHALL make revocation effective through derivation: revoking a
 grant revokes everything derived from it, and revoking a holder's standing
 revokes that holder's outstanding grants, in both cases without waiting for
 expiry. A capability consuming grants SHALL check revocation at exercise
@@ -132,7 +132,7 @@ rather than trusting issuance.
 
 ### Requirement: Distinct-holder constraints are expressible
 
-openxFactory SHALL allow a consuming capability to require that the holder
+openXwallet SHALL allow a consuming capability to require that the holder
 exercising a grant for an act is DISTINCT from the holder recorded for a
 named prior act on the same object, so that segregation of duties is
 expressible in the grant model rather than reimplemented per domain. The
@@ -154,7 +154,7 @@ it is not subject to it.
 
 ### Requirement: The capability is an authority control, never an identity substrate
 
-openxFactory SHALL keep wallets composable and optional for domains: a
+openXwallet SHALL keep wallets composable and optional for domains: a
 wallet SHALL NOT become a prerequisite for reconstructing a record,
 resolving a subject, or operating a domain, and a wallet identifier SHALL
 NOT become a subject identifier. This preserves the ratified constraints in

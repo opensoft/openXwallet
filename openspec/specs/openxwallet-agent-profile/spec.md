@@ -1,11 +1,11 @@
 # openxwallet-agent-profile Specification
 
 ## Purpose
-TBD - created by archiving change add-openxwallet. Update Purpose after archive.
+The first profile over the neutral wallet core, covering holders of class AGENT, whose identity IS its declared composition. This capability owns what a composition must cover, what changing it revokes, and why the profile is a SIBLING family over the core rather than an extension of it — so patient and practitioner profiles arrive the same way.
 ## Requirements
 ### Requirement: An agent holder declares its composition
 
-openxFactory SHALL require a wallet holder of class AGENT to declare the
+openXwallet SHALL require a wallet holder of class AGENT to declare the
 composition that constitutes its identity — model version, prompt
 contract, tool manifest, policy version, parameters, and retrieval corpus
 where one applies — as a hash over a declared component set. The component
@@ -26,7 +26,7 @@ was actually asserting.
 
 ### Requirement: A composition change revokes the agent's grants immediately
 
-openxFactory SHALL treat any change in an agent's declared composition as
+openXwallet SHALL treat any change in an agent's declared composition as
 the end of that agent's certified identity: its outstanding grants are
 revoked at once through the core's revocation-propagation rule, with no
 tolerance band and no grace period, and resuming requires re-issuance
@@ -49,7 +49,7 @@ prompt-v1 is not the same classifier's judgment.
 
 ### Requirement: Agent authority is grant scope, not a parallel vocabulary
 
-openxFactory SHALL express what an agent may do as the SCOPE of a
+openXwallet SHALL express what an agent may do as the SCOPE of a
 capability grant, and SHALL admit the neutral job envelope's
 `approval_policy` values as legal scope terms, so that an agent's authority
 and a job's approval posture are stated in one vocabulary rather than two

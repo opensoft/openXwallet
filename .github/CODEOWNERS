@@ -1,0 +1,26 @@
+# openXwallet code owners.
+#
+# The floor is narrow on purpose: the two checkers, the contract content they
+# check, the pin that decides WHICH vendored artifact they read, and the
+# workflows that decide whether they run at all. A pull request that could
+# change what runs cannot clear itself.
+
+# The conformance validator. Its bytes are inside the wallet-v1.0
+# byte-identity floor; a change here is a contract-behaviour change.
+/scripts/validate-openxwallet.py   @brettheap
+
+# The syntax gate.
+/scripts/wallet-yaml-syntax-gate.py   @brettheap
+
+# The pin verifier: the only thing standing between a swapped vendored schema
+# and a validator that checks presence rather than identity.
+/scripts/verify-contract-pin.py   @brettheap
+
+# The contract content, the manifest, the changelog, and the vendored artifact.
+/contracts/   @brettheap
+
+# WHICH openxFactory commit and WHICH digest the vendored artifact must match.
+/contract_pin.yaml   @brettheap
+
+# Whether the checks run, in what order, and under which status-check token.
+/.github/workflows/   @brettheap
