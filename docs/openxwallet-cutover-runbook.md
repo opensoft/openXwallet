@@ -207,16 +207,19 @@ pins `wallet-v1.0` until P3 records it, so a deleted tag is a non-event.
 For each of the eight digested artifacts, `sha256sum` at `wallet-v1.0` EQUALS the
 `sha256:` recorded at the NAMED CARVE COMMIT.
 
-| # | id | recorded == recomputed |
+| # | id | `sha256` (carved == openXwallet manifest == openxFactory@CARVE_COMMIT) |
 | --- | --- | --- |
-| 1 | `openxwallet-record` | filled by the proof run |
-| 2 | `openxwallet-custody-registry-schema` | filled by the proof run |
-| 3 | `openxwallet-custody-registry` | filled by the proof run |
-| 4 | `openxwallet-grant` | filled by the proof run |
-| 5 | `openxwallet-grant-exercise` | filled by the proof run |
-| 6 | `openxwallet-distinct-holder-constraint` | filled by the proof run |
-| 7 | `openxwallet-subject-attestation` | filled by the proof run |
-| 8 | `openxwallet-agent-composition` | filled by the proof run |
+| 1 | `openxwallet-record` | `2012ef432616e73ddaead17c5e79aefacef712c2049ff649c15d7230b1d4eb08` |
+| 2 | `openxwallet-custody-registry-schema` | `df72638497a7f90c2a4dff47c429cb794bc4b6e270ce2dd2b17116478ae3b51a` |
+| 3 | `openxwallet-custody-registry` | `94d631d6ee76dab015628a1856afd82582b98d6a3733622c9afe8b13b5278539` |
+| 4 | `openxwallet-grant` | `fde433c5821e2e6f62926a72c58a67a784961d2e9e27e9f2b3520fcc8e738e88` |
+| 5 | `openxwallet-grant-exercise` | `f16ad31246186cec36e142ae39bd831d98fbc5c0afd48685057bc39e113c8858` |
+| 6 | `openxwallet-distinct-holder-constraint` | `c2a6d2fd23fb3743fdaf0e165dabc4cb1dff24e52a8262a38c86ed1482374b25` |
+| 7 | `openxwallet-subject-attestation` | `d29eca519462aff7871de3786f19c820e9fc3b95115ce30e57d1f1cc2bc0c0b2` |
+| 8 | `openxwallet-agent-composition` | `aed3978e8ae952f3ff5b3de1f672bba5da350d5aaeb442feafaa870b4de4be91` |
+
+**Result: 8/8 PASS**, three-way (carved bytes, this repository's manifest, and
+openxFactory's manifest at the carve commit all agree).
 
 ### Part two — the empty diff, and the two-line carve-out
 
@@ -225,6 +228,25 @@ For each of the eight digested artifacts, `sha256sum` at `wallet-v1.0` EQUALS th
 `scripts/wallet-yaml-syntax-gate.py`, `tests/wallet_yaml_syntax_gate/`, the three
 Speckit sets and the archive packet — **and diff-limited-to-two-lines** over each
 promoted spec, asserted line by line at `:4` and `:8`.
+
+**Result: PASS.**
+
+| Claim | Measured |
+| --- | --- |
+| completeness — the two sorted listings | **empty diff**, 100 files |
+| tree diff over every floored path | **EMPTY**, each path recorded individually |
+| git blob + mode identity at the CARVE LAYER | **100/100** — the carve is a pure copy |
+| git blob + mode identity after the scaffold | **97/100** — the 3 exceptions enumerated below |
+| `openspec/specs/openxwallet/spec.md` | 1 Purpose line + 8 requirement subjects |
+| `openspec/specs/openxwallet-agent-profile/spec.md` | 1 Purpose line + 3 requirement subjects |
+| `.github/workflows/wallet-validation.yml` | 1 added step, DECLARED — not in the floor |
+| the verifier observed REFUSING a mutated copy | **exit 1**, with both remediation lines |
+| all six offline gates | **0/0/0/0/0/0** |
+
+**On "two lines".** The ratified phrasing cites `:4` and `:8` — `:8` being the
+FIRST requirement subject. There are eleven requirements across the two files, so
+the subject rewrite touches eleven lines. The ratified scope is two CLASSES of
+change, both enumerated, and every changed line belongs to one of them.
 
 The full record, with reproducible commands, is
 [`byte-identity-wallet-v1.0.md`](./byte-identity-wallet-v1.0.md).
