@@ -134,6 +134,14 @@ The `wallet-validation` token is deliberately the same name openxFactory uses â€
 the token names the check's function, and distinct repositories are distinct
 namespaces.
 
+**Branch protection was bootstrapped, not configured.** Ruleset **21607344** was
+created in **EVALUATE** enforcement and promoted to **ACTIVE** only after both
+checks had reported once. Day-one REQUIRED is *impossible*, not merely
+inconvenient: GitHub cannot require a status check that has never reported in the
+repository, because the context is not selectable until then. The sequence is
+recorded in
+[`docs/openxwallet-cutover-runbook.md`](docs/openxwallet-cutover-runbook.md).
+
 ## Governance
 
 Contract and boundary changes go through OpenSpec before implementation; Speckit
