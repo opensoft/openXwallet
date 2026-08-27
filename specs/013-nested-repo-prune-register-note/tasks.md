@@ -195,9 +195,18 @@ returns nothing, which is what licenses leaving that runbook unchanged.
 **T006–T020 tests** — `tests/nested_repo_prune/test_prune_and_register_note.py`,
 **18 tests**. Suite grew **4 → 22** (T027). Written first and confirmed RED:
 8 failed / 10 passed before implementation, with the 8 failures being exactly the
-two absent behaviours; 22/22 pass after. The corpus-identity test (T019) RAN
-rather than skipped locally (`origin/main` resolves), and its error/warning-set
-diff is empty.
+two absent behaviours; 22/22 pass after.
+
+**T019's first version was VACUOUS in CI, and the count is what caught it.**
+The baseline-ref candidate list ended at `HEAD`, so wherever the base ref is
+unreachable — a depth-1 checkout of a merge ref, whose parents were never
+fetched — it compared this version against ITSELF and passed. CI reported
+`22 passed, 0 skipped`, which the test cannot legitimately produce there.
+Fixed: a recovered blob byte-equal to the working copy is treated as NO
+baseline, so the test skips with its reason. CI now reports **`21 passed,
+1 skipped`** — the honest number, and the delta IS the proof the fallback was
+firing. Locally the recovered `origin/main` blob differs, the comparison is
+real, and its error/warning-set diff is empty (22 passed, 0 skipped).
 
 **T028 diff audit** — `scripts/validate-openxwallet.py`: 105 insertions, 1
 deletion (the `rglob` line), most of it the WHY comments T012 and T018 owe. Zero
