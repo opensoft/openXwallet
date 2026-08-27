@@ -32,6 +32,35 @@ feature:
   `wallet-v1.1` is one auditable additive-minor diff on top whose only change is
   validator BEHAVIOUR plus tests and bookkeeping.
 
+## Clarifications
+
+### Session 2026-08-26
+
+No question was put to the operator, and that is a finding rather than an
+omission: every category the ambiguity scan would ask about is already decided by
+the governing ratified change, and asking again would invite an answer that
+contradicts a ratification.
+
+- **Mechanism of the prune** — decided by D4, which also records the four
+  rejected alternatives (a skip-set entry naming a consumer, a narrowed scan
+  scope, a `--exclude` flag, a CI-side deinit). Not reopened.
+- **Class of the register line** — decided by D3 and restated at §4.5: a NOTE,
+  never a warning, because a live consumer runs `--strict`. Not reopened.
+- **Command-line surface** — decided by §4.3: unchanged, no new option. Not
+  reopened.
+- **Compatibility envelope** — decided by the change's byte-identity floor:
+  `wallet-v1.0` is the byte-identical move, `wallet-v1.1` is one additive-minor
+  diff of validator behaviour on top, and no digested artifact is touched. Not
+  reopened.
+- **The one detail left open upstream** was the note's exact characters. Resolved
+  here, in Assumptions, with its reason: the register path is rendered RELATIVE to
+  the scan root, so the line is identical on a developer's machine and a CI
+  runner and can therefore be asserted by the downstream consumer-gate test.
+
+Deferred to nobody: there is no outstanding question. Scale, performance,
+security posture, localization and concurrency are all inapplicable to an offline
+single-process validator run and were scanned as Clear rather than skipped.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - A consumer's required check stops re-adjudicating the pinned product (Priority: P1)
