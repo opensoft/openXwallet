@@ -67,6 +67,43 @@ is given.
 Never vendor a copy and treat it as current. Never edit a pinned artifact in
 place.
 
+### Point the pinned validator at YOUR OWN ROOT
+
+**The scan target must be the consumer's checkout root, not this repository's
+directory inside it.** The register reader resolves
+`governance/review-authority/register.yaml` relative to the SCAN TARGET, so a
+narrower target silently reads no register and the check goes green having
+adjudicated nothing that matters. From a consumer whose tree carries this
+repository as `openXwallet/`, that is:
+
+```sh
+python3 openXwallet/scripts/validate-openxwallet.py .
+```
+
+Since **`wallet-v1.1`** that is safe to do from a root with nested repositories
+in it. Two notes make the run auditable:
+
+```text
+note  nested repositories pruned (not adjudicated): installs/omnigent-install
+note  intake register read: governance/review-authority/register.yaml (1 row(s))
+```
+
+- **The prune note** lists every directory below the scan root that carries a
+  `.git` entry — file (a submodule checkout or a `git worktree`) or directory (a
+  nested clone). Nothing at or below such a directory is adjudicated, so a
+  pinned product's own OpenSpec instance, test fixtures and canonical registries
+  are never mistaken for live records of the consuming tree. The rule is general
+  and names no repository: it also covers an ad-hoc nested clone the consumer
+  never declared. Absent when there is nothing to prune.
+- **The register-read note** names the register that was actually opened and how
+  many rows it held. Its absence, together with `no intake register at this
+  tree`, means the tree legitimately has no register; its absence together with
+  a `register-*` finding means the register was found and refused.
+
+Both are **NOTES**, never warnings: a consumer runs `--strict`, where a warning
+would red-line its required check. Neither carries a finding code, so neither
+can collide with a code a consumer pins by name.
+
 ## The pin relationship runs in BOTH directions, and there is no cycle
 
 **openxFactory pins openXwallet.** By commit, plus per-file sha256, plus

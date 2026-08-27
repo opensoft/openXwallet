@@ -25,7 +25,7 @@ kind: contract_manifest
 # repository, never by the carve.
 # ============================================================================
 
-contract_bundle_version: wallet-v1.0
+contract_bundle_version: wallet-v1.1
 
 # The machine-read one of THREE provenance records for the carve. The other two
 # are `carve_commit:` in openxFactory's contracts/openxwallet-pin.yaml (at P3)

@@ -9,6 +9,19 @@ Use the shared OpenSpec/Speckit workflow from:
 Repository documents remain authoritative for openXwallet product facts, contract
 ownership, validation, versioning, and release constraints.
 
+<!-- SPECKIT START -->
+## Active Speckit Feature
+
+- Feature: `013-nested-repo-prune-register-note`
+- Plan: `specs/013-nested-repo-prune-register-note/plan.md`
+- Governing change: openxFactory `openspec/changes/split-openxwallet-repo/`,
+  group 4 (P2b), at openxFactory `f9457d6f`
+
+Run follow-on Speckit work from this feature worktree. OpenSpec ratifies and
+Speckit builds: the governing change lives upstream in openxFactory and is
+already ratified, so nothing here re-opens it.
+<!-- SPECKIT END -->
+
 ## What this repository is, in one paragraph
 
 openXwallet owns the neutral wallet standard — two contract families, the packaged
