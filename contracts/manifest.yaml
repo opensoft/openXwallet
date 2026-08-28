@@ -25,7 +25,7 @@ kind: contract_manifest
 # repository, never by the carve.
 # ============================================================================
 
-contract_bundle_version: wallet-v1.2
+contract_bundle_version: wallet-v1.3
 
 # The machine-read one of THREE provenance records for the carve. The other two
 # are `carve_commit:` in openxFactory's contracts/openxwallet-pin.yaml (at P3)
@@ -60,17 +60,29 @@ contracts:
     path: contracts/openxwallet/openxwallet-record.schema.yaml
     source_path: openXwallet/contracts/openxwallet/openxwallet-record.schema.yaml
     type: schema
-    schema_version: 1
-    sha256: 2012ef432616e73ddaead17c5e79aefacef712c2049ff649c15d7230b1d4eb08
+    # MIRRORS the file's own `contract_schema_version:`, which moved to 2 at
+    # wallet-v1.3. The file's TOP-LEVEL `schema_version: 1` is a different
+    # field — the contract-schema-DOCUMENT meta version, shared by all nine
+    # members of this bundle — and does NOT move. Three fields in one file are
+    # called some spelling of "schema version"; this comment exists so the next
+    # release does not have to guess which one a changelog meant.
+    schema_version: 2
+    sha256: 20ba39c07564c93b8ffe47382126677a165771244d28fb0c4976ab950173c40a
     compatibility: canonical_openxfactory_contract
     adapter_owner: openxFactory
     consumption_rule: >-
-      The wallet record: holder, a key REFERENCE, and a declared custody model. Every object closes additionalProperties so no key-shaped property can be added at any depth.
+      The wallet record: holder, a key REFERENCE — or a declared SET of them — and each declared key's custody model. Every object closes additionalProperties so no key-shaped property can be added at any depth.
       Registered at contract-v1.31; digest refreshed by the additive
       signature-algorithm widening (rsa-2048-sha256, rsa-3072-sha256 —
       measured against BC 28.3 AL by the first consumer), which was
       pending in the CHANGELOG's Unreleased block and is FOLDED INTO the
       contract-v1.32 cut; the digest itself is unchanged by that fold.
+      DIGEST MOVED AT wallet-v1.3 (add-multi-key-wallets): an optional
+      `keys:` list of ADDITIONAL declared keys, each with its own custody,
+      fingerprint and state, plus an optional `key_fingerprint` on
+      `key_reference`. This is the FIRST wallet release since the carve in
+      which a digested contract byte moved, so a consumer's pin `files:`
+      block moves with it — and only this one row of the eight.
       Consumed through the
       pinned openxFactory checkout with per-file sha256 verified before
       any copy is treated as current.

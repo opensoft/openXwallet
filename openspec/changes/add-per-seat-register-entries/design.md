@@ -430,6 +430,10 @@ verified to recompute during this packet's authoring.
 3. **A wallet record declaring several keys**, which would make a per-seat key
    wallet-declared rather than register-declared (D9). A contract change to a
    digested artifact, hence a bundle version, hence every consumer's pin.
+   **TAKEN 2026-08-28** by `add-multi-key-wallets` (ratified the same day on
+   Brett Heap's in-session ruling "rule option 1 and build it"), realized as
+   `wallet-v1.3` — the first wallet release since the carve in which a digested
+   contract byte moves, exactly as this line predicted.
 4. **Resolving seat ids against the council roster** (D8), which needs a
    cross-repository read path that does not exist and should not be created
    casually.

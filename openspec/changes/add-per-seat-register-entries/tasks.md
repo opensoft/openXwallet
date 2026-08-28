@@ -261,7 +261,7 @@ None of them is part of this change's realization surface.
       in the custody attestations beside the register — the same vacuous-pass
       class, in the same governed directory. Needs the attestation's shape
       ENUMERATED and ratified first, which is why it is not folded in here.
-- [ ] 7.3 **A wallet record declaring several keys** (`design.md` D9), which would
+- [x] 7.3 **A wallet record declaring several keys** (`design.md` D9), which would
       make a per-seat key wallet-declared rather than register-declared. A
       contract change to a digested artifact: a bundle version and every
       consumer's pin. TRIGGER, and it has a date on it: hermes-install copies the
@@ -269,6 +269,16 @@ None of them is part of this change's realization surface.
       `presenting_key_ref`, so this MUST be answered before any exercise record
       carrying a per-seat key is committed to a tree this validator scans — rule
       (r) refuses a presenting key no wallet declares.
+  - **ANSWERED 2026-08-28.** Brett Heap ruled option 1 in session ("rule option 1
+      and build it"): one wallet MAY declare several keys as presenters of its
+      single authority. Packet `openspec/changes/add-multi-key-wallets/`
+      (ratified 2026-08-28, PR #7); realized as `wallet-v1.3` through Speckit
+      feature `specs/015-multi-key-wallets/`. Rule (r) now resolves a presenting
+      key against the wallet's DECLARED KEY SET, so a `presenting_key_ref`
+      naming a per-seat key resolves once openxFactory's
+      `wal-agent-mrc-0001` declares those keys — which is that repository's half
+      of the same wave. The trigger this line named is discharged; the successor
+      it named is built.
 - [ ] 7.4 **Roster resolution** (`design.md` D8): resolving a `seat_id` against
       the council definition that governs it. Needs a cross-repository read path
       this validator does not have and should not acquire casually.

@@ -111,7 +111,8 @@ finding code SHALL be renamed or repurposed.
 ## Out of scope
 
 A register schema (design D11 upstream stands: the reader is the shape); a
-wallet record declaring several keys (a contract change, named as a successor);
+wallet record declaring several keys (a contract change, named as a successor —
+TAKEN by `add-multi-key-wallets` and released as `wallet-v1.3`, 2026-08-28);
 resolving seat ids against the council's roster (needs a cross-repository read
 path that does not exist); strictness over the attestation documents beside the
 register (same class, different shape, named as a successor).
