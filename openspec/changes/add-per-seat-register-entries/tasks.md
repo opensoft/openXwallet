@@ -154,7 +154,11 @@ None of them is part of this change's realization surface.
 - [ ] 7.3 **A wallet record declaring several keys** (`design.md` D9), which would
       make a per-seat key wallet-declared rather than register-declared. A
       contract change to a digested artifact: a bundle version and every
-      consumer's pin.
+      consumer's pin. TRIGGER, and it has a date on it: hermes-install copies the
+      projection's `key_id` verbatim into the exercise record's
+      `presenting_key_ref`, so this MUST be answered before any exercise record
+      carrying a per-seat key is committed to a tree this validator scans — rule
+      (r) refuses a presenting key no wallet declares.
 - [ ] 7.4 **Roster resolution** (`design.md` D8): resolving a `seat_id` against
       the council definition that governs it. Needs a cross-repository read path
       this validator does not have and should not acquire casually.

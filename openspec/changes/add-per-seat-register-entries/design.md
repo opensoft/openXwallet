@@ -274,12 +274,24 @@ reader deliberately does NOT try to resolve them through `ctx.wallets` — a che
 that would fail on every one of them for the correct reason and the wrong
 outcome.
 
-**The successor this names.** Whether a wallet record should be able to declare
-SEVERAL keys — so that a per-seat key is wallet-declared rather than
-register-declared — is a real question with a real cost: it is a contract change
-to a digested artifact, hence a bundle version, hence every consumer's pin. It is
-not taken here, and the reason it is not taken is that the register can hold the
-fact today with no contract change at all.
+**The successor this names, and it is now concrete rather than theoretical.**
+hermes-install copies the projection's `key_id` VERBATIM into the exercise
+record it mints — as `proof_of_possession.presenting_key_ref` and
+`attribution.presenting_key_ref` (`domain/review_authority.py:1023,1029`) — with
+only identifier-grammar validation and no resolution against any wallet record.
+That is fine where those records live, which is that runtime's Postgres store.
+But it means the estate will hold exercise records whose presenting key no wallet
+declares, and rule (r) refuses exactly that shape ("a presenting key no wallet
+declares is refused rather than passed over") for any exercise record inside a
+tree this validator scans.
+
+So the question — should a wallet record be able to declare SEVERAL keys, making
+a per-seat key wallet-declared rather than register-declared — has a date on it:
+it must be answered before any exercise record carrying a per-seat key is ever
+committed to a governed tree. It is not taken here because it is a contract change
+to a digested artifact (a bundle version, hence every consumer's pin) and because
+the register can hold the fact today with no contract change at all. It is
+recorded as successor 3 below with that trigger.
 
 ## D10 — `seat_keys` is optional, and the absence is a NOTE
 
