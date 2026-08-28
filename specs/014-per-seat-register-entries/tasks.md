@@ -6,9 +6,14 @@ handoff is legible.
 
 ## Phase 0 — the gate
 
-- [ ] T001 **`add-per-seat-register-entries` is ratified.** Held for Brett Heap.
-      This branch is authored and green, and MUST NOT merge before this box is
-      checked upstream. Its pull request says so.
+- [x] T001 **`add-per-seat-register-entries` is ratified.** DONE 2026-08-28.
+      Brett Heap ruled in-session "ratify #4, then merge #5, tag and complete C";
+      the ratification is recorded in the packet's `proposal.md` front-matter
+      (`Status: ratified`, `Ratified:` naming the authority and the ruling) plus
+      `## Ratification record, 2026-08-28`, committed `5aef29f` and merged to
+      `main` as PR #4 (`10cbdca`). D1 stands as proposed — the per-seat key
+      surface, with the cap re-grounded over authority rows rather than raised.
+      This branch is released by that merge and by nothing else.
 
 ## Phase 1 — the reader
 
