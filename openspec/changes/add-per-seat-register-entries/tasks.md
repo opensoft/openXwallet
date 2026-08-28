@@ -30,11 +30,11 @@
 
 Authorized by ratification and by nothing else. ONE Speckit feature.
 
-- [ ] 3.1 **`check_register` reads the whole top level.** Enumerate
+- [x] 3.1 **`check_register` reads the whole top level.** Enumerate
       `register_version`, `revocation_staleness_bound`, `rows`, `seat_keys`;
       refuse an unrecognized key as `register-top-level-unknown`. The closure is
       the point (`design.md` D3) — a field-by-field fix leaves the class open.
-- [ ] 3.2 **`revocation_staleness_bound` enters the enforced read set.**
+- [x] 3.2 **`revocation_staleness_bound` enters the enforced read set.**
       Required; `P<n>W` or `P<n>D` with an optional `T…` part; years and months
       refused; a `T` with no components refused; a zero-length window refused.
       Codes `register-staleness-bound-missing` /
@@ -42,7 +42,7 @@ Authorized by ratification and by nothing else. ONE Speckit feature.
       hermes-install's, deliberately (`design.md` D4). **This discharges
       `add-composition-drift-cascade` task 3.4** — record that against it when
       this change archives (§6.1).
-- [ ] 3.3 **The seat-key surface.** `seat_keys` optional, a non-empty list when
+- [x] 3.3 **The seat-key surface.** `seat_keys` optional, a non-empty list when
       present, each entry a mapping whose field set is EXACTLY
       `{seat_id, council_ref, council_id, key_id, public_key, key_fingerprint,
       authorizing_row}` (`design.md` D7). Per entry: canonical 43-character
@@ -53,59 +53,137 @@ Authorized by ratification and by nothing else. ONE Speckit feature.
       `council_id` denoting ONE body. Duplicate `seat_id`, `key_id` or
       `key_fingerprint` refused rather than resolved by file order. Every
       recorded entry adjudicated or refused, never merely parsed.
-- [ ] 3.4 **The cap is re-grounded, not raised.** `REGISTER_MVP_SINGLE_ROW`
+- [x] 3.4 **The cap is re-grounded, not raised.** `REGISTER_MVP_SINGLE_ROW`
       stays `1`; its refusal text says the cap binds AUTHORITY ROWS. No count
       bound on `seat_keys` — the bound is structural (`design.md` D1).
-- [ ] 3.5 **Two notes, never warnings** (`design.md` D5): one naming how many
+- [x] 3.5 **Two notes, never warnings** (`design.md` D5): one naming how many
       recorded seat keys were ADJUDICATED out of how many are recorded, one
       naming that none are recorded and that a projection built from this
       register can authorize no seat. Both are notes because LedgerxFactory runs
       `--strict`. The first is the line openxFactory's positive-proof step
       asserts on, which is why it must count adjudication and not parsing.
-- [ ] 3.6 **Self-test probes extended** in `self_test()`, matching the existing
+- [x] 3.6 **Self-test probes extended** in `self_test()`, matching the existing
       `_register_probe` convention exactly: one probe per new refusal, plus a
       POSITIVE probe carrying the FOUR REAL public halves and fingerprints from
       codexFactory `hermes/domain/review-councils/records/2026-08-28-seat-signing-keys-minted.md`
       (merged `78b8fa2`) — copied verbatim, so a transcription slip fails here
       and never reaches openxFactory.
-- [ ] 3.7 **`tests/` suite** under `tests/per_seat_register_entries/`, run by
+- [x] 3.7 **`tests/` suite** under `tests/per_seat_register_entries/`, run by
       `pytest-suite`: the positive four-seat register; every negative in §3.3;
       the staleness-bound negatives; the second-row refusal unchanged; the
       absent-`seat_keys` note; and a corpus-invariance assertion — the packaged
       corpus adjudicates IDENTICALLY before and after (same finding set, same
       exit code), because this change touches no contract byte.
-- [ ] 3.8 **The eight contract digests are unchanged, and it is PROVEN**, not
+- [x] 3.8 **The eight contract digests are unchanged, and it is PROVEN**, not
       asserted: recompute each `sha256:` in `contracts/manifest.yaml` and each
       in openxFactory's `contracts/openxwallet-pin.yaml` `files:` block over the
       realization tree and show equality. `scripts/validate-openxwallet.py` is
       in the pin's `pinned_by_commit_only:` list, so a reader edit moves the
       COMMIT and no digest.
-- [ ] 3.9 **Release bookkeeping**, allocated at realization and not reserved
+- [x] 3.9 **Release bookkeeping**, allocated at realization and not reserved
       here: `contract_bundle_version` → the next additive minor, the
       `contracts/CHANGELOG.md` entry naming the reader change and the unchanged
       digests, and the annotated `wallet-v<major>.<minor>` tag. **The tag is
       `[OPERATOR]`** and follows the human merge — no agent tags.
-- [ ] 3.10 Full local gate bar before pushing (AGENTS.md rule 5):
+- [x] 3.10 Full local gate bar before pushing (AGENTS.md rule 5):
       `scripts/verify-contract-pin.py`, the syntax gate, the validator plain AND
       `--strict`, `python3 -m pytest tests/ -q`, and
       `OPENSPEC_TELEMETRY=0 openspec validate --all --strict`.
 
+### Realization evidence for §3 (merged, green, tagged — 2026-08-28)
+
+All of §3 is landed by ONE Speckit feature, `014-per-seat-register-entries`,
+merged as **openXwallet PR #5 (`93b0a47`)** and released as the annotated tag
+**`wallet-v1.2`** pointing at that commit. Boxes are checked against runs that
+were actually made, at that exact head:
+
+- `python3 scripts/validate-openxwallet.py .` — 0 errors, 0 warnings
+- `python3 scripts/validate-openxwallet.py . --strict` — 0 errors, 0 warnings;
+  corpus 17 positive examples, 36 negative confirmations across 13/13
+  requirements
+- `python3 scripts/wallet-yaml-syntax-gate.py .` — exit 0
+- `python3 scripts/verify-contract-pin.py` — OK, 1 vendored file matches at
+  openxFactory@30565e48ffe3 (bundle contract-v1.44)
+- `python3 -m pytest tests/ -q` — **69 passed**
+- `OPENSPEC_TELEMETRY=0 openspec validate --all --strict` — 4 passed, 0 failed
+
+`contracts/manifest.yaml` reads `contract_bundle_version: wallet-v1.2` at that
+sha, and `contracts/CHANGELOG.md` carries the `wallet-v1.2` entry naming the
+reader change and the unchanged digests (§3.9). **§3.9's tag is `[OPERATOR]`
+and was authorized as one**: Brett Heap ruled in-session "ratify #4, then merge
+#5, tag and complete C" (2026-08-28), which is the operator act the task
+required — the tag follows the human merge, and no agent tagged on its own
+authority.
+
+**§3.8 is PROVEN, not asserted, and the proof is in the consumer:**
+openxFactory's `scripts/verify-openxwallet-pin.py` recomputes every digest in
+`contracts/openxwallet-pin.yaml` over the realization tree and reports
+`8 digest(s) recomputed` at `openXwallet@93b0a47` — **8 of 8 unchanged**. That
+is expected and is the shape of an additive minor: the change touches
+`scripts/validate-openxwallet.py`, which the pin carries in its
+`pinned_by_commit_only:` list, so a reader edit moves the COMMIT and no digest.
+
 ## 4. Downstream, gated on §3 merging and the tag (openxFactory)
 
-- [ ] 4.1 `contracts/openxwallet-pin.yaml`: `commit` → the release commit,
+- [x] 4.1 `contracts/openxwallet-pin.yaml`: `commit` → the release commit,
       `contract_bundle_tag` → the new tag. The eight `files:` digests are
       UNCHANGED (§3.8 is the proof).
-- [ ] 4.2 `governance/review-authority/register.yaml` gains the four `seat_keys`
+- [x] 4.2 `governance/review-authority/register.yaml` gains the four `seat_keys`
       entries with the mint record's exact public halves and fingerprints.
       **[HUMAN-ONLY]** — the register is a permanently human-only surface by
       ratified requirement and by name in gate rules; the pull request IS the
       human act, and no council verdict may clear it.
-- [ ] 4.3 The consumer gate's positive-proof step gains an assertion on the
+- [x] 4.3 The consumer gate's positive-proof step gains an assertion on the
       seat-key note, so a green check PROVES the four seats were read. A green
       check that proves nothing was read is the class that step exists to close.
-- [ ] 4.4 Gitlink and pin move TOGETHER in one commit — never a mixed state.
+- [x] 4.4 Gitlink and pin move TOGETHER in one commit — never a mixed state.
       (`design.md` D10 makes either ordering green, which is a safety net, not a
       licence to split them.)
+
+### Realization evidence for §4 (openxFactory, merged 2026-08-28)
+
+Landed as **openxFactory PR #475**, merge commit **`0c0075df80737798a03b1d4582300a053fb8195b`**, as a
+deliberate TWO-STEP on one branch:
+
+1. `governance/review-authority/register.yaml` gains the `seat_keys` surface
+   carrying the four public halves copied verbatim from codexFactory's mint
+   record (`78b8fa2`), and the consumer gate's positive-proof step gains the
+   seat-key assertion (§4.2, §4.3).
+2. `contracts/openxwallet-pin.yaml` `commit` →
+   `93b0a47fe9086e65f71ef2916f60a82b2ac4cdca`, `contract_bundle_tag` →
+   `wallet-v1.2`, and the `openXwallet` gitlink to the SAME sha in that one
+   commit (§4.1, §4.4).
+
+**Step 1 could not land alone, and that is the property, not a caveat.** Its
+assertion demands a note only `wallet-v1.2`'s reader emits, so the required
+`wallet-validation` check was RED until step 2. The mixed state — four public
+keys recorded in a governed file while the pinned reader ignores them, green and
+unadjudicated — is structurally impossible rather than merely discouraged.
+`verify-openxwallet-pin.py` reads the gitlink from **HEAD** and refuses
+`pin-gitlink-mismatch` when pin and tree disagree, so §4.4's "together in one
+commit" is enforced by a required check in both directions.
+
+**§4.3's green check PROVES the four seats were read.** From the
+`openxwallet-consumer-gate` workflow's own CI log at that head:
+
+```
+OK openxwallet-pin verified: openXwallet@93b0a47fe9086e65f71ef2916f60a82b2ac4cdca
+   (tag label wallet-v1.2), gitlink read from HEAD, 8 digest(s) recomputed
+note  nested repositories pruned (not adjudicated): openXwallet
+note  intake register: 4 of 4 per-seat signing key(s) adjudicated and resolved
+validate-openxwallet: 0 error(s), 0 warning(s)
+```
+
+The assertion greps that line with a **LITERAL `4 of 4`**, not `[0-9]+`, and
+also refuses the reader's absent-surface note — so a dropped `seat_keys` block
+cannot pass either. The count is over entries that stood behind full
+adjudication (the reader excludes refused entries), so it proves adjudication
+rather than parsing, which is the class the step exists to close.
+
+**§4.2 stayed human-only in fact as well as in name.** The register is a
+permanently human-only surface and a never-clearable floor member; the pull
+request WAS the human act, and no council verdict cleared it — nor could the
+council whose own commission it records have been eligible to try.
 
 ## 5. Downstream, operator (hermes-install and the runtime)
 
@@ -122,16 +200,37 @@ Authorized by ratification and by nothing else. ONE Speckit feature.
 
 ## 6. Upstream bookkeeping
 
-- [ ] 6.1 Record against `add-composition-drift-cascade` that its task 3.4
+- [x] 6.1 Record against `add-composition-drift-cascade` that its task 3.4
       (`revocation_staleness_bound` validated by the register reader) is
       discharged by this change, so it is not carried twice or archived as
       outstanding.
-- [ ] 6.2 Record against openxFactory `add-wallet-carried-review-authority` that
+- [x] 6.2 Record against openxFactory `add-wallet-carried-review-authority` that
       the per-seat successor its intake requirement NAMED was authored here, on
       the reader side, per the precedent of that change's
       `## Addendum — split-openxwallet-repo P3 (2026-08-27, contract-v2.0)`,
       which moved the wallet deltas' home to this repository (its `tasks.md`
       line 521 records the same handoff for the S5 core deltas).
+
+### Where §6.1 and §6.2 were recorded
+
+- **6.1** — `openspec/changes/add-composition-drift-cascade/tasks.md` task 3.4
+  is ticked and annotated DISCHARGED, with its original successor text kept
+  unedited as the record of what was found. It is not carried twice.
+- **6.2** — openxFactory `openspec/changes/add-wallet-carried-review-authority/tasks.md`
+  task **7.3** carries the note, in PR #475 (`0c0075df80737798a03b1d4582300a053fb8195b`): that task's own
+  FINDING — the pinned reader accepting a governed top-level declaration
+  silently, the vacuous-pass class — is recorded as structurally closed by
+  `wallet-v1.2`'s enumerated top level. **7.3 was deliberately left UNTICKED**,
+  because its own enforcement half is 7.4's (the hermes-install runtime refusing
+  a stale projection) and closing a reader's blind spot is not that.
+
+**§6.3 and §6.4 remain open, and neither is discharged by this wave.** 6.3 is an
+edit to codexFactory's mint record (a third repository) saying item 2 of its
+successor list is realized and item 3 is unblocked; 6.4 is the archive-time
+re-run of the full gate bar. §5.1 and §5.2 keep their `[OPERATOR]` marks — the
+Hermes projection re-derivation is content-only (`design.md` D11) but it is the
+operator's act, and until it happens `review_authority.root_key_mismatch` has
+not yet been observed to stop firing.
 - [ ] 6.3 Record against codexFactory's mint record that item 2 of its numbered
       successor list ("the register successor") is realized, and that item 3
       (the client-tree projection) is unblocked and is an operator act.
@@ -151,6 +250,13 @@ None of them is part of this change's realization surface.
       repository's workflow step that no requirement here obliges. Safe only
       after the trigger, because before it the refusal would park a candidate on
       a permanently human-only file.
+  - **THE TRIGGER FIRED 2026-08-28.** openxFactory PR #475 (`0c0075d`) landed
+      both halves: its register carries the four `seat_keys` entries AND its
+      `contracts/openxwallet-pin.yaml` plus gitlink point at this reader
+      (`93b0a47` / `wallet-v1.2`). §4 is complete. So this successor is now
+      SAFE to build and is an obligation with its condition met — it is left
+      unticked because the flip itself is unbuilt, not because it is still
+      blocked. The next additive minor is where it belongs.
 - [ ] 7.2 **Attestation strictness.** `_load_attestations` tolerates unknown keys
       in the custody attestations beside the register — the same vacuous-pass
       class, in the same governed directory. Needs the attestation's shape

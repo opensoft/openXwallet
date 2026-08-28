@@ -86,7 +86,22 @@ change, and nothing below may start before 2.1.
       grant surviving a DRIFT-class parent revocation; a propagated revocation
       with no recorded origin; a revoked grant returned to active; a model
       family or alias in a declared component.
-- [ ] 3.4 **Register reader validates `revocation_staleness_bound`.** Successor
+- [x] 3.4 **Register reader validates `revocation_staleness_bound`.**
+      **DISCHARGED 2026-08-28 by `add-per-seat-register-entries`** (ratified by
+      Brett Heap that day, PR #4 `10cbdca`; realized at `wallet-v1.2`, PR #5
+      `93b0a47`), so it is not carried twice here nor archived as outstanding.
+      That change did MORE than this task asked: rather than validating the one
+      bound field-by-field, it CLOSED the reader's top level as an enumerated
+      set — `register_version`, `revocation_staleness_bound`, `rows`,
+      `seat_keys`, with anything else refused as `register-top-level-unknown` —
+      and brought the bound into the ENFORCED read set
+      (`register-staleness-bound-missing` / `-malformed`, weeks and days with an
+      optional time part, years and months refused, a zero-length window
+      refused). The vacuous-pass class named below is therefore structurally
+      impossible rather than fixed once: the NEXT governed top-level declaration
+      added to that file is refused as unknown instead of passing unread. The
+      original text of the successor follows, unedited, as the record of what
+      was found. Successor
       raised by the S5 session that landed openxFactory task 7.3: a new
       top-level `revocation_staleness_bound: P7D` now sits beside
       `register_version` in `governance/review-authority/register.yaml`, and
