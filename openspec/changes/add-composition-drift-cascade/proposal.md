@@ -1,7 +1,11 @@
 ---
 code_surface: openXwallet neutral spec text only in THIS change (two MODIFIED requirements). A code surface is DECLARED and not performed here — a validator cascade rule walking composition drift into the wallet's actual grant records, plus whatever carrier work that rule needs. Per `release-realization`, this change archives only on merged, green realization evidence for that declared surface.
 target_release: unallocated. Version numbers — per-file `contract_schema_version`, `contract_bundle_version`, and the `wallet-v<major>.<minor>` tag — are allocated at realization and never reserved in a proposal (AGENTS.md, "a release is five coordinated values").
-Status: draft
+Status: ratified
+Ratified: 2026-08-28 by Brett Heap (operator authority) — in-session ruling
+("ratify #50 and #3, then merge #51"); this change's declared realization
+surface remains unallocated and is not itself a pull request held on this
+ratification.
 ---
 
 # Proposal: add-composition-drift-cascade
@@ -108,6 +112,10 @@ Both exits and their costs are set out in `design.md` under `## Open
 questions`. This proposal takes neither. Ruling it is the convener's act, and
 it is named here so it cannot be lost in the design document.
 
+**Resolved 2026-08-28 by ratification as proposed:** the delta's exact-version
+rule stands — a declared model component names an exact version, and a family
+pin is a validation failure. Admitting a family pin would now be a new change.
+
 ## Impact
 
 - Two promoted requirements in this repository are restated; no capability is
@@ -126,8 +134,18 @@ it is named here so it cannot be lost in the design document.
 
 ## Status
 
-`Status: draft`. **Held for Brett Heap's ratification.** Nothing here is
-ratified by its authoring, and no realization work may begin until the
-ratification gate in `tasks.md` is checked. The underlying Q8 ruling is already
-made — what awaits ratification is this ENCODING of it, plus the reissuance
-policy proposed in `design.md` and the carried question above.
+`Status: ratified`. **Ratified by Brett Heap, 2026-08-28** — see "## Ratification
+record, 2026-08-28" below. Until this ratification, nothing here was ratified
+by its authoring and no realization work could begin until the ratification
+gate in `tasks.md` was checked; that gate is now satisfied. The underlying Q8
+ruling was already made — what awaited ratification was this ENCODING of it,
+plus the reissuance policy proposed in `design.md` and the carried question
+above (now resolved — see that section).
+
+## Ratification record, 2026-08-28
+
+Ratified as proposed. Brett Heap, operator authority, ruled in-session:
+"ratify #50 and #3, then merge #51" (2026-08-28). This proposal (PR #3) is
+ratified on that ruling, exactly as authored — both MODIFIED requirements
+stand unamended, and the carried model-family-pin open question is resolved
+below rather than left open.

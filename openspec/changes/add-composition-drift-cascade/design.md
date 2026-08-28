@@ -224,6 +224,10 @@ amending the agent-profile delta's fifth paragraph before ratification, which
 is a small edit and is the reason this question must be ruled BEFORE the
 ratification gate rather than after it.
 
+**Resolved 2026-08-28 by ratification as proposed:** the delta's exact-version
+rule stands — a declared model component names an exact version, and a family
+pin is a validation failure. Admitting a family pin would now be a new change.
+
 ## Corpus drift observed and NOT taken on
 
 Two pre-existing inconsistencies were seen while authoring. Neither is caused
