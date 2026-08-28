@@ -19,6 +19,116 @@ bundle.
 
 ---
 
+## wallet-v1.2 — 2026-08-28 (additive minor; validator behaviour only)
+
+**Change class: ADDITIVE MINOR.** No contract content changes. **None of the
+eight digested artifacts is touched**, so the eight `sha256:` values at
+`wallet-v1.2` still equal the rows recorded at the NAMED CARVE COMMIT — and
+therefore still equal the `files:` block of openxFactory's
+`contracts/openxwallet-pin.yaml`, which a pin bump to this release moves
+`commit:` and `contract_bundle_tag:` in, and NOTHING ELSE. The proof is
+mechanical and was run before release: every digest in `contracts/manifest.yaml`
+and every digest in that pin's `files:` block recomputes to its recorded value
+over this tree. `scripts/validate-openxwallet.py` is in the pin's
+`pinned_by_commit_only:` list precisely so a reader change is a COMMIT move and
+never a digest move.
+
+Realizes the openXwallet change `add-per-seat-register-entries` (capability
+`review-authority-register-reader`, ratified 2026-08-28), through Speckit feature
+`specs/014-per-seat-register-entries/`. It also discharges
+`add-composition-drift-cascade` task 3.4, which named this reader work as a
+successor no delta on that ledger obliged.
+
+### 1. The register's whole top level is read (design D3/D4)
+
+`check_register` enumerated exactly two top-level keys — `register_version` and
+`rows` — and IGNORED every other one. So openxFactory's governed
+`revocation_staleness_bound: P7D`, added by that repository's ratified task 7.3
+and projected verbatim into the Hermes runtime, sat inside a REQUIRED check
+unadjudicated (measured on the edited tree: 0 errors, 0 warnings). A governed
+declaration a required check parses and never adjudicates is a vacuous pass.
+
+The top-level key set is now CLOSED — `register_version`,
+`revocation_staleness_bound`, `rows`, `seat_keys` — and an unrecognized key is
+refused (`register-top-level-unknown`). Closing the SET rather than validating
+one field is the point: the next declaration added to that file cannot pass
+unread without a reader edit. The bound itself is now required and validated
+(`register-staleness-bound-missing`, `register-staleness-bound-malformed`) under
+hermes-install's own grammar — weeks/days/hours/minutes/seconds, no years or
+months, no zero-length window — so a value accepted here is one that repository's
+projection schema can carry.
+
+### 2. Per-seat signing keys are recorded and ENFORCED (design D1/D2/D7/D8)
+
+Four Ed25519 keypairs were minted 2026-08-28, one per seat of codexFactory's
+`merge_readiness_council`, and the register could not hold their public halves: a
+key field on a row fails the nine-field exact set equality, and four per-seat rows
+fail the single-row cap. A new unread top-level block would have passed only
+because the reader ignored what it did not read — which is why the mint record
+named this release instead of writing one.
+
+The register may now carry a top-level `seat_keys:` list. Each entry is exactly
+`{seat_id, council_ref, council_id, key_id, public_key, key_fingerprint,
+authorizing_row}`, checked as exact set equality the way rows are. Per entry the
+reader recomputes the fingerprint from the public key
+(`register-seat-fingerprint-mismatch`), pins the public key to 43 characters of
+CANONICAL unpadded base64url (`register-seat-key-malformed` — which also refuses a
+64-hex PRIVATE seed by shape, the most plausible catastrophic paste into a
+governed file), refuses duplicate seat/key/fingerprint
+(`register-seat-duplicate`), requires the authorizing row to resolve ACTIVE and
+unexpired by COMPUTED time (`register-seat-row-unresolved`), requires
+`council_ref` to be that row's `holder_ref` (`register-seat-council-mismatch`),
+and requires the register spelling and the runtime spelling to denote one body
+(`register-seat-council-spelling`).
+
+Two spellings are recorded on purpose. `council_ref` anchors the authority inside
+the register; `council_id` is carried VERBATIM into the Hermes projection, which
+keys its seat lookup on the exact pair `(council_id, seat_id)` and spells the
+council with underscores. Neither is derivable from the other by a declared rule,
+so recording one would force an operator to invent the other at projection time —
+and an invented value is a projection that can disagree with the register.
+
+The surface is OPTIONAL and its absence is a NOTE, not a refusal, so every
+landing order of the two-repository wave keeps the REQUIRED `wallet-validation`
+check green; the note is what keeps that from being leniency. The note on a
+populated surface names the number ADJUDICATED out of the number recorded, which
+is the line a consumer gate can assert on positively — a count of entries PARSED
+would prove parsing and nothing else.
+
+### 3. The single-row cap is re-grounded, not raised
+
+`REGISTER_MVP_SINGLE_ROW` stays `1` and keeps refusing a second AUTHORITY row.
+What changed is that the reader now says what the cap binds: one holder, one
+target repository, one act, one tier, one expiry. Four keys under one row add
+none of those, so recording them completes the ratified first shape rather than
+exceeding it. The key surface takes no COUNT bound — a council's seat set is
+governed in another repository and a number here would go stale silently — and is
+bounded structurally, by every entry descending from a row in the same file.
+
+### What did NOT change
+
+The eight digested contract artifacts (proven above). The corpus: 17 positive
+examples and 36 negative confirmations across 13/13 requirements, adjudicated
+identically by the previous release — asserted by
+`tests/nested_repo_prune::test_the_previous_version_adjudicates_the_corpus_identically`.
+No finding code renamed or repurposed; all eleven codes are NEW and all match
+`register-[a-z-]+`, so openxFactory's existing negative gate assertion reaches
+them with no edit there. No new WARNING anywhere: LedgerxFactory runs this
+validator with `--strict`, where warnings red the run.
+
+### Evidence
+
+`python3 scripts/validate-openxwallet.py` (self-test, 0/0);
+`python3 scripts/validate-openxwallet.py . --strict` (0/0);
+`python3 -m pytest tests/ -q` (69 passed, from 22);
+`python3 scripts/verify-contract-pin.py`; `scripts/wallet-yaml-syntax-gate.py .`;
+`OPENSPEC_TELEMETRY=0 openspec validate --all --strict`. The four real public
+halves were adjudicated against a copy of openxFactory's live register tree
+before release: `4 of 4 per-seat signing key(s) adjudicated and resolved`, 0
+errors, 0 warnings.
+
+---
+
 ## wallet-v1.1 — 2026-08-26 (additive minor; validator behaviour only)
 
 **Change class: ADDITIVE MINOR.** No contract content changes. **None of the

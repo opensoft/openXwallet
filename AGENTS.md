@@ -12,14 +12,16 @@ ownership, validation, versioning, and release constraints.
 <!-- SPECKIT START -->
 ## Active Speckit Feature
 
-- Feature: `013-nested-repo-prune-register-note`
-- Plan: `specs/013-nested-repo-prune-register-note/plan.md`
-- Governing change: openxFactory `openspec/changes/split-openxwallet-repo/`,
-  group 4 (P2b), at openxFactory `f9457d6f`
+- Feature: `014-per-seat-register-entries`
+- Plan: `specs/014-per-seat-register-entries/plan.md`
+- Governing change: THIS repository's
+  `openspec/changes/add-per-seat-register-entries/` — capability
+  `review-authority-register-reader`
 
 Run follow-on Speckit work from this feature worktree. OpenSpec ratifies and
-Speckit builds: the governing change lives upstream in openxFactory and is
-already ratified, so nothing here re-opens it.
+Speckit builds. **The governing change is `Status: draft`, held for Brett Heap**,
+and this feature is GATED on its ratification: the branch is authored and green
+so the ratification decides a real thing, and it must not merge first.
 <!-- SPECKIT END -->
 
 ## What this repository is, in one paragraph
