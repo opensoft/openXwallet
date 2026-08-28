@@ -1,10 +1,10 @@
 ---
 code_surface: openXwallet `scripts/validate-openxwallet.py` (`check_register`) plus its self-test probes, its tests, and the bookkeeping of a release. NO `contracts/` byte and no register schema. Per `release-realization`, this change archives only on merged, green realization evidence for that surface.
 target_release: unallocated at proposal. The realization is expected to be an ADDITIVE MINOR (`wallet-v1.2`) whose eight contract digests are unchanged, but per AGENTS.md rule 6 the five coordinated values are allocated at realization and nothing is reserved here.
-Status: draft
-Held: for Brett Heap. Nothing in this packet is ratified by its authoring. The
-  realization branch exists and is gated on this ratification; no reader byte
-  and no register byte lands until the gate below is checked.
+Status: ratified
+Ratified: 2026-08-28 by Brett Heap (operator authority) — in-session ruling
+  ("ratify #4, then merge #5, tag and complete C"); D1 (entry-set semantics,
+  cap re-grounded over authority rows) stands as proposed.
 ---
 
 # Proposal: add-per-seat-register-entries
@@ -247,7 +247,44 @@ can be put to a council without rework.
 
 ## Status
 
-`Status: draft`. **Held for Brett Heap.** Ratification is the operator's act and
-has not been made. The realization branch (`014-per-seat-register-entries`) is
-authored and gated: its ratification gate in `tasks.md` is unchecked, and it must
-not merge before this packet is ratified.
+`Status: ratified`. **Ratified by Brett Heap, 2026-08-28** — see "## Ratification
+record, 2026-08-28" below. Until this ratification nothing here was ratified by
+its authoring, and the realization branch (`014-per-seat-register-entries`) was
+authored and GATED: it could not merge before this packet was ratified. That
+gate is now satisfied, and the realization is authorized by this ratification
+and by nothing else.
+
+## Ratification record, 2026-08-28
+
+Ratified as proposed. Brett Heap, operator authority, ruled in-session:
+"ratify #4, then merge #5, tag and complete C" (2026-08-28). This proposal
+(PR #4) is ratified on that ruling, exactly as authored — both MODIFIED
+requirements stand unamended, and the one reversible decision the ruling was
+asked to make is made by ratifying rather than deferred.
+
+**D1 stands as proposed.** The mint record named two exits — "row-set semantics,
+or a per-seat key surface" — and this packet takes the SECOND: a top-level
+`seat_keys:` list of per-seat entries, with `rows:` kept as the authority surface
+and `REGISTER_MVP_SINGLE_ROW` kept at `1` and RE-GROUNDED so its refusal text
+says the cap binds AUTHORITY ROWS. The cap is not raised; no count bound is
+placed on `seat_keys`, because the bound there is structural. Ratifying as
+proposed ratifies that choice, and with it `tasks.md` 1.2.
+
+The consequence for openxFactory's ratified intake requirement is the one
+`design.md` D1 argues: four keys recorded under one row convey no additional
+holder, target repository or act, so the first shape is not exceeded by them —
+it is completed. Register BREADTH (a second holder, a second target repository,
+per-seat GRANTS) remains a named successor, unchanged by this ratification.
+
+The realization surface declared in the front-matter is authorized to proceed:
+`scripts/validate-openxwallet.py` (`check_register`), its self-test probes, its
+tests, and the bookkeeping of an ADDITIVE MINOR whose eight contract digests are
+unchanged. Nothing in `contracts/` and no register schema is authorized by this
+ratification. Per `release-realization` this change archives only on merged,
+green realization evidence for that surface — not on this ratification.
+
+The four `[HUMAN-ONLY]` and `[OPERATOR]` items keep their marks: the register
+edit itself (`tasks.md` 4.2), the annotated tag (3.9), and the projection
+re-derivation and root-key-mismatch confirmation (5.1, 5.2). The
+several-keys-in-one-wallet-record question (7.3) is NOT resolved here; it stays
+a named successor with its trigger intact.

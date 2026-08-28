@@ -2,14 +2,18 @@
 
 ## 1. Ratification gate
 
-- [ ] 1.1 **RATIFICATION — Brett Heap.** `Status: draft` is held for the
-      operator. Nothing below §2 may land until this box is checked and
-      `proposal.md`'s `Status:` reads `ratified` with a ratification record.
-      The realization branch `014-per-seat-register-entries` exists and is
-      GATED on this box; its pull request says so in its own body.
-- [ ] 1.2 The one reversible decision, named for the ruling: `design.md` **D1**
-      takes the mint record's SECOND exit (a per-seat key surface) over its
-      first (row-set semantics). Ratifying as proposed ratifies that choice.
+- [x] 1.1 **RATIFICATION — Brett Heap.** DONE 2026-08-28. `proposal.md`'s
+      `Status:` reads `ratified`, its front-matter carries the `Ratified:` line,
+      and `## Ratification record, 2026-08-28` records the ruling verbatim
+      ("ratify #4, then merge #5, tag and complete C"). §3 is authorized by that
+      ratification and by nothing else. The realization branch
+      `014-per-seat-register-entries` (PR #5) was GATED on this box and is
+      released by it.
+- [x] 1.2 DONE — ratified as proposed, so `design.md` **D1** stands: the mint
+      record's SECOND exit (a per-seat key surface) over its first (row-set
+      semantics), with `REGISTER_MVP_SINGLE_ROW` kept at `1` and re-grounded
+      over AUTHORITY ROWS rather than raised. Recorded in the ratification
+      record.
 
 ## 2. Alignment
 
