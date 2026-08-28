@@ -50,14 +50,22 @@ Mirrors `openspec/changes/add-multi-key-wallets/tasks.md`. Ticked as built.
       `--strict`, `pytest tests/ -q` (90 passed), `openspec validate --all
       --strict`
 - [x] 4.5 `AGENTS.md` Speckit block → feature 015
-- [ ] 4.6 annotated tag `wallet-v1.3` at the MERGE sha, after re-proving the bar
-      at that head. `wallet-v1.3.digests.yaml` remains the OPERATOR act.
+- [x] 4.6 annotated tag `wallet-v1.3` at `6b248d4`, the merge sha, after
+      re-proving the bar at that head. `wallet-v1.3.digests.yaml` over
+      `member_class: owned` members REMAINS THE OPERATOR ACT it has been since
+      `wallet-v1.0` — not produced here, and listed as remaining work rather
+      than silently omitted.
 
-## 5. Consumer completion — openxFactory
-- [ ] 5.1 `wal-agent-mrc-0001` declares the four seat keys
-- [ ] 5.2 pin + gitlink → `wallet-v1.3`
-- [ ] 5.3 gate proves the 4-of-4 register note, the five-declared-key note, and
-      fingerprint agreement by computation
+## 5. Consumer completion — openxFactory (PR #480)
+- [x] 5.1 `wal-agent-mrc-0001` declares the four seat keys; the root key's
+      declaration byte-untouched; custody `holder_readable` per the D7
+      determination
+- [x] 5.2 pin + gitlink → `wallet-v1.3` (`6b248d4`); ONE digest row moved, the
+      other seven reverified by recomputation
+- [x] 5.3 gate proves all three: the 4-of-4 register note, the
+      five-declared-key note, and fingerprint agreement by computation (the
+      register's base64url half and the wallet's base58btc half decode to the
+      same 32 bytes for all four seats)
 
 ## 6. Ledger ticks
 - [x] 6.1 `add-per-seat-register-entries/tasks.md` §7.3
