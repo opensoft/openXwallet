@@ -85,17 +85,33 @@ handoff is legible.
 - [x] T021 `contracts/CHANGELOG.md` — the `wallet-v1.2` entry, newest-first,
       naming the unchanged digests and the evidence.
 - [x] T022 `AGENTS.md` active-Speckit block points at this feature.
-- [ ] T023 **[OPERATOR]** the annotated `wallet-v1.2` tag, after the human merge.
+- [x] T023 **[OPERATOR]** the annotated `wallet-v1.2` tag, after the human merge.
+      DONE 2026-08-28. Brett Heap authorized it in the same in-session ruling
+      that ratified the packet — "ratify #4, then merge #5, tag and complete C"
+      — so the tag is the operator's act, not an agent's. Annotated tag object
+      `9c362de` points at **`93b0a47`**, PR #5's merge commit, and the full gate
+      bar was re-run green at that exact head before tagging (validator plain
+      and `--strict`, the syntax gate, `verify-contract-pin.py`, 69 tests,
+      `openspec validate --all --strict`).
 
 ## Phase 6 — handoff (not this branch)
 
-- [ ] T024 **[openxFactory]** pin bump (`commit`, `contract_bundle_tag`; the
+- [x] T024 **[openxFactory]** pin bump (`commit`, `contract_bundle_tag`; the
       eight `files:` digests unchanged) AND the four `seat_keys` entries in
       `governance/review-authority/register.yaml`, in ONE commit — a
       **human-only** pull request over a never-clearable floor file.
-- [ ] T025 **[openxFactory]** the consumer gate's positive-proof step gains an
+      DONE — openxFactory PR #475, merge `0c0075df80737798a03b1d4582300a053fb8195b`. The pin and the gitlink
+      moved together in one commit to `93b0a47` / `wallet-v1.2`;
+      `verify-openxwallet-pin.py` reports **8 digest(s) recomputed**, unchanged
+      8 of 8. Human-only in fact: no council verdict cleared it.
+- [x] T025 **[openxFactory]** the consumer gate's positive-proof step gains an
       assertion on the adjudicated seat-key note, so a green check proves the
       four seats were READ.
+      DONE — same PR #475. CI's own log carries
+      `note  intake register: 4 of 4 per-seat signing key(s) adjudicated and resolved`,
+      and the assertion matches that count LITERALLY (not `[0-9]+`) while also
+      refusing the absent-surface note, so neither a refused entry nor a dropped
+      `seat_keys` block can pass.
 - [ ] T026 **[OPERATOR]** re-derive and establish the Hermes register
       projection. No hermes-install code change (design D11); `council_id` keeps
       the runtime's underscore spelling, which the register now records so
