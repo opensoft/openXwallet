@@ -19,6 +19,200 @@ bundle.
 
 ---
 
+## wallet-v1.3 — 2026-08-28 (additive minor; ONE digest MOVES)
+
+**Change class: ADDITIVE MINOR, and the first wallet release since the carve in
+which a digested contract byte actually moves.** Exactly ONE of the eight
+digested artifacts changes —
+`contracts/openxwallet/openxwallet-record.schema.yaml`, now
+`sha256:20ba39c07564c93b8ffe47382126677a165771244d28fb0c4976ab950173c40a` — so
+a consumer's pin moves `commit:`, `contract_bundle_tag:` AND that one row of its
+`files:` block, and nothing else. The other seven values were PROVEN unchanged
+by recomputation over this tree, not asserted.
+
+Realizes the openXwallet change `add-multi-key-wallets` (capability
+`openxwallet`), ratified 2026-08-28 by Brett Heap, operator authority, by the
+in-session ruling **"rule option 1 and build it"** — through Speckit feature
+`specs/015-multi-key-wallets/`. It discharges
+`add-per-seat-register-entries` task 7.3, the named successor whose trigger had
+a date on it.
+
+### Why it exists
+
+hermes-install writes the REGISTER-RECORDED `key_id` into an exercise record's
+`presenting_key_ref`, deliberately and not the per-convening ephemeral one,
+because "the contract requires this ref to resolve to a wallet key present in
+the corpus". Four per-seat keys are minted, provisioned, and recorded in
+openxFactory's register at `wallet-v1.2` — and `wal-agent-mrc-0001` declared
+exactly ONE key. Rule (r) refuses a presenting key no wallet declares, so the
+first exercise record naming a seat key would have been refused on arrival. The
+register knowing a key is not the wallet declaring it.
+
+### 1. A wallet is identified by its declared KEY SET
+
+`keys:` is a new OPTIONAL array of ADDITIONAL declared keys beside
+`key_reference`, never instead of it. The declared set is `key_reference` plus
+`keys`, so **a record that omits `keys:` declares a set of one and is
+conformant unchanged** — every rule keyed on the set computes what it computed
+before, by construction rather than by a compatibility branch.
+
+Each entry REQUIRES `did`, `key_id`, `key_fingerprint` and `custody`, and admits
+`public_key_multibase`, `signature_algorithm`, `state` and `display_label`.
+`key_fingerprint` is also admitted (OPTIONAL) on the existing `key_reference`;
+requiring it there would invalidate every record in the estate, and the
+asymmetry is stated in the schema rather than left to be discovered.
+
+### 2. Custody is declared PER KEY, and a key may not outrank its wallet
+
+A signature evidences only what the custody of THE KEY THAT SIGNED permits.
+`custody-model-mismatch` keeps its code and changes its comparison BASIS: the
+`keys:` entry's custody when a `keys:` member signed, the wallet's top-level
+block when the primary key signed or when no presenting key was ESTABLISHED
+(and established means a VERIFIED proof named it — an unverified record's
+self-declared key establishes nothing). For every single-key record the basis is
+the same block it compared against before.
+
+`declared-key-raises-authority` (NEW) refuses a declared key whose custody
+ceiling RANKS ABOVE the wallet's own. This is the ruling's "keys never multiply
+authority" limb made a computation. Its purpose is a MONOTONE DECLARATION
+INVARIANT — a reader may take a wallet's declared ceiling as the ceiling of
+everything that record declares, without walking the key list — and NOT, as an
+earlier draft of the packet claimed, closing a rule-(e) bypass: `ceiling_for_`
+`wallet` reads the top-level block only and this release does not move it. The
+alignment pass caught the false rationale; it is corrected in the design record
+rather than paraphrased away.
+
+Note the direction: a key may be WEAKER than its wallet, and usually should be.
+
+### 3. Per-key custody caps what that key's signature evidences
+
+`presenting-key-evidence-cap` (NEW): the grant's authority tier may not exceed
+the ceiling of the presenting key's custody. Rule (e) caps a grant by its
+AUDIENCE WALLET's ceiling at issuance — the only cap issuance can apply, since
+it cannot know which key will sign. This is the companion cap at USE, and both
+are needed: a grant a wallet may HOLD is not a grant every one of its keys may
+EXERCISE.
+
+GUARDED on `outcome == "permitted"`, like every other use-time cap. The exercise
+contract already closes a `custody_ceiling_exceeded` refusal code for exactly
+this event, so a record that TRUTHFULLY documents the refusal must remain
+representable.
+
+### 4. A key is RETIRED, never deleted
+
+A `keys:` entry admits `state` — `active | suspended | revoked`, the same closed
+set as the wallet's own, defaulting to `active`. **A declaration is
+append-only.** Deleting a retired key's declaration would retroactively
+invalidate every already-committed exercise naming it, because this validator
+re-adjudicates every family-kind file in a scanned tree on every run — a
+rotation would rewrite the verdict on history. Four CI-resident seat keys will
+rotate, so this is the operation, not an edge case.
+
+An exercise PERMITTED under a `suspended` or `revoked` declared key is refused
+under the EXISTING `revoked-chain-exercised` code. Revoking a grant, suspending
+a wallet and retiring one of its keys are one rule — revocation is checked at
+use — and a second code for a third subject would be a second name for one rule.
+The wallet's own standing is untouched: retiring one of four seat keys must not
+park the other three.
+
+### 5. The fingerprint is RECOMPUTED where a public half is declared
+
+`declared-key-fingerprint-mismatch` (NEW): where a `keys:` entry declares
+`public_key_multibase`, `key_fingerprint` must recompute from it — base58btc
+decode, ed25519 multicodec prefix plus 32 raw bytes, `"sha256:" +
+sha256(raw).hexdigest()`. That is the ONE spelling the mint record, the
+review-authority register reader and hermes-install all compute, which is what
+makes the value a JOIN TOKEN between governed surfaces rather than decoration.
+Conditional on the optional field, and a malformed public half is refused under
+the same code: an unverifiable fingerprint is not a verified one.
+
+What remains unchecked, and is a named successor on
+`review-authority-register-reader`: that the register's base64url public half and
+a wallet's base58btc one describe the same 32 bytes. Each surface now proves its
+own fingerprint; only the cross-surface identity is deferred.
+
+### Finding codes
+
+FOUR new contract-level ERROR codes — `declared-key-duplicate`,
+`declared-key-raises-authority`, `declared-key-fingerprint-mismatch`,
+`presenting-key-evidence-cap` — and **zero new warnings**, because `report()`
+reds a `--strict` run on warnings and LedgerxFactory runs `--strict`.
+
+Nothing is renamed, repurposed or reclassified. Two existing codes take new
+subjects rather than new names:
+
+* `custody-model-unknown` now also refuses a `keys:` entry's model outside the
+  closed set. The in-tree precedent is exact: that code ALREADY serves two
+  different subjects — a wallet's own declaration and an exercise's
+  `custody_model_in_force` — so a third is the same rule at a new depth, not a
+  repurpose.
+* `revoked-chain-exercised` now also refuses an exercise under a retired key
+  (§4).
+
+One HARNESS-ONLY code is added, `examples-invalid`, which fires solely over the
+PACKAGED CORPUS and can never fire on a consumer's tree: it refuses a packaged
+`key_id` declared by more than one wallet. `key_id` is DID-scoped, so a
+collision makes the index two-owner and every exercise presenting that key is
+refused as AMBIGUOUS — the multi-key fixtures widened the identifier surface, so
+the disjointness is asserted rather than assumed.
+
+### The corpus, and what the previous reader can still be asked
+
+Four positives (a mixed-custody multi-key wallet, two grants, an exercise
+presented by a NON-PRIMARY key) and nine negatives, one per new invariant plus
+one that did not exist before: `custody-model-mismatch` shipped UNPROBED, so
+when this release moved its comparison basis nothing in the corpus would have
+caught the check silently ceasing to fire. `exercise-single-key-custody-not-`
+`the-wallets.yaml` is that regression proof. All nine are NAMED PROBES in the
+validator and in the suite, because every new invariant attributes to an
+EXISTING requirement id and the per-requirement closure therefore cannot notice
+one disappearing.
+
+`tests/nested_repo_prune/test_prune_and_register_note.py`'s identity test
+FLIPPED DIRECTION here, and the flip is recorded because it is a real change of
+claim. Through `wallet-v1.2` every release changed the READER alone, so "run the
+previous reader over this tree and diff the findings" was the no-regression
+claim. This release changes the corpus AND the rules, so the previous reader
+cannot adjudicate this tree at all. The comparison is now THIS reader over the
+PREVIOUS corpus against the PREVIOUS reader over the PREVIOUS corpus, with
+harness codes excluded — which is the claim a consumer actually depends on:
+nothing you already declare changes verdict.
+
+### Version fields, named exactly
+
+Three fields in the changed file are called some spelling of "schema version",
+and there is no `docs/contract-versioning-policy.md` in this repository (the
+reference `contracts/openxwallet/README.md` carries is a dangling carve
+artifact, already logged in `add-composition-drift-cascade`). So the rule
+applied is AGENTS.md rule 6 plus this reading, recorded here as the precedent:
+
+* the schema file's `contract_schema_version: 1 → 2` — the per-file value rule 6
+  names among the five coordinated release values;
+* `contracts/manifest.yaml`'s `openxwallet-record` row `schema_version: 1 → 2`,
+  which MIRRORS it;
+* the schema file's own top-level `schema_version: 1` does NOT move. It is the
+  contract-schema-DOCUMENT meta version, shared by all nine members, and
+  describes the wrapper rather than the contract.
+
+### What a consumer must do
+
+Bump the pin: `commit:`, `contract_bundle_tag:`, and the ONE `files:` row for
+`openxwallet-record`. **Nothing a consumer declares today becomes invalid** —
+the new list is optional, the new required fields are required only inside it, no
+code is renamed, and no warning is added.
+
+### Evidence
+
+21 new tests in `tests/multi_key_wallets/` plus the flipped identity test,
+collected by the REQUIRED `pytest-suite` (90 collected, 90 passed). The
+validator is green plain and `--strict` over this tree, the syntax gate and
+`verify-contract-pin.py` are green, and `openspec validate --all --strict`
+passes. The `wallet-v1.3` tag and its `wallet-v1.3.digests.yaml` over
+`member_class: owned` members are an OPERATOR act that follows the human merge,
+as at `wallet-v1.0` and `wallet-v1.1`.
+
+---
+
 ## wallet-v1.2 — 2026-08-28 (additive minor; validator behaviour only)
 
 **Change class: ADDITIVE MINOR.** No contract content changes. **None of the

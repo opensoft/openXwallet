@@ -1,7 +1,7 @@
 # openxwallet Specification
 
 ## Purpose
-The neutral wallet: a signing key anchored to a decentralized identifier and held by a HOLDER of any subject class the family recognises. This capability owns the holder-agnostic core — the wallet record, the closed custody registry, the attenuated grant, the exercise record, the distinct-holder constraint and the subject attestation — and the rules that make a key a wallet's REFERENCE rather than its content.
+The neutral wallet: a signing key — or a declared SET of signing keys, each with its own custody — anchored to decentralized identifiers and held by a HOLDER of any subject class the family recognises. This capability owns the holder-agnostic core — the wallet record, the closed custody registry, the attenuated grant, the exercise record, the distinct-holder constraint and the subject attestation — and the rules that make a key a wallet's REFERENCE rather than its content.
 ## Requirements
 ### Requirement: A wallet is a key, never a record of a key
 

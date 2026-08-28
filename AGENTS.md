@@ -12,16 +12,15 @@ ownership, validation, versioning, and release constraints.
 <!-- SPECKIT START -->
 ## Active Speckit Feature
 
-- Feature: `014-per-seat-register-entries`
-- Plan: `specs/014-per-seat-register-entries/plan.md`
+- Feature: `015-multi-key-wallets`
+- Plan: `specs/015-multi-key-wallets/plan.md`
 - Governing change: THIS repository's
-  `openspec/changes/add-per-seat-register-entries/` — capability
-  `review-authority-register-reader`
+  `openspec/changes/add-multi-key-wallets/` — capability `openxwallet`
 
-Run follow-on Speckit work from this feature worktree. OpenSpec ratifies and
-Speckit builds. **The governing change is `Status: draft`, held for Brett Heap**,
-and this feature is GATED on its ratification: the branch is authored and green
-so the ratification decides a real thing, and it must not merge first.
+The governing change is RATIFIED (2026-08-28, Brett Heap, operator authority,
+in-session ruling "rule option 1 and build it") and merged, so this feature
+builds against a settled decision. Feature `014-per-seat-register-entries` is
+complete and released as `wallet-v1.2`.
 <!-- SPECKIT END -->
 
 ## What this repository is, in one paragraph
