@@ -1,0 +1,19 @@
+schema: spec-driven
+created: 2026-08-27
+origin:
+  kind: ruling
+  id: openxFactory:change:add-wallet-carried-review-authority:Q8
+  path: openspec/changes/add-wallet-carried-review-authority/rulings-2026-08-26.md
+  reason: >-
+    Ratified openxFactory change `add-wallet-carried-review-authority`
+    declared these two core deltas at §8.1: Q8's limbs (b) and (c) need
+    `openxwallet` / `openxwallet-agent-profile` core deltas, and the
+    ruling places "mechanical cascade enforcement" on them at S5. The
+    §8.1 Addendum moved their HOME: those two capabilities left the
+    openxFactory corpus at `contract-v2.0` (`split-openxwallet-repo`'s
+    two `## REMOVED Requirements` blocks), so "S3 and S5's `openxwallet`
+    / `openxwallet-agent-profile` core deltas are authored in openXwallet
+    from here on." This change is that authoring. It ENCODES a ruling
+    already made by the operator on 2026-08-26; it does not re-open one.
+  approved_by: pending — held for Brett Heap (openxFactory operator authority)
+  approved_on: null
