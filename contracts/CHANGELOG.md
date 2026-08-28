@@ -211,6 +211,10 @@ passes. The `wallet-v1.3` tag and its `wallet-v1.3.digests.yaml` over
 `member_class: owned` members are an OPERATOR act that follows the human merge,
 as at `wallet-v1.0` and `wallet-v1.1`.
 
+**Correction (2026-08-28):** the v1.0/v1.1 inventories were first cut
+2026-08-28 (retroactive backfill; digests recomputed at each tag); the earlier
+sentence described an act that had not happened.
+
 ---
 
 ## wallet-v1.2 — 2026-08-28 (additive minor; validator behaviour only)
@@ -408,6 +412,10 @@ tree and diffing the error and warning sets, in
 openxFactory checkout showing both notes and exit 0. The `wallet-v1.1` tag and
 its `wallet-v1.1.digests.yaml` over `member_class: owned` members are §4.8, an
 operator act that follows the human merge.
+
+**Correction (2026-08-28):** the v1.0/v1.1 inventories were first cut
+2026-08-28 (retroactive backfill; digests recomputed at each tag); the earlier
+sentence described an act that had not happened.
 
 ---
 

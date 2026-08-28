@@ -279,6 +279,10 @@ that follows the human merge, exactly as it was at `wallet-v1.0` and
 `wallet-v1.1`. It is not produced by this change and is listed as remaining work
 rather than silently omitted.
 
+**Correction (2026-08-28):** the v1.0/v1.1 inventories were first cut
+2026-08-28 (retroactive backfill; digests recomputed at each tag); the earlier
+sentence described an act that had not happened.
+
 ## D9 — A declared key is RETIRED, never deleted
 
 A `keys[]` entry admits an OPTIONAL `state` — `active | suspended | revoked`,
@@ -393,6 +397,10 @@ three ALIGNED. Recorded as returned, with the disposition of each.
     applied in the absence of the policy document, and records the digests file
     as the operator act it has been since `wallet-v1.0`. The AGENTS.md Speckit
     block is ticked to feature 015 (tasks 4.5).
+    **Correction (2026-08-28):** "has been since `wallet-v1.0`" was not true —
+    the v1.0/v1.1 inventories were first cut 2026-08-28 (retroactive backfill;
+    digests recomputed at each tag); the earlier sentence described an act
+    that had not happened.
 11. **CONCERN — the fingerprint's declared purpose was entirely deferred.**
     PARTLY FIXED, and the fix is larger than the reviewer proposed: the
     fingerprint is now RECOMPUTED from `public_key_multibase` wherever an entry
