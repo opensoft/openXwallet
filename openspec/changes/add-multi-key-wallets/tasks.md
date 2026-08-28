@@ -165,6 +165,10 @@ Speckit builds these; OpenSpec ratified them. The realization feature is
       bar at that head. Push the tag. `wallet-v1.3.digests.yaml` over
       `member_class: owned` members remains the OPERATOR act it has been since
       `wallet-v1.0` and is not produced here.
+      **Correction (2026-08-28):** "has been since `wallet-v1.0`" was not
+      true — the v1.0/v1.1 inventories were first cut 2026-08-28 (retroactive
+      backfill; digests recomputed at each tag); the earlier sentence
+      described an act that had not happened.
 
 ## 5. Consumer completion — openxFactory (tracked here, executed there)
 
