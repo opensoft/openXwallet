@@ -10,17 +10,18 @@ Repository documents remain authoritative for openXwallet product facts, contrac
 ownership, validation, versioning, and release constraints.
 
 <!-- SPECKIT START -->
-## Active Speckit Feature
+## Speckit Baseline
 
-- Feature: `015-multi-key-wallets`
+- Active feature: none
+- Latest completed feature: `015-multi-key-wallets`
 - Plan: `specs/015-multi-key-wallets/plan.md`
 - Governing change: THIS repository's
   `openspec/changes/add-multi-key-wallets/` — capability `openxwallet`
 
-The governing change is RATIFIED (2026-08-28, Brett Heap, operator authority,
-in-session ruling "rule option 1 and build it") and merged, so this feature
-builds against a settled decision. Feature `014-per-seat-register-entries` is
-complete and released as `wallet-v1.2`.
+The governing change was RATIFIED (2026-08-28, Brett Heap, operator authority,
+in-session ruling "rule option 1 and build it") and merged. Feature
+`015-multi-key-wallets` is complete and released as `wallet-v1.3`; feature
+`014-per-seat-register-entries` and `wallet-v1.2` are the preceding baseline.
 <!-- SPECKIT END -->
 
 ## What this repository is, in one paragraph
