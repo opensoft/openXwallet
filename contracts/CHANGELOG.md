@@ -19,6 +19,94 @@ bundle.
 
 ---
 
+## wallet-v1.4 — 2026-09-02 (reader correction; NO contract content moves)
+
+**Change class: NONE**, in the sense wallet-v1.0 used it: this release changes
+no contract content whatsoever. **None of the eight digested artifacts is
+touched**, every per-file `contract_schema_version` is unchanged, and the only
+line that moves in [`manifest.yaml`](./manifest.yaml) is
+`contract_bundle_version`. The proof is mechanical and was run before release —
+`contracts/releases/wallet-v1.4.digests.yaml` was CUT BY RECOMPUTATION over
+this tree (the procedure of the v1.2/v1.3 cut: manifest-owned rows, sha256 over
+raw bytes, bytewise path order, every value cross-checked against the manifest's
+recorded digest) and differs from `wallet-v1.3.digests.yaml` in exactly ONE
+line, `bundle_tag`. A consumer's pin bump to this release therefore moves
+`commit:` and `contract_bundle_tag:` and NOTHING ELSE.
+`scripts/validate-openxwallet.py` is in openxFactory's
+`contracts/openxwallet-pin.yaml` `pinned_by_commit_only:` list precisely so a
+reader change is a COMMIT move and never a digest move.
+
+This is a plain fix release with **no governing OpenSpec change**, by the
+ratifying human's in-session ruling of 2026-09-02 — **"option 1, I tag and
+approve myself"**. A reader that refuses a correct tree is a defect, not a
+contract decision: no requirement moves, no finding code is added or removed,
+and the ratified obligation is enforced for the first time as its own docstring
+and its own message already stated it.
+
+### The defect: a REVOKED review-class grant was held to the row obligation
+
+`check_register`'s docstring and the text of `register-no-active-row` both say
+the obligation falls on an **active** review-class grant. The closing loop never
+read the grant's `state`. It filtered on `REVIEW_ACT_TOKEN in scope.acts` and
+nothing else, so a **correctly revoked** review-class grant was refused for
+having no backing active row — and `REGISTER_MVP_SINGLE_ROW` caps the register
+at exactly ONE authority row, so the reader was demanding a row it also forbids.
+
+The consequence is larger than one false finding: **no consuming tree could
+represent a re-issuance at all.** Revocation is terminal under the ratified
+drift-cascade rule — a revoked grant never returns to the active state and
+authority resumes only as a NEW grant — so the runbook's §5.1 act necessarily
+leaves a revoked predecessor beside its active successor in the scanned tree.
+Every repository that performed it went red, with no edit to its own tree that
+could have made it green.
+
+The absent-register branch of the same function carried the same gap, and is
+corrected with it: the two branches state one obligation, and a consumer's
+finding must not depend on whether it has cold-started its register yet.
+
+Found by openxFactory's **S5 register act** (2026-09-02): `grant-mrc-0001`
+revoked for declared-composition drift, `grant-mrc-0002` issued against the
+changed composition, `row-mrc-0001` repointed — openxFactory PR #583, record
+`openspec/changes/add-wallet-carried-review-authority/walk-2026-09-02-register-act.md`.
+
+### The fix, and why it is `== "revoked"` and not `!= "active"`
+
+Both spots skip a grant whose stored `state` is `revoked`. The broader
+`!= "active"` was considered and refused: it would also exempt a grant merely
+STAMPED `expired`, and this reader has no inverse check for
+stored-`expired`-with-a-future `expires_at`. N8 is that stored state is checked
+AGAINST computed time and never trusted, so a state the reader cannot contradict
+must not be allowed to switch an obligation off. `revoked` is different in kind
+— it is the terminal fact the drift-cascade rule is about, it is the exact state
+§5.1 re-issuance produces, and it is backstopped by `revocation-unrecorded`,
+which refuses a grant stamped `revoked` that carries no `revocation` block
+recording when and why.
+
+**No protection is weakened**, because this loop is only the grant → row
+direction. The row → grant direction is untouched and still appends the grant's
+state to its mismatch list, so a row pointing AT a revoked grant is still
+refused by `register-grant-mismatch`; and `_revoked_ancestor` still refuses
+every exercise up a revoked chain. What is exempted is exactly a revoked grant
+that NO row names — a historical record, which is what a superseded grant is
+supposed to be.
+
+### What proves it
+
+`tests/register_reissuance/test_revoked_grant_exemption.py` (six tests, built on
+the S5 act's own shape) and three new packaged self-test probes —
+`self-test/register-revoked-grant-exempt`,
+`self-test/register-revoked-grant-still-mismatches`, and the absent-register
+sibling — so the reader self-tests this fix inside the REQUIRED check that every
+consumer runs, not only in this repository's suite. Five of the six tests and
+two of the three probes were shown RED against the unfixed reader first.
+
+The `wallet-v1.4` tag is an OPERATOR act that follows the human merge, as at
+every release since `wallet-v1.0`. The digest inventory is cut HERE rather than
+retroactively — which is possible only because no digest moves, and which
+closes the lag the 2026-08-28 backfill correction below records.
+
+---
+
 ## wallet-v1.3 — 2026-08-28 (additive minor; ONE digest MOVES)
 
 **Change class: ADDITIVE MINOR, and the first wallet release since the carve in
