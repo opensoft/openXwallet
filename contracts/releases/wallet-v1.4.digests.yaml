@@ -1,0 +1,64 @@
+schema_version: 1
+kind: openxwallet-contract-release-digest-inventory
+bundle_tag: wallet-v1.4
+repository: opensoft/openXwallet
+digest_algorithm: sha256
+digest_source: raw_git_blob
+path_order: bytewise_utf8
+entries:
+- artifact_id: openxwallet-agent-composition
+  path: contracts/openxwallet-agent-profile/openxwallet-agent-composition.schema.yaml
+  type: schema
+  git_mode: '100644'
+  schema_id: openxwallet-agent-composition
+  schema_version: 1
+  digest: sha256:aed3978e8ae952f3ff5b3de1f672bba5da350d5aaeb442feafaa870b4de4be91
+- artifact_id: openxwallet-custody-registry-schema
+  path: contracts/openxwallet/openxwallet-custody-registry.schema.yaml
+  type: schema
+  git_mode: '100644'
+  schema_id: openxwallet-custody-registry-schema
+  schema_version: 1
+  digest: sha256:df72638497a7f90c2a4dff47c429cb794bc4b6e270ce2dd2b17116478ae3b51a
+- artifact_id: openxwallet-custody-registry
+  path: contracts/openxwallet/openxwallet-custody.registry.yaml
+  type: registry
+  git_mode: '100644'
+  schema_id: openxwallet-custody-registry
+  schema_version: 1
+  digest: sha256:94d631d6ee76dab015628a1856afd82582b98d6a3733622c9afe8b13b5278539
+- artifact_id: openxwallet-distinct-holder-constraint
+  path: contracts/openxwallet/openxwallet-distinct-holder-constraint.schema.yaml
+  type: schema
+  git_mode: '100644'
+  schema_id: openxwallet-distinct-holder-constraint
+  schema_version: 1
+  digest: sha256:c2a6d2fd23fb3743fdaf0e165dabc4cb1dff24e52a8262a38c86ed1482374b25
+- artifact_id: openxwallet-grant-exercise
+  path: contracts/openxwallet/openxwallet-grant-exercise.schema.yaml
+  type: schema
+  git_mode: '100644'
+  schema_id: openxwallet-grant-exercise
+  schema_version: 1
+  digest: sha256:f16ad31246186cec36e142ae39bd831d98fbc5c0afd48685057bc39e113c8858
+- artifact_id: openxwallet-grant
+  path: contracts/openxwallet/openxwallet-grant.schema.yaml
+  type: schema
+  git_mode: '100644'
+  schema_id: openxwallet-grant
+  schema_version: 1
+  digest: sha256:fde433c5821e2e6f62926a72c58a67a784961d2e9e27e9f2b3520fcc8e738e88
+- artifact_id: openxwallet-record
+  path: contracts/openxwallet/openxwallet-record.schema.yaml
+  type: schema
+  git_mode: '100644'
+  schema_id: openxwallet-record
+  schema_version: 2
+  digest: sha256:20ba39c07564c93b8ffe47382126677a165771244d28fb0c4976ab950173c40a
+- artifact_id: openxwallet-subject-attestation
+  path: contracts/openxwallet/openxwallet-subject-attestation.schema.yaml
+  type: schema
+  git_mode: '100644'
+  schema_id: openxwallet-subject-attestation
+  schema_version: 1
+  digest: sha256:d29eca519462aff7871de3786f19c820e9fc3b95115ce30e57d1f1cc2bc0c0b2
