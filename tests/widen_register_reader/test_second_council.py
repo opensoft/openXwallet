@@ -26,9 +26,9 @@ Representing a second council REQUIRES a second authority row — `_check_seat_k
 refuses an entry whose `council_ref` is not the authorizing row's `holder_ref` —
 so any fixture that exercises the seat-name defect also trips the row-count
 defect. They are separated here by DIFFERENCING two fixtures that differ in one
-respect: `TWO_BODIES_NO_NAME_COLLISION` (the second body's one non-colliding real
-seat) refuses with the row-count code ALONE; `TWO_BODIES_FULL_ACT` (all four of
-its real seats) adds exactly three seat-duplicate refusals and nothing else.
+respect: with the second body's ONE non-colliding real seat (`GRC_DISJOINT`) the
+reader refuses with the row-count code ALONE; with all FOUR of its real seats
+(`GRC_SEATS`) it adds exactly three seat-duplicate refusals and nothing else.
 
 Discipline copied from `tests/per_seat_register_entries/test_top_level_and_seat_keys.py`:
 drive the script as a SUBPROCESS so the exit codes the workflows act on are the
@@ -297,6 +297,25 @@ def _register_lines(out: str, code: str) -> list[str]:
     return [ln for ln in out.splitlines() if ln.startswith(f"ERROR [{code}]")]
 
 
+def _rows_read(out: str) -> str:
+    """The `intake register read:` note's row count.
+
+    A separate assertion for "the note is there" and for "it says N", because a
+    missing note and a wrong count are different defects and a composite
+    assertion would report them as one.
+    """
+    note = ROWS_NOTE.search(out)
+    assert note, out
+    return note.group(2)
+
+
+def _seats_adjudicated(out: str) -> tuple[str, str]:
+    """The seat note's (ADJUDICATED, recorded) pair, note-presence asserted first."""
+    note = SEAT_NOTE.search(out)
+    assert note, out
+    return note.group(1), note.group(2)
+
+
 # ---------------------------- the fixture itself ----------------------------
 
 def test_the_probe_keys_recompute():
@@ -358,11 +377,8 @@ def test_the_live_one_row_register_stays_clean(tmp_path):
     assert "WARN" not in strict.stdout, strict.stdout
     assert not _register_codes(plain.stdout), plain.stdout
 
-    rows = ROWS_NOTE.search(plain.stdout)
-    assert rows and rows.group(2) == "1", plain.stdout
-    seats = SEAT_NOTE.search(plain.stdout)
-    assert seats and (seats.group(1), seats.group(2)) == ("4", "4"), \
-        plain.stdout
+    assert _rows_read(plain.stdout) == "1", plain.stdout
+    assert _seats_adjudicated(plain.stdout) == ("4", "4"), plain.stdout
 
 
 # ------------- defect 1: the row-count cap, isolated by differencing ---------
@@ -386,8 +402,7 @@ def test_a_second_commissioned_body_is_refused_today(tmp_path):
     assert "2 AUTHORITY rows" in got.stdout, got.stdout
     # The second body's seat IS adjudicated: the refusal is about the file's
     # breadth, not about that entry.
-    seats = SEAT_NOTE.search(got.stdout)
-    assert seats and (seats.group(1), seats.group(2)) == ("5", "5"), got.stdout
+    assert _seats_adjudicated(got.stdout) == ("5", "5"), got.stdout
 
 
 @pytest.mark.xfail(strict=True, reason=(
@@ -401,8 +416,7 @@ def test_a_second_commissioned_body_resolving_end_to_end_is_admitted(tmp_path):
     got = _run(root)
     assert got.returncode == 0, got.stdout
     assert not _register_codes(got.stdout), got.stdout
-    rows = ROWS_NOTE.search(got.stdout)
-    assert rows and rows.group(2) == "2", got.stdout
+    assert _rows_read(got.stdout) == "2", got.stdout
 
 
 # --------- defect 2: global seat-name uniqueness, isolated by differencing ---
@@ -439,8 +453,7 @@ def test_two_councils_seating_one_role_name_are_refused_today(tmp_path):
 
     # openxFactory task 2.8 moves its consumer gate's literal assertion to
     # `8 of 8`. Today the reader stands behind five of the eight recorded keys.
-    seats = SEAT_NOTE.search(got.stdout)
-    assert seats and (seats.group(1), seats.group(2)) == ("5", "8"), got.stdout
+    assert _seats_adjudicated(got.stdout) == ("5", "8"), got.stdout
 
 
 @pytest.mark.xfail(strict=True, reason=(
@@ -462,10 +475,8 @@ def test_two_councils_may_seat_the_same_role_name(tmp_path):
     got = _run(root)
     assert got.returncode == 0, got.stdout
     assert not _register_codes(got.stdout), got.stdout
-    rows = ROWS_NOTE.search(got.stdout)
-    assert rows and rows.group(2) == "2", got.stdout
-    seats = SEAT_NOTE.search(got.stdout)
-    assert seats and (seats.group(1), seats.group(2)) == ("8", "8"), got.stdout
+    assert _rows_read(got.stdout) == "2", got.stdout
+    assert _seats_adjudicated(got.stdout) == ("8", "8"), got.stdout
 
 
 # ---------- what the widening must NOT relax: the refusals that stay ---------
