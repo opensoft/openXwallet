@@ -187,16 +187,52 @@ council whose own commission it records have been eligible to try.
 
 ## 5. Downstream, operator (hermes-install and the runtime)
 
-- [ ] 5.1 **[OPERATOR]** Re-derive the register projection from the register that
+- [x] 5.1 **[OPERATOR]** Re-derive the register projection from the register that
       now carries the keys, and establish it. `design.md` **D11** determines
       that this is CONTENT ONLY: no hermes-install code change and no schema
       change — its projection schema and reader at `cba1a2b` already require and
       recompute per-seat `key_id` / `key_fingerprint` / `public_key`.
+      **DONE, proven by a committed artifact.** hermes-install feature 019
+      (`register-projection-refresher`), PR #63 merged `6b68c93`, deployed
+      2026-08-30 (`docs/evidence/register-projection-refresher-deploy-2026-08-30.md`):
+      the migration job `register-projection-migration-202608301523` re-derived
+      the projection from openxFactory revision
+      `698073f7c06836e860585ac816d98c65de050f9a` — the revision carrying this
+      change's `seat_keys` block (landed openxFactory PR #475, 2026-08-28) —
+      and recorded `seat_count 4`, `seats_validated` naming all four seats
+      (`lead-quality`, `lead-security`, `lead-integration`,
+      `company-policy-lead`) under `merge_readiness_council`, and
+      `projection_digest sha256:9fe17acd7c5b8175ba973689bb3be8019e6ce3dfca74e5b92eedc0cbf161dc3e`.
+      The verification step in the same record states plainly: "All four seats
+      resolve at now." The projection is not a one-time act: CronJob
+      `hermes-register-projection-refresher` (schedule `0 */2 * * *`) has
+      re-established it every two hours since, so it continues to be
+      re-derived from the register's live content, including its
+      2026-09-02 `row-mrc-0001` repoint (`grant-mrc-0002`).
 - [ ] 5.2 **[OPERATOR]** Confirm `review_authority.root_key_mismatch` no longer
       fires for a seat whose key the register now records — the refusal this arc
       is clearing. Steps 4 and 5 of the mint record's successor list (the
       per-target credential and machinery map; a hermes-install image carrying
       the verifying half) remain that record's, not this change's.
+      **NOT PROVABLE FROM COMMITTED ARTIFACTS as of 2026-09-06 — left unticked
+      on purpose.** hermes-install's own evidence trail says this directly:
+      `docs/evidence/wallet-exercise-deploy-2026-08-29.md` records verification
+      items "3–7. `root_key_mismatch` cessation, preflight notice, signed seat
+      returns, S3 exercise rows, envelope stamp — NOT OBSERVABLE YET:
+      codexFactory's `council-deliberation-worker` has failed at workflow level
+      … To be observed at the first convening after that fix"; the 2026-08-30
+      evidence doc repeats the same items as still blocked; and
+      `docs/evidence/verified-subject-pin-deploy-2026-09-03.md` (feature 021,
+      2026-09-03) still reads "Not yet observable: a stamped convening — needs
+      the first commissioned convening after this deploy." No hermes-install
+      commit after 2026-09-03 (last is `9ad76dc`, 2026-09-05, a QA resource
+      tune) adds a later observation. The walk this row needs is
+      `docs/runbooks/wallet-exercise-deploy-window.md` VERIFICATION step 3 —
+      owed to the operator, blocked on a real convening running end to end
+      (codexFactory `council-deliberation-worker`). This does not gate this
+      change's archive: the code_surface this change declares is openXwallet's
+      `validate-openxwallet.py` reader alone, and §5 is downstream-operator
+      bookkeeping outside that surface, tracked here so it is not lost.
 
 ## 6. Upstream bookkeeping
 
@@ -231,11 +267,67 @@ re-run of the full gate bar. §5.1 and §5.2 keep their `[OPERATOR]` marks — t
 Hermes projection re-derivation is content-only (`design.md` D11) but it is the
 operator's act, and until it happens `review_authority.root_key_mismatch` has
 not yet been observed to stop firing.
+
+**At archive time (2026-09-06, lane `hermes-wallet-exercise`): 6.3 stays
+unticked and OWED, on purpose — it is not a record inside this repository.**
+It requires an edit to codexFactory's
+`hermes/domain/review-councils/records/2026-08-28-seat-signing-keys-minted.md`,
+a third repository this archive does not touch. Recorded here as an obligation
+with a named owner rather than folded into this PR: the next session or lane
+that edits that record (or Brett Heap directly) should annotate its numbered
+successor list — item 2 ("the register successor") realized by this change
+(`wallet-v1.2`, openxFactory PR #475), item 3 (the client-tree projection)
+unblocked and an operator act (§5.1/§5.2 above). This is a named-successor
+bookkeeping row, not part of the `release-realization` code_surface this
+proposal declares (openXwallet's reader alone), so it does not gate this
+archive.
 - [ ] 6.3 Record against codexFactory's mint record that item 2 of its numbered
       successor list ("the register successor") is realized, and that item 3
       (the client-tree projection) is unblocked and is an operator act.
-- [ ] 6.4 Record the realization evidence on this change before archiving —
+      **OWED — cross-repository, not done here; see note above.**
+- [x] 6.4 Record the realization evidence on this change before archiving —
       merged, green — and re-run the full gate bar at archive.
+
+### §6.4 — realization evidence and archive-time gate bar (2026-09-06)
+
+**Realization evidence for the code_surface (`scripts/validate-openxwallet.py`
+`check_register` plus self-test probes, tests, and release bookkeeping),
+merged and green, per the proposal's `target_release`:**
+
+- Tag `wallet-v1.2` → commit `93b0a47fe9086e65f71ef2916f60a82b2ac4cdca`
+  (merge of PR #5, `014-per-seat-register-entries`, 2026-08-28).
+- `contracts/CHANGELOG.md` carries the `## wallet-v1.2 — 2026-08-28 (additive
+  minor; validator behaviour only)` entry naming this change by name and
+  confirming none of the eight digested artifacts moved.
+- `contracts/manifest.yaml` reads `contract_bundle_version: wallet-v1.2` at
+  that sha (§3.9 realization evidence, above).
+- The consumer-side pin at openxFactory `contracts/openxwallet-pin.yaml`
+  cites `contract_bundle_tag: wallet-v1.4` at `commit:
+  b7b0fbb3e6d614f60a24737c247e45dada9408aa` (read at `origin/main`,
+  2026-09-06) — two additive releases past `wallet-v1.2`, so the consumer has
+  long since moved onto and past this change's release; it was never rolled
+  back.
+- Validator self-test lines at this archive's head (2026-09-06, gate bar
+  re-run below) confirm the corpus still adjudicates the seat-key surface:
+  `wallet 'wal-agent-council-0011': 4 declared key(s) adjudicated`; corpus
+  `21 positive example(s), 45 negative confirmation(s) across 13/13
+  requirements`.
+
+**The full gate bar, re-run at archive (2026-09-06, HEAD of
+`archive/add-per-seat-register-entries` off `origin/main`):**
+
+- `python3 scripts/verify-contract-pin.py` — OK, 1 vendored file matches
+  `contract_pin.yaml` at `openxFactory@30565e48ffe3` (bundle `contract-v1.44`).
+- `python3 scripts/wallet-yaml-syntax-gate.py .` — exit 0.
+- `python3 scripts/validate-openxwallet.py .` — 0 errors, 0 warnings.
+- `python3 scripts/validate-openxwallet.py . --strict` — 0 errors, 0
+  warnings; corpus 21 positive examples, 45 negative confirmations across
+  13/13 requirements.
+- `python3 -m pytest tests/ -q` — **96 passed**.
+- `OPENSPEC_TELEMETRY=0 openspec validate --all --strict` — **5 passed, 0
+  failed** (the three active changes — `add-composition-drift-cascade`,
+  `add-multi-key-wallets`, `add-per-seat-register-entries` — plus the two
+  promoted specs `openxwallet` and `openxwallet-agent-profile`).
 
 ## 7. Named successors, with triggers
 
