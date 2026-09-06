@@ -27,28 +27,35 @@ named in §5. Each row below cites the openxFactory row it discharges.
       re-measured here at `b7b0fbb3` / `wallet-v1.4`, which is byte-identical to
       this repository's `main` for `scripts/validate-openxwallet.py`
       (`design.md` D0).
-- [ ] 1.2 **[OPERATOR] [GOVERNANCE]** Ratify or return this proposal. **Nothing
+- [x] 1.2 **[OPERATOR] [GOVERNANCE]** Ratify or return this proposal. **Nothing
       in §3 or §4 is legal until this is ticked**, and ratification alone
       realizes nothing: no reader line moves, no bundle is cut, no pin advances.
       §2 is deliberately NOT gated on it — authoring a failing test that
       measures the reader as it stands prejudges nothing.
-- [ ] 1.3 **[OPERATOR] [GOVERNANCE]** Rule **Q-WRR-1** — is
+      **RATIFIED** — Brett Heap, operator authority, 2026-09-06T23:25:11Z,
+      verbatim: "ratify 16 and archive add-per-seat-register-entries" (head
+      `827c4b6c`). See `proposal.md` "## Ratification record, 2026-09-06".
+- [x] 1.3 **[OPERATOR] [GOVERNANCE]** Rule **Q-WRR-1** — is
       `register-minimal-shape-exceeded` RETIRED or RE-SCOPED? Recommendation on
       record: retire it by name, with a removed-refusal note in
       `contracts/CHANGELOG.md` at the cut. Ground measured (`design.md` D5): the
       only citations in the workspace are this repository's validator and one
       openxFactory Speckit document; openxFactory's consumer gate matches
       `register-*` by wildcard.
-- [ ] 1.4 **[OPERATOR] [GOVERNANCE]** Rule **Q-WRR-2** — does a widened reader
+      **RULED — RETIRE by name**, as recommended.
+- [x] 1.4 **[OPERATOR] [GOVERNANCE]** Rule **Q-WRR-2** — does a widened reader
       need a positive numeric bound at all? Recommendation on record: no bound,
       stated in the spec text as a decision rather than left as an omission.
-- [ ] 1.5 **[OPERATOR] [GOVERNANCE]** Rule **Q-WRR-3** — does
+      **RULED — NO numeric bound; three invariants replace the cap**, as
+      recommended.
+- [x] 1.5 **[OPERATOR] [GOVERNANCE]** Rule **Q-WRR-3** — does
       `add-per-seat-register-entries` task 7.1 (the absent-seat-surface NOTE
       becoming a REFUSAL, trigger fired 2026-08-28) ride this release?
       Recommendation on record: NO — it would break the pin-neutrality this
       change owes openxFactory task 2.9, and it deserves its own release after
       the register act has settled.
-- [ ] 1.6 **[OPERATOR] [GOVERNANCE]** Rule **Q-WRR-4** — does openXwallet adopt
+      **RULED — the absence flip does NOT ride this release**, as recommended.
+- [x] 1.6 **[OPERATOR] [GOVERNANCE]** Rule **Q-WRR-4** — does openXwallet adopt
       a sibling-delta convergence device? Recommendation on record: the minimum
       only (a declared `archive_after:`, which this change uses); a corpus
       ledger waits for a fourth collision. The two PRE-EXISTING colliding
@@ -56,11 +63,13 @@ named in §5. Each row below cites the openxFactory row it discharges.
       chain` (`add-composition-drift-cascade` vs `add-multi-key-wallets`, not
       byte-identical) are named in `proposal.md` and are NOT fixed by this
       change.
-- [ ] 1.7 **[OPERATOR] [GOVERNANCE]** Rule **Q-WRR-5** — keep this change's id
+      **RULED — the minimum convergence device only**, as recommended.
+- [x] 1.7 **[OPERATOR] [GOVERNANCE]** Rule **Q-WRR-5** — keep this change's id
       or rename it. Recommendation on record: keep it, because four committed
       citations on openxFactory `main` resolve to it and one of them is read by
       a test suite; a rename for accuracy is a deliberate openxFactory
       bookkeeping act, not a side effect.
+      **RULED — keep the prescribed id**, as recommended.
 - [ ] 1.8 On ratification, set `proposal.md`'s `Status:` to `ratified`, add the
       `Ratified:` line with the word verbatim, and record the five rulings
       beside the questions they answer.

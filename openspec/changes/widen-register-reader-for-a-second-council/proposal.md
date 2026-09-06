@@ -1,9 +1,18 @@
 ---
 code_surface: openXwallet `scripts/validate-openxwallet.py` — the register reader (`check_register`'s row-count refusal and `_check_seat_keys`' duplicate table), its own S4 self-test block, `tests/`, `contracts/CHANGELOG.md` and the bookkeeping of a release. NO `contracts/` byte moves and no register schema is authored: the register is deliberately KINDLESS (openxFactory design D11) and this reader IS its shape. Per `release-realization` this change archives only on merged, green realization evidence for that surface — which for this change explicitly includes the openxFactory pin advance it exists to unblock, because a reader release no consumer pins has widened nothing.
 target_release: unallocated at proposal. The realization is expected to be an ADDITIVE MINOR (`wallet-v1.5`) whose eight contract digests are UNCHANGED — the same release class as `wallet-v1.4`, where the only line moving in `contracts/manifest.yaml` is `contract_bundle_version` and a consumer's pin bump moves `commit:` and `contract_bundle_tag:` and nothing else. Per AGENTS.md rule 6 the five coordinated values are allocated at realization and nothing is reserved here.
-Status: draft
+Status: ratified
 sequenced_before: [openxFactory:register-gate-rules-council-seats]
 archive_after: [add-per-seat-register-entries]
+Ratified: 2026-09-06T23:25:11Z by Brett Heap (operator authority) — in-session
+  ruling, verbatim: "ratify 16 and archive add-per-seat-register-entries" (the
+  first clause ratifies this change); head `827c4b6c`. Ruling:
+  https://github.com/opensoft/openXwallet/pull/16#issuecomment-5562966629
+  Q-WRR-1: RETIRE `register-minimal-shape-exceeded` by name.
+  Q-WRR-2: NO numeric bound — three invariants replace the cap.
+  Q-WRR-3: the absence flip does NOT ride this release.
+  Q-WRR-4: the minimum convergence device only, as proposed.
+  Q-WRR-5: keep the prescribed id.
 ---
 
 # Proposal: widen-register-reader-for-a-second-council
@@ -332,3 +341,63 @@ that is sharper here:
    the circularity the whole arc exists to break.
 
 What replaces it is the measurement, the red tests, and Brett's ratification.
+
+## Status
+
+`Status: ratified`. **Ratified by Brett Heap, 2026-09-06** — see "## Ratification
+record, 2026-09-06" below. Until this ratification nothing in `tasks.md` §3 or
+§4 was legal (row 1.2); that gate is now satisfied, and the realization slice —
+rows 2.3, 2.4, 2.5 and 2.6 — is authorized by this ratification and performs
+none of it.
+
+## Ratification record, 2026-09-06
+
+Ratified as proposed. Brett Heap, operator authority, ruled in-session at
+2026-09-06T23:25:11Z, verbatim: **"ratify 16 and archive
+add-per-seat-register-entries"** — the first clause ratifies this change on
+PR #16 at head `827c4b6c`; the second orders the archive of its predecessor,
+which this change's `archive_after:` and `tasks.md` row 6.1 already require to
+archive first. Full ruling:
+https://github.com/opensoft/openXwallet/pull/16#issuecomment-5562966629
+
+Each open question above carried one recommendation in `## Open questions`;
+each is ruled exactly as recommended, and none is decided differently from
+what was proposed:
+
+- **Q-WRR-1 RULED — RETIRE `register-minimal-shape-exceeded` by name**, never
+  re-scoped. A pinned finding code that changes meaning under a stable string
+  is a worse compatibility break than one that disappears; the code's only
+  citations are this reader and one openxFactory Speckit document, and
+  openxFactory's consumer gate matches `register-*` by wildcard.
+- **Q-WRR-2 RULED — NO numeric bound replaces the cap.** Breadth is bounded by
+  the three invariants of openxFactory's Q-GRC-5 ruling: every authority row
+  resolves end to end; every seat entry attaches to a row that commissions its
+  body; (`council_id`, `seat_id`) is unique. Stated as a decision, not left as
+  an omission.
+- **Q-WRR-3 RULED — the absence flip does NOT ride this release.** Landing it
+  in the same release would break the pin-neutrality openxFactory task 2.9
+  requires; it deserves its own release after the register act has landed and
+  settled.
+- **Q-WRR-4 RULED — the minimum convergence device only**, as proposed: the
+  declared `archive_after:` in front-matter. A corpus ledger over
+  `sequenced_after:` waits for a fourth collision; the two pre-existing
+  non-converged siblings (`add-composition-drift-cascade` vs
+  `add-multi-key-wallets` on "Revocation propagates through the chain") are
+  named in this proposal's overlap section and are NOT fixed by this
+  ratification.
+- **Q-WRR-5 RULED — keep the prescribed id**
+  `widen-register-reader-for-a-second-council`. Four committed citations on
+  openxFactory `main` resolve to it, one of them read by a 162-test suite; a
+  rename for accuracy remains a deliberate openxFactory bookkeeping act, not a
+  side effect of this ratification.
+
+**This ratification authorizes the realization slice and performs none of
+it.** `tasks.md` rows 2.3, 2.4 (the reader fixes), 2.5 (the self-test
+extension) and 2.6 (the bundle tag and manifest digests) are now legal to
+build; nothing in `contracts/` moves and no register schema is authored by
+this act. The `[OPERATOR]` rows in §4/§5 — the release cut (4.1), the
+openxFactory pin advance and gate literals (5.1, 5.2) — keep their marks.
+Ordering stands: `add-per-seat-register-entries` archives FIRST (Brett's
+second clause; its own PR opening separately), and this change's own archive
+gate (`tasks.md` §6) remains merged + green realization evidence AND that
+prior archive — neither of which this ratification performs.
