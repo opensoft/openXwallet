@@ -1,0 +1,26 @@
+schema: spec-driven
+created: 2026-09-06
+origin:
+  kind: ruling
+  id: openxFactory:change:register-gate-rules-council-seats:Q-GRC-5
+  path: openspec/changes/register-gate-rules-council-seats/review/ratification-2026-09-06.md
+  repo: opensoft/openxFactory
+  commit: a59f2ae5
+  reason: >-
+    openxFactory's `register-gate-rules-council-seats` was RATIFIED
+    2026-09-06T14:13:46Z (Brett Heap, verbatim "lets take them in your
+    recommended order all approved") at head `169f84ef` and merged as
+    PR #717 -> `a59f2ae5`. Its tasks section 2 rows 2.1-2.6 are tagged
+    `[openXwallet]`; row 2.1 opens THIS change by the id it declares in
+    that proposal's `sequenced_after:` front-matter. Its Q-GRC-5 is
+    RULED: "replace the scalar cap with the invariants it stood in for:
+    every row resolves end to end; every seat entry attaches to a row
+    that commissions its body; (council_id, seat_id) is unique.
+    openXwallet decides in its own change." This change is that
+    decision. It ENCODES a ruling already given on the openxFactory
+    side and does not re-open one; what it decides for itself is HOW
+    the invariants are enforced in this repository's reader, which
+    finding code retires, and what the reader's own self-test must
+    carry.
+  approved_by: pending — held for Brett Heap (openXwallet operator authority)
+  approved_on: null
