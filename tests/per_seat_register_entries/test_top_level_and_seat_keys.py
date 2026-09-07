@@ -437,18 +437,44 @@ def test_two_spellings_naming_different_bodies_are_refused(tmp_path):
     assert _register_codes(got.stdout) == {"register-seat-council-spelling"}
 
 
-# ---------------------------- the cap, re-grounded ---------------------------
+# ------------------- the cap, WITHDRAWN and replaced (v1.5) ------------------
 
-def test_a_second_authority_row_is_still_refused(tmp_path):
-    """The cap is RE-GROUNDED, not raised. Four keys under one row add no
-    holder, no target repository and no act; a second ROW does."""
+def test_a_second_authority_row_is_not_refused_on_count(tmp_path):
+    """AMENDED at wallet-v1.5, and the amendment is why this test still exists.
+
+    It read `test_a_second_authority_row_is_still_refused` and asserted
+    `register-minimal-shape-exceeded`. The change
+    `widen-register-reader-for-a-second-council` (ratified 2026-09-06) amends
+    this suite's own requirement — the count bound is WITHDRAWN and replaced by
+    three invariants, and the refusal is RETIRED BY NAME (Q-WRR-1) — because
+    openxFactory's ratified register act commissions a SECOND body that cannot
+    descend from the first row. Deleting the test would leave the widened reader
+    with one assertion fewer than the narrow one had, so it is converted: the
+    withdrawn half is asserted ABSENT, and the half that replaced it is asserted
+    PRESENT.
+
+    The first fixture's second row commissions the SAME holder as the first.
+    That shape has never been adjudicated by this reader and this change adds no
+    code for it, so the assertion here is narrowly about the withdrawn COUNT
+    refusal; `tests/widen_register_reader/` carries the two-BODY probes.
+    """
     root = _tree(tmp_path / "consumer",
                  rows=[ROW, dict(ROW, row_id="row-mrc-probe-2")],
                  top={"seat_keys": _seats()})
     got = _run(root)
-    assert got.returncode == 1
-    assert "register-minimal-shape-exceeded" in _register_codes(got.stdout)
-    assert "AUTHORITY rows" in got.stdout
+    assert "register-minimal-shape-exceeded" not in got.stdout, got.stdout
+    assert "AUTHORITY rows" not in got.stdout, got.stdout
+
+    # ...and what stands in its place: a second row that does NOT resolve end to
+    # end is still refused, on RESOLUTION rather than on breadth. This is the
+    # probe that makes withdrawing the count safe.
+    unresolved = dict(ROW, row_id="row-mrc-probe-2",
+                      holder_ref="agent:a-body-this-grant-does-not-name")
+    root = _tree(tmp_path / "unresolved", rows=[ROW, unresolved],
+                 top={"seat_keys": _seats()})
+    got = _run(root)
+    assert got.returncode == 1, got.stdout
+    assert "register-grant-mismatch" in _register_codes(got.stdout), got.stdout
 
 
 def test_the_consumer_gate_conjunction_still_holds(tmp_path):

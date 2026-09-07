@@ -84,9 +84,27 @@ hyphens (`register-seat-council-spelling`).
 A repeated `seat_id`, `key_id` or `key_fingerprint` SHALL be refused
 (`register-seat-duplicate`), never resolved by file order.
 
+> **AMENDED at wallet-v1.5** by the ratified change
+> `widen-register-reader-for-a-second-council` (2026-09-06): seat identity is
+> the PAIR (`council_id`, `seat_id`), so a repeated `seat_id` is refused WITHIN
+> ONE COUNCIL and the same seat name under two councils is admitted — two bodies
+> commonly seat one role. `key_id` and `key_fingerprint` uniqueness stays GLOBAL
+> across the file. The code `register-seat-duplicate` is unchanged; only its
+> trigger narrows.
+
 ### FR-008 — The cap is re-grounded
 `REGISTER_MVP_SINGLE_ROW` SHALL stay `1` over `rows`, its refusal SHALL name the
 cap as binding AUTHORITY rows, and `seat_keys` SHALL take no count bound.
+
+> **SUPERSEDED at wallet-v1.5** by the ratified change
+> `widen-register-reader-for-a-second-council` (2026-09-06, Q-WRR-1/Q-WRR-2):
+> `REGISTER_MVP_SINGLE_ROW` is RETIRED and the refusal
+> `register-minimal-shape-exceeded` is retired BY NAME and re-pointed at
+> nothing. No numeric bound replaces it; breadth is bounded by three invariants
+> — every authority row resolves end to end, every seat entry attaches to a row
+> that commissions its body, and (`council_id`, `seat_id`) is unique. The
+> surviving half of this requirement — `seat_keys` takes no COUNT bound and is
+> bounded STRUCTURALLY — is promoted into those invariants and still holds.
 
 ### FR-009 — Two notes, never warnings
 A populated surface SHALL note the number ADJUDICATED out of the number
