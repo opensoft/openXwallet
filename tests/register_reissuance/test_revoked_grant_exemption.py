@@ -7,9 +7,14 @@ closing loop did not read the grant's `state` at all — it filtered on
 review-class grant was held to the obligation too. Terminal revocation is the
 ratified drift-cascade rule ("a revoked grant SHALL NEVER return to the active
 state; authority resumes only as a NEW grant"), and `REGISTER_MVP_SINGLE_ROW`
-caps the register at ONE authority row, so the reader was demanding a row it
-also forbids: NO re-issuance could be represented in any consuming tree. The
+then capped the register at ONE authority row, so the reader was demanding a row
+it also forbids: NO re-issuance could be represented in any consuming tree. The
 absent-register branch of the same function carried the same gap.
+
+(That cap is RETIRED at wallet-v1.5 by
+`widen-register-reader-for-a-second-council`; the sentence above is left as the
+record of what the wallet-v1.4 defect was, and nothing in this module asserts
+the cap.)
 
 Found by openxFactory's S5 register act (2026-09-02, PR #583): grant-mrc-0001
 revoked for declared-composition drift, grant-mrc-0002 issued against the

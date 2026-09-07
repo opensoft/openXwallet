@@ -19,6 +19,202 @@ bundle.
 
 ---
 
+## wallet-v1.5 — 2026-09-06 (reader widening; NO contract content moves; ONE REFUSAL REMOVED)
+
+**Change class: ADDITIVE MINOR for the bundle, and REDUCING for the reader's
+refusal set** — the distinction matters to a consumer and is stated rather than
+averaged. No contract content changes: **none of the eight digested artifacts is
+touched**, every per-file `contract_schema_version` is unchanged, and the only
+line that moves in [`manifest.yaml`](./manifest.yaml) is
+`contract_bundle_version`. The proof is mechanical and was run before release —
+`contracts/releases/wallet-v1.5.digests.yaml` was CUT BY RECOMPUTATION over this
+tree (manifest-owned rows selected by DECLARED FIELD, sha256 over raw bytes,
+bytewise path order, every value cross-checked against the manifest's recorded
+digest) and differs from `wallet-v1.4.digests.yaml` in exactly ONE line,
+`bundle_tag`; the same procedure was run against `wallet-v1.4` first and
+reproduced that file byte-for-byte. A consumer's pin bump to this release
+therefore moves `commit:` and `contract_bundle_tag:` and NOTHING ELSE.
+`scripts/validate-openxwallet.py` sits in openxFactory's
+`contracts/openxwallet-pin.yaml` `pinned_by_commit_only:` list precisely so a
+reader change is a COMMIT move and never a digest move.
+
+Realizes the openXwallet change `widen-register-reader-for-a-second-council`
+(capability `review-authority-register-reader`) — **ratified 2026-09-06T23:25:11Z
+by Brett Heap, operator authority**, in-session ruling "ratify 16 and archive
+add-per-seat-register-entries", landed as PR #16 → `6ec84b1b`. It AMENDS the
+requirement `add-per-seat-register-entries` promoted at `wallet-v1.2`, rather
+than landing beside it: that requirement said in terms that a second authority
+row "SHALL still be refused", and there is no door in that sentence.
+
+### Why: a ratified register act could not be performed
+
+openxFactory's `register-gate-rules-council-seats` — ratified 2026-09-06,
+merged as its PR #717 → `a59f2ae5` — registers codexFactory's
+`gate_rules_council` as the SECOND commissioned body in the intake register.
+Measured at the pinned reader over a probe carrying the LIVE
+`governance/review-authority/` tree plus that body's row, wallet, grant, custody
+attestation and four seats:
+
+```
+note  intake register read: governance/review-authority/register.yaml (2 row(s))
+note  intake register: 5 of 8 per-seat signing key(s) adjudicated and resolved
+ERROR [register-minimal-shape-exceeded] …: 2 AUTHORITY rows; …
+ERROR [register-seat-duplicate] …:seat_keys[5] (lead-security): …
+ERROR [register-seat-duplicate] …:seat_keys[6] (lead-quality): …
+ERROR [register-seat-duplicate] …:seat_keys[7] (company-policy-lead): …
+validate-openxwallet: 4 error(s), 0 warning(s)
+```
+
+Four errors, and the adjudicated note read `5 of 8` where the act's own gate
+requires `8 of 8`. **Both defects were invisible with one council and fired the
+moment a second arrived** — the same shape as the `wallet-v1.4` defect, found by
+the act that performed it.
+
+### 1. The row-count cap is WITHDRAWN, and no number replaces it
+
+`REGISTER_MVP_SINGLE_ROW` is retired. The register carries one AUTHORITY ROW per
+commissioned body, with no bound on how many bodies it may commission, and a row
+is admitted on the strength of what it RESOLVES TO rather than on its ordinal
+position in the file. It is **not raised to two**: two is as arbitrary as one,
+buys exactly one body of headroom, and would have to be edited again by the
+third body while saying nothing true about why two was right.
+
+Three invariants replace it, all of which must hold, and **each already carried
+its own precise finding code, so no new code is added by this release**:
+
+| Invariant | Enforced by | Codes |
+|---|---|---|
+| Every AUTHORITY ROW resolves end to end — its own scanned wallet, a grant matching the row field for field, a custody attestation at tier `act`, a computed expiry in the future | `check_register`'s row loop (unchanged) | `register-wallet-unresolved`, `register-wallet-inactive`, `register-grant-unresolved`, `register-grant-mismatch`, `register-tier-act-unattested`, `register-row-expired`, `register-row-malformed` |
+| Every per-seat entry ATTACHES TO A ROW THAT COMMISSIONS ITS BODY | `_check_seat_keys` (unchanged) | `register-seat-row-unresolved`, `register-seat-council-mismatch` |
+| The pair (`council_id`, `seat_id`) is UNIQUE | `_check_seat_keys`' duplicate table, re-keyed | `register-seat-duplicate` |
+
+**No numeric bound is substituted**, and the absence is a decision rather than
+an omission: the register is a permanently human-only surface where every row is
+one governed operator act, so its breadth is already bounded by what a human can
+stand behind.
+
+### 2. Seat identity is the PAIR (`council_id`, `seat_id`)
+
+`_check_seat_keys` keyed its duplicate table on `seat_id` across the WHOLE FILE,
+so three of `gate_rules_council`'s four seats — `lead-security`, `lead-quality`,
+`company-policy-lead` — were refused as duplicates of a DIFFERENT body's seats.
+Two bodies commonly seat the same ROLE, and with a global namespace WHICH of a
+body's seats resolve depended on what another body happened to call its own.
+
+The table is now keyed on the pair. **This is not this repository's invention:**
+hermes-install's `derive_projection` — the runtime that CONSUMES this register —
+already keys its own duplicate table on `(council_id, seat_id)`, so the reader
+adopts the key its consumer already uses rather than inventing a third opinion.
+
+**`key_id` and `key_fingerprint` uniqueness stays GLOBAL** and is NOT narrowed
+alongside `seat_id`. A key is one key; two entries sharing a fingerprint are two
+claims on one identity, and under different councils the claim is worse, not
+better — one private half would sign for two bodies and a seat return could not
+be attributed.
+
+### MIGRATION NOTE — `register-minimal-shape-exceeded` is a REMOVED refusal
+
+**The finding code `register-minimal-shape-exceeded` is RETIRED BY NAME at this
+release. It is emitted by nothing, it is no longer a string literal in the
+reader, and it is NOT re-pointed at any other invariant.** If your repository
+pins that string — in a workflow assertion, a test, or a report filter — the
+assertion will stop matching at this release, and the fix is to delete it: the
+fact it adjudicated no longer exists as a refusal.
+
+Ruled Q-WRR-1 by the ratifying human, 2026-09-06: retirement over re-scoping,
+because AGENTS.md rule 2 exists precisely because consumers pin finding codes BY
+NAME. A code that disappears breaks a pinned assertion LOUDLY; a code that
+quietly changes meaning satisfies the same assertion over a different fact,
+which is the worse break because nothing fails to warn anybody. There was also
+nothing left for the string to mean — each replacement invariant already has its
+own code, and re-pointing a retired one would give one fact two names.
+
+**The blast radius was MEASURED, not assumed.** Every citation of
+`register-minimal-shape-exceeded` or `REGISTER_MVP_SINGLE_ROW` in the workspace
+at ratification:
+
+| Where | What it is | Effect |
+|---|---|---|
+| openXwallet `scripts/validate-openxwallet.py` | the emitter, the constant, and two self-test probes | removed by this release |
+| openXwallet `tests/per_seat_register_entries/` | one assertion on the cap | converted by this release to assert the withdrawal and the invariant that replaced it |
+| openXwallet `specs/014-per-seat-register-entries/spec.md` | FR-007/FR-008 of a realized Speckit feature | amendment notes added by this release (a third citation, found in realization and not in the change's own estate search) |
+| openxFactory `specs/014-register-and-reader/data-model.md` | a Speckit design document, not a test | a stale sentence; that repository's bookkeeping, named as an owed follow-on |
+
+**No consumer gate breaks in either direction:** openxFactory's
+`openxwallet-consumer-gate.yml` asserts on the WILDCARD `\[register-[a-z-]+\]`
+rather than on any literal code. The note remains owed even so, because
+"measured unpinned today" is not "nobody may have pinned it", and the note costs
+a paragraph.
+
+**A KEPT code whose trigger NARROWS, stated separately because it is a different
+compatibility class.** `register-seat-duplicate` keeps its string: it still
+means "this register has two answers to a question that has one", which is
+unchanged. What narrows is the input set — a repeated `seat_id` is refused
+WITHIN ONE COUNCIL rather than across the file — and the message now names the
+council so a refusal is never read as a collision with another body's seat. A
+repository asserting that two councils sharing a seat NAME are refused was
+asserting the defect, and this release is what withdraws it.
+
+### 3. Today's register validates IDENTICALLY, and that is load-bearing
+
+openxFactory advances its pin BEFORE its register moves, and its own gate
+requires that advance to be provably NEUTRAL. Measured over the LIVE
+`governance/review-authority/` tree at openxFactory `origin/main`
+(`9ffc6252`), the pinned reader and this one produce **byte-identical output**,
+plain and under `--strict`:
+
+```
+note  intake register read: governance/review-authority/register.yaml (1 row(s))
+note  intake register: 4 of 4 per-seat signing key(s) adjudicated and resolved
+validate-openxwallet: 0 error(s), 0 warning(s)
+```
+
+Nothing else in `check_register` or `_check_seat_keys` moved: the row-count
+refusal never fired at one row, and the duplicate table's re-key changes which
+COLLISIONS are refused, of which a one-council register has none.
+
+### What is NOT in this release
+
+**The absent-seat-surface NOTE does not become a refusal** (Q-WRR-3, ruled
+2026-09-06). Its trigger fired on 2026-08-28 and it is a one-line change, but
+landing it here would break the neutrality above for any consumer that has not
+recorded keys — and this release is the prerequisite of an act that is about to
+add a second body to a file only the operator may edit. It gets its own release,
+after the register act has landed and settled.
+
+**No register schema is authored.** The register is deliberately kindless and
+this reader is still its shape. **No `contracts/` byte moves.** **No consumer's
+pin advances here** — that is openxFactory's own act, in one pull request with
+its gate's literal counts moving from `4 of 4` to `8 of 8`.
+
+### What proves it
+
+`tests/widen_register_reader/test_second_council.py` — the RED tests that landed
+with the proposal, CONVERTED rather than deleted: both `xfail(strict=True)`
+targets are now plain assertions, and both "exact codes today" measurements
+became assertions of the new behaviour (the retirement, asserted over the
+reader's string literals as well as its output; and the per-council duplicate,
+asserted to refuse, to name its council, and to leave the other body's
+identically-named seat alone). Plus **six new probes inside the reader's own S4
+self-test** — `register-two-bodies-clean` (with the `2 row(s)` and `6 of 6`
+notes asserted positively), `register-two-councils-one-seat-name`,
+`register-seat-duplicate-within-one-council`,
+`register-seat-attached-to-another-bodys-row`,
+`register-second-row-unresolved`, and `seat-duplicate-across-councils` for
+`key_id` and `key_fingerprint` — with the two probes asserting the retired code
+removed in the same edit. They are in the SELF-TEST and not only in `tests/`
+because every consumer runs the pinned validator and nobody runs this
+repository's suite; proven to bite by mutation (reverting the pair key reds four
+probes, narrowing `key_id` to the council reds two).
+
+The `wallet-v1.5` tag is an OPERATOR act that follows the human merge, as at
+every release since `wallet-v1.0`: an annotated tag at the landed merge commit,
+cut by the lane coordinator on the ratifying human's word. The digest inventory
+is cut HERE rather than retroactively, which is possible only because no digest
+moves.
+
+---
+
 ## wallet-v1.4 — 2026-09-02 (reader correction; NO contract content moves)
 
 **Change class: NONE**, in the sense wallet-v1.0 used it: this release changes

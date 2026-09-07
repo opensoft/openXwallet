@@ -1,34 +1,40 @@
-"""RED FIRST: the register reader cannot represent a SECOND commissioned body.
+"""The register reader represents a SECOND commissioned body — GREEN, converted.
 
-Measures the openXwallet change `widen-register-reader-for-a-second-council`
-(capability `review-authority-register-reader`), openxFactory tasks §2 row 2.2 of
-the ratified `register-gate-rules-council-seats` (PR #717 → `a59f2ae5`).
+Realizes the openXwallet change `widen-register-reader-for-a-second-council`
+(capability `review-authority-register-reader`), ratified 2026-09-06T23:25:11Z,
+openxFactory tasks §2 rows 2.2–2.5 of the ratified
+`register-gate-rules-council-seats` (PR #717 → `a59f2ae5`).
 
 Lane: hermes-wallet-exercise
 
-WHAT IS RED AND HOW. Two tests assert the TARGET behaviour and carry
-`xfail(strict=True)`: they fail today, they are recorded as expected failures so
-this repository's REQUIRED `pytest-suite` check stays green on a PROPOSAL pull
-request that fixes nothing — and `strict=True` means the suite FAILS the moment
-the reader is fixed and they start passing, so the fix slice cannot forget to
-convert them. Landing them as plain failures instead would red-line a required
-check on a candidate whose only exit is `--admin`, which is the ritual this whole
-arc exists to end.
+WHAT WAS RED, AND WHAT IT BECAME. This module landed with the proposal as the
+MEASUREMENT of two live defects: two tests asserted the TARGET behaviour under
+`xfail(strict=True)`, and beside each sat a test PINNING THE EXACT REFUSAL the
+reader emitted that day. The fix slice (tasks §3.1–§3.3) flipped the first pair
+to plain assertions and CONVERTED the second pair rather than deleting them —
+deleting a measurement leaves a widened reader with fewer assertions than the
+narrow one had. What they assert now:
 
-Beside each of those sits a test that PINS TODAY'S EXACT REFUSAL by code. Those
-pass now and are the MEASUREMENT: `openspec/changes/.../design.md` D0 quotes the
-reader's output, and these assert it, so the transcript in the design document is
-checkable rather than quotable. Task §3.3 converts both classes in the same
-commit as the fix.
+  * `test_the_retired_row_count_refusal_is_emitted_by_nothing` — was the
+    row-count measurement. `register-minimal-shape-exceeded` is RETIRED BY NAME
+    (Q-WRR-1), so this asserts the string is emitted on none of the shapes that
+    used to trigger it AND is gone from the reader's own source: a retired code
+    that still exists in the program is a code that can come back.
+  * `test_a_per_council_duplicate_still_refuses_and_names_the_council` — was the
+    seat-name measurement. The trigger NARROWED and the refusal stayed, so this
+    asserts the surviving half: one council with two answers for one seat is
+    still refused, the message names the council, and the OTHER body's
+    identically-named seat is untouched.
 
-THE TWO DEFECTS CANNOT BE ISOLATED BY ONE FIXTURE, and that is itself a finding.
-Representing a second council REQUIRES a second authority row — `_check_seat_keys`
-refuses an entry whose `council_ref` is not the authorizing row's `holder_ref` —
-so any fixture that exercises the seat-name defect also trips the row-count
-defect. They are separated here by DIFFERENCING two fixtures that differ in one
-respect: with the second body's ONE non-colliding real seat (`GRC_DISJOINT`) the
-reader refuses with the row-count code ALONE; with all FOUR of its real seats
-(`GRC_SEATS`) it adds exactly three seat-duplicate refusals and nothing else.
+THE TWO DEFECTS COULD NOT BE ISOLATED BY ONE FIXTURE, and that is itself a
+finding, kept here because the fixtures still rest on it. Representing a second
+council REQUIRES a second authority row — `_check_seat_keys` refuses an entry
+whose `council_ref` is not the authorizing row's `holder_ref` — so any fixture
+that exercised the seat-name defect also tripped the row-count defect. They were
+separated by DIFFERENCING two fixtures that differ in one respect: the second
+body's ONE non-colliding seat (`GRC_DISJOINT`) against all FOUR (`GRC_SEATS`),
+which added exactly three refusals and nothing else. Both fixtures now validate
+CLEAN, and the difference between them is the three names.
 
 Discipline copied from `tests/per_seat_register_entries/test_top_level_and_seat_keys.py`:
 drive the script as a SUBPROCESS so the exit codes the workflows act on are the
@@ -48,6 +54,7 @@ trusting them.
 
 from __future__ import annotations
 
+import ast
 import base64
 import hashlib
 import re
@@ -383,34 +390,54 @@ def test_the_live_one_row_register_stays_clean(tmp_path):
 
 # ------------- defect 1: the row-count cap, isolated by differencing ---------
 
-def test_a_second_commissioned_body_is_refused_today(tmp_path):
-    """THE MEASUREMENT for defect 1, pinned by code.
+RETIRED_ROW_COUNT_CODE = "register-minimal-shape-exceeded"
+
+
+def test_the_retired_row_count_refusal_is_emitted_by_nothing(tmp_path):
+    """CONVERTED from the defect-1 measurement (task §3.3).
+
+    It asserted `register-minimal-shape-exceeded` on a two-row register. Q-WRR-1
+    RETIRES that code BY NAME rather than re-scoping it — a pinned finding code
+    that changes meaning under a stable string is a worse compatibility break
+    than one that disappears, because nothing fails to warn anybody — so what
+    survives of the measurement is the retirement itself, asserted two ways.
+
+    The SOURCE assertion is not belt-and-braces. A code absent from every output
+    of the fixtures at hand but still present in the program is a code that can
+    come back on a shape nobody probed, and the CHANGELOG's removed-refusal note
+    would then be false. It is asserted over the reader's STRING LITERALS rather
+    than over its text, because the retirement is a decision the reader should
+    still be able to NARRATE: a comment or a docstring naming a retired code is
+    the record of why it went, while a literal equal to it is something that can
+    be emitted by `f.error` or asserted by a self-test probe.
+    """
+    literals = {node.value
+                for node in ast.walk(ast.parse(
+                    VALIDATOR.read_text(encoding="utf-8")))
+                if isinstance(node, ast.Constant) and isinstance(node.value, str)}
+    assert RETIRED_ROW_COUNT_CODE not in literals, \
+        f"{RETIRED_ROW_COUNT_CODE} is still a string literal in {VALIDATOR}"
+
+    # Every shape that used to emit it: the two-row register with one
+    # non-colliding seat, and the full act with all eight seats.
+    for label, seats in (("disjoint", _mrc_seats() + _grc_seats(GRC_DISJOINT)),
+                         ("full act", _mrc_seats() + _grc_seats())):
+        root = _tree(tmp_path / label.replace(" ", "-"), second_body=True,
+                     seat_keys=seats)
+        got = _run(root)
+        assert RETIRED_ROW_COUNT_CODE not in got.stdout, (label, got.stdout)
+        assert "AUTHORITY rows" not in got.stdout, (label, got.stdout)
+        assert got.returncode == 0, (label, got.stdout)
+
+
+def test_a_second_commissioned_body_resolving_end_to_end_is_admitted(tmp_path):
+    """THE TARGET for defect 1, flipped from `xfail(strict=True)` by task §3.3.
 
     A second body whose row resolves END TO END — its own wallet, its own root
     grant backing that row field for field, its own custody attestation, an
     unexpired computed expiry — and whose one registered seat name collides with
-    nothing. The ONLY thing wrong with this register is that it has two rows.
-
-    Converted by task §3.3 when `REGISTER_MVP_SINGLE_ROW` is retired.
+    nothing. Admitted, and the note reports the rows it read.
     """
-    root = _tree(tmp_path / "consumer", second_body=True,
-                 seat_keys=_mrc_seats() + _grc_seats(GRC_DISJOINT))
-    got = _run(root)
-    assert got.returncode == 1, got.stdout
-    assert _register_codes(got.stdout) == {"register-minimal-shape-exceeded"}, \
-        got.stdout
-    assert "2 AUTHORITY rows" in got.stdout, got.stdout
-    # The second body's seat IS adjudicated: the refusal is about the file's
-    # breadth, not about that entry.
-    assert _seats_adjudicated(got.stdout) == ("5", "5"), got.stdout
-
-
-@pytest.mark.xfail(strict=True, reason=(
-    "openxFactory register-gate-rules-council-seats task 2.4 / Q-GRC-5: "
-    "REGISTER_MVP_SINGLE_ROW refuses a second authority row. Retired in "
-    "favour of the three invariants; convert this test in the same commit."))
-def test_a_second_commissioned_body_resolving_end_to_end_is_admitted(tmp_path):
-    """THE TARGET for defect 1. Fails today; must pass after the fix."""
     root = _tree(tmp_path / "consumer", second_body=True,
                  seat_keys=_mrc_seats() + _grc_seats(GRC_DISJOINT))
     got = _run(root)
@@ -421,49 +448,44 @@ def test_a_second_commissioned_body_resolving_end_to_end_is_admitted(tmp_path):
 
 # --------- defect 2: global seat-name uniqueness, isolated by differencing ---
 
-def test_two_councils_seating_one_role_name_are_refused_today(tmp_path):
-    """THE MEASUREMENT for defect 2, pinned by code AND by count.
+def test_a_per_council_duplicate_still_refuses_and_names_the_council(tmp_path):
+    """CONVERTED from the defect-2 measurement (task §3.3).
 
-    The FULL ACT Brett's walk would carry: all four gate-rules seats beside all
-    four merge-readiness ones. It differs from the fixture above in exactly one
-    respect — three more seat entries, whose names another body already records
-    — and it adds exactly three refusals, one per colliding name. That
-    difference IS the isolation: `register-seat-duplicate` is caused by the
-    names and by nothing else in the fixture.
+    It asserted three refusals on the full act, one per name gate-rules shares
+    with merge-readiness, and that none of them could name the council. The
+    trigger NARROWED and the refusal STAYED, so what the measurement becomes is
+    the surviving half, in the shape only a widened reader can take: TWO bodies
+    in one register, one of which records a seat TWICE.
 
-    Converted by task §3.3 when the duplicate table is keyed on the pair.
+    Three assertions, because they are three different facts. The duplicate is
+    refused; the message names the council, which is what stops it being read as
+    a collision with the other body's seat; and the other body's identically
+    named seat is NOT reported — the discriminating power of the pair key, which
+    a test asserting only the refusal would not have measured.
     """
+    twice = _grc_seats() + [_seat(
+        "lead-security", GRC_REF, GRC_ID,
+        *_derive(f"openXwallet-probe/{GRC_ID}/lead-security/second-answer")[:2],
+        GRC_ROW, key_id=f"key-{GRC_ID}-seat-lead-security-0002")]
     root = _tree(tmp_path / "consumer", second_body=True,
-                 seat_keys=_mrc_seats() + _grc_seats())
+                 seat_keys=_mrc_seats() + twice)
     got = _run(root)
     assert got.returncode == 1, got.stdout
-    assert _register_codes(got.stdout) == {
-        "register-minimal-shape-exceeded", "register-seat-duplicate"}, \
-        got.stdout
+    assert _register_codes(got.stdout) == {"register-seat-duplicate"}, got.stdout
 
     duplicates = _register_lines(got.stdout, "register-seat-duplicate")
-    assert len(duplicates) == len(GRC_COLLIDING) == 3, got.stdout
-    for seat_id in GRC_COLLIDING:
-        assert any(f"seat_id {seat_id!r} is already recorded" in ln
-                   for ln in duplicates), (seat_id, got.stdout)
-        # The defect in one line: the entry it collides with belongs to a
-        # DIFFERENT body, and the refusal cannot say so because the table has
-        # no council in its key.
-        assert not any(GRC_ID in ln for ln in duplicates), got.stdout
-
-    # openxFactory task 2.8 moves its consumer gate's literal assertion to
-    # `8 of 8`. Today the reader stands behind five of the eight recorded keys.
-    assert _seats_adjudicated(got.stdout) == ("5", "8"), got.stdout
+    assert len(duplicates) == 1, got.stdout
+    assert "seat_id 'lead-security' is already recorded" in duplicates[0], \
+        got.stdout
+    assert f"under council {GRC_ID!r}" in duplicates[0], duplicates[0]
+    # merge-readiness seats `lead-security` too, and is untouched: eight of the
+    # nine recorded entries are adjudicated, and the refused one is the ninth.
+    assert MRC_ID not in duplicates[0], duplicates[0]
+    assert _seats_adjudicated(got.stdout) == ("8", "9"), got.stdout
 
 
-@pytest.mark.xfail(strict=True, reason=(
-    "openxFactory register-gate-rules-council-seats task 2.3 / Q-GRC-5: "
-    "_check_seat_keys keys its duplicate table on seat_id ALONE across the "
-    "whole file, so three of gate-rules' four seats are refused as duplicates "
-    "of merge-readiness seats. Re-key on (council_id, seat_id); convert this "
-    "test in the same commit."))
 def test_two_councils_may_seat_the_same_role_name(tmp_path):
-    """THE TARGET for defect 2. Fails today; must pass after the fix.
+    """THE TARGET for defect 2, flipped from `xfail(strict=True)` by task §3.3.
 
     Two bodies commonly seat the same ROLE — `lead-security` is a role, not a
     person — and hermes-install's `derive_projection` already keys its own
@@ -497,9 +519,14 @@ def test_one_council_naming_a_seat_twice_is_refused(tmp_path):
     got = _run(root)
     assert got.returncode == 1, got.stdout
     assert "register-seat-duplicate" in _register_codes(got.stdout), got.stdout
+    duplicates = _register_lines(got.stdout, "register-seat-duplicate")
     assert any("seat_id 'lead-security' is already recorded" in ln
-               for ln in _register_lines(got.stdout,
-                                         "register-seat-duplicate")), got.stdout
+               for ln in duplicates), got.stdout
+    # The message names the council even in a ONE-BODY register: the refusal
+    # says which body has two answers, so it is never read as a collision with
+    # a different body's seat.
+    assert any(f"under council {MRC_ID!r}" in ln for ln in duplicates), \
+        got.stdout
 
 
 @pytest.mark.parametrize("field", ["key_id", "key_fingerprint"])
@@ -522,6 +549,30 @@ def test_key_id_and_fingerprint_stay_globally_unique(tmp_path, field):
     assert any(f"{field} {collide!r} is already recorded" in ln
                for ln in _register_lines(got.stdout,
                                          "register-seat-duplicate")), got.stdout
+
+
+def test_a_seat_entry_attached_to_another_bodys_row_is_refused(tmp_path):
+    """INVARIANT (ii), in the shape only a MULTI-BODY register can take.
+
+    With one authority row this mistake was unreachable — every entry either
+    named that row or named nothing. With two, an entry can attach to a row that
+    commissions a DIFFERENT body, which would record the second council's seats
+    as descending from the first council's authority. That is false rather than
+    untidy, and it is the invariant that keeps a WIDER register from being a
+    LOOSER one now that nothing counts rows.
+    """
+    misattached = [dict(entry, authorizing_row=MRC_ROW)
+                   for entry in _grc_seats(GRC_DISJOINT)]
+    root = _tree(tmp_path / "consumer", second_body=True,
+                 seat_keys=_mrc_seats() + misattached)
+    got = _run(root)
+    assert got.returncode == 1, got.stdout
+    assert _register_codes(got.stdout) == {"register-seat-council-mismatch"}, \
+        got.stdout
+    assert _rows_read(got.stdout) == "2", got.stdout
+    # The refused entry is excluded from the adjudicated count, which is what
+    # makes the note evidence rather than a restatement of how many were parsed.
+    assert _seats_adjudicated(got.stdout) == ("4", "5"), got.stdout
 
 
 def test_a_second_row_that_does_not_resolve_is_refused(tmp_path):

@@ -25,16 +25,23 @@ kind: contract_manifest
 # repository, never by the carve.
 # ============================================================================
 
-# wallet-v1.4 moves this line and NOTHING ELSE in this file. The release is a
-# REGISTER-READER correction (scripts/validate-openxwallet.py withdraws a
-# false-positive `register-no-active-row` against a REVOKED review-class
-# grant); no contract content moves, so every per-file `contract_schema_version`
-# and every `sha256:` below is unchanged and PROVEN so by recomputation, not
-# asserted. The reader is content-addressed BY COMMIT (see the comment on the
-# first row below, and openxFactory's `contracts/openxwallet-pin.yaml`
-# `pinned_by_commit_only:` list), which is exactly why a reader fix is a commit
-# move for a consumer and never a digest move.
-contract_bundle_version: wallet-v1.4
+# wallet-v1.5 moves this line and NOTHING ELSE in this file, for the same reason
+# wallet-v1.4 did. The release is a REGISTER-READER WIDENING
+# (scripts/validate-openxwallet.py withdraws the row-count cap in favour of the
+# three invariants that bounded it, and keys seat identity on the pair
+# (council_id, seat_id) so a second commissioned body can be registered); no
+# contract content moves, so every per-file `contract_schema_version` and every
+# `sha256:` below is unchanged and PROVEN so by recomputation, not asserted. The
+# reader is content-addressed BY COMMIT (see the comment on the first row below,
+# and openxFactory's `contracts/openxwallet-pin.yaml` `pinned_by_commit_only:`
+# list), which is exactly why a reader change is a commit move for a consumer
+# and never a digest move.
+#
+# The wallet-v1.4 note this replaces, kept because it names the class rather
+# than the release: that cut was a reader correction withdrawing a
+# false-positive `register-no-active-row` against a REVOKED review-class grant,
+# and it moved this line and nothing else too.
+contract_bundle_version: wallet-v1.5
 
 # The machine-read one of THREE provenance records for the carve. The other two
 # are `carve_commit:` in openxFactory's contracts/openxwallet-pin.yaml (at P3)
