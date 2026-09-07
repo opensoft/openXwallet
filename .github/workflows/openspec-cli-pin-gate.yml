@@ -1,6 +1,12 @@
-# VENDORED from opensoft/openxFactory@44d8fbaf7d977668973dcd116040c9405416c2ea (#754); do not edit here.
-# Everything below this header block is byte-identical to that repository's
-# `.github/workflows/openspec-cli-pin-gate.yml`. Drift check (exact commands) and re-vendoring: docs/openspec-cli-pin.md.
+# VENDORED from opensoft/openxFactory@44d8fbaf7d977668973dcd116040c9405416c2ea (#754).
+# Byte-identical to that repository's `.github/workflows/openspec-cli-pin-gate.yml`
+# below this header EXCEPT for ONE DECLARED DIVERGENCE: the final `run:` line, which
+# passes `--tarball tools/openspec-cli-pin/…` at the artifact vendored into this
+# repository instead of letting the verifier fetch it from the registry. It exists on
+# Brett Heap's ruling of 2026-09-07, by multiple choice, label verbatim "Vendor the
+# tarball into the repo", taken for this repository's AGENTS.md rule 4. NOTHING ELSE
+# here may be edited. Drift check — the exact commands, and the one hunk they are
+# expected to print — and re-vendoring: docs/openspec-cli-pin.md.
 # The prose below is openxFactory's, kept verbatim so drift is a `diff`; its
 # reference to `tests/openspec_cli_pin/` names tests that live THERE, not here.
 # The OpenSpec CLI CONSUMER gate: openxFactory consumes `@fission-ai/openspec` at
@@ -102,5 +108,28 @@ jobs:
       # with NO scan target refuse rather than self-test, and requires the literal
       # invocation to be pinned in the consuming repository so that a silent
       # repoint to a target that reads nothing is impossible.
+      # ---- openXwallet DIVERGENCE, declared in the header at the top of this file.
+      # Brett Heap, 2026-09-07, by multiple choice, label verbatim: "Vendor the
+      # tarball into the repo". AGENTS.md rule 4 here says every gate is offline, and
+      # openxFactory's line fetches the artifact from registry.npmjs.org on every run.
+      # `--tarball` is the VERIFIER'S OWN FLAG for an already-downloaded artifact and
+      # it checks the SAME content address either way: `verify_artifact()` recomputes
+      # the SHA-512 and the SHA-1 from contracts/openspec-cli-pin.yaml over these
+      # exact bytes and refuses BEFORE installing. Vendoring buys offline resolution
+      # of the artifact and gives up no verification. The file name carries the pinned
+      # SHA-1, so a bump cannot silently reuse the path. `--no-cache` is kept because
+      # the `--tarball` path never reads the install cache and the flag says so.
+      #
+      # WHAT THIS DOES NOT MAKE OFFLINE — measured, not assumed. The verifier installs
+      # the verified tarball with `npm install`, and `@fission-ai/openspec@1.12.0`
+      # declares TEN runtime dependencies at caret ranges which npm resolves from the
+      # registry. On a cold npm cache with no network the step still refuses:
+      #   REFUSE pin-unresolvable: installing the verified artifact into … failed
+      #   (exit 1, executable absent): npm error code EAI_AGAIN … request to
+      #   https://registry.npmjs.org/@inquirer%2fcore failed
+      # The ARTIFACT is vendored; its DEPENDENCY CLOSURE is not, and no flag on the
+      # vendored installer can be pointed at one. docs/openspec-cli-pin.md
+      # § "Rule 4 after the vendoring" records the residual and names the openxFactory
+      # follow-on that would close it.
       - name: Verify the OpenSpec CLI pin and validate the corpus at it
-        run: python3 scripts/validate-openspec-cli-pin.py --all --no-cache
+        run: python3 scripts/validate-openspec-cli-pin.py --all --no-cache --tarball tools/openspec-cli-pin/fission-ai-openspec-1.12.0-c844543999f673cdd72445879b86a4abea4c07ef.tgz
