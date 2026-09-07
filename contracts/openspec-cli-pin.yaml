@@ -1,6 +1,6 @@
 # VENDORED from opensoft/openxFactory@44d8fbaf7d977668973dcd116040c9405416c2ea (#754); do not edit here.
-# Everything below this three-line header is byte-identical to that repository's
-# `contracts/openspec-cli-pin.yaml`. Drift check and re-vendoring runbook: docs/openspec-cli-pin.md.
+# Everything below this header block is byte-identical to that repository's
+# `contracts/openspec-cli-pin.yaml`. Drift check (exact commands) and re-vendoring: docs/openspec-cli-pin.md.
 schema_version: 1
 kind: pinned_contract_manifest
 

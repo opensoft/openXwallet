@@ -1,6 +1,6 @@
 # VENDORED from opensoft/openxFactory@44d8fbaf7d977668973dcd116040c9405416c2ea (#754); do not edit here.
-# Everything below this three-line header is byte-identical to that repository's
-# `.github/workflows/openspec-cli-pin-gate.yml`. Drift check and re-vendoring runbook: docs/openspec-cli-pin.md.
+# Everything below this header block is byte-identical to that repository's
+# `.github/workflows/openspec-cli-pin-gate.yml`. Drift check (exact commands) and re-vendoring: docs/openspec-cli-pin.md.
 # The prose below is openxFactory's, kept verbatim so drift is a `diff`; its
 # reference to `tests/openspec_cli_pin/` names tests that live THERE, not here.
 # The OpenSpec CLI CONSUMER gate: openxFactory consumes `@fission-ai/openspec` at

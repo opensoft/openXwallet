@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # VENDORED from opensoft/openxFactory@44d8fbaf7d977668973dcd116040c9405416c2ea (#754); do not edit here.
-# Everything below this three-line header is byte-identical to that repository's
-# `scripts/install-pinned-openspec-cli.py`. Drift check and re-vendoring runbook: docs/openspec-cli-pin.md.
+# Everything below this header block is byte-identical to that repository's
+# `scripts/install-pinned-openspec-cli.py`. Drift check (exact commands) and re-vendoring: docs/openspec-cli-pin.md.
 """Install the PINNED OpenSpec CLI and put it on PATH. Judge nothing.
 
 WHAT THIS IS, AND WHAT IT IS NOT. This is an INSTALLER. A green exit means

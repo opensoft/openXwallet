@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # VENDORED from opensoft/openxFactory@44d8fbaf7d977668973dcd116040c9405416c2ea (#754); do not edit here.
-# Everything below this three-line header is byte-identical to that repository's
-# `scripts/validate-openspec-cli-pin.py`. Drift check and re-vendoring runbook: docs/openspec-cli-pin.md.
+# Everything below this header block is byte-identical to that repository's
+# `scripts/validate-openspec-cli-pin.py`. Drift check (exact commands) and re-vendoring: docs/openspec-cli-pin.md.
 """Run OpenSpec strict validation through the PINNED CLI, and refuse otherwise.
 
 This file is TWO things at once, and the doubling is the design rather than an

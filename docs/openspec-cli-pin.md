@@ -22,10 +22,10 @@ pin and have no live lane of their own.
 | `.github/workflows/openspec-cli-pin-gate.yml` | runs the entrypoint with `--all --no-cache` on every pull request to `main` |
 
 All four are **byte-identical** to their openxFactory originals below a
-three-line vendoring header. That is deliberate: a copy that can drift silently
+vendoring header block. That is deliberate: a copy that can drift silently
 is worse than no copy, so drift is one command away.
 
-```sh
+```bash
 # drift check — from a checkout of this repository, with openxFactory reachable
 OXF=../openxFactory   # any openxFactory checkout
 diff <(tail -n +4 contracts/openspec-cli-pin.yaml)               <(git -C $OXF show 44d8fbaf7d977668973dcd116040c9405416c2ea:contracts/openspec-cli-pin.yaml)
@@ -140,3 +140,77 @@ reports `unknown origin kind 'ruling'` for both
 repository uses and the one openxFactory's wrapper recognises are not the same
 set. That matters only if this repository adopts the wrapper's archive routing,
 which this change explicitly defers.
+
+## Findings in the vendored code, recorded and NOT fixed here
+
+Review of this change surfaced defects in the vendored files themselves. They are
+recorded rather than patched, because a fix applied *here* would fork the
+estate's one pin verifier into divergent copies and destroy the single property
+that makes vendoring safe — that a `diff` against openxFactory is empty. They
+belong upstream, in `opensoft/openxFactory`, and reach this repository by
+re-vendoring:
+
+- **`--path-mode` overstates what it checked.** The success message says the
+  content address was verified, but that mode resolves `openspec` from PATH and
+  only asserts the reported version; it never calls `verify_artifact()`. A
+  rebuilt binary that still reports `1.12.0` gets a "verified" result. The gate
+  workflow never uses `--path-mode`, so this cannot affect the check here.
+- **`resolve_pinned()` can race on a shared cache directory** — one process can
+  observe a prefix that another is still writing. The gate runs `--no-cache` on a
+  fresh runner, so this cannot affect the check here.
+- **`resync_runbook:` and the refusal trailer name `docs/contract-versioning-policy.md`,
+  which lives in openxFactory and not in this repository.** The value is declared
+  metadata and the trailer is a fixed string; neither is read as a path by any
+  code, so nothing breaks — but a reader following the trailer from here finds
+  nothing. The pin's own re-vendoring runbook for this repository is this
+  document.
+- **Comment counts inside the refusal-code block are inconsistent** with the tuple
+  they describe.
+
+## SonarCloud
+
+`SonarCloud Code Analysis` fails on the pull request that introduces this change,
+on `new_security_rating`. Every finding is in `scripts/validate-openspec-cli-pin.py`
+— the vendored file — and they are of two kinds: `python:S4790` on the SHA-1
+digest, and the `pythonsecurity:S870x` family on CLI arguments reaching
+`subprocess` and the filesystem.
+
+Neither kind is fixable here without breaking byte-identity, and the first is not
+a defect at all: npm publishes a SHA-1 `shasum` alongside the SHA-512 integrity,
+and checking both is the whole function of a content-addressed pin. Suppressing
+or rewriting them here would fork the verifier. SonarCloud is not a required
+status check in this repository.
+
+## An unresolved conflict with this repository's rule 4
+
+`AGENTS.md` states, among the rules that are not negotiable here:
+
+> **Every gate is offline.** No check reads the network, an upstream tree, or
+> `contracts/manifest.yaml`. The live manifest cross-check is a sync-time
+> obligation.
+
+**This gate reads the network.** `resolve_pinned()` runs `npm pack` against
+`registry.npmjs.org` on every pull request, so a registry outage makes the check
+refuse before it validates anything. That is not an oversight in the workflow —
+it is inherent to what the pin refers to. `contract_pin.yaml`'s referent is a
+file already in this tree, which can be hashed offline; the OpenSpec CLI pin's
+referent is a published npm tarball, and there is no way to verify bytes you have
+not fetched.
+
+The conflict is therefore real and is **not resolved by this change**. Three
+exits exist, and choosing between them is this repository's call, not the
+rollout's:
+
+1. **Read rule 4 as scoped to contract pins** — the rule was written about
+   `contract_pin.yaml` and the manifest cross-check, and a tool pin is a
+   different kind of referent. This is the smallest change and needs the rule's
+   wording amended to say so.
+2. **Vendor the tarball** and pass it with `--tarball`, which the verifier already
+   supports. That restores offline operation at the cost of committing a
+   multi-megabyte binary artifact and re-committing it at every bump.
+3. **Decline the gate here** and keep the pin as documentation only, routing
+   archives through openxFactory's wrapper as described above.
+
+Recorded by lane openxfactory-1 for opensoft/openXwallet#20 and
+opensoft/openxFactory#754. Raised by the Codex review of the pull request that
+introduced this file.
