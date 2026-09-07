@@ -122,8 +122,11 @@ jobs:
       #
       # WHAT THIS DOES NOT MAKE OFFLINE — measured, not assumed. The verifier installs
       # the verified tarball with `npm install`, and `@fission-ai/openspec@1.12.0`
-      # declares TEN runtime dependencies at caret ranges which npm resolves from the
-      # registry. On a cold npm cache with no network the step still refuses:
+      # declares TEN runtime dependencies — NINE at caret ranges plus `cross-spawn`
+      # pinned exactly — which npm resolves from the registry. (openxFactory's own
+      # `install_artifact()` docstring says "nine dependencies … at caret ranges",
+      # and that count is the caret-ranged ones, not the total.) On a cold npm cache
+      # with no network the step still refuses:
       #   REFUSE pin-unresolvable: installing the verified artifact into … failed
       #   (exit 1, executable absent): npm error code EAI_AGAIN … request to
       #   https://registry.npmjs.org/@inquirer%2fcore failed

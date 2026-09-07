@@ -281,10 +281,16 @@ so a bump that forgets to move the path collides with a name that is already tak
 **The artifact is vendored. Its DEPENDENCY CLOSURE is not, and that half of rule 4 is
 still open.** `install_artifact()` installs the verified tarball with
 `npm install --global --prefix … --ignore-scripts <tarball>`, and
-`@fission-ai/openspec@1.12.0` declares TEN runtime dependencies at caret ranges —
-`@inquirer/core`, `@inquirer/prompts`, `chalk`, `commander`, `diff`, `cross-spawn`,
-`fast-glob`, `ora`, `yaml`, `zod` — which npm resolves from the registry. The CLI
-genuinely needs them: `node package/bin/openspec.js --version` on the unpacked
+`@fission-ai/openspec@1.12.0` declares TEN runtime dependencies — `@inquirer/core`,
+`@inquirer/prompts`, `chalk`, `commander`, `diff`, `fast-glob`, `ora`, `yaml` and
+`zod` at CARET RANGES, plus `cross-spawn` pinned exactly at `7.0.6` — all of which
+npm resolves from the registry. (openxFactory's `install_artifact()` docstring says
+"nine dependencies … declared at caret ranges"; nine is the caret-ranged count, ten
+is the total, and both are right about different things.) **The caret ranges are a
+second finding, not only an offline one: the code this gate executes can change when
+a dependency is republished, with no movement in the pin.** openxFactory's pin header
+states that shortfall in full and `--ignore-scripts` mitigates rather than repairs it.
+The CLI genuinely needs the closure: `node package/bin/openspec.js --version` on the unpacked
 tarball alone fails `ERR_MODULE_NOT_FOUND`.
 
 Run in a network namespace with **no** network and a **cold** npm cache — which is
