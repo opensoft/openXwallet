@@ -117,7 +117,7 @@ emitted on a run in which every recorded key was stood behind.
 - **WHEN** two commissioned bodies each record an entry for the same `seat_id` under their own `council_id`
 - **THEN** both entries are admitted and neither is reported as a duplicate of the other, because two bodies commonly seat the same ROLE and a register that cannot say so cannot represent a second body at all
 
-#### Scenario: One council records a seat twice
+#### Scenario: A seat is recorded twice
 - **WHEN** one `council_id` records the same `seat_id` twice
 - **THEN** the reader refuses the register rather than resolving the collision by file order, because that council then has two answers to which key is that seat's root
 - **AND** the refusal names the council, so it is not read as a collision with a different body's seat
@@ -164,7 +164,7 @@ NOT be read as widening the register's holder, target or act breadth.
 - **THEN** the reader ADMITS it, and its `intake register read:` note reports the number of rows
 - **AND** no refusal is emitted on the ground of row COUNT, because the count bound is withdrawn rather than raised
 
-#### Scenario: A second row does not resolve end to end
+#### Scenario: A second authority row is still refused
 - **WHEN** a register declares a second authority row whose grant does not back it, whose wallet does not resolve, or which stands at tier `act` with no custody attestation
 - **THEN** the reader refuses THAT ROW with the finding naming what failed to resolve
 - **AND** the refusal MUST NOT be a count refusal, because the defect is the row's resolution and not the register's breadth
