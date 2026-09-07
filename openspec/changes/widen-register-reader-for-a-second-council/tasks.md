@@ -70,11 +70,20 @@ named in §5. Each row below cites the openxFactory row it discharges.
       a test suite; a rename for accuracy is a deliberate openxFactory
       bookkeeping act, not a side effect.
       **RULED — keep the prescribed id**, as recommended.
-- [ ] 1.8 On ratification, set `proposal.md`'s `Status:` to `ratified`, add the
+- [x] 1.8 On ratification, set `proposal.md`'s `Status:` to `ratified`, add the
       `Ratified:` line with the word verbatim, and record the five rulings
       beside the questions they answer.
-- [ ] 1.9 `OPENSPEC_TELEMETRY=0 openspec validate widen-register-reader-for-a-second-council
+      **DONE** on `main` at `ca1a7e5` (PR #16): front-matter `Status: ratified`
+      + `Ratified:` line with the word verbatim, "## Ratification record,
+      2026-09-06", and Q-WRR-1..5 each recorded beside its question and in
+      rows 1.3–1.7. Ticked here in the realization slice, which is the first
+      pass to read the row after the commit that satisfied it.
+- [x] 1.9 `OPENSPEC_TELEMETRY=0 openspec validate widen-register-reader-for-a-second-council
       --strict` and `--all --strict` clean from the repository root.
+      **GREEN** — "Change ... is valid"; `--all --strict` 6 passed, 0 failed,
+      with `add-per-seat-register-entries` still ACTIVE (the archive is ordered,
+      validation is not). Re-run after every commit of this slice; recorded in
+      `realization-evidence-2026-09-06.md` §2.
 
 ## 2. RED FIRST — carried by THIS pull request
 
@@ -125,36 +134,90 @@ tests rather than take the transcript on trust.
 
 ## 3. The fixes — AFTER ratification (§1.2), not before
 
-- [ ] 3.1 **[openxFactory row 2.3]** Key `_check_seat_keys`' duplicate table on
+- [x] 3.1 **[openxFactory row 2.3]** Key `_check_seat_keys`' duplicate table on
       the PAIR (`council_id`, `seat_id`). **Leave `key_id` and
       `key_fingerprint` uniqueness GLOBAL.** The refusal keeps the code
       `register-seat-duplicate` and its message names the council.
-- [ ] 3.2 **[openxFactory row 2.4] [GOVERNANCE]** Per the Q-GRC-5 ruling, retire
+      **DONE** (`9ebc686`). The table keys `seat_id` on the pair and the other
+      two on the value alone; the scoped refusal now reads "... is already
+      recorded under council 'X' at seat_keys[N]" and the global one says the
+      uniqueness is GLOBAL whatever the councils. Global uniqueness is asserted
+      ACROSS councils in two new self-test probes and in
+      `test_key_id_and_fingerprint_stay_globally_unique`, so a later edit cannot
+      drag `key_id` into the pair silently — proven by mutation (`realization-evidence-2026-09-06.md` §3).
+- [x] 3.2 **[openxFactory row 2.4] [GOVERNANCE]** Per the Q-GRC-5 ruling, retire
       `REGISTER_MVP_SINGLE_ROW` and its refusal in favour of the three
       invariants (`design.md` D1/D3), rather than substituting the number 2 for
       the number 1. Retire `register-minimal-shape-exceeded` by name per the
       Q-WRR-1 ruling; re-point it at nothing.
-- [ ] 3.3 Convert §2's two `xfail(strict=True)` tests to plain assertions in the
+      **DONE** (`9ebc686`). The constant and the refusal are gone; the three
+      invariants are enumerated where the constant stood, each mapped to the
+      code that already enforced it, and **NO NEW FINDING CODE IS ADDED**. The
+      retirement is asserted two ways: the string is emitted by none of the
+      fixtures that used to trigger it, and it is no longer a string LITERAL in
+      the reader (an AST assertion, so a comment may still narrate the
+      retirement while nothing can emit or assert it). Q-WRR-2: no numeric
+      bound, stated as a decision in the reader and in the spec text. Q-WRR-3:
+      the absence flip does not ride — `_check_seat_keys`' absent-surface branch
+      is byte-untouched.
+- [x] 3.3 Convert §2's two `xfail(strict=True)` tests to plain assertions in the
       same commit as the fix they measure. A strict xfail that starts passing
       fails the suite, so this cannot be forgotten silently — but the conversion
       is what makes the test an assertion about the widened reader rather than a
       record of the old one.
-- [ ] 3.4 **[openxFactory row 2.5]** Extend the reader's own S4 self-test block
+      **DONE** (`9ebc686`), and the two "exact codes today" measurements were
+      CONVERTED with them rather than deleted — a widened reader must not end up
+      with fewer assertions than the narrow one had. The row-count measurement
+      became the RETIREMENT assertion; the seat-name measurement became the
+      per-council duplicate (refusal survives, message names the council, the
+      other body's identically-named seat untouched, `8 of 9` adjudicated). One
+      test added for the invariant only a multi-body register can violate.
+      Suite: 104 passed + 2 xfailed → 107 passed, no xfails in the module.
+- [x] 3.4 **[openxFactory row 2.5]** Extend the reader's own S4 self-test block
       with the four probes `design.md` D4 names — two-bodies-clean,
       two-councils-one-seat-name, seat-duplicate-within-one-council, and
       second-row-unresolved — and REMOVE the
       `self-test/register-minimal-shape-exceeded` probe in the same edit, so the
       self-test never asserts a refusal the reader can no longer emit.
-- [ ] 3.5 Update the reader's own comments where they state the retired rule:
+      **DONE** (`9ebc686`), with SIX probes rather than four: D4's four, plus
+      `register-seat-attached-to-another-bodys-row` (invariant (ii) in the shape
+      only a multi-body register can take) and
+      `seat-duplicate-across-councils[key_id|key_fingerprint]` (the global
+      uniqueness the pair key must not drag with it). `register-two-bodies-clean`
+      also asserts the NOTES positively — `2 row(s)` and `6 of 6` — because a
+      widened reader that admits a second body without reading its seats is the
+      vacuous pass this surface exists to close. TWO probes asserting the
+      retired code were removed, not one: D4 named
+      `self-test/register-minimal-shape-exceeded`, and
+      `self-test/seat-keys-do-not-raise-the-cap` asserted the same code. All six
+      run in the validator's normal invocation, which is what every consumer
+      runs; proven to bite by mutation (`realization-evidence-2026-09-06.md` §3).
+- [x] 3.5 Update the reader's own comments where they state the retired rule:
       the `REGISTER_MVP_SINGLE_ROW` block, `check_register`'s docstring, the
       `REVOKED IS EXEMPT` note (which cites the cap as forbidding the second
       row a re-issuance would need), and `_check_seat_keys`' duplicate comment.
       A comment that describes a removed constant is the same defect one
       altitude up from a spec that does.
-- [ ] 3.6 Run the full gate bar locally: `scripts/verify-contract-pin.py`, the
+      **DONE** (`9ebc686`), and TWO SURFACES BEYOND THE FOUR NAMED, because the
+      same defect had spread further than the row anticipated: the reader's
+      module docstring (rule (u)'s summary said the single-row cap binds
+      authority rows), the self-test's own wallet-v1.4 note, plus — outside the
+      reader — `tests/register_reissuance/`' narration and
+      `specs/014-per-seat-register-entries/spec.md` FR-007/FR-008, which now
+      carry AMENDED and SUPERSEDED notes. Historical citations in
+      `contracts/CHANGELOG.md`'s wallet-v1.2/v1.4 entries are left exactly as
+      written: they record what was true at those cuts.
+- [x] 3.6 Run the full gate bar locally: `scripts/verify-contract-pin.py`, the
       syntax gate, the validator plain and `--strict`, `python3 -m pytest
       tests/ -q`, and `OPENSPEC_TELEMETRY=0 openspec validate --all --strict`
       (AGENTS.md rule 5).
+      **ALL GREEN**, before and after, recorded row by row in `realization-evidence-2026-09-06.md` §2 — plus the
+      two READ-ONLY CONSUMER CHECKS that no local gate covers: openxFactory's
+      LIVE register at `origin/main` (`9ffc6252`) reads byte-identically under
+      the pinned and the widened reader, plain and `--strict` (`realization-evidence-2026-09-06.md` §4, design
+      D6 / openxFactory task 2.9), and the #717 design-D5 probe tree moves from
+      four errors and `5 of 8` to rc=0 and `8 of 8` (`realization-evidence-2026-09-06.md` §5, openxFactory task
+      2.8's literal).
 
 ## 4. The release — allocated at realization, never reserved
 
@@ -164,19 +227,59 @@ tests rather than take the transcript on trust.
       `contract_bundle_version` in `contracts/manifest.yaml`, an annotated
       `wallet-v<major>.<minor>` tag, the exact release commit with per-file
       digests, and the `contracts/CHANGELOG.md` entry.
-- [ ] 4.2 Cut `contracts/releases/wallet-v1.<n>.digests.yaml` BY RECOMPUTATION
+      **RELEASE VALUE ALLOCATED AT REALIZATION: `wallet-v1.5`** — additive minor
+      for the bundle, REDUCING for the reader's refusal set, eight contract
+      digests UNCHANGED. FOUR of the five values land in the realization pull
+      request (per-file schema versions unchanged and proven so;
+      `contract_bundle_version` bumped, the only line moving in that file;
+      `contracts/releases/wallet-v1.5.digests.yaml` cut by recomputation, one
+      line different from its predecessor; the CHANGELOG entry with the
+      removed-refusal migration note).
+      **THE FIFTH VALUE — THE TAG — IS THE CUT ACT, AND IT IS NOT PERFORMED BY
+      THIS SLICE.** The act: an ANNOTATED tag `wallet-v1.5` at the MERGE COMMIT
+      this pull request produces on `main` — never a branch head, never a
+      force-movable ref — its message naming the release, its change class for
+      contract content (NONE), and the authority it was cut on. The performer:
+      the LANE COORDINATOR (lane `hermes-wallet-exercise`) on Brett Heap's word,
+      AFTER the human merge, as at every release since `wallet-v1.0`
+      (`wallet-v1.4` at `b7b0fbb3` is the model). It cannot ride the realization
+      commit: the tag addresses a commit that does not exist until the merge.
+      This row therefore stays OPEN and keeps its `[OPERATOR]` mark; see `realization-evidence-2026-09-06.md` §6.
+- [x] 4.2 Cut `contracts/releases/wallet-v1.<n>.digests.yaml` BY RECOMPUTATION
       over the tree, as v1.2/v1.3/v1.4 were, and prove it differs from its
       predecessor in exactly ONE line, `bundle_tag`. This is the reader-only
       release class: a consumer's pin bump then moves `commit:` and
       `contract_bundle_tag:` and nothing else.
-- [ ] 4.3 `contracts/CHANGELOG.md` entry, carrying the MIGRATION NOTE for the
+      **DONE** — `contracts/releases/wallet-v1.5.digests.yaml`, eight entries,
+      selection by the DECLARED FIELD `release_surface: false` (never a
+      `contracts/schemas/` path heuristic), sha256 over raw bytes, bytewise path
+      order, every digest cross-checked against `contracts/manifest.yaml`'s
+      recorded value. `diff` against `wallet-v1.4.digests.yaml` is exactly one
+      line: `bundle_tag`. THE PROCEDURE ITSELF IS VERIFIED — the same run
+      against `wallet-v1.4` reproduced that committed file BYTE-FOR-BYTE, so the
+      cut is a recomputation and not a copy with a string edited.
+- [x] 4.3 `contracts/CHANGELOG.md` entry, carrying the MIGRATION NOTE for the
       retired refusal `register-minimal-shape-exceeded` (Q-WRR-1) — a REMOVED
       finding code, named, with the estate search that measured its blast
       radius. AGENTS.md rule 2 requires the note even though the search found no
       consumer pinning it.
+      **DONE** — the `wallet-v1.5` entry carries "MIGRATION NOTE — a REMOVED
+      refusal" naming the code, what a consumer pinning it must do (delete the
+      assertion; the fact it adjudicated no longer exists), why retirement beat
+      re-scoping, and the citation table — with FOUR rows rather than design
+      D5's two, because realization found two more in THIS repository
+      (`realization-evidence-2026-09-06.md` §7). It states separately that `register-seat-duplicate` is a KEPT
+      code whose TRIGGER narrows, which is a different compatibility class and
+      would otherwise be averaged into the same paragraph.
 - [ ] 4.4 Realization evidence recorded on this change before archive: merged,
       green, and the openxFactory pin advanced (see §5.1) — because a reader
       release no consumer pins has widened nothing.
+      **PARTIAL, and it stays open on purpose.** The openXwallet half is
+      recorded in `realization-evidence-2026-09-06.md`: gates green before and after, the mutation proof, both
+      consumer checks, and the release bookkeeping. What is still owed and is
+      NOT this repository's act: merge, the tag cut (§4.1), and the openxFactory
+      pin advance with its gate literals (§5.1–§5.3). A reader release no
+      consumer pins has widened nothing, so this row closes there and not here.
 
 ## 5. Owed downstream, named with owners — NOT discharged here
 
