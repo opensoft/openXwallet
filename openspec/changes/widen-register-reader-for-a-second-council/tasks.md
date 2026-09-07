@@ -221,7 +221,7 @@ tests rather than take the transcript on trust.
 
 ## 4. The release — allocated at realization, never reserved
 
-- [ ] 4.1 **[openxFactory row 2.6] [OPERATOR]** Cut the bundle
+- [x] 4.1 **[openxFactory row 2.6] [OPERATOR]** Cut the bundle
       (`wallet-v1.5` or as allocated). AGENTS.md rule 6: FIVE coordinated
       values — per-file `contract_schema_version` (all UNCHANGED here),
       `contract_bundle_version` in `contracts/manifest.yaml`, an annotated
@@ -245,6 +245,18 @@ tests rather than take the transcript on trust.
       (`wallet-v1.4` at `b7b0fbb3` is the model). It cannot ride the realization
       commit: the tag addresses a commit that does not exist until the merge.
       This row therefore stays OPEN and keeps its `[OPERATOR]` mark; see `realization-evidence-2026-09-06.md` §6.
+      **DONE — TAG CUT 2026-09-07 ~00:55Z.** Verified: `git cat-file -t wallet-v1.5`
+      → `tag` (tag object `ff9ac797`); `git rev-parse wallet-v1.5^{commit}` →
+      `f3eb929b`, PR #18's merge commit on `main`, confirmed an ancestor of
+      `origin/main` by `git merge-base --is-ancestor`; `git tag -n1 wallet-v1.5`
+      begins "wallet-v1.5: the register reader admits a second commissioned
+      body …"; cut by the lane coordinator (lane `hermes-wallet-exercise`,
+      session `9f81d930`) on Brett Heap's word "cut wallet-v1.5". The five
+      AGENTS.md rule 6 values agree at `f3eb929b`: per-file
+      `contract_schema_version` unchanged, `contract_bundle_version:
+      wallet-v1.5` in `contracts/manifest.yaml`, this annotated tag,
+      `contracts/releases/wallet-v1.5.digests.yaml`, and the `## wallet-v1.5`
+      entry in `contracts/CHANGELOG.md`.
 - [x] 4.2 Cut `contracts/releases/wallet-v1.<n>.digests.yaml` BY RECOMPUTATION
       over the tree, as v1.2/v1.3/v1.4 were, and prove it differs from its
       predecessor in exactly ONE line, `bundle_tag`. This is the reader-only
