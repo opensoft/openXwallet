@@ -189,3 +189,7 @@ A contract release is five coordinated values: per-file
 an annotated `wallet-v<major>.<minor>` tag, the exact release commit with per-file
 digests, and a matching `contracts/CHANGELOG.md` entry. Version numbers are
 allocated at realization, never reserved in a proposal.
+
+## License
+
+Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE).
