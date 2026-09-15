@@ -82,21 +82,21 @@ AND ITS PRICE"):
 > digest of what it copied, and states the divergence it accepts — as an
 > INTERIM.
 
-`contracts/manifest.yaml`'s `openspec-cli-pin` row restates the same three
-fields for this pin. `contracts/README.md` § "Gating archives on the pinned
-CLI from a consumer repository" names the missing field — *"a per-file
-`sha256`"* — against xFactory-Hermes-Install as the fallback's first realized
-instance; `opensoft/openxFactory#754`'s 2026-09-10 measurement comment
-extends the identical finding to this repository by name, measured in the
-same posture (commit and divergence declared, digest absent), and notes
-explicitly that this repository's vendored tarball under
-`tools/openspec-cli-pin/` is THE ARTIFACT, not the copied gate files, so
-carrying it does not by itself discharge this field either. The table above
-supplies the field for all five vendored files, the tarball included. The
-commit (`44d8fbaf7d977668973dcd116040c9405416c2ea`) and the divergence (the
-one hunk in the workflow — the `openXwallet DIVERGENCE` comment block plus
-the `--tarball`-passing `run:` line) were already declared; this closes the
-third field.
+`openxFactory` `contracts/manifest.yaml`'s `openspec-cli-pin` row restates
+the same three fields for this pin. `openxFactory` `contracts/README.md` §
+"Gating archives on the pinned CLI from a consumer repository" names the
+missing field — *"a per-file `sha256`"* — against xFactory-Hermes-Install as
+the fallback's first realized instance; `opensoft/openxFactory#754`'s
+2026-09-10 measurement comment extends the identical finding to this
+repository by name, measured in the same posture (commit and divergence
+declared, digest absent), and notes explicitly that this repository's
+vendored tarball under `tools/openspec-cli-pin/` is THE ARTIFACT, not the
+copied gate files, so carrying it does not by itself discharge this field
+either. The table above supplies the field for all five vendored files, the
+tarball included. The commit (`44d8fbaf7d977668973dcd116040c9405416c2ea`)
+and the divergence (the one hunk in the workflow — the `openXwallet
+DIVERGENCE` comment block plus the `--tarball`-passing `run:` line) were
+already declared; this closes the third field.
 
 **What each SHA-256 is a digest of, and how the tarball's differs.** The
 first four rows' SHA-256 is `sha256sum` over the file's full bytes as
