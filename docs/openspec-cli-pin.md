@@ -14,13 +14,13 @@ pin and have no live lane of their own.
 
 ## What is here
 
-| File | Role |
-| --- | --- |
-| `contracts/openspec-cli-pin.yaml` | the pin: package, version, npm SHA-512 integrity and SHA-1, tarball, rollback entry, and the estate's `dispositions:` block |
-| `scripts/validate-openspec-cli-pin.py` | the consumer entrypoint — fetches the artifact, recomputes both digests, refuses on mismatch, installs, asserts the reported version, then runs `openspec validate … --strict` through it |
-| `scripts/install-pinned-openspec-cli.py` | installs the verified binary and appends it to `$GITHUB_PATH`. An install, never a verdict |
-| `.github/workflows/openspec-cli-pin-gate.yml` | runs the entrypoint with `--all --no-cache --tarball <the vendored artifact>` on every pull request to `main` |
-| `tools/openspec-cli-pin/fission-ai-openspec-1.12.0-c844543999f673cdd72445879b86a4abea4c07ef.tgz` | the pinned artifact itself, 477 381 bytes, vendored on Brett Heap's ruling of 2026-09-07 so the gate resolves it without a registry call. The file NAME carries the pin's SHA-1, so a bump cannot silently reuse the path |
+| File | Role | SHA-256 (as vendored here) |
+| --- | --- | --- |
+| `contracts/openspec-cli-pin.yaml` | the pin: package, version, npm SHA-512 integrity and SHA-1, tarball, rollback entry, and the estate's `dispositions:` block | `37810bbf1bc17866ea01e0d5acded35e517ddaec2caea7587bd444a9b8c561b6` |
+| `scripts/validate-openspec-cli-pin.py` | the consumer entrypoint — fetches the artifact, recomputes both digests, refuses on mismatch, installs, asserts the reported version, then runs `openspec validate … --strict` through it | `5d823c290ee03e017c4006f8780381aa8b17cf873ccf4f3b08782ef18d728093` |
+| `scripts/install-pinned-openspec-cli.py` | installs the verified binary and appends it to `$GITHUB_PATH`. An install, never a verdict | `ff3ea122db9ecf89d740d660264f9d37f1d3339e0b3462bc5bdd8e890cc974bb` |
+| `.github/workflows/openspec-cli-pin-gate.yml` | runs the entrypoint with `--all --no-cache --tarball <the vendored artifact>` on every pull request to `main` | `0d6414f079473ebced15f6b11d558aaac0b4dd3e1ac3fd24fcd121ad2b39c9b9` |
+| `tools/openspec-cli-pin/fission-ai-openspec-1.12.0-c844543999f673cdd72445879b86a4abea4c07ef.tgz` | the pinned artifact itself, 477 381 bytes, vendored on Brett Heap's ruling of 2026-09-07 so the gate resolves it without a registry call. The file NAME carries the pin's SHA-1, so a bump cannot silently reuse the path | `ec9737f8211099ef211f9bc7db195fb9a2afe95a52668670b61a5e8d16e1adcc` (supplementary — see below; the pin referent remains the SHA-512 `integrity` / SHA-1 `shasum` recorded in `contracts/openspec-cli-pin.yaml`) |
 
 Three of the four are **byte-identical** to their openxFactory originals below a
 vendoring header block, and the fourth — the workflow — is byte-identical except
@@ -68,6 +68,74 @@ EOF
 
 Nothing has to trust this doc for that: the gate recomputes both digests over these
 bytes on every run and refuses `pin-integrity-mismatch` before installing anything.
+
+## The per-file digest of what was copied
+
+`neutral-product-pin`'s promoted requirement states the declared-copy
+fallback this repository is an instance of (`openxFactory`
+`openspec/specs/neutral-product-pin/spec.md`, "THE ONE ADMITTED FALLBACK,
+AND ITS PRICE"):
+
+> A repository that carries NO `xfactory:` stack pin cannot perform the read
+> above at all, and MAY therefore carry a DECLARED consumption copy — a file
+> that names the `openxFactory` commit the copy was taken from, records the
+> digest of what it copied, and states the divergence it accepts — as an
+> INTERIM.
+
+`openxFactory` `contracts/manifest.yaml`'s `openspec-cli-pin` row restates
+the same three fields for this pin. `openxFactory` `contracts/README.md` §
+"Gating archives on the pinned CLI from a consumer repository" names the
+missing field — *"a per-file `sha256`"* — against xFactory-Hermes-Install as
+the fallback's first realized instance; `opensoft/openxFactory#754`'s
+2026-09-10 measurement comment extends the identical finding to this
+repository by name, measured in the same posture (commit and divergence
+declared, digest absent), and notes explicitly that this repository's
+vendored tarball under `tools/openspec-cli-pin/` is THE ARTIFACT, not the
+copied gate files, so carrying it does not by itself discharge this field
+either. The table above supplies the field for all five vendored files, the
+tarball included. The commit (`44d8fbaf7d977668973dcd116040c9405416c2ea`)
+and the divergence (the one hunk in the workflow — the `openXwallet
+DIVERGENCE` comment block plus the `--tarball`-passing `run:` line) were
+already declared; this closes the third field.
+
+**What each SHA-256 is a digest of, and how the tarball's differs.** The
+first four rows' SHA-256 is `sha256sum` over the file's full bytes as
+vendored — header included — not the header-stripped body the drift-check
+`diff` above compares, and (for the workflow) over the file EXACTLY AS
+ADAPTED with its one declared hunk. The tarball's SHA-256 is
+**supplementary**: the artifact's pin referent remains its npm SHA-512
+`integrity` and SHA-1 `shasum`, both already recorded in
+`contracts/openspec-cli-pin.yaml` and re-verified by the gate on every run
+(above); the SHA-256 in this table is an additional, uniform digest over the
+same bytes, in the same column as the other four files, and is not a second
+referent the gate checks against.
+
+**The divergence declaration stands, unchanged.** Recording these digests
+neither narrows nor re-opens the declared divergence above — the DIVERGENCE
+comment block and the `--tarball`-passing `run:` line remain the accepted,
+documented difference from openxFactory's original.
+
+**A re-vendor must update all five digests in the same commit**, and a
+version bump of the pinned CLI additionally changes the tarball's own name,
+bytes and SHA-256 together (the file name carries the pin's SHA-1, so a bump
+cannot silently reuse the path). Updating the vendoring header, the pin, or
+the tarball without updating this table would leave a stale digest recorded
+beside a fresh copy — the exact drift this table exists to catch, not to
+cause.
+
+**Staleness, checked against the named commit.** Run 2026-09-14: `diff`
+against `opensoft/openxFactory@44d8fbaf7d977668973dcd116040c9405416c2ea` for
+the first three files returns EMPTY, and the workflow's diff returns EXACTLY
+the one declared hunk (the DIVERGENCE comment block plus the `--tarball`
+`run:` line) and nothing else. This copy is **NOT STALE** — at this reading
+it is exactly what its header claims.
+
+**A recorded digest, not a discharged claim.** Per `neutral-product-pin`, a
+declared consumption copy is TOLERATED, never LAWFUL; recording these digests
+makes the copy AUDITABLE and does not retire it. The promoted requirement *A
+required check runs the pinned tool, at the pinned digest* stays UNMET here
+for as long as this repository carries no `xfactory:` stack pin, exactly as
+before this table existed.
 
 ## Why the estate's `dispositions:` are inert here
 
