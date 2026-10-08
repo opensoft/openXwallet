@@ -329,7 +329,7 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
         measured 37 passed, 1 skipped; the spec leg's own vendored OpenSpec
         gate green. Codex did not review these pull requests: its connector
         was at its usage limit.
-- [ ] 4.5 `[openWallet-root]` Carve the `openwallet_root` rows and apply the
+- [x] 4.5 `[openWallet-root]` Carve the `openwallet_root` rows and apply the
       manifest's declared field edits:
       - `carved_from:`;
       - each owned row's `path:` gaining `code/`;
@@ -339,10 +339,34 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
       Do it in ONE root commit that also moves both gitlinks and
       `contracts/{code,spec}-pin.yaml` in lockstep. The shape's `validate` is
       green.
+      - **LANDED 2026-10-08** in opensoft/openWallet#2 at merge
+        `1c68717f1ae4ae132d6942f8c7f533baf292d0b6` (a merge commit). The
+        lockstep commit is `b48bcb20b31dece4d582444cf01f617a799d297d`
+        (parents: root `main` `2b8e2234`, the pure carve layer `3c44089c`):
+        ten `openwallet_root` rows carved from the carve commit;
+        `contracts/manifest.yaml` changed on its 67 declared lines only
+        (`carved_from:`, eight `path:`/`source_path:` pairs now
+        `code/contracts/…` and `openWallet-code/contracts/…`, the consumed
+        hermes row removed); both gitlinks and `contracts/{spec,code}-pin.yaml`
+        moved to spec `15c15bbd451a803f0acdb24e5234836db829a2d3` and code
+        `72313daab1f229c049cb90998931564c1904dbbc`. Followed by `a51f05b6`
+        (runbook helper 3 `--diff-algorithm=histogram`, helper 5
+        `declared-lines-exact.py`) and `e4a7a6a9` (post-carve status in
+        AGENTS.md and README). `validate` completed success on head
+        `e4a7a6a9` with the real lockstep-pins step: `pins ok`. Helper 3 and
+        helper 5: 0 refusals; three-way 8/8; control 8/8. Codex did not
+        review: its connector was at its limit.
 - [ ] 4.6 `[openWallet-root]` The proof, `docs/byte-identity-<first tag>.md`,
       parts zero to five of `design.md` D7 — the DECLARED PATH MAPPING — each
       able to fail. A validator line in no declared hunk, or a path in no
       declared class, REFUSES it. Part three runs from the code leg's own root.
+      - **RULED 2026-10-08**, Brett Heap, label verbatim
+        "wallet-v1.6 (Recommended)" for the first root tag name, so the proof
+        is `docs/byte-identity-wallet-v1.6.md`; and
+        "Start now, neutrality half later (Recommended)": parts zero, one, two,
+        four and five authored now by lane openXwallet-2; part three's
+        composed-adapter half is filled when group 5's composed validator
+        exists (lane openXwallet-3). In progress.
 - [ ] 4.7 **[OPERATOR]** Three rulesets, each EVALUATE → one trivial pull request
       so its checks report → ACTIVE. Each is an org-admin act in `opensoft`.
       - root: `validate`;
@@ -351,6 +375,10 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
 - [ ] 4.8 `[openWallet-spec]` openWallet's birth change in the leg's own
       OpenSpec instance, after 4.3 lands. It MODIFIES *Agent authority is grant
       scope, not a parallel vocabulary* to the text drafted in `design.md` D8.
+      - Being authored by lane openXwallet-1 as change
+        `bind-approval-posture-vocabulary` in opensoft/openWallet-spec
+        (branch `birth/bind-approval-posture-vocabulary`, head `1cc53ce0`,
+        claimed on #25 2026-10-08). PR pending.
 - [ ] 4.9 **[OPERATOR]** `[openWallet-root]` First release — five coordinated
       values — on the ROOT:
       - the annotated `wallet-v*` tag on the root commit that pins both legs;
@@ -359,6 +387,9 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
       - no leg tag;
       - the tag only after 4.6 is green;
       - the number allocated here, not before.
+      - The tag NAME `wallet-v1.6` was allocated 2026-10-08 on the ruling at
+        4.6. The tag itself is cut only after 4.6 is green and 4.7's rulesets
+        are ACTIVE.
 
 ## 5. The adapter rebuild — this repository, one pull request
 
@@ -374,6 +405,9 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
       gitlink ≠ pin, a checkout ≠ pin, a leg-lockstep mismatch (the root's `code`
       gitlink vs its `contracts/code-pin.yaml` vs `legs.code.commit`, read from
       git objects) and a mutated digest.
+      - Group 5 is being authored by lane openXwallet-3 on branch
+        `rebuild/adapter-group-5` (claimed on #25, 2026-10-08). The root to
+        pin is `1c68717f1ae4ae132d6942f8c7f533baf292d0b6`.
 - [ ] 5.2 `scripts/validate-openxwallet.py` recomposed per `design.md` D5:
       - the pinned core loaded in process from
         `openWallet/code/scripts/validate-openxwallet.py`;
