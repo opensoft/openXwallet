@@ -286,15 +286,33 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
 
 ## 4. The carve, the path-mapping proof, the first release `[openWallet]`
 
-- [ ] 4.1 The CONTROL: the eight recorded sha256s recomputed at the carve
+- [x] 4.1 The CONTROL: the eight recorded sha256s recomputed at the carve
       commit, 8/8, before anything is carved.
-- [ ] 4.2 `[openWallet-code]` Carve the carve manifest's `openwallet_code` rows:
+      - **DONE 2026-10-08**, before anything was carved. `bin/control.py` (phase
+        0 of `docs/openwallet-cutover-runbook.md` in opensoft/openWallet), run
+        against a fresh `--mirror --no-local` clone of opensoft/openXwallet at
+        the carve commit `90111df262d6f54f7e82651d860adc12345f83f4`, printed
+        `control: 8/8 owned digest(s) recomputed equal`. Re-run the same day
+        with the same result.
+- [x] 4.2 `[openWallet-code]` Carve the carve manifest's `openwallet_code` rows:
       `git filter-repo` from a fresh clone, one exact `--path` per row, no globs,
       no `--path-rename`, full history. Merge into the seeded leg with
       `--allow-unrelated-histories`. Blob and mode identity 100% at the carve
       layer; both `examples/` prefixes preserved.
-- [ ] 4.3 `[openWallet-spec]` The same for the `openwallet_spec` rows.
-- [ ] 4.4 The declared-edit layer per leg, one auditable diff each.
+      - **LANDED 2026-10-08** in opensoft/openWallet-code#2 at merge
+        `72313daab1f229c049cb90998931564c1904dbbc` (a merge commit; parents
+        `51b8e9c3` the scaffold `main` and commit B,
+        `75b990dc7ea99823626c18816b37d971f46e341b`). Commit A, the pure carve
+        layer, is `32c933551b92d83122a45847215d5ebe92ae6740`. Checks
+        `wallet-validation` and `pytest-suite` completed success on head
+        `75b990dc`.
+- [x] 4.3 `[openWallet-spec]` The same for the `openwallet_spec` rows.
+      - **LANDED 2026-10-08** in opensoft/openWallet-spec#2 at merge
+        `15c15bbd451a803f0acdb24e5234836db829a2d3` (a merge commit; parents
+        `cfd0a69c` the scaffold `main` and
+        `5ea9539428eae850ba71e6f0ba8a38db061e809a` commit B). Commit A, the pure
+        carve layer, is `c788cba28a81b0dc17da4cea5db1e57eceb3a193`.
+- [x] 4.4 The declared-edit layer per leg, one auditable diff each.
       - Code leg: validator hunks (a)–(e); the corpus binding added (Q6); the
         `tests/nested_repo_prune/` split; `wallet-validation`'s envelope-verify
         step removed; `LICENSE` added.
@@ -306,6 +324,11 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
         corpus note 21/42/11. Measured: 37 passed, 1 skipped.
       - Spec leg: the eleven subject lines; the three `openXwallet` occurrences in
         `add-composition-drift-cascade`'s deltas; `LICENSE` added.
+      - **LANDED 2026-10-08**, both legs' commit B inside the merges at 4.2 and
+        4.3, one auditable diff each (`git diff A B` per leg). Code leg
+        measured 37 passed, 1 skipped; the spec leg's own vendored OpenSpec
+        gate green. Codex did not review these pull requests: its connector
+        was at its usage limit.
 - [ ] 4.5 `[openWallet-root]` Carve the `openwallet_root` rows and apply the
       manifest's declared field edits:
       - `carved_from:`;
