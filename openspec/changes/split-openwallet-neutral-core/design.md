@@ -694,6 +694,19 @@ ACTIVE; day-one REQUIRED is impossible.
     `code/`, `source_path:`, and the consumed hermes row removed;
   - the eleven subject lines, plus the travelling change's three occurrences;
   - the code-leg workflow's envelope-verify step.
+
+  **AMENDED 2026-10-08.** Brett Heap, operator authority, in session, by
+  multiple choice, label verbatim: "Amend the manifest: 8 declared lines
+  (Recommended)" (opensoft/openXwallet#25, comment 6068473776). The test split
+  gains eight lines, and no class is added:
+  - `tests/multi_key_wallets/test_declared_key_sets.py` :108-111 and :117-118.
+    The `_grant` fixture's hermes-named posture keys are refused by Q6's
+    fail-closed behaviour when no binding is declared, so that row becomes
+    `moved_with_declared_edit`;
+  - `tests/nested_repo_prune/test_prune_and_register_note.py` :47-48. The
+    pinned corpus note becomes 21 / 42 / 11 of 11.
+
+  The carve commit does not move.
 - **The declared additions are closed too:** the corpus binding and the legs'
   `LICENSE`.
 

@@ -298,6 +298,12 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
       - Code leg: validator hunks (a)–(e); the corpus binding added (Q6); the
         `tests/nested_repo_prune/` split; `wallet-validation`'s envelope-verify
         step removed; `LICENSE` added.
+      - Amended 2026-10-08, on Brett Heap's ruling "Amend the manifest: 8
+        declared lines (Recommended)" (#25). The code leg's test split also
+        takes `tests/multi_key_wallets/test_declared_key_sets.py` :108-111 and
+        :117-118, which drop the `_grant` fixture's posture, and
+        `tests/nested_repo_prune/test_prune_and_register_note.py` :47-48, the
+        corpus note 21/42/11. Measured: 37 passed, 1 skipped.
       - Spec leg: the eleven subject lines; the three `openXwallet` occurrences in
         `add-composition-drift-cascade`'s deltas; `LICENSE` added.
 - [ ] 4.5 `[openWallet-root]` Carve the `openwallet_root` rows and apply the
