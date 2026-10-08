@@ -16,6 +16,19 @@ Speckit feature this change hands off to; do not duplicate it here.
       holder left with no active standing reaching a human through the
       CONSUMING capability's declared escalation path (limb c, stated
       neutrally — openXwallet names no mechanism of openxFactory's).
+      **Rebased 2026-10-08** onto the `wallet-v1.3` text that
+      `add-multi-key-wallets`' archive promoted, under Brett Heap's ruling on
+      openXwallet PR #27, "Rebase drift-cascade now, then land (Recommended)".
+      A MODIFIED block replaces the whole requirement, so it now carries,
+      verbatim and where canon holds them, the first paragraph's closing
+      sentence "Retiring one DECLARED KEY of a wallet SHALL stop that key
+      presenting the wallet's authority without revoking the wallet itself or
+      the authority its other declared keys still present, and that retirement
+      SHALL be checked at exercise for the same reason every other revocation
+      is." and the scenario *retiring one key does not revoke the wallet*,
+      after *revocation is checked at use*: three existing scenarios, not two.
+      This change's own four paragraphs and four scenarios are unchanged, and
+      the agent-profile delta is untouched.
 - [x] 1.2 `openxwallet-agent-profile` — MODIFIED `A composition change revokes
       the agent's grants immediately`, restated in full with its two existing
       scenarios intact and four added. Gains: composition change produces a

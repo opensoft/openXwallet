@@ -8,7 +8,11 @@ openXwallet SHALL make revocation effective through derivation: revoking a
 grant revokes everything derived from it, and revoking a holder's standing
 revokes that holder's outstanding grants, in both cases without waiting for
 expiry. A capability consuming grants SHALL check revocation at exercise
-rather than trusting issuance.
+rather than trusting issuance. Retiring one DECLARED KEY of a wallet SHALL
+stop that key presenting the wallet's authority without revoking the wallet
+itself or the authority its other declared keys still present, and that
+retirement SHALL be checked at exercise for the same reason every other
+revocation is.
 
 Every revocation SHALL record a REASON CLASS, and the class is recorded but
 NEVER consulted to narrow propagation: a revocation classed DRIFT — an
@@ -44,6 +48,13 @@ which human are the consuming capability's to declare.
 - WHEN a grant is exercised after its holder's standing was revoked
 - THEN the exercise is refused
 - AND issuance-time validity is not accepted as evidence of current validity
+
+#### Scenario: retiring one key does not revoke the wallet
+
+- WHEN one declared key of a wallet is retired
+- THEN an exercise permitted under that key is refused
+- AND the wallet's other declared keys continue to present its authority
+- AND the wallet's own standing is unchanged by the retirement
 
 #### Scenario: a drift revocation cascades exactly like a cause revocation
 

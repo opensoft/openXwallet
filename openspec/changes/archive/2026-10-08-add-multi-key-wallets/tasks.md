@@ -254,3 +254,53 @@ Speckit builds these; OpenSpec ratified them. The realization feature is
   `custody_model` — `holder_readable` for every seat — as
   `custody_model_in_force`. Both now resolve against the wallet's declared set
   without an edit. The conditional successor is §7.6.
+
+### At archive (2026-10-08, lane `openXwallet-2`)
+
+Archived by `split-openwallet-neutral-core` task 2.1 with the pinned
+`@fission-ai/openspec@1.12.0`, resolved through
+`scripts/install-pinned-openspec-cli.py` and run as `openspec archive
+add-multi-key-wallets --yes`: `openxwallet: update`, `~ 4 modified`,
+`Totals: + 0, ~ 4, - 0, → 0`. Bytes checked rather than assumed: the four
+files of this change were SHA-256-recomputed after the move and equal the
+active change's, so the move edited nothing, and this section is the one edit
+made after it. The four promoted requirement blocks equal this change's
+MODIFIED blocks verbatim; the other four promoted requirements are untouched;
+`## Purpose` keeps the key-SET wording §6.4 already put there, since the CLI
+writes a TBD only for a spec it creates.
+
+openxFactory's governed wrapper (`scripts/proposal-support.py` at
+`44d8fbaf7d977668973dcd116040c9405416c2ea`) was NOT run — no checkout at that
+commit was available — so its substance was checked by hand. The realization
+evidence above is merged and tagged (`wallet-v1.3` at `6b248d4`) and the
+consumer completion is merged (openxFactory PR #480). The CLI counted 46/53
+boxes; the seven open boxes are §7.1–§7.7, the named successors `design.md` D6
+declines, and they stay unticked on purpose. No row in §1–§6 is an archive-gate
+row, so this section records the bar instead of ticking a box.
+
+**The full gate bar, re-run at archive** (branch `archive/add-multi-key-wallets`
+off `origin/main` `bf2dd4d`, with this archive applied):
+
+- `python3 scripts/verify-contract-pin.py` — OK, 1 vendored file matches
+  `contract_pin.yaml` at `openxFactory@30565e48ffe3` (bundle `contract-v1.44`).
+- `python3 scripts/wallet-yaml-syntax-gate.py .` — exit 0.
+- `python3 scripts/validate-openxwallet.py .` — 0 errors, 0 warnings.
+- `python3 scripts/validate-openxwallet.py . --strict` — 0 errors, 0
+  warnings; corpus 21 positive examples, 45 negative confirmations across
+  13/13 requirements (the same corpus note as before the archive).
+- `python3 -m pytest tests/ -q` — 106 passed, 1 skipped (the designed loud
+  skip: no different, previous `scripts/validate-openxwallet.py` blob is
+  reachable from this checkout).
+- The pinned gate, `python3 scripts/validate-openspec-cli-pin.py --all
+  --no-cache --tarball tools/openspec-cli-pin/fission-ai-openspec-1.12.0-c844543999f673cdd72445879b86a4abea4c07ef.tgz`
+  — **5 passed, 1 failed (6 items)**; before the archive it read 7 passed,
+  0 failed (7 items). The failure is not this change's:
+
+      change/add-composition-drift-cascade
+        ✗ [ERROR] openxwallet/spec.md: MODIFIED "Revocation propagates through the chain" omits scenario(s) the current spec still has: "retiring one key does not revoke the wallet". Copy them into the MODIFIED block (a MODIFIED requirement replaces the whole block, so archive refuses to drop them).
+
+  This is the collision `split-openwallet-neutral-core` measured in its
+  `design.md` D0 and assigned in D9: rebasing that MODIFIED block onto the
+  text this archive promoted is that packet's task 8.1, owed in openWallet's
+  spec leg, and it is not made here. The `openspec` on PATH (1.6.0) reads
+  6 passed, 0 failed over the same tree; the finding is 1.12's strictness.
