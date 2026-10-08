@@ -142,16 +142,40 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
 
 ## 3. openWallet's birth — three public repositories `[openWallet]`
 
-- [ ] 3.1 **[OPERATOR]** The name check for `openWallet`, `openWallet-spec` and
+- [x] 3.1 **[OPERATOR]** The name check for `openWallet`, `openWallet-spec` and
       `openWallet-code` — case variants in the organisation and an unscoped fork
       search — recorded BEFORE creation. On any hit, stop.
-- [ ] 3.2 **[OPERATOR]** The scaffold, from a pinned openRepoShape commit:
+      **DONE 2026-10-08**, before creation, on Brett Heap's word in session,
+      verbatim: "start group 3". `gh repo view` for `opensoft/openWallet`,
+      `opensoft/openWallet-spec`, `opensoft/openWallet-code` and the case
+      variants `openwallet`, `openwallet-spec`, `openwallet-code` and
+      `OpenWallet`: none resolved. `gh search repos openwallet --owner
+      opensoft`: no hit. The unscoped search found three unrelated third-party
+      repositories named openwallet or OpenWallet under other owners
+      (blocktree, Abhimanyu121, kyai), none a fork and none in the
+      organisation. No hit, so no stop. Recorded on issue #25
+      (https://github.com/opensoft/openXwallet/issues/25#issuecomment-6067172637).
+- [x] 3.2 **[OPERATOR]** The scaffold, from a pinned openRepoShape commit:
       `scaffold-project.py --org opensoft --project openWallet --visibility
       public --elected-by "Brett Heap" --elected-on 2026-10-08`, or the guided
       `setup.sh` with the same flags. The guided front door refuses `--org
       opensoft` without `--allow-upstream-org`, which is Brett's to pass and
       never an agent's.
-- [ ] 3.3 Verify the scaffold's `project.yaml` against `design.md` D7:
+      **DONE 2026-10-08** on Brett Heap's word in session, verbatim: "start
+      group 3". Run from openRepoShape `main` at
+      `7f84ca42ca86a8902928345109d2bf6bad87bd91` (tree `3be52767e727…`),
+      after a `--dry-run` that matched `design.md` D7 line for line, with
+      exactly the flags above. Created and pushed, all PUBLIC, topic
+      `xf-project-openwallet`, default branch `main`:
+      - assembly `opensoft/openWallet` at `84a0569e3b81`;
+      - spec leg `opensoft/openWallet-spec` at `72eca87cedbf` (tree
+        `b341b347574f…`);
+      - code leg `opensoft/openWallet-code` at `9cabda85f8c5` (tree
+        `b7eba3104569…`).
+
+      `scaffold-project.py` carries no upstream-org guard, so no flag was
+      passed; this is recorded as the operator's act, on his word.
+- [x] 3.3 Verify the scaffold's `project.yaml` against `design.md` D7:
       - `elected_by: "Brett Heap"`, `elected_on: 2026-10-08`;
       - `topic: xf-project-openwallet`, `visibility: public`, `tracking_branch: main`;
       - `shape:` pinning openRepoShape by commit and `sorted-ls-tree-r-v1` tree
@@ -161,13 +185,62 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
 
       Then check GitHub: `gh repo view` reads PUBLIC for all three, and each
       repository carries the topic.
-- [ ] 3.4 `[openWallet-root]` The cutover runbook, authored BEFORE the carve, a
+
+      **DONE 2026-10-08**, on the three repositories as created.
+      - In the assembly root, `make bootstrap` reads `bootstrap ok`: the legs
+        on `main` at their pins; `manifest ok: openWallet (openwallet), 3
+        legs`; both gitlinks equal `contracts/{spec,code}-pin.yaml`, the tree
+        digests recomputing; the 11 copied shape files match
+        `contracts/shape-pin.yaml`.
+      - `project.yaml` reads `elected_by: "Brett Heap"`, `elected_on:
+        2026-10-08`, `topic: xf-project-openwallet`, `visibility: public` and
+        `tracking_branch: main`; `shape:` pins openRepoShape at commit
+        `7f84ca42…` with `sorted-ls-tree-r-v1` tree digest `3be52767e727…`,
+        equal to the shape pin; `neutral_product_pins: []`; three legs with
+        `naming:` records (assembly `neutral-product`, legs `project-leg`).
+      - GitHub: `gh repo view` reads PUBLIC for all three, each carrying the
+        topic.
+- [x] 3.4 `[openWallet-root]` The cutover runbook, authored BEFORE the carve, a
       rollback per phase written before the phase; `.specify/` bootstrapped at
       the root.
-- [ ] 3.5 `[openWallet]` Each repository's `README.md`, `AGENTS.md`, `CLAUDE.md`
+      **DONE 2026-10-08** on Brett Heap's words in session, verbatim: "start
+      group 3" and "land them when green". Landed in opensoft/openWallet#1 at
+      merge `2b8e223454044ba33cf371637ed536635d7f4fcf` (head `cefb918c`);
+      check `validate` completed success.
+      - `docs/openwallet-cutover-runbook.md`: phases 0–6, each with its
+        rollback written before it. Every command was rehearsed in scratch
+        clones: the carve layers of 80 (code), 38 (spec) and 10 (root) rows
+        blob- and mode-identical with full history; the spec gate `3 passed`
+        with the subject lines applied; a root commit passing `make
+        validate`; and the three negatives OBSERVED — `pin-gitlink-mismatch`,
+        an undeclared line or file refused, a mutated blob `MISMATCH`.
+      - `.specify/` bootstrapped at the root: 47 files, the
+        `setup-openspeckit` three-leg output, no active feature, `memory/`
+        omitted as the root tracks none.
+      - The leg gitlinks and `contracts/{code,spec}-pin.yaml` are untouched.
+- [x] 3.5 `[openWallet]` Each repository's `README.md`, `AGENTS.md`, `CLAUDE.md`
       and `.github/CODEOWNERS`. The root's `AGENTS.md` points, beside
       `AGENTS-shape.md`, to the carve manifest's declared Q7 override.
-- [ ] 3.6 `[openWallet-spec]` The leg's own OpenSpec gate — RULED 2026-10-08,
+      **DONE 2026-10-08** on Brett Heap's words in session, verbatim: "start
+      group 3" and "land them when green". Landed across the three pull
+      requests:
+      - opensoft/openWallet#1 → `2b8e223454044ba33cf371637ed536635d7f4fcf`;
+      - opensoft/openWallet-spec#1 →
+        `cfd0a69cfbb78832195fd0acae4e7f4558855648`;
+      - opensoft/openWallet-code#1 →
+        `51b8e9c3b7beb9ecbed83529700948055e5872d7`.
+
+      Each repository carries `README.md`, `AGENTS.md`, `CLAUDE.md` and
+      `.github/CODEOWNERS`. The root's `AGENTS.md` points, beside
+      `AGENTS-shape.md`, to the carve manifest's declared Q7 override at
+      `docs/openwallet-carve-manifest.yaml` in openXwallet. Two declared
+      exceptions were flagged on the root pull request:
+      - two illustrative workspace-root example paths inside the vendored
+        `.specify` overlay, which is content-addressed, so the fix is
+        upstream;
+      - the shape-pinned root `.gitignore` cannot take `/worktrees/`, so the
+        workaround is `.git/info/exclude`.
+- [x] 3.6 `[openWallet-spec]` The leg's own OpenSpec gate — RULED 2026-10-08,
       "Vendor the tarball (Recommended)" (recorded at 2026-10-08T17:01:43Z).
       - The leg commits the content-addressed `@fission-ai/openspec@1.12.0`
         tarball at
@@ -185,6 +258,31 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
       - Vendored fresh, NOT carved (`design.md` D7).
       - The gate is OBSERVED refusing a mutated tarball before it is trusted,
         and is green over the leg's `openspec/` at `--strict`.
+
+      **DONE 2026-10-08** on Brett Heap's words in session, verbatim: "start
+      group 3" and "land them when green". Landed in
+      opensoft/openWallet-spec#1 at merge
+      `cfd0a69cfbb78832195fd0acae4e7f4558855648` (head `9152cf11`); check
+      `openspec-cli-pin-gate` completed success.
+      - Committed: the tarball at the path above,
+        `contracts/openspec-cli-pin.yaml`,
+        `scripts/install-pinned-openspec-cli.py`,
+        `scripts/validate-openspec-cli-pin.py` and
+        `docs/openspec-cli-pin.md`.
+      - `.github/workflows/openspec-cli-pin-gate.yml` vendored from
+        openxFactory `44d8fbaf7d977668973dcd116040c9405416c2ea`,
+        byte-identical except the one declared `run:` line (`--no-cache
+        --tarball` at the committed path).
+      - The leg's `AGENTS.md` rule 3 records the ruling as its own
+        offline-gate rule.
+      - `openspec/config.yaml` (`schema: spec-driven`) and nothing else under
+        `openspec/`. MEASURED on 1.12.0: no `openspec/` reads
+        `pin-no-target`, an empty directory `pin-report-unreadable`, and the
+        config alone `Totals: 0 passed, 0 failed`. So green today is the
+        empty total, not a content pass.
+      - OBSERVED refusing a mutated tarball: `REFUSE pin-integrity-mismatch …
+        INTEGRITY DRIFT`, exit 2.
+      - `LICENSE` is not yet in the legs: it is a declared addition at 4.4.
 
 ## 4. The carve, the path-mapping proof, the first release `[openWallet]`
 
