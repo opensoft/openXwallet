@@ -265,6 +265,11 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
 - [ ] 8.1 `[openWallet-spec]` Rebase `add-composition-drift-cascade`'s MODIFIED
       *Revocation propagates through the chain* onto the text multi-key's
       archive promoted, before that change archives.
+      **Pre-performed here 2026-10-08**, in openXwallet PR #27 under Brett
+      Heap's ruling on it ("Rebase drift-cascade now, then land
+      (Recommended)"): the block carries the promoted sentence and scenario
+      verbatim, so the change travels to openWallet already rebased and only
+      the subject rewrite (4.4) remains for it there.
 - [ ] 8.2 `[openWallet]` After the carve, never in it: the root manifest's stale
       corpus counts, and the code leg validator's `:337` pointer.
 - [ ] 8.3 Named successors: the neutral-prefix MAJOR (deferred by ruling), rule
