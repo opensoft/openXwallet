@@ -12,7 +12,10 @@ three-leg shape — which overrode its recommendation — with Q4's placement an
 Q5's visibility. Q3's ruling raised two more questions — Q7, the contracts'
 leg, and the spec leg's OpenSpec gate — and Brett ruled both later the same day
 by multiple choice (recorded at 2026-10-08T17:01:43Z); D7 encodes them. Every
-other position is PROPOSED, and the change itself is not ratified.
+other position is PROPOSED. The change itself was ratified on 2026-10-08
+(verbatim "ratify 26 and merge"), the rulings and the ratification being
+separate acts; ruling:
+https://github.com/opensoft/openXwallet/pull/26#issuecomment-6065121015
 
 ## Context
 

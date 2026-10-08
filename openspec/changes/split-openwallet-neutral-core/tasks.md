@@ -20,9 +20,14 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
 - [x] 1.1 Author this packet. `python3 scripts/validate-openspec-cli-pin.py --all
       --no-cache --tarball tools/openspec-cli-pin/fission-ai-openspec-1.12.0-c844543999f673cdd72445879b86a4abea4c07ef.tgz`
       clean at `--strict` for every change and spec.
-- [ ] 1.2 **[OPERATOR] [GOVERNANCE]** Ratify or return this proposal. The prefix
+- [x] 1.2 **[OPERATOR] [GOVERNANCE]** Ratify or return this proposal. The prefix
       ("keep the prefix"), Q1–Q7 and the spec leg's gate (3.6) are already
       RULED and are not re-asked.
+      **RATIFIED** — Brett Heap, operator authority, 2026-10-08T17:10:47Z,
+      verbatim: "ratify 26 and merge" (head
+      `2ae4eee1885536297e5653e64b6abb1b85cc8e9e`).
+      See `proposal.md` "## Status". Ruling:
+      https://github.com/opensoft/openXwallet/pull/26#issuecomment-6065121015
 - [x] 1.3 Q1–Q6 RULED by Brett Heap in session on 2026-10-08, by multiple
       choice — recorded at 2026-10-08T16:30:50Z; taken in session minutes
       earlier by multiple choice — and encoded beside their questions in

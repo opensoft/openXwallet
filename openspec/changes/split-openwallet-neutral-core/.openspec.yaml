@@ -36,10 +36,11 @@ origin:
     choice, and Q3 overrode its recommendation; Q3's ruling raised Q7 and the
     spec leg's OpenSpec-gate question (tasks.md 3.6), which he ruled later the
     same day, also by multiple choice. All eight are listed under `rulings`,
-    in two rounds, with their labels verbatim. Those rulings do NOT ratify the
-    change: `approved_by` stays pending. Everything else in the packet — the
-    carve procedure, the leg placement beyond the contracts, the validator
-    split and the pin's field layout — is PROPOSED. The record of the
+    in two rounds, with their labels verbatim. Those rulings did not themselves
+    ratify the change; ratification followed on 2026-10-08T17:10:47Z (see
+    `approved_by`, `approved_on` and `rulings.rounds`). Everything else in the
+    packet — the carve procedure, the leg placement beyond the contracts, the
+    validator split and the pin's field layout — is PROPOSED. The record of the
     statements and the rulings is this packet's proposal.md; no separate
     ruling file exists, and none is invented here.
   rulings:
@@ -91,5 +92,20 @@ origin:
               @fission-ai/openspec 1.12.0 tarball and its gate installs from
               it offline, the same shape as this repository's gate under its
               2026-09-07 ruling, recorded as that leg's own ruling.
-  approved_by: pending — held for Brett Heap (openXwallet operator authority)
-  approved_on: null
+      - recorded_at: "2026-10-08T17:10:47Z"
+        taken: "in session, recorded on PR #26"
+        questions:
+          - id: ratification
+            question: the change itself, as authored at head 2ae4eee1885536297e5653e64b6abb1b85cc8e9e
+            label: "ratify 26 and merge"
+            head: "2ae4eee1885536297e5653e64b6abb1b85cc8e9e"
+            ruling: https://github.com/opensoft/openXwallet/pull/26#issuecomment-6065121015
+            effect: >-
+              The change as authored at that head is RATIFIED, with every
+              ruling listed above; the ratification changes no delta and
+              authorizes the successor groups in tasks.md without performing
+              any of them. Codex review did not run on that head (the
+              connector reported its usage limit reached); the merge proceeds
+              on the operator's word with the five required checks green.
+  approved_by: Brett Heap (openXwallet operator authority)
+  approved_on: 2026-10-08
