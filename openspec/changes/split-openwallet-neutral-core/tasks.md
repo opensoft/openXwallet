@@ -52,9 +52,19 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
 
 ## 2. Before the carve — this repository
 
-- [ ] 2.1 Archive `add-multi-key-wallets` with the pinned CLI (its realization
+- [x] 2.1 Archive `add-multi-key-wallets` with the pinned CLI (its realization
       evidence is in its own `tasks.md`), so its four MODIFIED requirements are
       promoted text before they travel.
+      **DONE 2026-10-08** —
+      `openspec/changes/archive/2026-10-08-add-multi-key-wallets/`, archived
+      with the pinned @fission-ai/openspec@1.12.0 via
+      scripts/install-pinned-openspec-cli.py (`~ 4 modified` to `openxwallet`,
+      as D0 measured). Archive-time evidence and the full gate bar are recorded
+      in that directory's `tasks.md`. Measured there: the pinned gate reads
+      5 passed, 1 failed — `add-composition-drift-cascade`'s MODIFIED
+      *Revocation propagates through the chain* omits the promoted scenario
+      "retiring one key does not revoke the wallet", the collision D0 recorded;
+      its cure is 8.1's rebase, not this task's.
 - [ ] 2.2 Reflow the wrapped scenario-bullet lines in the promoted
       `openxwallet` and `openxwallet-agent-profile` specs onto their bullets — an
       editorial, content-preserving commit ratified by this change, as
