@@ -38,8 +38,7 @@ already attributed to a key must remain readable after the key is retired.
 - WHEN a wallet declares more than one key
 - THEN each declared key carries its own custody model and its own fingerprint
 - AND the wallet's authority is unchanged by how many keys present it
-- AND a key declared by that wallet is a key its own holder holds, never a
-  record of another holder's key
+- AND a key declared by that wallet is a key its own holder holds, never a record of another holder's key
 
 #### Scenario: a retired key stays declared
 
@@ -53,8 +52,7 @@ already attributed to a key must remain readable after the key is retired.
 - WHEN a wallet record declares only its primary key reference
 - THEN the record is conformant with no additional declaration
 - AND its declared key set is that one key
-- AND every rule keyed on the declared set resolves to the behaviour it had
-  before sets were expressible
+- AND every rule keyed on the declared set resolves to the behaviour it had before sets were expressible
 
 ### Requirement: Authority travels as attenuated grants, never as keys
 
@@ -127,16 +125,14 @@ custody ceiling may outrank the wallet's own.
 
 - WHEN an exercise records a custody model in force
 - THEN that model is the one declared for the key that presented the grant
-- AND a model belonging to another of the same wallet's keys is a validation
-  failure
+- AND a model belonging to another of the same wallet's keys is a validation failure
 - AND an act may not claim evidence the presenting key's custody cannot supply
 
 #### Scenario: a declared key never raises the wallet's cap
 
 - WHEN a wallet declares a key whose custody ceiling outranks the wallet's own
 - THEN the record is refused with both ceilings named
-- AND raising the wallet's authority remains a question about the wallet's
-  custody, never about adding a stronger key beside it
+- AND raising the wallet's authority remains a question about the wallet's custody, never about adding a stronger key beside it
 
 ### Requirement: Every exercise is key-attributed
 
@@ -165,10 +161,8 @@ resolves to depend on which declaration is read last.
 
 - WHEN a verified exercise names the key that presented its grant
 - THEN that key is one of the keys the audience wallet declares
-- AND a presenting key outside every wallet's declared set is refused rather
-  than passed over
-- AND the act is attributed to the wallet declaring that key, whichever of its
-  keys signed
+- AND a presenting key outside every wallet's declared set is refused rather than passed over
+- AND the act is attributed to the wallet declaring that key, whichever of its keys signed
 
 #### Scenario: a key identifier is declared once per wallet
 
@@ -219,8 +213,7 @@ it is not subject to it.
 #### Scenario: a domain requires two distinct holders
 
 - WHEN a capability declares a distinct-holder constraint between two acts
-- THEN an exercise naming the same holder for both is refused with the
-  constraint named
+- THEN an exercise naming the same holder for both is refused with the constraint named
 - AND the prior act's recorded holder is the comparison basis
 
 #### Scenario: the constraint is opt-in

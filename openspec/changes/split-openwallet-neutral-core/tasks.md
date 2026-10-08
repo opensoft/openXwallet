@@ -65,12 +65,26 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
       *Revocation propagates through the chain* omits the promoted scenario
       "retiring one key does not revoke the wallet", the collision D0 recorded;
       its cure is 8.1's rebase, not this task's.
-- [ ] 2.2 Reflow the wrapped scenario-bullet lines in the promoted
+- [x] 2.2 Reflow the wrapped scenario-bullet lines in the promoted
       `openxwallet` and `openxwallet-agent-profile` specs onto their bullets — an
       editorial, content-preserving commit ratified by this change, as
       `add-multi-key-wallets` task 6.4 ratified its own `## Purpose` edit.
       MEASURED on 1.12.0 (`design.md` D0): seven such lines after 2.1, and this
       change's archive cannot retire the capabilities while they stand.
+      **DONE 2026-10-08**, landed by the reflow PR. Seven joins, all in
+      `openxwallet` (line numbers as at `c1c97e5`; continuation joined onto
+      its bullet with one space): 41+42 "record of another holder's key",
+      56+57 "before sets were expressible", 130+131 "failure", 138+139
+      "custody, never about adding a stronger key beside it", 168+169 "than
+      passed over", 170+171 "keys signed", 222+223 "constraint named".
+      `openxwallet-agent-profile` has none, by the same measurement. The
+      whitespace-insensitive diff of the spec before and after is EMPTY. In a
+      scratch copy on the pinned 1.12.0, `archive split-openwallet-neutral-core
+      --yes` WITHOUT the reflow still refuses ("'openxwallet' declares
+      retire_capabilities, but the spec holds content the merge cannot safely
+      account for …", aborted), and WITH it reads `Totals: + 5, ~ 0, - 11`,
+      both capability specs retired and `openxwallet-factory-binding`
+      created, as D0 measured. Not archived in this tree.
 - [ ] 2.3 Name the CARVE COMMIT: an openXwallet `main` commit after 2.2, never
       HEAD.
 - [ ] 2.4 Re-measure every line range in `design.md` D3 at that commit; a range
