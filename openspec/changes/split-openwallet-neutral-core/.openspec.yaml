@@ -1,0 +1,111 @@
+schema: spec-driven
+created: 2026-10-08
+# This change REMOVES every requirement of `openxwallet` and
+# `openxwallet-agent-profile`, so its archive RETIRES both capabilities.
+# MEASURED on the pinned openspec 1.12.0, in a scratch copy, 2026-10-08:
+# without this key the archive aborts ("To retire the capability and delete
+# its spec, add `retire_capabilities: true` to the change's .openspec.yaml");
+# with it, and with the promoted specs' wrapped scenario lines reflowed
+# (tasks.md 2.2), the archive applies +5 / -11 and retires both specs.
+retire_capabilities: true
+origin:
+  kind: ruling
+  id: openXwallet:ruling:2026-10-08:split-openwallet-neutral-core
+  path: openspec/changes/split-openwallet-neutral-core/proposal.md
+  repo: opensoft/openXwallet
+  commit: b7c6e0b
+  reason: >-
+    Brett Heap (openXwallet operator authority), in session on 2026-10-08,
+    two statements, recorded verbatim. First: "consider if we make
+    openWallet as a standalone neutral wallet system that does not need
+    openXfactory. then we make openXwallet as the adapter layer for neutral
+    contracts for openXfactory and then the actual wallets are the domain
+    wallets like medXwallet and ledgerXwallet. this then matches our openDox
+    project and openAvatar. we can keep all our projects able to run stand
+    alone but tuned version that run with our xFactories." Then: "write the
+    openspec proposal for the split, keep the prefix". The second statement
+    commissions THIS packet and carries one ruling, which the packet encodes
+    and does not re-open: the prefix is KEPT. Its scope, as relayed by the
+    orchestrating session that took the ruling: the `xfactory_wallet_*` kind
+    prefix, every finding code and the existing schema `$id` namespace are
+    unchanged by the carve, and a rename to a neutral prefix stays deferred
+    to a future wallet MAJOR. That answers Q3 carried by openxFactory's
+    archived `split-openxwallet-repo`; this split's own shape answers that
+    packet's Q1 as well (see proposal.md). Brett Heap then ruled the
+    packet's six open questions, Q1-Q6, in session on 2026-10-08 by multiple
+    choice, and Q3 overrode its recommendation; Q3's ruling raised Q7 and the
+    spec leg's OpenSpec-gate question (tasks.md 3.6), which he ruled later the
+    same day, also by multiple choice. All eight are listed under `rulings`,
+    in two rounds, with their labels verbatim. Those rulings did not themselves
+    ratify the change; ratification followed on 2026-10-08T17:10:47Z (see
+    `approved_by`, `approved_on` and `rulings.rounds`). Everything else in the
+    packet — the carve procedure, the leg placement beyond the contracts, the
+    validator split and the pin's field layout — is PROPOSED. The record of the
+    statements and the rulings is this packet's proposal.md; no separate
+    ruling file exists, and none is invented here.
+  rulings:
+    ruled_by: Brett Heap (openXwallet operator authority)
+    rounds:
+      - recorded_at: "2026-10-08T16:30:50Z"
+        taken: in session minutes earlier, by multiple choice
+        questions:
+          - id: Q1
+            label: "In-process, extension points (Recommended)"
+            against_recommendation: false
+          - id: Q2
+            label: "Nested gitlink, one chain (Recommended)"
+            against_recommendation: false
+          - id: Q3
+            label: "Three-leg shape at birth"
+            against_recommendation: true
+            effect: >-
+              openWallet is created as an openRepoShape three-leg project, as
+              openDox was: assembly root opensoft/openWallet, spec leg
+              opensoft/openWallet-spec, code leg opensoft/openWallet-code.
+          - id: Q4
+            label: "openWallet continues wallet-v* (Recommended)"
+            against_recommendation: false
+          - id: Q5
+            label: "Public (Recommended)"
+            against_recommendation: false
+            effect: all three openWallet repositories are public at creation.
+          - id: Q6
+            label: "Document plus pointer, fail closed (Recommended)"
+            against_recommendation: false
+      - recorded_at: "2026-10-08T17:01:43Z"
+        taken: in session minutes earlier, by multiple choice
+        questions:
+          - id: Q7
+            label: "Code leg, declared override (Recommended)"
+            against_recommendation: false
+            effect: >-
+              contracts, corpus and validator stay together in
+              opensoft/openWallet-code at today's repository-relative paths;
+              the override of openRepoShape's spec-governance default is
+              declared in the carve manifest.
+          - id: tasks-3.6
+            question: the spec leg's own OpenSpec gate
+            label: "Vendor the tarball (Recommended)"
+            against_recommendation: false
+            effect: >-
+              opensoft/openWallet-spec commits the content-addressed
+              @fission-ai/openspec 1.12.0 tarball and its gate installs from
+              it offline, the same shape as this repository's gate under its
+              2026-09-07 ruling, recorded as that leg's own ruling.
+      - recorded_at: "2026-10-08T17:10:47Z"
+        taken: "in session, recorded on PR #26"
+        questions:
+          - id: ratification
+            question: the change itself, as authored at head 2ae4eee1885536297e5653e64b6abb1b85cc8e9e
+            label: "ratify 26 and merge"
+            head: "2ae4eee1885536297e5653e64b6abb1b85cc8e9e"
+            ruling: https://github.com/opensoft/openXwallet/pull/26#issuecomment-6065121015
+            effect: >-
+              The change as authored at that head is RATIFIED, with every
+              ruling listed above; the ratification changes no delta and
+              authorizes the successor groups in tasks.md without performing
+              any of them. Codex review did not run on that head (the
+              connector reported its usage limit reached); the merge proceeds
+              on the operator's word with the five required checks green.
+  approved_by: Brett Heap (openXwallet operator authority)
+  approved_on: 2026-10-08
