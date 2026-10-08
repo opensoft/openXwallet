@@ -15,13 +15,19 @@ THE SCRIPT IS RUN AS A SUBPROCESS, the way CI and a reader invoke it, so the
 exit codes and the printed lines are what is under test. The module is also
 loaded by path once, for the constant assertions.
 
-THE REAL-REPOSITORY SEAT BRANCHES ON THE HISTORY IT IS GIVEN, and never skips.
-`pytest-suite` checks out at depth 1, which does not carry the carve commit,
-so there the seat asserts that the checker REFUSES `carve-revision-mismatch`
-naming that commit — fail-closed, never a green run that read nothing. Where
-the history is present it asserts the full verdict. A second test reads the
-real manifest as a document, with no git at all, so the ruled carve commit and
-D7's counts are held on every run, whatever the checkout depth.
+THE REAL-REPOSITORY SEAT NEEDS THE CARVE COMMIT IN HISTORY, and where it is
+missing the seat SKIPS LOUDLY — this repository's own precedent for an
+unreachable baseline (`tests/nested_repo_prune/test_prune_and_register_note.py`,
+`test_this_version_adjudicates_the_previous_corpus_identically`). It never
+reports the checker's refusal as a pass: a refusal is the checker being right
+that it cannot answer, not an answer. `pytest-suite` checks out at depth 1 and
+is itself a carved row, so it is not edited; the full-history run is
+`.github/workflows/carve-manifest.yml` (job `carve-manifest`, `fetch-depth: 0`),
+which runs the checker and this file with the carve commit present, where the
+seat asserts the full verdict. The refusal codes are pinned by the
+throwaway-repository tests above, which need no history. A second real-manifest
+test reads the document with no git at all, so the ruled carve commit and D7's
+counts are held on every run, whatever the checkout depth.
 
 Hermetic: no network; git runs with an empty global config and no system
 config, and with a repository-local identity.
@@ -897,7 +903,11 @@ def test_the_shed_refuses_under_the_carve_phase(scratch: Scratch) -> None:
 # the real manifest
 # --------------------------------------------------------------------------
 
+FULL_HISTORY_WORKFLOW = ".github/workflows/carve-manifest.yml"
+
+
 def _carries(commit: str) -> bool:
+    """Does this checkout's history hold `commit` as a commit object?"""
     done = subprocess.run(
         ["git", "-C", str(REPO_ROOT), "cat-file", "-e", f"{commit}^{{commit}}"],
         capture_output=True, check=False)
@@ -907,25 +917,32 @@ def _carries(commit: str) -> bool:
 def test_the_real_repository_answers_at_the_ruled_path() -> None:
     """The documented invocation, from the repository root, with no arguments.
 
-    A BRANCH and never a skip. Where the history carries the named carve
-    commit, the full verdict; in a depth-1 checkout (the `pytest-suite` job's),
-    the checker must REFUSE for want of its referent, naming it — the
-    fail-closed answer, asserted rather than skipped.
+    Where the history carries the named carve commit, the full verdict. Where
+    it does not — a depth-1 checkout, which is `pytest-suite`'s — the test
+    SKIPS LOUDLY, naming the missing commit and the full-history workflow, and
+    never counts the checker's refusal as a pass. The skip keys on the commit
+    being ABSENT: a checkout that carries it without descending from it is not
+    missing history but a wrong manifest, and it FAILS here on the checker's
+    `carve-revision-mismatch`.
     """
+    manifest = REPO_ROOT / MODULE.MANIFEST_RELPATH
+    if manifest.is_file():
+        carve_commit = yaml.safe_load(
+            manifest.read_text(encoding="utf-8"))["carve_commit"]
+        if not _carries(carve_commit):
+            pytest.skip(
+                f"carve_commit {carve_commit} is not in this checkout's "
+                "history (a depth-1 checkout, as pytest-suite's is), so the "
+                "manifest's digests and arrivals cannot be verified here; "
+                f"{FULL_HISTORY_WORKFLOW} (job `carve-manifest`) runs the "
+                "checker and this test with fetch-depth: 0")
     done = subprocess.run([sys.executable, str(SCRIPT)], cwd=str(REPO_ROOT),
                           capture_output=True, text=True, check=False)
-    manifest = REPO_ROOT / MODULE.MANIFEST_RELPATH
     if not manifest.is_file():
         assert done.returncode == 0, done.stdout + done.stderr
         assert done.stdout.startswith("NO MANIFEST "), done.stdout
         return
     declared = yaml.safe_load(manifest.read_text(encoding="utf-8"))
-    if not _carries(declared["carve_commit"]):
-        combined = done.stdout + done.stderr
-        assert done.returncode == 2, combined
-        assert ": carve-revision-mismatch —" in combined, combined
-        assert declared["carve_commit"] in combined, combined
-        return
     assert done.returncode == 0, done.stdout + done.stderr
     assert done.stdout.startswith("OK "), done.stdout
     assert f"phase {declared.get('phase', 'carve')}," in done.stdout, \
@@ -978,3 +995,20 @@ def test_the_real_manifest_names_the_ruled_carve_commit_and_d7s_counts() -> None
                      if r["retained_here"] == "retired_by_archive")
     assert retired == ["openspec/specs/openxwallet-agent-profile/spec.md",
                        "openspec/specs/openxwallet/spec.md"]
+
+
+def test_the_full_history_workflow_runs_the_checker_at_fetch_depth_zero() -> None:
+    """The loud skip above is honest only while something runs the seat WITH
+    the carve commit in history. Pin the workflow that does: job `carve-manifest`
+    with no display name, a checkout at `fetch-depth: 0`, and both commands."""
+    workflow = yaml.safe_load(
+        (REPO_ROOT / FULL_HISTORY_WORKFLOW).read_text(encoding="utf-8"))
+    job = workflow["jobs"]["carve-manifest"]
+    assert "name" not in job, job
+    steps = job["steps"]
+    checkout = next(s for s in steps
+                    if str(s.get("uses", "")).startswith("actions/checkout@"))
+    assert checkout["with"]["fetch-depth"] == 0, checkout
+    runs = [s["run"] for s in steps if "run" in s]
+    assert "python3 scripts/validate-carve-manifest.py" in runs, runs
+    assert "python3 -m pytest tests/carve_manifest -q" in runs, runs

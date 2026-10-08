@@ -59,7 +59,12 @@ SIX ORDERED CHECKS, FIRST FAILURE WINS (openDox's order):
      an annotated tag's id, which git would peel) and an ANCESTOR of the
      revision under test (`carve-revision-mismatch`). A depth-1 checkout does
      not carry it, and that refuses: an unreachable referent is unverifiable,
-     whatever the reason it is unreachable.
+     whatever the reason it is unreachable. So CI runs this checker in
+     `.github/workflows/carve-manifest.yml`, at `fetch-depth: 0`, and NOT in
+     `pytest-suite.yml`, which checks out at depth 1 and is itself a carved row
+     (editing it would refuse here); in a depth-1 `pytest-suite` run the
+     real-repository test skips loudly rather than count this refusal as a
+     pass.
   3. DIGEST — pass 1 at the carve commit: each moved row's mode and the sha256
      of its RAW GIT BLOB equal the row's (`carve-digest-mismatch`), its path
      exists there (`carve-path-absent`), and its declared lines exist in that

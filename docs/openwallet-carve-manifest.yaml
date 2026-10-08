@@ -32,13 +32,14 @@
 # The checker recomputes every moved row's sha256 from the raw git blob at the
 # carve commit, walks the whole tree there for completeness, and asks of the
 # revision under test whether anything under the carve SURFACE (`moved_paths:`
-# below) has changed, vanished or appeared since. It is driven on every
-# `pytest-suite` run by `tests/carve_manifest/test_carve_manifest.py`. A
+# below) has changed, vanished or appeared since. In CI it runs in
+# `.github/workflows/carve-manifest.yml` (job `carve-manifest`) at
+# `fetch-depth: 0`, beside `tests/carve_manifest/test_carve_manifest.py`. A
 # depth-1 checkout (the default `actions/checkout`, which `pytest-suite.yml`
-# uses) does not carry the carve commit, and the checker REFUSES there
-# (`carve-revision-mismatch`) rather than passing on a history it cannot read;
-# the test asserts that refusal in such a checkout and the full verdict
-# wherever the history is present.
+# uses, and which is a carved row and so not edited) does not carry the carve
+# commit: the checker REFUSES there (`carve-revision-mismatch`) rather than
+# pass on a history it cannot read, and the test's real-repository seat SKIPS
+# LOUDLY there, naming the commit and that workflow.
 #
 # THE GRAMMAR IS openDox's (openxFactory `docs/opendox-carve-manifest.yaml`,
 # checked by its `scripts/validate-carve-manifest.py`), with these differences,

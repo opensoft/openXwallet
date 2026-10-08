@@ -134,6 +134,11 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
         classes.
       - Checker verdict at `90111df`: `OK … 128 digest(s) recomputed …
         232 tracked path(s) at the carve commit, each in exactly one row`.
+      - CI: the new `.github/workflows/carve-manifest.yml` (job
+        `carve-manifest`, `fetch-depth: 0`) runs the checker and the test.
+        `pytest-suite`, which is depth 1 and a carved row, is not edited; there
+        the real-repository test skips loudly, naming `90111df` and that
+        workflow. Making `carve-manifest` REQUIRED is Brett's console act.
 
 ## 3. openWallet's birth — three public repositories `[openWallet]`
 
