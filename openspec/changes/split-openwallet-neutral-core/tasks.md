@@ -107,7 +107,7 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
       validator is the same blob as at `b7c6e0b` (`08a4b5c7`). So no range was
       corrected. One imprecision, not a move, is recorded in D3: the `:337`
       pointer's path literal sits on `:338`.
-- [ ] 2.5 Author `docs/openwallet-carve-manifest.yaml` at the carve commit, in
+- [x] 2.5 Author `docs/openwallet-carve-manifest.yaml` at the carve commit, in
       openDox's grammar plus `retained_here` (`design.md` D7): one row per
       tracked path, `destination_path` equal to `source_path` on every moved
       row; a tracked path in no row or in two rows REFUSES. Every row whose leg
@@ -115,6 +115,25 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
       the rule it overrides and its authority: the 73 contract rows to the code
       leg under RULED Q7, and the 9 release-identity rows to the root as
       PROPOSED (`design.md` D7).
+      **DONE 2026-10-08** under the same ruling as 2.3 —
+      `docs/openwallet-carve-manifest.yaml`, `carve_commit` `90111df`,
+      `phase: carve`. Checked by `scripts/validate-carve-manifest.py` (it
+      mirrors openxFactory's checker, adapted to this grammar), which
+      `tests/carve_manifest/test_carve_manifest.py` drives in `pytest-suite`.
+      - Rows: 232, one per tracked path.
+      - Dispositions: 120 `moved_verbatim`, 8 `moved_with_declared_edit`,
+        104 `not_moved`.
+      - Legs: 80 `openwallet_code`, 38 `openwallet_spec`, 10
+        `openwallet_root`.
+      - `retained_here`: 124 `kept`, 106 `shed`, 2 `retired_by_archive`.
+      - Overrides: openRepoShape's classifier at `7f84ca4` was run over all
+        232 paths. Exactly 82 moved rows depart from its default, all from
+        `spec-governance`: 73 under RULED Q7 and 9 PROPOSED. D7's 73 and 9
+        held.
+      - Declared edits: 1,884 lines on the 8 edited rows, in D7's five
+        classes.
+      - Checker verdict at `90111df`: `OK … 128 digest(s) recomputed …
+        232 tracked path(s) at the carve commit, each in exactly one row`.
 
 ## 3. openWallet's birth — three public repositories `[openWallet]`
 
