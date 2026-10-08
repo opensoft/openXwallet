@@ -178,6 +178,12 @@ means the carve copies it and this repository keeps it too.
 
 `scripts/validate-openxwallet.py` is 3549 lines at `b7c6e0b`.
 
+**Re-measured at the carve commit `90111df` (task 2.4, 2026-10-08): every range
+below is UNCHANGED** — the file is the same blob at both commits (`08a4b5c7`,
+3549 lines), and each range's first and last line was re-read there with
+`grep -n` and `sed -n`. One imprecision, not a move: the residual pointer
+cited as `:337` opens on `:337` and its openxFactory path literal sits on `:338`.
+
 | Lines | Block | Class | Destination |
 |---|---|---|---|
 | 1-224 | module docstring | mixed: rule (g)'s envelope sentences `:73-78`, rule (t) `:172-181`, rule (u) `:183-212` | core keeps (a)–(s) with (g) reworded; the adapter's docstring carries (t), (u) and the binding |
@@ -437,6 +443,12 @@ every other path set, the creation route, the carve manifest's form, the release
 placement and the proof's parts. The `wallet-v1.0` procedure is
 kept: a NAMED CARVE COMMIT, a control first, a three-way digest match, every
 exception enumerated. What the shape adds is a DECLARED PATH MAPPING.
+
+**The carve commit is NAMED (task 2.3):**
+`90111df262d6f54f7e82651d860adc12345f83f4`, `main` at the merge of PR #28,
+after tasks 2.1 and 2.2 — never HEAD. Named by Brett Heap, operator authority,
+in session, 2026-10-08T18:07:19Z, verbatim: "name 90111df as the carve commit,
+do 2.4 and 2.5" (recorded on issue #25).
 
 ### The project
 
@@ -820,8 +832,10 @@ Ordered; each rollback is written before its step.
 
    *Rollback:* delete the three repositories; nothing pins them.
 4. **Carve the legs, then the root (one lockstep commit); the declared edits;
-   the path-mapping proof (D7).** *Rollback:* delete the three repositories; the
-   carve copied, and this repository is untouched.
+   the path-mapping proof (D7).** The carve runs at the named carve commit
+   `90111df262d6f54f7e82651d860adc12345f83f4` (D7, task 2.3). *Rollback:*
+   delete the three repositories; the carve copied, and this repository is
+   untouched.
 5. **[OPERATOR] Three rulesets, then the first tag, on the root.** *Rollback:*
    delete the tag; nothing pins it yet.
 6. **The adapter rebuild here, one pull request.**

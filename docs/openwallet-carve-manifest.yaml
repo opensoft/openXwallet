@@ -1,0 +1,2029 @@
+# docs/openwallet-carve-manifest.yaml — the CARVE MANIFEST for the openWallet
+# split (`split-openwallet-neutral-core`, `design.md` D7 "The carve manifest",
+# `tasks.md` 2.5). It is the DECLARED PATH MAPPING that part one (a) of D7's
+# proof reads: every path this repository tracks at the carve commit, the one
+# place it goes (or that it stays), and the bytes it carries when it goes.
+#
+# WHICH RULING NAMED THE CARVE COMMIT. Brett Heap, operator authority, in
+# session, 2026-10-08T18:07:19Z, verbatim: "name 90111df as the carve commit,
+# do 2.4 and 2.5" (opensoft/openXwallet#25, comment 6066081858). `carve_commit:`
+# below is that commit in full — `main` at the merge of PR #28, after tasks 2.1
+# (the archive of `add-multi-key-wallets`) and 2.2 (the reflow). NEVER HEAD: the
+# carve runs from a fresh clone AT this commit (D7 "Creation route" step 3), so
+# a file that changes on `main` afterwards is not what the carve ships.
+#
+# WHAT IT DECLARES, AND WHAT REFUSES. One row per tracked path at the carve
+# commit — 232, measured with `git ls-tree -r --name-only` — and no other row.
+# A tracked path in no row, or in two rows, REFUSES; so does a row for a path
+# the carve commit does not carry. Every MOVED row's `destination_path` equals
+# its `source_path` (D7: within each leg a carved path keeps its
+# repository-relative path, which is what keeps the carve a pure copy per leg
+# and every digest whole). A file CREATED at a destination — the scaffold's
+# seeds, the corpus binding (Q6), each leg's `LICENSE` — gets no row: this
+# manifest declares what LEAVES, not what a destination assembles (openDox's
+# rule, kept).
+#
+# HOW TO VERIFY IT. From any checkout that carries the carve commit in its
+# history:
+#
+#     python3 scripts/validate-carve-manifest.py
+#     python3 scripts/validate-carve-manifest.py --at 90111df262d6f54f7e82651d860adc12345f83f4
+#
+# The checker recomputes every moved row's sha256 from the raw git blob at the
+# carve commit, walks the whole tree there for completeness, and asks of the
+# revision under test whether anything under the carve SURFACE (`moved_paths:`
+# below) has changed, vanished or appeared since. In CI it runs in
+# `.github/workflows/carve-manifest.yml` (job `carve-manifest`) at
+# `fetch-depth: 0`, beside `tests/carve_manifest/test_carve_manifest.py`. A
+# depth-1 checkout (the default `actions/checkout`, which `pytest-suite.yml`
+# uses, and which is a carved row and so not edited) does not carry the carve
+# commit: the checker REFUSES there (`carve-revision-mismatch`) rather than
+# pass on a history it cannot read, and the test's real-repository seat SKIPS
+# LOUDLY there, naming the commit and that workflow.
+#
+# THE GRAMMAR IS openDox's (openxFactory `docs/opendox-carve-manifest.yaml`,
+# checked by its `scripts/validate-carve-manifest.py`), with these differences,
+# each one D7's:
+#
+#   * THE COMPLETENESS SURFACE IS THE WHOLE TREE at the carve commit, not the
+#     `moved_paths:` prefixes. openDox declared what left one large repository;
+#     D7 asks for "one row per tracked path". `moved_paths:` is still declared:
+#     it is the SURFACE watched at the revision under test, so a file that
+#     appears there after the carve commit refuses, while `main` growing a file
+#     the carve does not touch (this manifest, its checker, its test) does not.
+#     Every moved row must lie inside it.
+#   * `retained_here:` on every row — `kept`, `shed` or `retired_by_archive`.
+#     The adapter rebuild sheds EXACTLY the `shed` rows (`tasks.md` 5.5); the
+#     two promoted specs leave ONLY by this change's archive
+#     (`retired_by_archive`); every other row stays, the `not_moved` rows all
+#     among them.
+#   * THE LEG-CLASSIFICATION OVERRIDES ARE DECLARED, NOT IMPLIED. Every moved
+#     row records `leg_default:` — the leg and the rule openRepoShape's
+#     classifier gives that path (`leg_classification:` below names the policy
+#     at its commit and digest) — and a row whose destination leg departs from
+#     that default names, in `leg_override:`, the entry of `leg_overrides:` that
+#     carries the rule it overrides and the authority for it. A departing row
+#     with no override, or an override on a row that does not depart, refuses.
+#   * THE EDIT CLASSES ARE D7's FIVE, CLOSED: the validator's hunks (a)-(e),
+#     the test split, the manifest field edits, the subject lines (the eleven
+#     plus the travelling change's three occurrences), and the code-leg
+#     workflow's envelope-verify step. `edits:` carries `{class, lines[],
+#     note}` with the line numbers AT THE CARVE COMMIT, so a
+#     `moved_with_declared_edit` row is falsifiable at the destination (part
+#     two (b) of the proof) rather than a label.
+#   * A `not_moved` row carries `reason` and `evidence` and no digest, as in
+#     openDox: a digest is the claim that bytes arrive somewhere. The reason
+#     vocabulary is this repository's, closed in the checker.
+#
+# THE COUNTS, as the checker reports them at the carve commit: 232 rows — 120
+# `moved_verbatim`, 8 `moved_with_declared_edit`, 104 `not_moved`; 80 to
+# `openwallet_code`, 38 to `openwallet_spec`, 10 to `openwallet_root`;
+# `retained_here` 124 `kept`, 106 `shed`, 2 `retired_by_archive`; 82 leg
+# overrides — 73 under RULED Q7 and 9 PROPOSED — exactly D7's two groups; 1,884
+# declared edit lines over the 8 edited rows.
+#
+# THIS IS THE FIRST MACHINE-VALIDATED YAML UNDER `docs/` IN THIS REPOSITORY,
+# and that is a deliberate break with the convention, made by the ruled path.
+# Measured at the carve commit: `git ls-tree -r --name-only` under `docs/`
+# lists four Markdown files and no YAML. The path is the packet's
+# (`design.md` D7, `tasks.md` 2.5, `proposal.md` Q7), ratified with it on
+# 2026-10-08, and the ruling above names it again. The wallet validator reads
+# the file as another kind (`kind: openwallet-carve-manifest` is no
+# `xfactory_wallet_*` kind), and the syntax gate parses it only if its text
+# carries a wallet kind string.
+#
+# RE-CUTTING. If `main` moves under the surface before the carve runs, this
+# file is re-cut at a NEW carve commit — which is a new ruling — and every
+# digest is RECOMPUTED, never carried forward.
+
+schema_version: 1
+kind: openwallet-carve-manifest
+
+# WHICH SIDE OF THE SHED THIS REPOSITORY IS ON — openDox's vocabulary, closed
+# at two values. `carve` (what an absent key means): every row's source path is
+# still here, and every MOVED row's blob must still be its carve-commit blob.
+# `post-shed`: the adapter rebuild (`tasks.md` 5.5) has removed exactly the
+# `retained_here: shed` rows, which must then be ABSENT; a `kept` row is still
+# required present; a `retired_by_archive` row may be present (unchanged) or
+# gone, because it leaves by this change's archive, a later act. The flip and
+# the shed land in ONE commit, or the checker refuses.
+phase: carve
+
+header: >-
+  The openWallet carve manifest: one row per tracked path at the NAMED CARVE
+  COMMIT below (Brett Heap, 2026-10-08, "name 90111df as the carve commit, do
+  2.4 and 2.5"), in openDox's grammar plus `retained_here`, the declared
+  leg-classification overrides and design.md D7's five edit classes. The
+  referent is the 40-hex `carve_commit:`; read the comment block at the top of
+  this file for the differences from openDox's grammar.
+
+carve_commit: "90111df262d6f54f7e82651d860adc12345f83f4"
+source_repository: opensoft/openXwallet
+digest_algorithm: sha256
+digest_source: raw_git_blob
+path_order: bytewise_utf8
+
+# CLOSED. A row's `destination` is a KEY here. `leg:` is openRepoShape's
+# (`code`, `spec`, `assembly`); the root is the assembly leg.
+destinations:
+  openwallet_code: {repository: opensoft/openWallet-code, leg: code}
+  openwallet_root: {repository: opensoft/openWallet, leg: assembly}
+  openwallet_spec: {repository: opensoft/openWallet-spec, leg: spec}
+
+# design.md D7 "The edit classes are closed", in its order. Asserted EQUAL to
+# the checker's own list, so a manifest cannot declare itself a sixth.
+edit_classes:
+  - validator hunks (a)-(e)
+  - test split
+  - manifest field edits
+  - subject lines
+  - envelope-verify step
+
+# The reasons this manifest uses, a subset of the checker's closed set.
+not_moved_reasons:
+  - stays_openxwallet_adapter
+  - stays_openxwallet_front_door
+  - stays_openxwallet_governance
+  - stays_vendored_not_carved
+
+# WHERE EACH `leg_default:` CAME FROM. openRepoShape's classifier
+# (`PathPolicy.classify_file`, per file and unfolded) was run over the 232
+# tracked paths at the carve commit, against the policy below at its commit,
+# whose bytes hash to `policy_sha256`. THE POLICY PROPOSES; A HUMAN DISPOSES:
+# where a row departs, `leg_override:` says who disposed and on what authority.
+# Of the 128 moved rows, exactly 82 depart, all from `spec-governance`.
+leg_classification:
+  policy_repository: opensoft/openRepoShape
+  policy_path: contracts/path-classification.yaml
+  classifier: scripts/path_classify.py
+  policy_commit: "7f84ca42ca86a8902928345109d2bf6bad87bd91"
+  policy_sha256: "068adaaccd12df028490ea1e0ca32910e3fbd3f7e1def1c3fd92dfdead276b15"
+
+# THE TWO DECLARED OVERRIDES of the classifier's default (design.md D7 "The
+# leg-classification overrides are DECLARED, not implied"). A row names one by
+# key; the entry's `leg` must be the row's destination leg and its
+# `overrides_rule` the row's `leg_default.rule`.
+leg_overrides:
+  q7-code-leg:
+    status: ruled
+    overrides_rule: spec-governance
+    leg: code
+    authority: >-
+      RULED Q7, "Code leg, declared override (Recommended)" — Brett Heap, in
+      session, by multiple choice, recorded 2026-10-08T17:01:43Z
+      (split-openwallet-neutral-core proposal.md Q7 and .openspec.yaml
+      origin.rulings). Contracts, corpus and validator stay together in
+      opensoft/openWallet-code at today's repository-relative paths. Governs
+      the 73 rows of contracts/openxwallet/ and contracts/openxwallet-agent-profile/
+      less the three grant-review-* negatives.
+  d7-root-release-identity:
+    status: proposed
+    overrides_rule: spec-governance
+    leg: assembly
+    authority: >-
+      PROPOSED in design.md D7 ("Release identity at the root"), following
+      openDox's root release placement and RULED Q4's series ("openWallet
+      continues wallet-v* (Recommended)"); NOT covered by Q7's ruling. Governs
+      the 9 release-identity rows — contracts/manifest.yaml,
+      contracts/CHANGELOG.md, the six contracts/releases/ records and
+      docs/byte-identity-wallet-v1.0.md.
+
+# THE CARVE SURFACE watched at the revision under test: every moved row lies
+# under one of these, a file that APPEARS under one after the carve commit
+# refuses, and a row under one whose path VANISHES refuses (under `post-shed`,
+# except the shed rows and an archived spec). Directory prefixes end in `/`;
+# the rest are exact paths in directories that also hold files that stay.
+moved_paths:
+  - .github/workflows/pytest-suite.yml
+  - .github/workflows/wallet-validation.yml
+  - LICENSE
+  - contracts/CHANGELOG.md
+  - contracts/manifest.yaml
+  - contracts/openxwallet-agent-profile/
+  - contracts/openxwallet/
+  - contracts/releases/
+  - docs/byte-identity-wallet-v1.0.md
+  - openspec/changes/add-composition-drift-cascade/
+  - openspec/changes/archive/2026-08-08-add-openxwallet/
+  - openspec/changes/archive/2026-10-08-add-multi-key-wallets/
+  - openspec/config.yaml
+  - openspec/specs/openxwallet-agent-profile/
+  - openspec/specs/openxwallet/
+  - scripts/validate-openxwallet.py
+  - scripts/wallet-yaml-syntax-gate.py
+  - specs/006-openxwallet-contracts/
+  - specs/010-wallet-validator-ci/
+  - specs/015-multi-key-wallets/
+  - tests/multi_key_wallets/
+  - tests/nested_repo_prune/
+  - tests/wallet_yaml_syntax_gate/
+
+# 232 rows, bytewise-UTF-8 by `source_path`.
+rows:
+  - source_path: .github/CODEOWNERS
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .github/workflows/lane-line.yml
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .github/workflows/openspec-cli-pin-gate.yml
+    disposition: not_moved
+    reason: stays_vendored_not_carved
+    evidence: "design.md D2/D7: VENDORED from openxFactory and NOT carved; the spec leg vendors its own OpenSpec gate under its own ruling (tasks.md 3.6, \"Vendor the tarball (Recommended)\")"
+    retained_here: kept
+  - source_path: .github/workflows/pytest-suite.yml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "27ec6384686b1598406ce156006894db927564fe55b5000bdb66122b088beb52"
+    destination: openwallet_code
+    destination_path: .github/workflows/pytest-suite.yml
+    retained_here: kept
+    leg_default: {leg: code, rule: code-ci-workflows}
+  - source_path: .github/workflows/wallet-validation.yml
+    disposition: moved_with_declared_edit
+    git_mode: '100644'
+    sha256: "0ac25cf9cb0b1a45cf998ce66869984fbfcdde86e3fc048da3ba44a7d556e57c"
+    destination: openwallet_code
+    destination_path: .github/workflows/wallet-validation.yml
+    retained_here: kept
+    leg_default: {leg: code, rule: code-ci-workflows}
+    edits:
+      - class: envelope-verify step
+        lines: [44, 45, 46, 47, 48, 49, 50, 51]
+        note: "the code leg's workflow loses the step that verifies the vendored openxFactory envelope against contract_pin.yaml, with its comment block (:44-51); the envelope does not travel"
+  - source_path: .gitignore
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/extensions.yml
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/extensions/.registry
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/extensions/git/README.md
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/extensions/git/commands/speckit.git.commit.md
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/extensions/git/commands/speckit.git.feature.md
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/extensions/git/commands/speckit.git.initialize.md
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/extensions/git/commands/speckit.git.remote.md
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/extensions/git/commands/speckit.git.validate.md
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/extensions/git/config-template.yml
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/extensions/git/extension.yml
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/extensions/git/git-config.yml
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/extensions/git/scripts/bash/auto-commit.sh
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/extensions/git/scripts/bash/create-new-feature-branch.sh
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/extensions/git/scripts/bash/create-new-feature.sh
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/extensions/git/scripts/bash/get-last-worktree.sh
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/extensions/git/scripts/bash/git-common.sh
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/extensions/git/scripts/bash/initialize-repo.sh
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/extensions/git/scripts/powershell/auto-commit.ps1
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/extensions/git/scripts/powershell/create-new-feature-branch.ps1
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/extensions/git/scripts/powershell/create-new-feature.ps1
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/extensions/git/scripts/powershell/git-common.ps1
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/extensions/git/scripts/powershell/initialize-repo.ps1
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/feature.json
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/init-options.json
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/integration.json
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/integrations/claude.manifest.json
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/integrations/speckit.manifest.json
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/scripts/bash/check-prerequisites.sh
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/scripts/bash/common.sh
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/scripts/bash/create-new-feature.sh
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/scripts/bash/setup-plan.sh
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/scripts/bash/setup-tasks.sh
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/templates/checklist-template.md
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/templates/constitution-template.md
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/templates/plan-template.md
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/templates/spec-template.md
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/templates/tasks-template.md
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/workflows/speckit/workflow.yml
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: .specify/workflows/workflow-registry.json
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: AGENTS.md
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: CLAUDE.md
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: LICENSE
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "63fdba9c0f49d9b5dd1705c412ab68a03da66856d53707c03459df8ee37f242b"
+    destination: openwallet_root
+    destination_path: LICENSE
+    retained_here: kept
+    leg_default: {leg: root, rule: root-front-door}
+  - source_path: README.md
+    disposition: not_moved
+    reason: stays_openxwallet_front_door
+    evidence: "design.md D2/D7: this repository's own front door, Spec-Kit and lane tooling; openWallet's three repositories get the scaffold's seeds and a fresh .specify/ at the root (D7 'Written fresh, not carved')"
+    retained_here: kept
+  - source_path: contract_pin.yaml
+    disposition: not_moved
+    reason: stays_openxwallet_adapter
+    evidence: "design.md D2/D7 'Stays here': the factory-bound envelope pin (AGENTS.md rule 3) — contract_pin.yaml, the vendored envelope, its verifier and its resync runbook"
+    retained_here: kept
+  - source_path: contracts/CHANGELOG.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "cce05f7ec931999be9c0535b833a05b621aad42c89c9cabcab1e08222ff5eca0"
+    destination: openwallet_root
+    destination_path: contracts/CHANGELOG.md
+    retained_here: kept
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: d7-root-release-identity
+  - source_path: contracts/manifest.yaml
+    disposition: moved_with_declared_edit
+    git_mode: '100644'
+    sha256: "4cb25e150bb95be2652fb039840293b05efb333a7a6f6d7b19cafc8f901b2441"
+    destination: openwallet_root
+    destination_path: contracts/manifest.yaml
+    retained_here: kept
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: d7-root-release-identity
+    edits:
+      - class: manifest field edits
+        lines: [
+          52, 53, 54, 76, 77, 106, 107, 119, 120, 132, 133, 145, 146, 158,
+          159, 171, 172, 184, 185, 197, 198, 199, 200, 201, 202, 203, 204, 205,
+          206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219,
+          220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233,
+          234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244
+        ]
+        note: "carved_from: (:52-54); each of the eight owned rows' path: gaining code/ and its source_path: (:76-77, :106-107, :119-120, :132-133, :145-146, :158-159, :171-172, :184-185); the consumed hermes-job-envelope row and its comment block removed (:197-244)"
+  - source_path: contracts/openspec-cli-pin.yaml
+    disposition: not_moved
+    reason: stays_vendored_not_carved
+    evidence: "design.md D2/D7: VENDORED from openxFactory and NOT carved; the spec leg vendors its own OpenSpec gate under its own ruling (tasks.md 3.6, \"Vendor the tarball (Recommended)\")"
+    retained_here: kept
+  - source_path: contracts/openxwallet-agent-profile/README.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "0c985733c23578432c0ddbc4a1ca2a4f8043e90ed1ac055a75642f5c05e198b8"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet-agent-profile/README.md
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet-agent-profile/examples/agent-composition-changed.example.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "204c3a00112e7c87722fa730ab7c52a53105645a4f37260cb9b4e5a2cf537e50"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet-agent-profile/examples/agent-composition-changed.example.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet-agent-profile/examples/agent-composition.example.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "fb870b602cf71299adc74f19fba59a967f210bf7e2e6f08452b8d26a1d04a896"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet-agent-profile/examples/agent-composition.example.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet-agent-profile/examples/negative/composition-changed-grants-still-active.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "8e8aed46274f1c36ae3aa1161fce187d10c9ac9b5ada9cb604ebf87188d951df"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet-agent-profile/examples/negative/composition-changed-grants-still-active.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet-agent-profile/examples/negative/composition-declared-for-a-non-agent-wallet.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "b14eb6f43b26a4b0fb6ef16ef769ec1d31128a0f19f8ba6565ffdcb31ec682f8"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet-agent-profile/examples/negative/composition-declared-for-a-non-agent-wallet.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet-agent-profile/examples/negative/composition-for-a-wallet-that-does-not-resolve.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "bbd9dac4e484f146c8b5d50d6068e389555da594883ad949b1d531dd4fb02740"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet-agent-profile/examples/negative/composition-for-a-wallet-that-does-not-resolve.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet-agent-profile/examples/negative/composition-hash-without-component-set.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "c82af12cdc2d2b05b82dbcb2c88ca3f9399d9ab142c275ac921c86f284216e53"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet-agent-profile/examples/negative/composition-hash-without-component-set.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet-agent-profile/openxwallet-agent-composition.schema.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "aed3978e8ae952f3ff5b3de1f672bba5da350d5aaeb442feafaa870b4de4be91"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet-agent-profile/openxwallet-agent-composition.schema.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/README.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "680c27eef5be89c64abdd9ecaea814fc5925cf76dbe28ae980b7f3d0a8313b35"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/README.md
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/distinct-holder-constraint-posting.example.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "d7402ef104fc1dd4b134e3fe7d7517d7636566614cc166f14da70dd43eced22b"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/distinct-holder-constraint-posting.example.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/exercise-posting-permitted.example.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "34dd9afdda7e33341682c969ca5e87c89af6a2b0f0330cb6e2dd58e574ec46c8"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/exercise-posting-permitted.example.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/exercise-presented-by-an-additional-key.example.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "804cad600f119cdac7346249d41e4316047ac446e1dc67556fdc45fc623e6ef1"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/exercise-presented-by-an-additional-key.example.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/exercise-unattributable-act.example.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "13c63b322592dd2648e01833d063c8498c8897a50514e30119b13a23ff274a76"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/exercise-unattributable-act.example.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/exercise-verification-failure.example.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "e9fa2b42426e7d30259fcccde2bd10d1fcd76cc0589c7f265f0d4d8d0382e619"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/exercise-verification-failure.example.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/grant-council-act-tier.example.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "4cf214b5abe5513f11afb4eaee2b7a3394faa42a8e33f00be1819d2c19409a6d"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/grant-council-act-tier.example.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/grant-council-unsupervised-tier.example.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "732dfe43cee28f606b29517ede7606ad6e84e866459aaeb426a0f7f714331f07"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/grant-council-unsupervised-tier.example.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/grant-creator-software-custody.example.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "2f8725664b14913a3da127008124108fceacc5cc65f12d25d5cd50b94a9c865a"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/grant-creator-software-custody.example.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/grant-posting-derived.example.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "9def93635b4bd591fbf157dd8dbdc6d09984b90848bb2b603ac18da676e46f15"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/grant-posting-derived.example.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/grant-posting-parent.example.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "ba08c3e6715c1d9fbb6ef3080aed154f2b97ee2bf60613c9e5ce62cc23553c5a"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/grant-posting-parent.example.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/grant-revoked-derivation.example.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "c4439eb12f7e1ff1b5cc611e8e1b6f01db27cbb7afdc77e84187ebf416ac4894"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/grant-revoked-derivation.example.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/grant-revoked-parent.example.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "f8cdb7413572af3f4fed6d26f399cac1b729276403eabab5b56f906c2a387857"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/grant-revoked-parent.example.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/custody-registry-collapsed-ceilings.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "52a492174be504890e49414ee4e230aa0cf5a5a1771bac70628e962e0a6ccf94"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/custody-registry-collapsed-ceilings.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/custody-registry-environment-outranks-holder.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "05b86bedac1604be6f927d15586ccdc7426480668199aa43c76268a28ddc144c"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/custody-registry-environment-outranks-holder.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/custody-registry-readable-claims-holder.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "4490bca08fc5f802a6def9382cb007808002021a86ab24c2178a086f3c09efec"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/custody-registry-readable-claims-holder.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/custody-registry-renamed-top-tier.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "2ad361ca5301f2391a397a7bc9aed94f008add3b4ebd23f29e2e9c1f03d0c1df"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/custody-registry-renamed-top-tier.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/custody-registry-unearned-ceiling.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "ac20e8104b9017aaa97888f05fe1a084b50ef339824d1b6a815e29bc9fb81f47"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/custody-registry-unearned-ceiling.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/exercise-against-revoked-parent.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "fc5dc2b175bad46fa60a7a505d91a423782826f8f11f449d491a46f99cdd0805"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/exercise-against-revoked-parent.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/exercise-attributed-to-a-wallet-not-presenting-its-key.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "4125bddf8e71463f29fdaceac6a761f5c5ec6d278793e1c393b2e7a3df68f808"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/exercise-attributed-to-a-wallet-not-presenting-its-key.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/exercise-by-a-wallet-the-grant-does-not-address.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "5b37d4ef95c6cf46076860438883fd58d822531472cdd54f2410e14cfe0f6a5e"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/exercise-by-a-wallet-the-grant-does-not-address.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/exercise-custody-of-another-key-of-the-same-wallet.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "248fffcee16a417e67a64ef58effe48f62c5cfefbfb7babfb0439f7f287f1b4b"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/exercise-custody-of-another-key-of-the-same-wallet.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/exercise-omits-a-declared-constraint.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "424e20f7384591003940579dac69ff5d0168ebff7a5afc0648ba184070f62241"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/exercise-omits-a-declared-constraint.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/exercise-one-holder-satisfies-constraint.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "93419e654d5b1a0496577c40e4144e0271c6f0d795a45b416351d866dfa4d343"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/exercise-one-holder-satisfies-constraint.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/exercise-permitted-on-unverified-proof.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "40c5843f487c98a0774122d7509bf5aee8d92f3d5774ce523309cf21695dabb6"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/exercise-permitted-on-unverified-proof.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/exercise-permitted-under-a-retired-declared-key.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "6170db358c0b73abfe75179088e52294d5083ab65fc6553bb44ee50abf699afc"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/exercise-permitted-under-a-retired-declared-key.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/exercise-permitted-without-proof-of-possession.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "f05fd7531dc820b49b13bc154752744faddcde2cef34cba008207bf75d99f140"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/exercise-permitted-without-proof-of-possession.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/exercise-presenting-key-of-another-wallet.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "38532c610d04f887d604d6bb738e04dd9e82e9c9232884a0e02b5941bc55eebb"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/exercise-presenting-key-of-another-wallet.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/exercise-presenting-key-outside-the-declared-set.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "9b7b68e1bd8115b5780b513cbd8ecf8304c8523c598c044096a88829fe37490d"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/exercise-presenting-key-outside-the-declared-set.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/exercise-presenting-key-unknown-to-the-corpus.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "17713c23f43dc06a5a2c29b2a5354f3cabe87fb999f5293b62bcaa965dad1efa"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/exercise-presenting-key-unknown-to-the-corpus.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/exercise-proof-and-attribution-name-different-keys.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "9bc9a9d785920d2882a6d4f1effee9f193a82a36249ad65d50916b87fb533171"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/exercise-proof-and-attribution-name-different-keys.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/exercise-refusal-names-the-wrong-absence.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "a6db746a40d9beae99b936e8aa7d97e35a49e0add975a6039c30c1a30b7d1912"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/exercise-refusal-names-the-wrong-absence.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/exercise-shared-credential-as-actor.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "e6f949ac55e01dfcaccad53fb5d4f7d614cd7aa8602c1812c3adaeb21ec665ff"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/exercise-shared-credential-as-actor.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/exercise-single-key-custody-not-the-wallets.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "052c5d8484a886d86c496b20b87050db1bb129b3f1de19b48e929506cd1bb2b5"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/exercise-single-key-custody-not-the-wallets.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/exercise-tier-above-the-presenting-key-ceiling.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "31e0be6e466b110dea1b66b05cdd721d00b5f09be807643f7d17c196b3a6f6b3"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/exercise-tier-above-the-presenting-key-ceiling.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/exercise-verification-failure-as-unauthenticated.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "47047173787bee3e3ef7ac197100797979aee91adf256d2c34a1c7beaf6fc8b9"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/exercise-verification-failure-as-unauthenticated.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/exercise-verified-key-recorded-unattributed.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "cc5b7697a52d3a8d2957099305be8096d896741dfeb6e3ff53f987c23821dcbe"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/exercise-verified-key-recorded-unattributed.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/exercise-verified-proof-names-no-key.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "84087c34adb5c019ea26cc08c640524c5b161e485b1572ec725c205d4efc5ced"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/exercise-verified-proof-names-no-key.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/grant-derived-waives-parent-approval.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "b94c5eb78224ae587788266e4c5a1836b0ed5dcff6dfeb3df0ee5e99233feedf"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/grant-derived-waives-parent-approval.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/grant-derived-wider-than-parent.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "af8d8c415bc3751af95351609bc07a8a595e22241f74271f9566f675d44b3946"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/grant-derived-wider-than-parent.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/grant-exceeds-custody-ceiling.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "479065e77b1bf78f26d3b6f34367b3f34a478e19ce52732b58019b5fb77dd907"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/grant-exceeds-custody-ceiling.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/grant-parallel-authority-vocabulary.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "e15a131f98be7a75b0ee1f77775f12afaacc2a8648afdf923c818769d7e00c7d"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/grant-parallel-authority-vocabulary.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/grant-review-authority-omits-issued-by.yaml
+    disposition: not_moved
+    reason: stays_openxwallet_adapter
+    evidence: "design.md D6/D7 'Stays here': the three issuer-anchor negatives attribute to OXWR-R1/R2, which are rule (t)'s and therefore the adapter's; they stay at this path, unrenamed, and repo_scan's examples-prefix exclusion keeps them out of live scans"
+    retained_here: kept
+  - source_path: contracts/openxwallet/examples/negative/grant-review-root-issuer-is-a-machine.yaml
+    disposition: not_moved
+    reason: stays_openxwallet_adapter
+    evidence: "design.md D6/D7 'Stays here': the three issuer-anchor negatives attribute to OXWR-R1/R2, which are rule (t)'s and therefore the adapter's; they stay at this path, unrenamed, and repo_scan's examples-prefix exclusion keeps them out of live scans"
+    retained_here: kept
+  - source_path: contracts/openxwallet/examples/negative/grant-review-root-issuer-says-opensoft.yaml
+    disposition: not_moved
+    reason: stays_openxwallet_adapter
+    evidence: "design.md D6/D7 'Stays here': the three issuer-anchor negatives attribute to OXWR-R1/R2, which are rule (t)'s and therefore the adapter's; they stay at this path, unrenamed, and repo_scan's examples-prefix exclusion keeps them out of live scans"
+    retained_here: kept
+  - source_path: contracts/openxwallet/examples/negative/subject-attestation-resolves-through-wallet.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "68ddbde3c1a0bc19dace4a832a626081a0749d72a7f234f52e4dff6974d5e537"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/subject-attestation-resolves-through-wallet.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/wallet-carries-jwk-private-exponent.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "631bd3e0541449f87341c6ba7595719af3bcaa54f2a66aea57852edd3192a94f"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/wallet-carries-jwk-private-exponent.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/wallet-carries-key-material.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "10dd24a27c23feb07e4df5a6347184213767d41d9b77458953474c1a3f273fd3"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/wallet-carries-key-material.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/wallet-custody-outside-the-closed-set.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "823efe71f4b76eebefc2b89760006aada29c400efb686b713b3fb76793dade0f"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/wallet-custody-outside-the-closed-set.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/wallet-declared-key-fingerprint-does-not-recompute.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "b5474fab9e6142b4bac37b1e27f72c88bfe30572a577a49d370ff8d03c8cf5e2"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/wallet-declared-key-fingerprint-does-not-recompute.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/wallet-declared-key-omits-its-custody.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "0e649413b1d018640377e76df3c5fc4c9cb0f60ba1cb80d5e40fb224ee11bce5"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/wallet-declared-key-omits-its-custody.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/wallet-declared-key-outranks-its-wallet.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "887fe2ecb994b1d0e291f633552eca10fb985c66bdf42b92991f4bd95d10f887"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/wallet-declared-key-outranks-its-wallet.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/wallet-declares-one-key-identifier-twice.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "a136e6cf07dbb2ce5e71412bcf81b8e1116c08969ac5813bf7ec96394de0a776"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/wallet-declares-one-key-identifier-twice.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/negative/wallet-record-duplicating-another-wallet-id.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "dea9bd34264f82d17c456c5a4dcdc7e57bb056ed3ac1b95e885cfcc7e129bc93"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/negative/wallet-record-duplicating-another-wallet-id.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/subject-attestation.example.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "16d92ec2c232b1a5de0dce107f34c610b116da073cfebcd18f9126344c46892c"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/subject-attestation.example.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/wallet-agent-council-multi-key.example.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "8da8d45a183786ae4d47deda46ad79055c86d4563fa900362c686ce026292121"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/wallet-agent-council-multi-key.example.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/wallet-agent-creator.example.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "0876ac198da5e41a54c34cd9cc7d92cb2f2ba8f155772adcf31962bfe975ba99"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/wallet-agent-creator.example.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/wallet-agent-poster.example.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "945eacf4b6b395dbf042c62cf62823a2600fe7da30c787f9012ff7b2e2568edb"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/wallet-agent-poster.example.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/wallet-agent-rsa-platform-verifiable.example.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "e4a2ca8335510a9cda5c690bdaa25b3bc526c4d740bcbd8e49904071855ada2d"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/wallet-agent-rsa-platform-verifiable.example.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/wallet-practitioner.example.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "9ed7547e49b8a152b564c08214e868bedbfca0560b5457a2b3764206495c35d1"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/wallet-practitioner.example.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/examples/wallet-revoked-standing.example.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "88b5dc1c84d409f855c8eae5fe625270d2018eae1a82c5d42e99cee8956220c1"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/examples/wallet-revoked-standing.example.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/openxwallet-custody-registry.schema.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "df72638497a7f90c2a4dff47c429cb794bc4b6e270ce2dd2b17116478ae3b51a"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/openxwallet-custody-registry.schema.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/openxwallet-custody.registry.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "94d631d6ee76dab015628a1856afd82582b98d6a3733622c9afe8b13b5278539"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/openxwallet-custody.registry.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/openxwallet-distinct-holder-constraint.schema.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "c2a6d2fd23fb3743fdaf0e165dabc4cb1dff24e52a8262a38c86ed1482374b25"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/openxwallet-distinct-holder-constraint.schema.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/openxwallet-grant-exercise.schema.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "f16ad31246186cec36e142ae39bd831d98fbc5c0afd48685057bc39e113c8858"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/openxwallet-grant-exercise.schema.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/openxwallet-grant.schema.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "fde433c5821e2e6f62926a72c58a67a784961d2e9e27e9f2b3520fcc8e738e88"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/openxwallet-grant.schema.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/openxwallet-record.schema.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "20ba39c07564c93b8ffe47382126677a165771244d28fb0c4976ab950173c40a"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/openxwallet-record.schema.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/openxwallet/openxwallet-subject-attestation.schema.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "d29eca519462aff7871de3786f19c820e9fc3b95115ce30e57d1f1cc2bc0c0b2"
+    destination: openwallet_code
+    destination_path: contracts/openxwallet/openxwallet-subject-attestation.schema.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: q7-code-leg
+  - source_path: contracts/releases/wallet-v1.0.digests.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "b9122170cf8775670974befc44f81bd1c96fea2b9096f0b94449d6f7b41c6654"
+    destination: openwallet_root
+    destination_path: contracts/releases/wallet-v1.0.digests.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: d7-root-release-identity
+  - source_path: contracts/releases/wallet-v1.1.digests.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "fea449fa0bc335bf086e114109bf72342c653bed8815449b408f4c8a978206dd"
+    destination: openwallet_root
+    destination_path: contracts/releases/wallet-v1.1.digests.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: d7-root-release-identity
+  - source_path: contracts/releases/wallet-v1.2.digests.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "8c25f6fc65f35ce6eadce0036b791d6bcc1dbed9bd3e67cf9028c4aca5282661"
+    destination: openwallet_root
+    destination_path: contracts/releases/wallet-v1.2.digests.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: d7-root-release-identity
+  - source_path: contracts/releases/wallet-v1.3.digests.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "4af174456f30f67e9d01945ed2ba8cac98c4e56c6e12c3bae74d043db012f517"
+    destination: openwallet_root
+    destination_path: contracts/releases/wallet-v1.3.digests.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: d7-root-release-identity
+  - source_path: contracts/releases/wallet-v1.4.digests.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "26f3046b90d06901556553c2b32505634ba4f59f5b090392e6fb0d39a9dac9ac"
+    destination: openwallet_root
+    destination_path: contracts/releases/wallet-v1.4.digests.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: d7-root-release-identity
+  - source_path: contracts/releases/wallet-v1.5.digests.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "444da3e5f2805d527fee10fde14f14bb2f605302d9f2f0b749379d4c23a09c41"
+    destination: openwallet_root
+    destination_path: contracts/releases/wallet-v1.5.digests.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: d7-root-release-identity
+  - source_path: contracts/schemas/hermes-job-envelope.schema.yaml
+    disposition: not_moved
+    reason: stays_openxwallet_adapter
+    evidence: "design.md D2/D7 'Stays here': the factory-bound envelope pin (AGENTS.md rule 3) — contract_pin.yaml, the vendored envelope, its verifier and its resync runbook"
+    retained_here: kept
+  - source_path: docs/byte-identity-wallet-v1.0.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "e47d0e268b30532e2ba5864078812815d71e5bffb4bbaa69d46869c7ee01e254"
+    destination: openwallet_root
+    destination_path: docs/byte-identity-wallet-v1.0.md
+    retained_here: kept
+    leg_default: {leg: spec, rule: spec-governance}
+    leg_override: d7-root-release-identity
+  - source_path: docs/openspec-cli-pin.md
+    disposition: not_moved
+    reason: stays_vendored_not_carved
+    evidence: "design.md D2/D7: VENDORED from openxFactory and NOT carved; the spec leg vendors its own OpenSpec gate under its own ruling (tasks.md 3.6, \"Vendor the tarball (Recommended)\")"
+    retained_here: kept
+  - source_path: docs/openxwallet-cutover-runbook.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7 'Stays here': the record of the first carve; openWallet's root gets its own runbook"
+    retained_here: kept
+  - source_path: docs/pin-resync-runbook.md
+    disposition: not_moved
+    reason: stays_openxwallet_adapter
+    evidence: "design.md D2/D7 'Stays here': the factory-bound envelope pin (AGENTS.md rule 3) — contract_pin.yaml, the vendored envelope, its verifier and its resync runbook"
+    retained_here: kept
+  - source_path: ideation/brainstorm/usage-control-wallet-authority-active-grant.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7 'Stays here': this repository's own ideation records"
+    retained_here: kept
+  - source_path: ideation/brainstorm/usage-control-wallet-authority-attested-workload.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7 'Stays here': this repository's own ideation records"
+    retained_here: kept
+  - source_path: ideation/brainstorm/usage-control-wallet-authority-overview.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7 'Stays here': this repository's own ideation records"
+    retained_here: kept
+  - source_path: ideation/brainstorm/usage-control-wallet-authority-synthesis-grant-workload.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7 'Stays here': this repository's own ideation records"
+    retained_here: kept
+  - source_path: openspec/changes/add-composition-drift-cascade/.openspec.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "edb2c4a032164b9bfbdaf6312a0cf9a351e2b76e9df7b98b51a8fa4b1b9ad254"
+    destination: openwallet_spec
+    destination_path: openspec/changes/add-composition-drift-cascade/.openspec.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: openspec/changes/add-composition-drift-cascade/design.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "2b7725360f84869f6a361be7518bc2201a13b6113e1ee17d5c4339201a0221c1"
+    destination: openwallet_spec
+    destination_path: openspec/changes/add-composition-drift-cascade/design.md
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: openspec/changes/add-composition-drift-cascade/proposal.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "0ffd92fff262253694f02317122ec8c71435b09d1e4941e4f61a6519b42295a8"
+    destination: openwallet_spec
+    destination_path: openspec/changes/add-composition-drift-cascade/proposal.md
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: openspec/changes/add-composition-drift-cascade/specs/openxwallet-agent-profile/spec.md
+    disposition: moved_with_declared_edit
+    git_mode: '100644'
+    sha256: "c2327e68c24768c56b8acbe9ca29223e65592eb4d2c6bd59fe3fb3ef630abb80"
+    destination: openwallet_spec
+    destination_path: openspec/changes/add-composition-drift-cascade/specs/openxwallet-agent-profile/spec.md
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    edits:
+      - class: subject lines
+        lines: [7]
+        note: "the third of the travelling change's three `openXwallet` occurrences (tasks.md 4.4)"
+  - source_path: openspec/changes/add-composition-drift-cascade/specs/openxwallet/spec.md
+    disposition: moved_with_declared_edit
+    git_mode: '100644'
+    sha256: "a18d545dec74bd56b22302c0646528484e7c848933c217371d100a5170f3d833"
+    destination: openwallet_spec
+    destination_path: openspec/changes/add-composition-drift-cascade/specs/openxwallet/spec.md
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+    edits:
+      - class: subject lines
+        lines: [7, 36]
+        note: "two of the travelling change's three `openXwallet` occurrences (tasks.md 4.4)"
+  - source_path: openspec/changes/add-composition-drift-cascade/tasks.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "9b63834a9cc159a414ed1fd5044db50bd1223c53184b9fce9e73bd654ddc450c"
+    destination: openwallet_spec
+    destination_path: openspec/changes/add-composition-drift-cascade/tasks.md
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: openspec/changes/archive/2026-08-08-add-openxwallet/.openspec.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "a4b952c91c6e8de277d2f4fc0d0e0daba9f39501c609e4b5a9481a484b1a62e1"
+    destination: openwallet_spec
+    destination_path: openspec/changes/archive/2026-08-08-add-openxwallet/.openspec.yaml
+    retained_here: kept
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: openspec/changes/archive/2026-08-08-add-openxwallet/design.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "85c2d4e8f1f5353f2edd8f5b398899a0929842b932cfcc0c79f77c027ef5044e"
+    destination: openwallet_spec
+    destination_path: openspec/changes/archive/2026-08-08-add-openxwallet/design.md
+    retained_here: kept
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: openspec/changes/archive/2026-08-08-add-openxwallet/proposal.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "8414f0140d3e4c79ac98579bf4dddc3222cf9740eb157e220c1c84e88e23c06e"
+    destination: openwallet_spec
+    destination_path: openspec/changes/archive/2026-08-08-add-openxwallet/proposal.md
+    retained_here: kept
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: openspec/changes/archive/2026-08-08-add-openxwallet/specs/openxwallet-agent-profile/spec.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "6acef6a3218e1704aa330d4e4d3783ddee5c7a5a2efd9a33ef9b01867ed36b42"
+    destination: openwallet_spec
+    destination_path: openspec/changes/archive/2026-08-08-add-openxwallet/specs/openxwallet-agent-profile/spec.md
+    retained_here: kept
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: openspec/changes/archive/2026-08-08-add-openxwallet/specs/openxwallet/spec.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "c4b187b9b43fe0b9df22e1ba0f2811243ee4a5fad2413b792ff920ce4dbf5f65"
+    destination: openwallet_spec
+    destination_path: openspec/changes/archive/2026-08-08-add-openxwallet/specs/openxwallet/spec.md
+    retained_here: kept
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: openspec/changes/archive/2026-08-08-add-openxwallet/tasks.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "62d92cabd701b31d7584f7cf9e1739249b7fc2446d996534a0909aaa7f089f8a"
+    destination: openwallet_spec
+    destination_path: openspec/changes/archive/2026-08-08-add-openxwallet/tasks.md
+    retained_here: kept
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: openspec/changes/archive/2026-09-06-add-per-seat-register-entries/design.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7: the archive record of add-per-seat-register-entries is factory-bound and stays, unedited"
+    retained_here: kept
+  - source_path: openspec/changes/archive/2026-09-06-add-per-seat-register-entries/proposal.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7: the archive record of add-per-seat-register-entries is factory-bound and stays, unedited"
+    retained_here: kept
+  - source_path: openspec/changes/archive/2026-09-06-add-per-seat-register-entries/specs/review-authority-register-reader/spec.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7: the archive record of add-per-seat-register-entries is factory-bound and stays, unedited"
+    retained_here: kept
+  - source_path: openspec/changes/archive/2026-09-06-add-per-seat-register-entries/tasks.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7: the archive record of add-per-seat-register-entries is factory-bound and stays, unedited"
+    retained_here: kept
+  - source_path: openspec/changes/archive/2026-10-08-add-multi-key-wallets/design.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "14cf14ff9acdfc1cfa75d04f2e4d422e75c132d90d2ad5443636d868ca26755a"
+    destination: openwallet_spec
+    destination_path: openspec/changes/archive/2026-10-08-add-multi-key-wallets/design.md
+    retained_here: kept
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: openspec/changes/archive/2026-10-08-add-multi-key-wallets/proposal.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "91088295f6f570e3f7d62fc3d0fab98f360c05bae3fa1c58362dc5ebf271241c"
+    destination: openwallet_spec
+    destination_path: openspec/changes/archive/2026-10-08-add-multi-key-wallets/proposal.md
+    retained_here: kept
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: openspec/changes/archive/2026-10-08-add-multi-key-wallets/specs/openxwallet/spec.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "d1300b42a27f5d5b90380ac9f12528d904dd427010986af565d66f4966623edd"
+    destination: openwallet_spec
+    destination_path: openspec/changes/archive/2026-10-08-add-multi-key-wallets/specs/openxwallet/spec.md
+    retained_here: kept
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: openspec/changes/archive/2026-10-08-add-multi-key-wallets/tasks.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "418784459ff10c5a09a9bdb66cf8e23be744929c11d959202f602b4d5ceb7b52"
+    destination: openwallet_spec
+    destination_path: openspec/changes/archive/2026-10-08-add-multi-key-wallets/tasks.md
+    retained_here: kept
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: openspec/changes/split-openwallet-neutral-core/.openspec.yaml
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D9: this change governs the carve and archives HERE last, after the reflow D0 measured as its precondition"
+    retained_here: kept
+  - source_path: openspec/changes/split-openwallet-neutral-core/design.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D9: this change governs the carve and archives HERE last, after the reflow D0 measured as its precondition"
+    retained_here: kept
+  - source_path: openspec/changes/split-openwallet-neutral-core/proposal.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D9: this change governs the carve and archives HERE last, after the reflow D0 measured as its precondition"
+    retained_here: kept
+  - source_path: openspec/changes/split-openwallet-neutral-core/specs/openxwallet-agent-profile/spec.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D9: this change governs the carve and archives HERE last, after the reflow D0 measured as its precondition"
+    retained_here: kept
+  - source_path: openspec/changes/split-openwallet-neutral-core/specs/openxwallet-factory-binding/spec.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D9: this change governs the carve and archives HERE last, after the reflow D0 measured as its precondition"
+    retained_here: kept
+  - source_path: openspec/changes/split-openwallet-neutral-core/specs/openxwallet/spec.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D9: this change governs the carve and archives HERE last, after the reflow D0 measured as its precondition"
+    retained_here: kept
+  - source_path: openspec/changes/split-openwallet-neutral-core/tasks.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D9: this change governs the carve and archives HERE last, after the reflow D0 measured as its precondition"
+    retained_here: kept
+  - source_path: openspec/changes/widen-register-reader-for-a-second-council/.openspec.yaml
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D7 'Stays here' and D9: widen-register-reader-for-a-second-council stays here and is independent of the carve"
+    retained_here: kept
+  - source_path: openspec/changes/widen-register-reader-for-a-second-council/design.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D7 'Stays here' and D9: widen-register-reader-for-a-second-council stays here and is independent of the carve"
+    retained_here: kept
+  - source_path: openspec/changes/widen-register-reader-for-a-second-council/proposal.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D7 'Stays here' and D9: widen-register-reader-for-a-second-council stays here and is independent of the carve"
+    retained_here: kept
+  - source_path: openspec/changes/widen-register-reader-for-a-second-council/realization-evidence-2026-09-06.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D7 'Stays here' and D9: widen-register-reader-for-a-second-council stays here and is independent of the carve"
+    retained_here: kept
+  - source_path: openspec/changes/widen-register-reader-for-a-second-council/specs/review-authority-register-reader/spec.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D7 'Stays here' and D9: widen-register-reader-for-a-second-council stays here and is independent of the carve"
+    retained_here: kept
+  - source_path: openspec/changes/widen-register-reader-for-a-second-council/tasks.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D7 'Stays here' and D9: widen-register-reader-for-a-second-council stays here and is independent of the carve"
+    retained_here: kept
+  - source_path: openspec/config.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "85b53dd24fbe7d19c8b0f0ddccf5e82600c5c372c76b57a2a89dc34dfb0fc5b9"
+    destination: openwallet_spec
+    destination_path: openspec/config.yaml
+    retained_here: kept
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: openspec/specs/openxwallet-agent-profile/spec.md
+    disposition: moved_with_declared_edit
+    git_mode: '100644'
+    sha256: "73413ea14ebe12244fe078ac0e08b144eb7bc52894eab2fb0bd7b79670bb4850"
+    destination: openwallet_spec
+    destination_path: openspec/specs/openxwallet-agent-profile/spec.md
+    retained_here: retired_by_archive
+    leg_default: {leg: spec, rule: spec-governance}
+    edits:
+      - class: subject lines
+        lines: [8, 29, 52]
+        note: "the three requirement subjects `openXwallet SHALL` become `openWallet SHALL`; with the eight in openxwallet, the eleven subject lines"
+  - source_path: openspec/specs/openxwallet/spec.md
+    disposition: moved_with_declared_edit
+    git_mode: '100644'
+    sha256: "c8b979333518b1025df09f6b49e19cb118dd8e3837bee4f9ad24e16c84e9131f"
+    destination: openwallet_spec
+    destination_path: openspec/specs/openxwallet/spec.md
+    retained_here: retired_by_archive
+    leg_default: {leg: spec, rule: spec-governance}
+    edits:
+      - class: subject lines
+        lines: [10, 59, 80, 102, 139, 175, 206, 227]
+        note: "the eight requirement subjects `openXwallet SHALL` become `openWallet SHALL` (RULED \"keep the prefix\": no capability id, kind, code or filename moves)"
+  - source_path: openspec/specs/review-authority-register-reader/spec.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7: capability review-authority-register-reader is factory-bound and stays, taking no delta"
+    retained_here: kept
+  - source_path: scripts/install-pinned-openspec-cli.py
+    disposition: not_moved
+    reason: stays_vendored_not_carved
+    evidence: "design.md D2/D7: VENDORED from openxFactory and NOT carved; the spec leg vendors its own OpenSpec gate under its own ruling (tasks.md 3.6, \"Vendor the tarball (Recommended)\")"
+    retained_here: kept
+  - source_path: scripts/validate-openspec-cli-pin.py
+    disposition: not_moved
+    reason: stays_vendored_not_carved
+    evidence: "design.md D2/D7: VENDORED from openxFactory and NOT carved; the spec leg vendors its own OpenSpec gate under its own ruling (tasks.md 3.6, \"Vendor the tarball (Recommended)\")"
+    retained_here: kept
+  - source_path: scripts/validate-openxwallet.py
+    disposition: moved_with_declared_edit
+    git_mode: '100755'
+    sha256: "a0fac582dfd9bee1423345ee5968dfea2eeabab3b257c72e70d566f44a1fdce7"
+    destination: openwallet_code
+    destination_path: scripts/validate-openxwallet.py
+    retained_here: kept
+    leg_default: {leg: code, rule: code-source-and-tests}
+    edits:
+      - class: validator hunks (a)-(e)
+        lines: [254, 3498, 3499, 3500, 3501, 3502, 3503, 3529, 3530]
+        note: "hunk (a), remove the envelope: ENVELOPE_SCHEMA_PATH (:254), the hard exit when it is absent (:3498-3503) and the vocabulary note (:3529-3530); the adapter's main binds them (design.md D4)"
+      - class: validator hunks (a)-(e)
+        lines: [73, 74, 75, 76, 77, 78, 422, 423, 424, 425, 426, 427, 428, 3507]
+        note: "hunk (b), the vocabulary from ONE DECLARED BINDING the caller supplies, refused when absent (RULED Q6): rule (g)'s envelope sentences in the docstring (:73-78), approval_policy_vocabulary() (:422-428) and its read in main (:3507)"
+      - class: validator hunks (a)-(e)
+        lines: [
+          172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 256, 257, 258, 259,
+          260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273,
+          274, 275, 276, 277, 278, 279, 280, 281, 282, 283, 323, 324, 325, 326,
+          327, 328, 986, 987, 988, 989, 990, 991, 992, 993, 994, 995, 996, 997,
+          998, 999, 1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011,
+          1012, 1013, 1014, 1015, 1016, 1017, 1018, 1019, 1020, 1021, 1022, 1023, 1024, 1025,
+          1026, 1027, 1028, 1029, 1030, 1031, 1032, 1789, 1790, 1791, 1792, 1793, 1794, 1795,
+          1796, 1797, 1798, 1799, 1800, 1801, 1802, 1803, 1804, 1805, 1806, 1807, 1808, 1809,
+          1810, 1811, 1812, 1813, 1814, 1815, 1816, 1817, 1818, 1819, 1820, 1821, 1822, 1823,
+          1824, 1825, 1826, 1827, 1828, 1829, 1830, 1831, 1832, 1833, 1834, 1835, 1836, 1837,
+          1838, 1839, 1840, 1841, 1842, 1843, 1844, 1845, 1846, 1847, 1848, 1849, 1850, 1851,
+          1852, 1853, 1854, 1855, 1856, 1857, 1858, 1859, 1860, 1861, 1862, 1863, 1864, 1865,
+          1866, 1867, 1868, 1869, 1870, 1871, 1872, 1873, 1874, 1875, 1876, 1877, 1878, 1879,
+          1880, 1881, 1882, 1883, 1884, 1885, 1886, 1887, 1888, 1889, 1890, 1891, 1892, 1893,
+          1894, 1895, 1896, 1897, 1898, 1899, 1900, 1901, 1902, 1903, 1904, 1905, 1906, 1907,
+          1908, 1909, 1910, 1911, 1912, 1913, 1914, 1915, 1916, 1917, 1918, 1919, 1920, 1921,
+          1922, 1923, 1924, 1925, 1926, 1927, 1928, 1929, 1930, 1931, 1932, 1933, 1934, 1935,
+          1936, 1937, 1938, 1939, 1940, 1941, 1942, 1943, 1944, 1945, 1946, 1947, 1948, 1949,
+          1950, 1951, 1952, 1953, 1954, 1955, 1956, 1957, 1958, 1959, 1960, 1961, 1962, 1963,
+          1964, 1965, 1966, 1967, 1968, 1969, 1970, 1971, 1972, 1973, 1974
+        ]
+        note: "hunk (c), rule (t) moves OUT to the adapter: its docstring (:172-181), constants (:256-283), the OXWR-R1/R2 requirement rows (:323-328), the check inside check_grant (:986-1032) and the boundary-guard, anchor and S2 self-test probes (:1789-1974)"
+      - class: validator hunks (a)-(e)
+        lines: [
+          183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196,
+          197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210,
+          211, 212, 2036, 2037, 2038, 2039, 2040, 2041, 2042, 2043, 2044, 2045, 2046, 2047,
+          2048, 2049, 2050, 2051, 2052, 2053, 2054, 2055, 2056, 2057, 2058, 2059, 2060, 2061,
+          2062, 2063, 2064, 2065, 2066, 2067, 2068, 2069, 2070, 2071, 2072, 2073, 2074, 2075,
+          2076, 2077, 2078, 2079, 2080, 2081, 2082, 2083, 2084, 2085, 2086, 2087, 2088, 2089,
+          2090, 2091, 2092, 2093, 2094, 2095, 2096, 2097, 2098, 2099, 2100, 2101, 2102, 2103,
+          2104, 2105, 2106, 2107, 2108, 2109, 2110, 2111, 2112, 2113, 2114, 2115, 2116, 2117,
+          2118, 2119, 2120, 2121, 2122, 2123, 2124, 2125, 2126, 2127, 2128, 2129, 2130, 2131,
+          2132, 2133, 2134, 2135, 2136, 2137, 2138, 2139, 2140, 2141, 2142, 2143, 2144, 2145,
+          2146, 2147, 2148, 2149, 2150, 2151, 2152, 2153, 2154, 2155, 2156, 2157, 2158, 2159,
+          2160, 2161, 2162, 2163, 2164, 2165, 2166, 2167, 2168, 2169, 2170, 2171, 2172, 2173,
+          2174, 2175, 2176, 2177, 2178, 2179, 2180, 2181, 2182, 2183, 2184, 2185, 2186, 2187,
+          2188, 2189, 2190, 2191, 2192, 2193, 2194, 2195, 2196, 2197, 2198, 2199, 2200, 2201,
+          2202, 2203, 2204, 2205, 2206, 2207, 2208, 2209, 2210, 2211, 2212, 2213, 2214, 2215,
+          2216, 2217, 2218, 2219, 2220, 2221, 2222, 2223, 2224, 2225, 2226, 2227, 2228, 2229,
+          2230, 2231, 2232, 2233, 2234, 2235, 2236, 2237, 2238, 2239, 2240, 2241, 2242, 2243,
+          2244, 2245, 2246, 2247, 2248, 2249, 2250, 2251, 2252, 2253, 2254, 2255, 2256, 2257,
+          2258, 2259, 2260, 2261, 2262, 2263, 2264, 2265, 2266, 2267, 2268, 2269, 2270, 2271,
+          2272, 2273, 2274, 2275, 2276, 2277, 2278, 2279, 2280, 2281, 2282, 2283, 2284, 2285,
+          2286, 2287, 2288, 2289, 2290, 2291, 2292, 2293, 2294, 2295, 2296, 2297, 2298, 2299,
+          2300, 2301, 2302, 2303, 2304, 2305, 2306, 2307, 2308, 2309, 2310, 2311, 2312, 2313,
+          2314, 2315, 2316, 2317, 2318, 2319, 2320, 2321, 2322, 2323, 2324, 2325, 2326, 2327,
+          2328, 2329, 2330, 2331, 2332, 2333, 2334, 2335, 2336, 2337, 2338, 2339, 2340, 2341,
+          2342, 2343, 2344, 2345, 2346, 2347, 2348, 2349, 2350, 2351, 2352, 2353, 2354, 2355,
+          2356, 2357, 2358, 2359, 2360, 2361, 2362, 2363, 2364, 2365, 2366, 2367, 2368, 2369,
+          2370, 2371, 2372, 2373, 2374, 2375, 2376, 2377, 2378, 2379, 2380, 2381, 2382, 2383,
+          2384, 2385, 2386, 2387, 2388, 2389, 2390, 2391, 2392, 2393, 2394, 2395, 2396, 2397,
+          2398, 2399, 2400, 2401, 2402, 2403, 2404, 2405, 2406, 2407, 2408, 2409, 2410, 2411,
+          2412, 2413, 2414, 2415, 2416, 2417, 2418, 2419, 2420, 2421, 2422, 2423, 2424, 2425,
+          2426, 2427, 2428, 2429, 2430, 2431, 2432, 2433, 2434, 2435, 2436, 2437, 2438, 2439,
+          2440, 2441, 2442, 2443, 2444, 2445, 2446, 2447, 2448, 2449, 2450, 2451, 2452, 2453,
+          2454, 2455, 2456, 2457, 2458, 2459, 2460, 2461, 2462, 2463, 2464, 2465, 2466, 2467,
+          2468, 2469, 2470, 2471, 2472, 2473, 2474, 2475, 2476, 2477, 2478, 2479, 2480, 2481,
+          2482, 2483, 2484, 2485, 2486, 2487, 2488, 2489, 2490, 2491, 2492, 2493, 2494, 2495,
+          2496, 2497, 2498, 2499, 2500, 2501, 2502, 2503, 2504, 2505, 2506, 2507, 2508, 2509,
+          2510, 2511, 2512, 2513, 2514, 2515, 2516, 2517, 2518, 2519, 2520, 2521, 2522, 2523,
+          2524, 2525, 2526, 2527, 2528, 2529, 2530, 2531, 2532, 2533, 2534, 2535, 2536, 2537,
+          2538, 2539, 2540, 2541, 2542, 2543, 2544, 2545, 2546, 2547, 2548, 2549, 2550, 2551,
+          2552, 2553, 2554, 2555, 2556, 2557, 2558, 2561, 2562, 2563, 2564, 2565, 2566, 2567,
+          2568, 2569, 2570, 2571, 2572, 2573, 2574, 2575, 2576, 2577, 2578, 2579, 2580, 2581,
+          2582, 2583, 2584, 2585, 2586, 2587, 2588, 2589, 2590, 2591, 2592, 2593, 2594, 2595,
+          2596, 2597, 2598, 2599, 2600, 2601, 2602, 2603, 2604, 2605, 2606, 2607, 2608, 2609,
+          2610, 2611, 2612, 2613, 2614, 2615, 2616, 2617, 2618, 2619, 2620, 2621, 2622, 2623,
+          2624, 2625, 2626, 2627, 2628, 2629, 2630, 2631, 2632, 2633, 2634, 2635, 2636, 2637,
+          2638, 2639, 2640, 2641, 2642, 2643, 2644, 2645, 2646, 2647, 2648, 2649, 2650, 2651,
+          2652, 2653, 2654, 2655, 2656, 2657, 2658, 2659, 2660, 2661, 2662, 2663, 2664, 2665,
+          2666, 2667, 2668, 2669, 2670, 2671, 2672, 2673, 2674, 2675, 2676, 2677, 2678, 2679,
+          2680, 2681, 2682, 2683, 2684, 2685, 2686, 2687, 2688, 2689, 2690, 2691, 2692, 2693,
+          2694, 2695, 2696, 2697, 2698, 2699, 2700, 2701, 2702, 2703, 2704, 2705, 2706, 2707,
+          2708, 2709, 2710, 2711, 2712, 2713, 2714, 2715, 2716, 2717, 2718, 2719, 2720, 2721,
+          2722, 2723, 2724, 2725, 2726, 2727, 2728, 2729, 2730, 2731, 2732, 2733, 2734, 2735,
+          2736, 2737, 2738, 2739, 2740, 2741, 2742, 2743, 2744, 2745, 2746, 2747, 2748, 2749,
+          2750, 2751, 2752, 2753, 2754, 2755, 2756, 2757, 2758, 2759, 2760, 2761, 2762, 2763,
+          2764, 2765, 2766, 2767, 2768, 2769, 2770, 2771, 2772, 2773, 2774, 2775, 2776, 2777,
+          2778, 2779, 2780, 2781, 2782, 2783, 2784, 2785, 2786, 2787, 2788, 2789, 2790, 2791,
+          2792, 2793, 2794, 2795, 2796, 2797, 2798, 2799, 2800, 2801, 2802, 2803, 2804, 2805,
+          2806, 2807, 2808, 2809, 2810, 2811, 2812, 2813, 2814, 2815, 2816, 2817, 2818, 2819,
+          2820, 2821, 2822, 2823, 2824, 2825, 2826, 2827, 2828, 2829, 2830, 2831, 2832, 2833,
+          2834, 2835, 2836, 2837, 2838, 2839, 2840, 2841, 2842, 2843, 2844, 2845, 2846, 2847,
+          2848, 2849, 2850, 2851, 2852, 2853, 2854, 2855, 2856, 2857, 2858, 2859, 2860, 2861,
+          2862, 2863, 2864, 2865, 2866, 2867, 2868, 2869, 2870, 2871, 2872, 2873, 2874, 2875,
+          2876, 2877, 2878, 2879, 2880, 2881, 2882, 2883, 2884, 2885, 2886, 2887, 2888, 2889,
+          2890, 2891, 2892, 2893, 2894, 2895, 2896, 2897, 2898, 2899, 2900, 2901, 2902, 2903,
+          2904, 2905, 2906, 2907, 2908, 2909, 2910, 2911, 2912, 2913, 2914, 2915, 2916, 2917,
+          2918, 2919, 2920, 2921, 2922, 2923, 2924, 2925, 2926, 2927, 2928, 2929, 2930, 2931,
+          2932, 2933, 2934, 2935, 2936, 2937, 2938, 2939, 2940, 2941, 2942, 2943, 2944, 2945,
+          2946, 2947, 2948, 2949, 2950, 2951, 2952, 2953, 2954, 2955, 2956, 2957, 2958, 2959,
+          2960, 2961, 2962, 2963, 2964, 2965, 2966, 2967, 2968, 2969, 2970, 2971, 2972, 2973,
+          2974, 2975, 2976, 2977, 2978, 2979, 2980, 2981, 2982, 2983, 2984, 2985, 2986, 2987,
+          2988, 2989, 2990, 2991, 2992, 2993, 2994, 2995, 2996, 2997, 2998, 2999, 3000, 3001,
+          3002, 3003, 3004, 3005, 3006, 3007, 3008, 3009, 3010, 3011, 3012, 3013, 3014, 3015,
+          3016, 3017, 3018, 3019, 3020, 3021, 3022, 3023, 3024, 3025, 3026, 3027, 3028, 3029,
+          3030, 3031, 3032, 3033, 3034, 3035, 3036, 3037, 3038, 3039, 3040, 3041, 3042, 3043,
+          3044, 3045, 3046, 3047, 3048, 3049, 3050, 3051, 3052, 3053, 3054, 3055, 3056, 3057,
+          3058, 3059, 3060, 3061, 3062, 3063, 3064, 3065, 3066, 3067, 3068, 3069, 3070, 3071,
+          3072, 3073, 3074, 3075, 3076, 3077, 3078, 3079, 3080, 3081, 3082, 3083, 3084, 3085,
+          3086, 3087, 3088, 3089, 3090, 3091, 3092, 3093, 3094, 3095, 3096, 3097, 3098, 3099,
+          3100, 3101, 3102, 3103, 3104, 3105, 3106, 3107, 3108, 3109, 3110, 3111, 3112, 3113,
+          3114, 3115, 3116, 3117, 3118, 3119, 3120, 3121, 3122, 3123, 3124, 3125, 3126, 3127,
+          3128, 3129, 3130, 3131, 3132, 3133, 3134, 3135, 3136, 3137, 3138, 3139, 3140, 3141,
+          3142, 3143, 3144, 3145, 3146, 3147, 3148, 3149, 3150, 3151, 3152, 3153, 3154, 3155,
+          3156, 3157, 3158, 3159, 3160, 3161, 3162, 3163, 3164, 3165, 3166, 3167, 3168, 3169,
+          3170, 3171, 3172, 3173, 3174, 3175, 3176, 3177, 3178, 3179, 3180, 3181, 3182, 3183,
+          3184, 3185, 3186, 3187, 3188, 3189, 3190, 3191, 3192, 3193, 3194, 3195, 3196, 3197,
+          3198, 3199, 3200, 3201, 3202, 3203, 3204, 3205, 3206, 3207, 3208, 3209, 3210, 3211,
+          3212, 3213, 3214, 3215, 3216, 3217, 3218, 3219, 3220, 3221, 3222, 3223, 3224, 3225,
+          3226, 3227, 3228, 3229, 3230, 3231, 3232, 3233, 3234, 3235, 3236, 3237, 3238, 3239,
+          3240, 3241, 3242, 3243, 3244, 3245, 3246, 3247, 3248, 3249, 3250, 3251, 3252, 3253,
+          3254, 3255, 3256, 3257, 3258, 3259, 3260, 3261, 3262, 3263, 3264, 3265, 3266, 3267,
+          3268, 3269, 3270, 3271, 3272, 3273, 3274, 3275, 3276, 3277, 3278, 3279, 3280, 3281,
+          3282, 3283, 3284, 3285, 3286, 3287, 3288, 3289, 3290, 3291, 3292, 3293, 3294, 3295,
+          3296, 3297, 3298, 3299, 3300, 3301, 3302, 3303, 3304, 3305, 3306, 3307, 3308, 3309,
+          3310, 3311, 3312, 3313, 3314, 3315, 3316, 3317, 3318, 3319, 3320, 3321, 3322, 3323,
+          3324, 3325, 3326, 3464, 3465
+        ]
+        note: "hunk (d), the register reader moves OUT to the adapter: rule (u)'s docstring (:183-212), the S4 register self-test (:2036-2558), the reader (:2561-3326) and its one call in repo_scan (:3464-3465)"
+      - class: validator hunks (a)-(e)
+        lines: [986, 1789, 2036, 3464]
+        note: "hunk (e), the declared EMPTY-by-default extension points, added at exactly the positions (c) and (d) vacate (RULED Q1): grant rules where rule (t) ran (:986), the two self-test hooks (:1789, :2036) and the tree check where check_register ran (:3464). Each anchor line is also inside (c) or (d); (e) adds lines and removes none"
+  - source_path: scripts/verify-contract-pin.py
+    disposition: not_moved
+    reason: stays_openxwallet_adapter
+    evidence: "design.md D2/D7 'Stays here': the factory-bound envelope pin (AGENTS.md rule 3) — contract_pin.yaml, the vendored envelope, its verifier and its resync runbook"
+    retained_here: kept
+  - source_path: scripts/wallet-yaml-syntax-gate.py
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "5eb4383e171131f1e4d5df185ac215552c19a637884f00e7a745af60d700713e"
+    destination: openwallet_code
+    destination_path: scripts/wallet-yaml-syntax-gate.py
+    retained_here: kept
+    leg_default: {leg: code, rule: code-source-and-tests}
+  - source_path: specs/006-openxwallet-contracts/evidence/red-proof-output.txt
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "08aee95ddfe06a9342e65f3abd08ed07cf085e3d6c73df9e6ebd8d703f325b5e"
+    destination: openwallet_spec
+    destination_path: specs/006-openxwallet-contracts/evidence/red-proof-output.txt
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: specs/006-openxwallet-contracts/evidence/red-proof.py
+    disposition: moved_verbatim
+    git_mode: '100755'
+    sha256: "342691351e87507f852aef3360feb5a102a38a2aa445513841930f6bfb7cfafd"
+    destination: openwallet_spec
+    destination_path: specs/006-openxwallet-contracts/evidence/red-proof.py
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: specs/006-openxwallet-contracts/plan.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "081bccadc9df91b55c35b835f80029c8f62da80a3d8473c4a67c17fac4aefaeb"
+    destination: openwallet_spec
+    destination_path: specs/006-openxwallet-contracts/plan.md
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: specs/006-openxwallet-contracts/research.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "ad6108d4735fc6745512b1199eb225e167adced40738e173269795463b1d0142"
+    destination: openwallet_spec
+    destination_path: specs/006-openxwallet-contracts/research.md
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: specs/006-openxwallet-contracts/spec.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "087498f9777938ff0792835517a01029d379668cb8e77cc710d29c912e74505a"
+    destination: openwallet_spec
+    destination_path: specs/006-openxwallet-contracts/spec.md
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: specs/006-openxwallet-contracts/tasks.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "b7f9eab0efb03716ece5c365d1c0e175d94ff3876198c66052cfdbd53c340d6c"
+    destination: openwallet_spec
+    destination_path: specs/006-openxwallet-contracts/tasks.md
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: specs/006-openxwallet-contracts/traceability.yaml
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "a646b75ab9694155111f25673c131b9bb7c97e1e57966a7c36dac4f60ca0d7e5"
+    destination: openwallet_spec
+    destination_path: specs/006-openxwallet-contracts/traceability.yaml
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: specs/010-wallet-validator-ci/checklists/requirements.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "f9d723c214d992af78a93e178ecf022eb7c22313f36d80dc05f81bdd2dd4b32f"
+    destination: openwallet_spec
+    destination_path: specs/010-wallet-validator-ci/checklists/requirements.md
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: specs/010-wallet-validator-ci/clarify-questions.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "b301672be4a2f6b8591f46a0009bb8d0e9d7bda0c7b4ef775abb64aa7c51e924"
+    destination: openwallet_spec
+    destination_path: specs/010-wallet-validator-ci/clarify-questions.md
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: specs/010-wallet-validator-ci/data-model.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "50f660089d57d7dd717d4ba21466703cc8272fb0deb24db4052532ae659ee223"
+    destination: openwallet_spec
+    destination_path: specs/010-wallet-validator-ci/data-model.md
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: specs/010-wallet-validator-ci/implementation-notes.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "1efc30a6b19fcabfdad7c83972299c657cf49370865d12d41eb1d263811c8cd1"
+    destination: openwallet_spec
+    destination_path: specs/010-wallet-validator-ci/implementation-notes.md
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: specs/010-wallet-validator-ci/plan.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "e05bc42d41a34f6d2113b9694b89202372eb61e4433dba7d45910822695c2a61"
+    destination: openwallet_spec
+    destination_path: specs/010-wallet-validator-ci/plan.md
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: specs/010-wallet-validator-ci/quickstart.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "c3715769b3cad763c478617482096e5c5526af5a145e12aa9296e5836645ce9f"
+    destination: openwallet_spec
+    destination_path: specs/010-wallet-validator-ci/quickstart.md
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: specs/010-wallet-validator-ci/research.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "6a9af73fd72a8edcf81e123f8d458e27e81c58f1df61f88c47a5099584d3ba2a"
+    destination: openwallet_spec
+    destination_path: specs/010-wallet-validator-ci/research.md
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: specs/010-wallet-validator-ci/spec.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "be6f0b1f7eb316ba7818bb510ed16c6293addd6f85749dd05807cc9cf72b6644"
+    destination: openwallet_spec
+    destination_path: specs/010-wallet-validator-ci/spec.md
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: specs/010-wallet-validator-ci/tasks.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "d505737fc0ee66232f5b6c61b828a6c63329046e5048822db593a832e598880e"
+    destination: openwallet_spec
+    destination_path: specs/010-wallet-validator-ci/tasks.md
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: specs/012-wallet-issuer-anchor/checklists/requirements.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7 'Stays here': Speckit 012, 013 and 014 are this repository's own records (013 stays as a record; its prune half's code and tests travel)"
+    retained_here: kept
+  - source_path: specs/012-wallet-issuer-anchor/clarify-questions.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7 'Stays here': Speckit 012, 013 and 014 are this repository's own records (013 stays as a record; its prune half's code and tests travel)"
+    retained_here: kept
+  - source_path: specs/012-wallet-issuer-anchor/data-model.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7 'Stays here': Speckit 012, 013 and 014 are this repository's own records (013 stays as a record; its prune half's code and tests travel)"
+    retained_here: kept
+  - source_path: specs/012-wallet-issuer-anchor/implementation-notes.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7 'Stays here': Speckit 012, 013 and 014 are this repository's own records (013 stays as a record; its prune half's code and tests travel)"
+    retained_here: kept
+  - source_path: specs/012-wallet-issuer-anchor/plan.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7 'Stays here': Speckit 012, 013 and 014 are this repository's own records (013 stays as a record; its prune half's code and tests travel)"
+    retained_here: kept
+  - source_path: specs/012-wallet-issuer-anchor/quickstart.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7 'Stays here': Speckit 012, 013 and 014 are this repository's own records (013 stays as a record; its prune half's code and tests travel)"
+    retained_here: kept
+  - source_path: specs/012-wallet-issuer-anchor/research.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7 'Stays here': Speckit 012, 013 and 014 are this repository's own records (013 stays as a record; its prune half's code and tests travel)"
+    retained_here: kept
+  - source_path: specs/012-wallet-issuer-anchor/spec.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7 'Stays here': Speckit 012, 013 and 014 are this repository's own records (013 stays as a record; its prune half's code and tests travel)"
+    retained_here: kept
+  - source_path: specs/012-wallet-issuer-anchor/tasks.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7 'Stays here': Speckit 012, 013 and 014 are this repository's own records (013 stays as a record; its prune half's code and tests travel)"
+    retained_here: kept
+  - source_path: specs/013-nested-repo-prune-register-note/checklists/requirements.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7 'Stays here': Speckit 012, 013 and 014 are this repository's own records (013 stays as a record; its prune half's code and tests travel)"
+    retained_here: kept
+  - source_path: specs/013-nested-repo-prune-register-note/contracts/validator-cli.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7 'Stays here': Speckit 012, 013 and 014 are this repository's own records (013 stays as a record; its prune half's code and tests travel)"
+    retained_here: kept
+  - source_path: specs/013-nested-repo-prune-register-note/data-model.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7 'Stays here': Speckit 012, 013 and 014 are this repository's own records (013 stays as a record; its prune half's code and tests travel)"
+    retained_here: kept
+  - source_path: specs/013-nested-repo-prune-register-note/plan.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7 'Stays here': Speckit 012, 013 and 014 are this repository's own records (013 stays as a record; its prune half's code and tests travel)"
+    retained_here: kept
+  - source_path: specs/013-nested-repo-prune-register-note/quickstart.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7 'Stays here': Speckit 012, 013 and 014 are this repository's own records (013 stays as a record; its prune half's code and tests travel)"
+    retained_here: kept
+  - source_path: specs/013-nested-repo-prune-register-note/research.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7 'Stays here': Speckit 012, 013 and 014 are this repository's own records (013 stays as a record; its prune half's code and tests travel)"
+    retained_here: kept
+  - source_path: specs/013-nested-repo-prune-register-note/spec.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7 'Stays here': Speckit 012, 013 and 014 are this repository's own records (013 stays as a record; its prune half's code and tests travel)"
+    retained_here: kept
+  - source_path: specs/013-nested-repo-prune-register-note/tasks.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7 'Stays here': Speckit 012, 013 and 014 are this repository's own records (013 stays as a record; its prune half's code and tests travel)"
+    retained_here: kept
+  - source_path: specs/014-per-seat-register-entries/plan.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7 'Stays here': Speckit 012, 013 and 014 are this repository's own records (013 stays as a record; its prune half's code and tests travel)"
+    retained_here: kept
+  - source_path: specs/014-per-seat-register-entries/spec.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7 'Stays here': Speckit 012, 013 and 014 are this repository's own records (013 stays as a record; its prune half's code and tests travel)"
+    retained_here: kept
+  - source_path: specs/014-per-seat-register-entries/tasks.md
+    disposition: not_moved
+    reason: stays_openxwallet_governance
+    evidence: "design.md D2/D7 'Stays here': Speckit 012, 013 and 014 are this repository's own records (013 stays as a record; its prune half's code and tests travel)"
+    retained_here: kept
+  - source_path: specs/015-multi-key-wallets/plan.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "d319a548b8d73abdc0d65a7f422c1e27b984b1777ee57b87ced12990a2b0ff4f"
+    destination: openwallet_spec
+    destination_path: specs/015-multi-key-wallets/plan.md
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: specs/015-multi-key-wallets/spec.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "3aeb7033679e1070009d2e1de10434a070b39a021297688fa866c4b7532d6cf5"
+    destination: openwallet_spec
+    destination_path: specs/015-multi-key-wallets/spec.md
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: specs/015-multi-key-wallets/tasks.md
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "633159d3e79055c9427834df529d94cee31109461fd28da6d6ed1695ecc9fe9e"
+    destination: openwallet_spec
+    destination_path: specs/015-multi-key-wallets/tasks.md
+    retained_here: shed
+    leg_default: {leg: spec, rule: spec-governance}
+  - source_path: tests/multi_key_wallets/test_declared_key_sets.py
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "f30b3a9fa095aec45aa00382feaec17d2ed2e18959ecc8d50ccf0f439002eb5c"
+    destination: openwallet_code
+    destination_path: tests/multi_key_wallets/test_declared_key_sets.py
+    retained_here: shed
+    leg_default: {leg: code, rule: code-source-and-tests}
+  - source_path: tests/nested_repo_prune/test_prune_and_register_note.py
+    disposition: moved_with_declared_edit
+    git_mode: '100644'
+    sha256: "5e4f73d1c1defe7d1a0f438e975d0c3be621ac4f2813c2d5ddba4fd2dad0588d"
+    destination: openwallet_code
+    destination_path: tests/nested_repo_prune/test_prune_and_register_note.py
+    retained_here: kept
+    leg_default: {leg: code, rule: code-source-and-tests}
+    edits:
+      - class: test split
+        lines: [
+          1, 4, 5, 6, 7, 40, 41, 42, 247, 248, 249, 250, 251, 252,
+          253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266,
+          267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280,
+          281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294,
+          295, 296, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308,
+          309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322,
+          323, 324, 325, 326, 327, 328, 329, 330, 331, 332, 333, 334, 335, 336,
+          337, 338, 339, 340, 341, 342, 343, 344, 345, 346, 347, 348, 349, 350,
+          351, 352, 353, 354, 355, 356, 357, 358, 359, 360, 361, 362, 363, 364,
+          365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377, 378,
+          379, 380, 381, 382, 383, 384, 385, 386, 387, 388, 389, 390, 391, 392,
+          393, 394, 395, 396, 397, 398, 399, 400, 401, 402, 403, 404, 405, 406,
+          407, 408
+        ]
+        note: "the prune half (US1, US3) travels and the register half stays: the docstring's description of the two behaviours (:1, :4-7), the register-note patterns (:40-42) and the US2 block with its separating blank lines (:247-408) leave the code leg's copy; the adapter keeps a composed-entrypoint regression of the prune note (design.md D2)"
+  - source_path: tests/per_seat_register_entries/test_top_level_and_seat_keys.py
+    disposition: not_moved
+    reason: stays_openxwallet_adapter
+    evidence: "design.md D2/D7 'Stays here': the register reader's tests; the reader is the adapter's (D3 :2561-3326)"
+    retained_here: kept
+  - source_path: tests/register_reissuance/test_revoked_grant_exemption.py
+    disposition: not_moved
+    reason: stays_openxwallet_adapter
+    evidence: "design.md D2/D7 'Stays here': the register reader's tests; the reader is the adapter's (D3 :2561-3326)"
+    retained_here: kept
+  - source_path: tests/wallet_yaml_syntax_gate/test_gate.py
+    disposition: moved_verbatim
+    git_mode: '100644'
+    sha256: "35cb805449e69f13567d2f17599b45793b55f54c55a6b8a47ee90679713e9197"
+    destination: openwallet_code
+    destination_path: tests/wallet_yaml_syntax_gate/test_gate.py
+    retained_here: shed
+    leg_default: {leg: code, rule: code-source-and-tests}
+  - source_path: tests/widen_register_reader/test_second_council.py
+    disposition: not_moved
+    reason: stays_openxwallet_adapter
+    evidence: "design.md D2/D7 'Stays here': the register reader's tests; the reader is the adapter's (D3 :2561-3326)"
+    retained_here: kept
+  - source_path: tools/openspec-cli-pin/fission-ai-openspec-1.12.0-c844543999f673cdd72445879b86a4abea4c07ef.tgz
+    disposition: not_moved
+    reason: stays_vendored_not_carved
+    evidence: "design.md D2/D7: VENDORED from openxFactory and NOT carved; the spec leg vendors its own OpenSpec gate under its own ruling (tasks.md 3.6, \"Vendor the tarball (Recommended)\")"
+    retained_here: kept
