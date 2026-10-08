@@ -237,6 +237,15 @@ REMEDIATION = (
 )
 
 COMMIT_RE = re.compile(r"^[0-9a-f]{40}$")
+# A REVISION FROM THE COMMAND LINE (`--at`) is an abbreviated or full commit id
+# and nothing else: 7 to 40 hexadecimal characters. It is gated HERE, before it
+# reaches any `git` argument, so a branch name, a tag, a revision expression or
+# a value beginning with `-` is refused by name rather than interpreted by git.
+# The manifest's own `carve_commit` already passes the stricter `COMMIT_RE`.
+REVISION_ARG_RE = re.compile(r"^[0-9a-fA-F]{7,40}$")
+# What `git rev-parse` hands back: a full object id (SHA-1, or SHA-256 in a
+# repository that uses it). Checked before it is passed to git again.
+RESOLVED_RE = re.compile(r"^[0-9a-f]{40}(?:[0-9a-f]{24})?$")
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 REPO_RE = re.compile(r"^[A-Za-z0-9._-]+/[A-Za-z0-9._-]+$")
 MODE_RE = re.compile(r"^(100644|100755|120000)$")
@@ -307,7 +316,13 @@ def _shown(items: list[str], limit: int = 10) -> str:
 # --------------------------------------------------------------------------
 
 def _git(repo: Path, *args: str) -> subprocess.CompletedProcess:
-    """git, capturing BYTES — blob contents must not pass through a decoder."""
+    """git, capturing BYTES — blob contents must not pass through a decoder.
+
+    Every caller puts its revision and object arguments AFTER
+    `--end-of-options`, so no value — `--at`, a manifest's `carve_commit` or a
+    row's `source_path` — can be read by git as an option. A revision from the
+    command line is also gated by `REVISION_ARG_RE` first (`resolve_revision`).
+    """
     try:
         return subprocess.run(["git", "-C", str(repo), *args],
                               capture_output=True, check=False)
@@ -318,8 +333,16 @@ def _git(repo: Path, *args: str) -> subprocess.CompletedProcess:
 
 def resolve_revision(repo: Path, at: str | None) -> str:
     """The revision this run asks about: `--at <sha>`, or `HEAD`."""
+    if at is not None and not REVISION_ARG_RE.match(at):
+        raise CarveRefusal(
+            "carve-revision-mismatch",
+            f"--at {at!r} is not a commit id. A revision given on the command "
+            "line must be 7 to 40 hexadecimal characters; a branch, a tag, a "
+            "revision expression or anything beginning with `-` is refused "
+            "before it reaches git")
     ref = at if at is not None else "HEAD"
-    done = _git(repo, "rev-parse", "--verify", "--quiet", f"{ref}^{{commit}}")
+    done = _git(repo, "rev-parse", "--verify", "--quiet", "--end-of-options",
+                f"{ref}^{{commit}}")
     if done.returncode != 0 or not done.stdout.strip():
         if at is not None:
             raise CarveRefusal(
@@ -329,7 +352,13 @@ def resolve_revision(repo: Path, at: str | None) -> str:
             "carve-unreadable",
             f"{repo} has no resolvable HEAD; the checker reads the carve "
             "commit's tree out of a real git repository")
-    return done.stdout.decode("utf-8", "replace").strip()
+    resolved = done.stdout.decode("utf-8", "replace").strip()
+    if not RESOLVED_RE.match(resolved):
+        raise CarveRefusal(
+            "carve-unreadable",
+            f"git resolved the revision under test to {resolved!r}, which is "
+            "not a full object id; it is not passed back to git")
+    return resolved
 
 
 class TreeEntry(NamedTuple):
@@ -341,7 +370,8 @@ class TreeEntry(NamedTuple):
 
 def tree_at(repo: Path, commit: str) -> dict[str, TreeEntry]:
     """`{path: TreeEntry}` for every BLOB at `commit`, from one `ls-tree`."""
-    done = _git(repo, "ls-tree", "-r", "-z", "--full-tree", commit)
+    done = _git(repo, "ls-tree", "-r", "-z", "--full-tree", "--end-of-options",
+                commit)
     if done.returncode != 0:
         raise CarveRefusal(
             "carve-unreadable",
@@ -364,7 +394,8 @@ def tree_at(repo: Path, commit: str) -> dict[str, TreeEntry]:
 
 def blob_at(repo: Path, commit: str, path: str) -> bytes | None:
     """The RAW bytes of `path` at `commit`, or None where it is not a blob."""
-    done = _git(repo, "cat-file", "blob", f"{commit}:{path}")
+    done = _git(repo, "cat-file", "blob", "--end-of-options",
+                f"{commit}:{path}")
     if done.returncode != 0:
         return None
     return done.stdout
@@ -723,7 +754,7 @@ def check_revision(repo: Path, doc: dict, at: str | None) -> str:
     resolved = resolve_revision(repo, at)
     carve_commit = doc["carve_commit"]
     asked = f"--at {at}" if at is not None else "HEAD"
-    known = _git(repo, "rev-parse", "--verify", "--quiet",
+    known = _git(repo, "rev-parse", "--verify", "--quiet", "--end-of-options",
                  f"{carve_commit}^{{commit}}")
     peeled = known.stdout.decode("utf-8", "replace").strip()
     if known.returncode != 0 or not peeled:
@@ -741,7 +772,8 @@ def check_revision(repo: Path, doc: dict, at: str | None) -> str:
             f"PEELS to {peeled}. A 40-hex id that must be peeled to reach a "
             "commit is an annotated tag, and a tag is a label, never the "
             f"referent. Record the commit id itself: {peeled}")
-    ancestor = _git(repo, "merge-base", "--is-ancestor", carve_commit, resolved)
+    ancestor = _git(repo, "merge-base", "--is-ancestor", "--end-of-options",
+                    carve_commit, resolved)
     if ancestor.returncode != 0:
         raise CarveRefusal(
             "carve-revision-mismatch",

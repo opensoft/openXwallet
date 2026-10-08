@@ -558,6 +558,29 @@ def test_a_revision_the_carve_commit_is_not_an_ancestor_of_refuses(
     assert "NOT AN ANCESTOR" in combined, combined
 
 
+@pytest.mark.parametrize("at", [
+    "main",                 # a branch name is a movable name, not a commit id
+    "HEAD~1",               # a revision expression
+    "--output=probe",       # would be an option, were it to reach git as one
+    "-h",
+    "abc123",               # hexadecimal, but shorter than 7
+    "g" * 40,               # 40 characters, not hexadecimal
+])
+def test_a_non_hex_at_is_refused_before_it_reaches_git(
+        scratch: Scratch, at: str) -> None:
+    """`--at` is gated to 7-40 hexadecimal characters before any `git` call
+    (SonarCloud: command argument injection), and every revision is passed to
+    git after `--end-of-options` besides."""
+    combined = refuses(scratch, clean_manifest(scratch),
+                       "carve-revision-mismatch", f"--at={at}")
+    assert "is not a commit id" in combined, combined
+    assert not (scratch.repo / "probe").exists()
+
+
+def test_an_abbreviated_hex_at_is_still_accepted(scratch: Scratch) -> None:
+    verifies(scratch, clean_manifest(scratch), "--at", scratch.carve[:7])
+
+
 def test_an_annotated_tag_id_used_as_the_referent_refuses(
         scratch: Scratch) -> None:
     _git(scratch.repo, "tag", "-a", "carve-0", "-m", "a label",
@@ -1000,7 +1023,8 @@ def test_the_real_manifest_names_the_ruled_carve_commit_and_d7s_counts() -> None
 def test_the_full_history_workflow_runs_the_checker_at_fetch_depth_zero() -> None:
     """The loud skip above is honest only while something runs the seat WITH
     the carve commit in history. Pin the workflow that does: job `carve-manifest`
-    with no display name, a checkout at `fetch-depth: 0`, and both commands."""
+    with no display name, a checkout at `fetch-depth: 0`, both commands, and a
+    wheel-only dependency line with every package pinned exactly."""
     workflow = yaml.safe_load(
         (REPO_ROOT / FULL_HISTORY_WORKFLOW).read_text(encoding="utf-8"))
     job = workflow["jobs"]["carve-manifest"]
@@ -1012,3 +1036,10 @@ def test_the_full_history_workflow_runs_the_checker_at_fetch_depth_zero() -> Non
     runs = [s["run"] for s in steps if "run" in s]
     assert "python3 scripts/validate-carve-manifest.py" in runs, runs
     assert "python3 -m pytest tests/carve_manifest -q" in runs, runs
+    # The dependency line is wheel-only and every package is pinned exactly.
+    pip = next(r for r in runs if r.startswith("pip install"))
+    words = pip.split()
+    assert words[2:4] == ["--only-binary", ":all:"], pip
+    packages = words[4:]
+    assert packages, pip
+    assert all("==" in p and p.split("==")[1] for p in packages), pip
