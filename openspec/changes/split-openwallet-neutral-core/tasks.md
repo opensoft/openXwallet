@@ -85,10 +85,28 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
       account for …", aborted), and WITH it reads `Totals: + 5, ~ 0, - 11`,
       both capability specs retired and `openxwallet-factory-binding`
       created, as D0 measured. Not archived in this tree.
-- [ ] 2.3 Name the CARVE COMMIT: an openXwallet `main` commit after 2.2, never
+- [x] 2.3 Name the CARVE COMMIT: an openXwallet `main` commit after 2.2, never
       HEAD.
-- [ ] 2.4 Re-measure every line range in `design.md` D3 at that commit; a range
+      **DONE 2026-10-08** — `CARVE_COMMIT =
+      90111df262d6f54f7e82651d860adc12345f83f4`, `main` at the merge of PR #28,
+      after 2.1 and 2.2. Named by Brett Heap, operator authority, in session,
+      2026-10-08T18:07:19Z, verbatim: "name 90111df as the carve commit, do 2.4
+      and 2.5"; recorded on issue #25
+      (https://github.com/opensoft/openXwallet/issues/25#issuecomment-6066081858).
+      Written into `design.md` D7 and the Migration plan, and into
+      `proposal.md`'s `code_surface`.
+- [x] 2.4 Re-measure every line range in `design.md` D3 at that commit; a range
       that moved is corrected in the plan, never assumed.
+      **DONE 2026-10-08** — at `90111df`, every range D3 cites was re-read with
+      `grep -n` for its anchor and `sed -n` for its first and last line. Covered:
+      the constants, `ENVELOPE_SCHEMA_PATH`, rule (t)'s constants and check, the
+      (f)/(h) literals, the requirement rows, the self-test blocks, the register
+      block, `sweep_candidates`, `repo_scan` with its `check_register` call, and
+      `main()`'s envelope exit, vocabulary read and note. Also re-read:
+      `contracts/manifest.yaml:69-70`. Every range is unchanged, and the
+      validator is the same blob as at `b7c6e0b` (`08a4b5c7`). So no range was
+      corrected. One imprecision, not a move, is recorded in D3: the `:337`
+      pointer's path literal sits on `:338`.
 - [ ] 2.5 Author `docs/openwallet-carve-manifest.yaml` at the carve commit, in
       openDox's grammar plus `retained_here` (`design.md` D7): one row per
       tracked path, `destination_path` equal to `source_path` on every moved
