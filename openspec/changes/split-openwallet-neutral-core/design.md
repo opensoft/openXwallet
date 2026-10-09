@@ -229,10 +229,29 @@ binding the vocabulary is EMPTY, so rule (g) refuses every key of every
 `approval_posture` under the EXISTING code `authority-vocabulary-parallel` — the
 grant schema already requires `minProperties: 1` on `approval_posture`, so no
 posture escapes — and the run emits one NOTE saying no vocabulary is bound.
-A note, never a warning: every consumer runs `--strict`. Rule (g)'s message
-stops naming "the neutral job envelope" and names the bound vocabulary instead;
-the code string does not move, and the only fixture pinning (g) pins the invented
-key `auto_approve_without_review`, so no detail pin breaks.
+A note, never a warning: every consumer runs `--strict`. Rule (g) READS its
+legal approval-posture terms from the bound vocabulary, but its refusal message
+keeps the carve-commit wording "the neutral job envelope" (see the amendment
+below); the code string does not move, and the only fixture pinning (g) pins the
+invented key `auto_approve_without_review`, so no detail pin breaks.
+
+**AMENDED 2026-10-09.** Brett Heap, operator authority, in session, by multiple
+choice, label verbatim: "Correct D4's sentence (Recommended)"
+(opensoft/openXwallet#25, comment 6071790146). The sentence above first read
+that rule (g)'s message "stops naming 'the neutral job envelope' and names the
+bound vocabulary instead". That was wrong, and it is withdrawn. Rule (g) READS
+its legal approval-posture terms from the declared vocabulary binding, and that
+stands. Its refusal MESSAGE keeps the carve-commit wording "the neutral job
+envelope": the message sits at `:1143-1144` of the carve-commit validator
+(`90111df`), under the rule's comment at `:1136`, and those lines are declared
+in no hunk of the carve manifest, hunk (b) declaring only `:73-78`, `:422-428`
+and `:3507`. The neutrality gate (tasks.md 5.4) holds the composed adapter's
+output byte-identical to the carve-commit validator's wherever rule (g) fires,
+so a reworded message would fail it. A wording change is possible only in a
+later openWallet release that moves the gate's baseline, never in this change.
+The proof at the openWallet root, `docs/byte-identity-wallet-v1.6.md`
+(opensoft/openWallet#3), recorded the mismatch between that sentence and the
+manifest. The code leg and the manifest do not change.
 
 **openXwallet binds the envelope, unconditionally:** the vendored
 `contracts/schemas/hermes-job-envelope.schema.yaml`, node
