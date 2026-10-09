@@ -14,10 +14,51 @@
 # as exactly `wallet-validation` (FR-007), the literal token the ruleset
 # pins; a distinct job display name silently de-advises the gate.
 #
-# THIS FILE IS THE ONE CARVED FILE THE SCAFFOLD EDITED, and the edit is the
-# verify step below. It is declared in docs/byte-identity-wallet-v1.0.md so it
-# is never mistaken for drift. The byte-identity floor covers the contract
-# BYTES, the two validators and the corpus -- not this workflow.
+# HISTORY. At wallet-v1.0 this was the one carved file the scaffold edited, and
+# the edit was the verify-contract-pin step. It is declared in
+# docs/byte-identity-wallet-v1.0.md so it is never mistaken for drift. The
+# byte-identity floor covers the contract BYTES, the two validators and the
+# corpus -- not this workflow. The openWallet carve then took this file to
+# openWallet's code leg with that step removed
+# (docs/openwallet-carve-manifest.yaml: `moved_with_declared_edit`,
+# `retained_here: kept`), and the adapter rebuild rewrote the copy kept here
+# (split-openwallet-neutral-core tasks.md 5.6). Under the carve manifest's
+# `phase: post-shed` a kept row is not compared with the carve, so the rewrite
+# does not refuse there.
+#
+# THE ADAPTER'S ORDER, fixed by tasks.md 5.6: the two scoped inits, then the
+# two verifiers, then the gates. No gate reads a pinned byte before the pin
+# that names it has been verified.
+#   1. `git submodule update --init openWallet` -- the openWallet ASSEMBLY ROOT,
+#      at the commit this repository's gitlink records (RULED Q2, "Nested
+#      gitlink, one chain (Recommended)"; design.md D6).
+#   2. `git -C openWallet submodule update --init code` -- its code leg, which
+#      holds the core validator, the syntax gate, the contracts and the corpus
+#      (RULED Q7). The entrypoint loads the core in process from
+#      openWallet/code/scripts/validate-openxwallet.py (RULED Q1; design.md D5).
+#   3. scripts/verify-contract-pin.py -- the vendored hermes envelope.
+#   4. scripts/verify-openwallet-pin.py -- the openWallet pin: both checkout
+#      levels present, the gitlink and both checkouts equal to
+#      contracts/openwallet-pin.yaml, the code leg in lockstep with the root,
+#      the eight digests recomputed.
+#   5. the syntax gate, then the validator plain and `--strict`.
+#
+# THE INIT IS SCOPED, NEVER `--recursive`, and the checkout says so with
+# `submodules: false`. Two named levels, and never the spec leg: no byte this
+# job reads is in openWallet/spec, and a recursive init would fetch it anyway
+# (design.md D6, "Init is scoped"). Two lines rather than one, because each
+# level fails on its own: an uninitialized openWallet/ and an uninitialized
+# openWallet/code/ are two refusals with two remediations. The init lines are
+# checkout, not gates. They fetch the commits the gitlinks record, and step 4
+# proves offline that what arrived is what the pin names (AGENTS.md rule 4).
+# Both repositories they clone are PUBLIC (RULED Q5), so the default token
+# clones them and the job needs no secret.
+#
+# THE DEPENDENCY LINE IS PINNED AND WHEEL-ONLY: carve-manifest.yml's line, less
+# pytest, which nothing here runs. Each package is pinned to the exact version
+# verified there on 2026-10-08 in a fresh Python 3.12 environment, and
+# `--only-binary :all:` refuses any source distribution, so no `setup.py` runs
+# at install.
 name: wallet-validation
 
 on:
@@ -34,21 +75,41 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: false
 
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - run: pip install pyyaml jsonschema rfc3339-validator
+      # Quoted: `:all: ` would otherwise read as a YAML mapping key.
+      - run: "pip install --only-binary :all: pyyaml==6.0.3 jsonschema==4.26.0 rfc3339-validator==0.1.4"
 
-      # FIRST, before anything reads the vendored schema. main() checks only
-      # ENVELOPE_SCHEMA_PATH.is_file() -- PRESENCE, not identity -- while rule
-      # (g) reads the approval-scope vocabulary out of that very file, so an
-      # unverified swap would silently redefine the vocabulary this gate
-      # enforces. Fails closed, and its refusal names its own remediation.
+      - name: Initialize the openWallet root (scoped, never --recursive)
+        run: git submodule update --init openWallet
+
+      - name: Initialize the openWallet code leg (never the spec leg)
+        run: git -C openWallet submodule update --init code
+
+      # FIRST of the two verifiers, before anything reads the vendored schema.
+      # The adapter reads rule (g)'s approval-scope vocabulary out of that very
+      # file (RULED Q6) and never checks its identity, so an unverified swap
+      # would silently redefine the vocabulary this gate enforces. Fails
+      # closed, and its refusal names its own remediation.
       - name: Verify the vendored openxFactory artifact against contract_pin.yaml
         run: python3 scripts/verify-contract-pin.py
+
+      # SECOND, before any gate loads a byte from openWallet/. The digests
+      # cover only the eight contract artifacts, so the commit checks are what
+      # pin the core validator and the corpus. Fails closed, each refusal under
+      # a named code (design.md D6).
+      - name: Verify openWallet against contracts/openwallet-pin.yaml
+        run: python3 scripts/verify-openwallet-pin.py
 
       - run: python3 scripts/wallet-yaml-syntax-gate.py .
 
       - run: python3 scripts/validate-openxwallet.py .
+
+      # Consumers run `--strict`, where a warning red-lines their required
+      # check, so this repository runs it too (AGENTS.md rule 5).
+      - run: python3 scripts/validate-openxwallet.py . --strict
