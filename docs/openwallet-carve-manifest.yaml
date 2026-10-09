@@ -114,7 +114,7 @@ kind: openwallet-carve-manifest
 # required present; a `retired_by_archive` row may be present (unchanged) or
 # gone, because it leaves by this change's archive, a later act. The flip and
 # the shed land in ONE commit, or the checker refuses.
-phase: carve
+phase: post-shed
 
 header: >-
   The openWallet carve manifest: one row per tracked path at the NAMED CARVE
