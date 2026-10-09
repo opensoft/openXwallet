@@ -124,8 +124,10 @@ Exit codes:
   2  a refusal: the carve commit unreachable or malformed, the adapter
      missing, a validator refusing at self-test (its text printed verbatim), a
      target run ending at exit 2, a suite that proved nothing or whose records
-     do not pair, an export with no `governance/`, a `--report` or
-     `--openxfactory-export` path that resolves outside the allowed roots
+     do not pair, an export with no `governance/`, a `--report` that
+     normalises to a path outside the working directory, or an
+     `--openxfactory-export` that resolves outside the working directory, the
+     temporary directory and the home directory
      (`path-outside-allowed-roots`), a `--report` whose directory does not
      exist (`report-parent-missing`)
 
@@ -133,10 +135,15 @@ Run: `python3 scripts/neutrality-gate.py [--carve-commit SHA]
 [--openxfactory-export DIR [--openxfactory-export-commit SHA]]
 [--no-suite-trees] [--report PATH] [--keep]`. Standard library only; offline;
 it writes nothing outside its temporary tree and `--report`. Both paths are
-NORMALISED, RESOLVED and then CONTAINED before the run starts: each must
-resolve (`~` and links followed) to a string that starts with the working
-directory, the temporary directory or the home directory, else the gate
-refuses before it reads or writes anything. Driven by
+checked before the run starts, and a refusal comes before the gate reads or
+writes anything. The report is written BELOW THE INVOCATION'S WORKING
+DIRECTORY: `--report` is joined under the working directory, normalised
+(`~` expanded, `..` collapsed) and must start with the working directory, so
+an absolute path outside it is refused. That containment is LEXICAL: a
+symbolic link below the working directory is not followed, and the operator
+controls the working directory. The export is RESOLVED (`~` and links
+followed) and must sit below the working directory, the temporary directory or
+the home directory. Driven by
 `tests/neutrality_gate/test_neutrality_gate.py` and
 `.github/workflows/neutrality-gate.yml`.
 """
@@ -191,7 +198,6 @@ DRIVES_VALIDATOR = re.compile(r"""["']validate-openxwallet\.py["']""")
 REVISION_ARG_RE = re.compile(r"^[0-9a-fA-F]{7,40}$")
 RESOLVED_RE = re.compile(r"^[0-9a-f]{40}(?:[0-9a-f]{24})?$")
 REFUSAL_OUTSIDE_ROOTS = "path-outside-allowed-roots"
-KIND_REPORT = "report"
 KIND_EXPORT = "openxfactory-export"
 DIFF_LINE_LIMIT = 200
 OUTPUT_LINE_LIMIT = 40
@@ -611,24 +617,23 @@ def allowed_roots() -> tuple[str, ...]:
 
 
 def contained_path(arg: str, *, kind: str) -> Path:
-    """NORMALISE, RESOLVE, then CONTAIN: a path from the command line
-    (`--report`, or `--openxfactory-export`, named by KIND) is joined under a
-    trusted root, normalised, resolved to its real location (`~` and symbolic
-    links included) and accepted only where the resolved string starts with
-    that root. The `Path` returned is the string that passed that prefix
-    check, and it is the only path used afterwards. A relative argument is
-    anchored at the working directory first, so `../x` means what it says
-    there and is never re-read against another root. A `--report` also needs
-    its directory to exist; an export needs a `governance/` directory."""
+    """NORMALISE, RESOLVE, then CONTAIN: the `--openxfactory-export` path
+    (named by KIND in a refusal) is joined under a trusted root, normalised,
+    resolved to its real location (`~` and symbolic links included) and
+    accepted only where the resolved string starts with that root. The `Path`
+    returned is the string that passed that prefix check, and it is the only
+    path used afterwards. A relative argument is anchored at the working
+    directory first, so `../x` means what it says there and is never re-read
+    against another root. An export needs a `governance/` directory."""
     anchored = os.path.join(os.getcwd(), os.path.expanduser(arg))
     resolved = anchored
     for root in allowed_roots():
         candidate = os.path.normpath(os.path.join(root, anchored))
         resolved = os.path.realpath(candidate)
         if resolved == root:
-            return require_kind(Path(root), arg, kind)
+            return require_governance(Path(root), arg)
         if resolved.startswith(root.rstrip(os.sep) + os.sep):
-            return require_kind(Path(resolved), arg, kind)
+            return require_governance(Path(resolved), arg)
     raise GateRefusal(
         REFUSAL_OUTSIDE_ROOTS,
         f"--{kind} {arg!r} resolves to {resolved}, outside the "
@@ -636,14 +641,9 @@ def contained_path(arg: str, *, kind: str) -> Path:
         "home directory; the gate writes and reads only below those roots")
 
 
-def require_kind(accepted: Path, arg: str, kind: str) -> Path:
-    """What each flag needs of a path that is already contained."""
-    if kind == KIND_REPORT and not accepted.parent.is_dir():
-        raise GateRefusal(
-            "report-parent-missing",
-            f"--report {arg!r} resolves to {accepted}, whose directory "
-            f"{accepted.parent} does not exist; the gate does not create it")
-    if kind == KIND_EXPORT and not (accepted / "governance").is_dir():
+def require_governance(accepted: Path, arg: str) -> Path:
+    """What an export needs of a path that is already contained."""
+    if not (accepted / "governance").is_dir():
         raise GateRefusal(
             "neutrality-export-invalid",
             f"--openxfactory-export {arg!r} holds no governance/ directory. "
@@ -654,14 +654,38 @@ def require_kind(accepted: Path, arg: str, kind: str) -> Path:
     return accepted
 
 
+def report_target(arg: str) -> str:
+    """Where `--report` writes: ARG joined under the working directory and
+    normalised (`~` expanded, `..` collapsed), accepted only where the result
+    starts with the working directory, and only where its directory exists.
+    The containment is lexical, as the prefix check on a normalised path is:
+    a link below the working directory is not followed."""
+    root = os.getcwd()
+    report_path = os.path.normpath(os.path.join(root, os.path.expanduser(arg)))
+    if not report_path.startswith(root.rstrip(os.sep) + os.sep):
+        raise GateRefusal(
+            REFUSAL_OUTSIDE_ROOTS,
+            f"--report {arg!r} normalises to {report_path}, which is not "
+            f"below the invocation's working directory {root}; the gate "
+            "writes its report only below the working directory")
+    if not os.path.isdir(os.path.dirname(report_path)):
+        raise GateRefusal(
+            "report-parent-missing",
+            f"--report {arg!r} normalises to {report_path}, whose directory "
+            f"{os.path.dirname(report_path)} does not exist; the gate does "
+            "not create it")
+    return report_path
+
+
 def validated_paths(args: argparse.Namespace,
-                    ) -> tuple[Path | None, Path | None]:
-    """The resolved, contained `--report` and `--openxfactory-export` paths
-    (None where a flag was not given). Everything after this uses these and
-    never the raw arguments."""
+                    ) -> tuple[str | None, Path | None]:
+    """The checked `--report` path (a string, normalised and below the
+    working directory) and the resolved, contained `--openxfactory-export`
+    path (None where a flag was not given). Everything after this uses these
+    and never the raw arguments."""
     report = export = None
     if args.report:
-        report = contained_path(args.report, kind=KIND_REPORT)
+        report = report_target(args.report)
     if args.openxfactory_export:
         export = contained_path(args.openxfactory_export, kind=KIND_EXPORT)
     return report, export
@@ -1065,7 +1089,8 @@ def parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
     parser.add_argument("--no-suite-trees", action="store_true",
                         help="skip target (iii), the suites' fixture trees")
     parser.add_argument("--report", metavar="PATH", default=None,
-                        help="write a JSON summary of the run here")
+                        help="write a JSON summary of the run here; PATH must "
+                             "normalise to a file below the working directory")
     parser.add_argument("--keep", action="store_true",
                         help="keep the run's temporary tree and print where")
     args = parser.parse_args(argv)
@@ -1114,8 +1139,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         code = 2
     evidence["exit_code"] = code
     if report is not None:
-        report.write_text(json.dumps(evidence, indent=2) + "\n",
-                          encoding="utf-8")
+        with open(report, "w", encoding="utf-8") as handle:
+            handle.write(json.dumps(evidence, indent=2) + "\n")
     return code
 
 

@@ -232,10 +232,11 @@ def _repo(tmp_path: Path, composed: str = "same",
     return repo, carve
 
 
-def _gate(repo: Path, *args: str) -> subprocess.CompletedProcess[str]:
+def _gate(repo: Path, *args: str,
+          cwd: Path | None = None) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         [sys.executable, str(repo / "scripts" / "neutrality-gate.py"), *args],
-        cwd=repo, capture_output=True, text=True, check=False)
+        cwd=cwd or repo, capture_output=True, text=True, check=False)
 
 
 def _report(path: Path) -> dict[str, Any]:
@@ -484,7 +485,7 @@ def test_agreeing_validators_pass_over_the_tree_and_a_suite(
         tmp_path: Path) -> None:
     repo, carve = _repo(tmp_path, "same", {"toy_suite": TOY_SUITE,
                                            "quiet_suite": QUIET_SUITE})
-    report = tmp_path / "report.json"
+    report = repo / "report.json"
     done = _gate(repo, f"--carve-commit={carve}", f"--report={report}")
     assert done.returncode == 0, done.stdout + done.stderr
     for mode in ("plain", "--strict"):
@@ -511,7 +512,7 @@ def test_agreeing_validators_pass_over_the_tree_and_a_suite(
 
 def test_a_stdout_difference_fails_with_its_diff(tmp_path: Path) -> None:
     repo, carve = _repo(tmp_path, "scan-differs", {"toy_suite": TOY_SUITE})
-    report = tmp_path / "report.json"
+    report = repo / "report.json"
     done = _gate(repo, f"--carve-commit={carve}", f"--report={report}")
     assert done.returncode == 1, done.stdout + done.stderr
     for mode in ("plain", "--strict"):
@@ -537,7 +538,7 @@ def test_a_suite_that_never_asks_for_strict_is_compared_under_strict(
     it."""
     repo, carve = _repo(tmp_path, "strict-scan-differs",
                         {"plain_suite": PLAIN_SUITE})
-    report = tmp_path / "report.json"
+    report = repo / "report.json"
     done = _gate(repo, f"--carve-commit={carve}", f"--report={report}")
     assert done.returncode == 1, done.stdout + done.stderr
     for mode in ("plain", "--strict"):
@@ -568,7 +569,7 @@ def test_an_exit_code_difference_alone_fails(tmp_path: Path) -> None:
 def test_a_help_text_difference_is_reported_outside_the_verdict(
         tmp_path: Path) -> None:
     repo, carve = _repo(tmp_path, "help-differs", {"toy_suite": TOY_SUITE})
-    report = tmp_path / "report.json"
+    report = repo / "report.json"
     done = _gate(repo, f"--carve-commit={carve}", f"--report={report}")
     assert done.returncode == 0, done.stdout + done.stderr
     assert "help 0 of 1 identical" in done.stdout, done.stdout
@@ -616,7 +617,7 @@ def test_the_export_target_runs_and_records_its_commit(tmp_path: Path) -> None:
     repo, carve = _repo(tmp_path)
     export = tmp_path / "export"
     _write(export, "governance/review-authority/register.yaml", "rows: []\n")
-    report = tmp_path / "report.json"
+    report = repo / "report.json"
     declared = "c8dde1315e3f4cfdbcc75872306493cb88c9cd2d"
     done = _gate(repo, f"--carve-commit={carve}", "--no-suite-trees",
                  f"--openxfactory-export={export}",
@@ -644,7 +645,7 @@ def _refused_before_the_run(done: subprocess.CompletedProcess[str],
     assert "neutrality-gate: baseline" not in done.stdout, done.stdout
 
 
-def test_a_relative_report_is_resolved_against_the_working_directory(
+def test_a_relative_report_is_written_below_the_working_directory(
         tmp_path: Path) -> None:
     repo, carve = _repo(tmp_path)
     done = _gate(repo, f"--carve-commit={carve}", "--no-suite-trees",
@@ -653,25 +654,67 @@ def test_a_relative_report_is_resolved_against_the_working_directory(
     assert _report(repo / "out.json")["result"] == "identical"
 
 
-def test_a_relative_report_leaving_the_working_directory_is_anchored_there(
+def test_a_report_that_climbs_and_comes_back_is_accepted(
         tmp_path: Path) -> None:
-    """`../out-up.json` is read against the working directory, never against
-    another allowed root: it lands beside the repository, under the temporary
-    directory, which is allowed."""
+    """The check is on the NORMALISED path: `sub/../out-in.json` collapses to
+    `out-in.json` in the working directory itself, which is below it."""
     repo, carve = _repo(tmp_path)
+    (repo / "sub").mkdir()
     done = _gate(repo, f"--carve-commit={carve}", "--no-suite-trees",
-                 "--report=../out-up.json")
+                 "--report=sub/../out-in.json")
     assert done.returncode == 0, done.stdout + done.stderr
-    assert _report(tmp_path / "out-up.json")["result"] == "identical"
+    assert _report(repo / "out-in.json")["result"] == "identical"
 
 
-def test_a_report_outside_the_allowed_roots_is_refused(tmp_path: Path) -> None:
+def test_a_report_in_the_parent_of_the_working_directory_is_refused(
+        tmp_path: Path) -> None:
+    """Run from `repo/sub`, `../out-up.json` lands in `repo`, which is NOT
+    below the working directory, so it is refused and nothing is written."""
+    repo, carve = _repo(tmp_path)
+    (repo / "sub").mkdir()
+    done = _gate(repo, f"--carve-commit={carve}", "--no-suite-trees",
+                 "--report=../out-up.json", cwd=repo / "sub")
+    _refused_before_the_run(done, "path-outside-allowed-roots")
+    assert not (repo / "out-up.json").exists()
+
+
+@pytest.mark.parametrize("report", [
+    f"{OUTSIDE_ROOT}/out.json", "../outside.json",
+    "../../../../../etc/x.json", "sub/../../outside.json"],
+    ids=["absolute", "one-up", "far-up", "down-then-up"])
+def test_a_report_outside_the_working_directory_is_refused(
+        tmp_path: Path, report: str) -> None:
+    repo, carve = _repo(tmp_path)
+    (repo / "sub").mkdir()
+    done = _gate(repo, f"--carve-commit={carve}", "--no-suite-trees",
+                 f"--report={report}")
+    _refused_before_the_run(done, "path-outside-allowed-roots")
+    assert "--report" in done.stderr, done.stderr
+    assert not (tmp_path / "outside.json").exists()
+    assert not Path(OUTSIDE_ROOT).exists()
+
+
+def test_the_temporary_directory_is_not_a_root_for_the_report(
+        tmp_path: Path) -> None:
+    """The report is written below the working directory only: an absolute
+    path under the temporary directory, which the export may use, is refused
+    when the working directory is elsewhere."""
     repo, carve = _repo(tmp_path)
     done = _gate(repo, f"--carve-commit={carve}", "--no-suite-trees",
-                 f"--report={OUTSIDE_ROOT}/out.json")
+                 f"--report={tmp_path / 'report.json'}")
     _refused_before_the_run(done, "path-outside-allowed-roots")
-    assert "--report" in done.stderr and OUTSIDE_ROOT in done.stderr
-    assert not Path(OUTSIDE_ROOT).exists()
+    assert not (tmp_path / "report.json").exists()
+
+
+def test_a_report_whose_directory_is_missing_is_refused(tmp_path: Path) -> None:
+    """A clearly named code of its own, `report-parent-missing`: the path is
+    below the working directory, so it is not an outside-the-directory
+    refusal. The gate does not create the directory."""
+    repo, carve = _repo(tmp_path)
+    done = _gate(repo, f"--carve-commit={carve}", "--no-suite-trees",
+                 "--report=missing-dir/out.json")
+    _refused_before_the_run(done, "report-parent-missing")
+    assert not (repo / "missing-dir").exists()
 
 
 def test_an_export_outside_the_allowed_roots_is_refused(tmp_path: Path) -> None:
@@ -682,31 +725,20 @@ def test_an_export_outside_the_allowed_roots_is_refused(tmp_path: Path) -> None:
     assert "--openxfactory-export" in done.stderr, done.stderr
 
 
-def test_a_report_whose_directory_is_missing_is_refused(tmp_path: Path) -> None:
-    """A clearly named code of its own, `report-parent-missing`: the path is
-    inside the allowed roots, so it is not an outside-roots refusal. The gate
-    does not create the directory."""
-    repo, carve = _repo(tmp_path)
-    done = _gate(repo, f"--carve-commit={carve}", "--no-suite-trees",
-                 f"--report={tmp_path / 'missing-dir' / 'out.json'}")
-    _refused_before_the_run(done, "report-parent-missing")
-    assert not (tmp_path / "missing-dir").exists()
-
-
 @pytest.mark.skipif(not Path("/usr").is_dir() or any(
     Path("/usr").is_relative_to(base) for base in MODULE.allowed_roots()),
     reason="needs a directory outside every allowed root")
-def test_a_link_out_of_the_allowed_roots_is_followed_before_containing(
+def test_an_export_link_out_of_the_allowed_roots_is_followed_before_containing(
         tmp_path: Path) -> None:
-    """The containment check is on the RESOLVED path: a link below the
-    temporary directory that points out of the allowed roots does not pass."""
+    """The export's containment check is on the RESOLVED path: a link below
+    the temporary directory that points out of the allowed roots does not
+    pass. (The report's check is lexical and does not follow links.)"""
     repo, carve = _repo(tmp_path)
     (tmp_path / "escape").symlink_to("/usr", target_is_directory=True)
     done = _gate(repo, f"--carve-commit={carve}", "--no-suite-trees",
-                 f"--report={tmp_path / 'escape' / 'out.json'}")
+                 f"--openxfactory-export={tmp_path / 'escape'}")
     _refused_before_the_run(done, "path-outside-allowed-roots")
-    assert "resolves to /usr/out.json" in done.stderr, done.stderr
-    assert not Path("/usr/out.json").exists()
+    assert "resolves to /usr," in done.stderr, done.stderr
 
 
 # --------------------------------------------------------------------------
@@ -739,7 +771,7 @@ def test_the_real_repository_is_neutral_over_its_own_tree(
     report = tmp_path / "report.json"
     done = subprocess.run(
         [sys.executable, str(GATE), "--no-suite-trees", f"--report={report}"],
-        cwd=REPO_ROOT, capture_output=True, text=True, check=False)
+        cwd=tmp_path, capture_output=True, text=True, check=False)
     assert done.returncode == 0, done.stdout + done.stderr
     for mode in ("plain", "--strict"):
         assert _mode_line("IDENTICAL", "root", mode).search(done.stdout), \
