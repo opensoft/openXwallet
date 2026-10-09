@@ -1081,7 +1081,10 @@ def parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
                         help=f"the baseline's commit (default: {CARVE_COMMIT})")
     parser.add_argument("--openxfactory-export", metavar="DIR", default=None,
                         help="target (ii): a directory holding an export of "
-                             "openxFactory's governance/ tree")
+                             "openxFactory's governance/ tree; DIR must "
+                             "resolve to a directory below the working "
+                             "directory, the temporary directory or the home "
+                             "directory, and must hold governance/")
     parser.add_argument("--openxfactory-export-commit", metavar="SHA",
                         default=None,
                         help="the openxFactory commit the export was taken "
