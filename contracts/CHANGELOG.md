@@ -174,15 +174,21 @@ consumed, and keeps no second digest (`design.md` D6, "No mirror copies").
 
 ### Neutrality: the composed run is byte-identical to the pre-split validator
 
-This is the property the rebuild exists to keep. On any tree, the composed
-adapter's output is BYTE-IDENTICAL to the output of the validator at the carve
-commit: the same notes, finding codes and summary line, in the same order. Task
-5.4's gate runs both over this tree, over an export of openxFactory's live
-`governance/` tree, and over every fixture tree the test suites build. It
-requires an EMPTY `diff`, plain and under `--strict`, with the same exit code:
-each suite invocation runs as the suite gave it and again with `--strict`
-toggled, so a fixture tree is compared in both modes whichever one its suite
-asked for.
+This is the property the rebuild exists to keep. Over three kinds of tree,
+(i) this repository's own tree, (ii) an export of openxFactory's live
+`governance/` tree and (iii) every fixture tree the kept and moved test suites
+build, the composed adapter's output is BYTE-IDENTICAL to the output of the
+validator at the carve commit: the same notes, finding codes and summary line,
+in the same order (`design.md` D5, as amended 2026-10-09: its first wording
+claimed every tree, which was wider than the gate measures, and is withdrawn;
+the known tree outside the three kinds, the code leg's own checkout scanned in
+place, differs by one summary line, `repo scan: 1` against `0`). Task 5.4's
+gate runs both over exactly those three kinds: this tree, an export of
+openxFactory's live `governance/` tree, and every fixture tree the test suites
+build. It requires an EMPTY `diff`, plain and under `--strict`, with the same
+exit code: each suite invocation runs as the suite gave it and again with
+`--strict` toggled, so a fixture tree is compared in both modes whichever one
+its suite asked for.
 It is `scripts/neutrality-gate.py`, with its tests in `tests/neutrality_gate/`,
 and its workflow `neutrality-gate.yml` reports on every pull request.
 So openxFactory's pin bump moves no literal assertion: `8 of 8`, the five-key

@@ -4,9 +4,16 @@ adapter, byte for byte (`split-openwallet-neutral-core`, `design.md` D5
 "NEUTRALITY BY CONSTRUCTION" and D7 "The proof" part three; `tasks.md` 5.4).
 
 WHAT THIS FILE PROVES. D5 composes the adapter in process over the pinned core
-so that "on any tree, the composed run's output is byte-identical to the
-pre-split validator's". A property nobody runs is a claim, not a floor, so this
-runs it. The PRE-SPLIT VALIDATOR is the BASELINE: `scripts/validate-openxwallet.py`
+so that, stated over THREE KINDS OF TREE, "over (i) this repository's own
+tree, (ii) an export of openxFactory's live `governance/` tree (the widen
+packet's §4 method) and (iii) every fixture tree the kept and moved test
+suites build, the composed run's output is byte-identical to the pre-split
+validator's": the three targets below. That is D5 as AMENDED 2026-10-09, which
+withdrew its first wording, a claim over every tree, as wider than this gate
+measures; the known tree outside the three kinds is its Finding 4, the code
+leg's own checkout scanned in place (`repo scan: 1` against `0`). A property
+nobody runs is a claim, not a floor, so this runs it. The PRE-SPLIT VALIDATOR
+is the BASELINE: `scripts/validate-openxwallet.py`
 at the NAMED CARVE COMMIT (`90111df262d6f54f7e82651d860adc12345f83f4`, task
 2.3), read as raw git blobs and written into a temporary tree beside that
 commit's own `contracts/`. It derives `ROOT` from its own location, so its
@@ -36,7 +43,12 @@ THE THREE TARGETS (D5):
         a temporary root holding the suite root's TRACKED TREE (`git ls-files`)
         as real directories and COPIED files, so that a test that scans its
         mirrored root walks and reads what a scan of the real root does, and
-        `Path.resolve()` in a copied test stays inside the mirror. `os.walk`
+        `Path.resolve()` in a copied test stays inside the mirror. Walking and
+        reading, not adjudicating: the core skips its own packaged registry
+        by RESOLVED path, and a mirror moves the tree, so that skip never
+        fires there, and a mirror cannot observe Finding 4 of D5's 2026-10-09
+        amendment (in place the code leg reads `repo scan: 1` against `0`;
+        over its mirror both sides read `1`). `os.walk`
         never descends a directory LINK, so a mirror of linked directories
         would adjudicate nothing on either side and compare two empty reads.
         Three things are not copied. The suite's own directory is copied

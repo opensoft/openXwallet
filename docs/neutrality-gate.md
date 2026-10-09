@@ -3,10 +3,19 @@
 `scripts/neutrality-gate.py` is task 5.4 of `split-openwallet-neutral-core`. It
 is the check behind `design.md` D5's central claim: the adapter loads the
 pinned openWallet core in process and adds rule (t) and the register reader
-at extension points, and so "on any tree, the composed run's output is
-byte-identical to the pre-split validator's". D7's proof, part three, calls
-for this gate to come back empty over the composed adapter. The gate runs the
-claim instead of restating it.
+at extension points, and so, stated over THREE KINDS OF TREE, "over (i) this
+repository's own tree, (ii) an export of openxFactory's live `governance/`
+tree (the widen packet's §4 method) and (iii) every fixture tree the kept and
+moved test suites build, the composed run's output is byte-identical to the
+pre-split validator's". Those three kinds are this gate's three targets. D5
+says so as AMENDED 2026-10-09 (Brett Heap, "Qualify D5's sentence; gate stays
+GREEN (Recommended)", opensoft/openXwallet#25): its first wording claimed the
+property for every tree, which was wider than the gate measures, and is
+withdrawn. The known tree outside the three kinds is Finding 4 of openWallet's
+`docs/byte-identity-wallet-v1.6.md`: the code leg's own checkout scanned in
+place, where the two validators differ by one summary line, `repo scan: 1`
+against `0`. D7's proof, part three, calls for this gate to come back empty
+over the composed adapter. The gate runs the claim instead of restating it.
 
 ## What it compares
 
@@ -39,7 +48,14 @@ temporary directory.
      directories and files, so a test that scans its mirrored root walks and
      reads what a scan of the real root does (`os.walk` never descends a
      directory link, so linked directories would be two empty reads), and
-     the suite's own directory is copied whole;
+     the suite's own directory is copied whole. It walks and reads the same
+     files, but its ADJUDICATION can differ from a scan in place: the core
+     skips its own packaged registry by RESOLVED path, and the mirror moves
+     the tree, so that skip never fires over a mirror. A mirror therefore
+     cannot observe D5's Finding 4 (the 2026-10-09 amendment): in place, the
+     code leg reads `repo scan: 1` from the baseline against `0` from the
+     composed adapter, while over its mirror both read `1` and compare
+     identical;
    - a gitlink (`openWallet`) is linked: the sweep prunes it through the
      link as it prunes the real mount, and the composed adapter reaches the
      real one through its own path, because the shim calls the real adapter;

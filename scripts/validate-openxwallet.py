@@ -29,10 +29,13 @@ before the core's main() runs, and nothing else is touched:
                         sweep, over the scan's own context
 
 The core never imports this file, and this file never suppresses, rewrites or
-reorders a core finding. What that buys is NEUTRALITY BY CONSTRUCTION: on any
-tree, this run's output is byte-identical to the pre-split validator's at the
-carve commit 90111df262d6f54f7e82651d860adc12345f83f4. The composed corpus note
-reads 21 / 45 / 13 of 13, where the core alone reads 21 / 42 / 11 of 11.
+reorders a core finding. What that buys is NEUTRALITY BY CONSTRUCTION, over
+three kinds of tree (design.md D5, as amended 2026-10-09): over this
+repository's own tree, an export of openxFactory's live `governance/` tree and
+every fixture tree the test suites build, this run's output is byte-identical
+to the pre-split validator's at the carve commit
+90111df262d6f54f7e82651d860adc12345f83f4. The composed corpus note reads
+21 / 45 / 13 of 13, where the core alone reads 21 / 42 / 11 of 11.
 
 THE VOCABULARY BINDING IS UNCONDITIONAL. Rule (g) admits as approval-posture
 terms exactly the keys of ONE DECLARED BINDING (RULED Q6, "Document plus
