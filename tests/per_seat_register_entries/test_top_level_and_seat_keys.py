@@ -5,10 +5,11 @@ Realizes the openXwallet change `add-per-seat-register-entries` (capability
 `specs/014-per-seat-register-entries/`.
 
 Discipline copied from `tests/nested_repo_prune/test_prune_and_register_note.py`
-and `tests/wallet_yaml_syntax_gate/test_gate.py`: drive the script as a
-SUBPROCESS so the exit codes the workflows act on are the ones under test, and
-build every fixture tree under `tmp_path` so nothing here can touch the
-repository or the packaged corpus.
+and the syntax gate's suite, `tests/wallet_yaml_syntax_gate/test_gate.py`, which
+now lives in opensoft/openWallet-code with the gate it tests: drive the script
+as a SUBPROCESS so the exit codes the workflows act on are the ones under
+test, and build every fixture tree under `tmp_path` so nothing here can touch
+the repository or the packaged corpus.
 
 WHY THE ASSERTIONS ARE WHAT THEY ARE. This change exists because a REQUIRED
 check parsed a governed declaration and never adjudicated it, so "no finding was

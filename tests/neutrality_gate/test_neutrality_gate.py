@@ -701,7 +701,9 @@ def test_the_full_history_workflow_runs_the_gate_at_fetch_depth_zero() -> None:
     assert runs[:2] == list(INIT_LINES), runs
     assert not any("--recursive" in r for r in runs), runs
     assert "python3 scripts/neutrality-gate.py" in runs, runs
-    assert "python3 -m pytest tests/neutrality_gate -q" in runs, runs
+    # FR-009 (tests/nested_repo_prune) needs the carve commit too.
+    assert ("python3 -m pytest tests/neutrality_gate tests/nested_repo_prune "
+            "-q") in runs, runs
     pip = next(r for r in runs if r.startswith("pip install"))
     words = pip.split()
     assert words[2:4] == ["--only-binary", ":all:"], pip

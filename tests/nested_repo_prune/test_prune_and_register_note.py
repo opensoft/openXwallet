@@ -6,10 +6,13 @@ repositories) and D3 (the register reader emits a durable happy-path NOTE) —
 under `clarifications.md` N4. Speckit feature
 `specs/013-nested-repo-prune-register-note/`.
 
-Discipline copied from `tests/wallet_yaml_syntax_gate/test_gate.py`: drive the
-script as a SUBPROCESS, not an in-process import, so the exit codes the
-workflows act on are the ones under test, and build every fixture tree under
-`tmp_path` so nothing here can touch the repository.
+Discipline copied from the syntax gate's suite,
+`tests/wallet_yaml_syntax_gate/test_gate.py`, which now lives in
+opensoft/openWallet-code with the gate it tests (here, under
+`openWallet/code/tests/`): drive the script as a SUBPROCESS, not an in-process
+import, so the exit codes the workflows act on are the ones under test, and
+build every fixture tree under `tmp_path` so nothing here can touch the
+repository.
 
 UNDER COMPOSITION (`split-openwallet-neutral-core`, design.md D2 and D5) the
 two behaviours live in different repositories. The sweep prune is the neutral
@@ -415,14 +418,18 @@ def test_the_composed_adapter_adjudicates_as_the_pre_split_validator_did(
     task 5.4's neutrality gate makes the claim over every fixture tree.
 
     Skipped LOUDLY, with a reason, where the carve commit is not in this
-    checkout's history (a depth-1 CI checkout), and where the recovered baseline
-    cannot run; never counted as a pass in either case.
+    checkout's history (a depth-1 CI checkout, as pytest-suite's is), and where
+    the recovered baseline cannot run; never counted as a pass in either case.
+    `.github/workflows/neutrality-gate.yml` runs this suite at fetch-depth: 0,
+    so in CI the claim is made there.
     """
     baseline = _baseline_script(tmp_path)
     if baseline is None:
         pytest.skip(f"the carve commit {CARVE_COMMIT} is not in this "
                     "checkout's history (a depth-1 checkout), so the pre-split "
-                    "validator cannot be recovered to compare against")
+                    "validator cannot be recovered to compare against; "
+                    ".github/workflows/neutrality-gate.yml (job "
+                    "`neutrality-gate`) runs this suite at fetch-depth: 0")
 
     consumer = _register_tree(tmp_path / "consumer")
     (consumer / "governance" / "wallets" / "legacy-grant.yaml").write_text(
