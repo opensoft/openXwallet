@@ -35,8 +35,16 @@ temporary directory.
    suite builds its trees under pytest's `tmp_path` and runs the validator as
    a subprocess at `REPO_ROOT / "scripts" / "validate-openxwallet.py"`. The
    gate therefore mirrors each suite into a temporary root:
-   - the test files are copied;
-   - every other top-level entry is linked;
+   - the suite root's tracked tree (`git ls-files`) is copied as real
+     directories and files, so a test that scans its mirrored root walks and
+     reads what a scan of the real root does (`os.walk` never descends a
+     directory link, so linked directories would be two empty reads), and
+     the suite's own directory is copied whole;
+   - a gitlink (`openWallet`) is linked: the sweep prunes it through the
+     link as it prunes the real mount, and the composed adapter reaches the
+     real one through its own path, because the shim calls the real adapter;
+   - each file under `scripts/` is a file link, because a script resolves
+     its root from its own location and holds no YAML a scan reads;
    - a **shim** stands at `scripts/validate-openxwallet.py`.
 
    For each invocation, the shim runs both validators twice: over the argv

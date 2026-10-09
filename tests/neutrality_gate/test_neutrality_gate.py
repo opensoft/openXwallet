@@ -214,7 +214,8 @@ def _write(root: Path, rel: str, text: str) -> None:
 
 
 def _repo(tmp_path: Path, composed: str = "same",
-          suites: dict[str, str] | None = None) -> tuple[Path, str]:
+          suites: dict[str, str] | None = None,
+          files: dict[str, str] | None = None) -> tuple[Path, str]:
     """A throwaway repository: the toy baseline committed as the carve
     commit, then the composed toy committed over it. Returns (repo, carve)."""
     repo = tmp_path / "repo"
@@ -224,6 +225,8 @@ def _repo(tmp_path: Path, composed: str = "same",
     _write(repo, "scripts/validate-openxwallet.py", _toy("same"))
     for name, source in (suites or {}).items():
         _write(repo, f"tests/{name}/test_{name}.py", source)
+    for rel, text in (files or {}).items():
+        _write(repo, rel, text)
     _git(repo, "init", "-q")
     _git(repo, "add", "-A")
     _git(repo, "commit", "-q", "-m", "the carve commit")
@@ -376,6 +379,46 @@ def test_records_that_do_not_pair_are_a_refusal(tmp_path: Path) -> None:
     assert MODULE.SuiteResult(suite, [one], 0, "").paired is False
     assert MODULE.SuiteResult(suite, [one, dict(one, replayed=False)], 0,
                               "").paired is False
+
+
+def test_the_mirror_is_the_tracked_tree_as_real_directories(
+        tmp_path: Path) -> None:
+    """A suite that scans its own REPO_ROOT scans the mirror. `os.walk` never
+    descends a directory link, so a mirror of linked directories reads no
+    nested YAML on either side: identical, and empty. The mirror is the
+    tracked tree as real directories and copied files; a gitlink is linked
+    (the sweep prunes it through the link, as it prunes the real mount);
+    each `scripts/` file is a file link; the shim stands at the validator."""
+    repo, _ = _repo(tmp_path, "same", {"toy_suite": TOY_SUITE},
+                    {"contracts/deep/record.yaml": "kind: toy\n"})
+    nested = repo / "mounted"
+    nested.mkdir()
+    _git(nested, "init", "-q")
+    _git(nested, "commit", "-q", "--allow-empty", "-m", "a nested root")
+    _git(repo, "add", "mounted")            # recorded as a gitlink
+    _git(repo, "commit", "-q", "-m", "mount a nested repository")
+    _write(repo, "untracked.yaml", "kind: toy\n")
+    _write(repo, "tests/toy_suite/test_not_yet_added.py", "")
+    suite = MODULE.Suite("kept", repo, repo / "tests" / "toy_suite")
+    root = MODULE.mirror(suite, tmp_path / "mirror")
+    walked = {Path(d, f).relative_to(root).as_posix()
+              for d, _, names in os.walk(root) for f in names}
+    assert "contracts/deep/record.yaml" in walked, sorted(walked)
+    assert "untracked.yaml" not in walked, sorted(walked)
+    # The suite's own directory is copied whole, a file not yet added too.
+    assert {"tests/toy_suite/test_toy_suite.py",
+            "tests/toy_suite/test_not_yet_added.py"} <= walked
+    for rel in ("contracts", "contracts/deep", "tests/toy_suite"):
+        assert not (root / rel).is_symlink(), rel
+    record = root / "contracts" / "deep" / "record.yaml"
+    assert not record.is_symlink()
+    assert record.resolve() == root.resolve() / "contracts/deep/record.yaml"
+    assert (root / "mounted").is_symlink()
+    assert (root / "mounted" / ".git").exists()     # so the sweep prunes it
+    assert (root / "scripts" / "neutrality-gate.py").is_symlink()
+    shim = root / "scripts" / "validate-openxwallet.py"
+    assert not shim.is_symlink()
+    assert "_GATE.shim_main" in shim.read_text(encoding="utf-8")
 
 
 def test_the_shim_refuses_outside_a_gate_run(tmp_path: Path) -> None:

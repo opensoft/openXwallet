@@ -33,9 +33,21 @@ THE THREE TARGETS (D5):
         `tmp_path` and drive the validator as a SUBPROCESS at
         `REPO_ROOT / "scripts" / "validate-openxwallet.py"`, with `REPO_ROOT`
         taken from the test file's own location. So each suite is MIRRORED into
-        a temporary root, its test files COPIED (`Path.resolve()` would follow
-        a link back home) and every other top-level entry linked, and at the
-        mirror's `scripts/validate-openxwallet.py` stands a SHIM. For each
+        a temporary root holding the suite root's TRACKED TREE (`git ls-files`)
+        as real directories and COPIED files, so that a test that scans its
+        mirrored root walks and reads what a scan of the real root does, and
+        `Path.resolve()` in a copied test stays inside the mirror. `os.walk`
+        never descends a directory LINK, so a mirror of linked directories
+        would adjudicate nothing on either side and compare two empty reads.
+        Three things are not copied. The suite's own directory is copied
+        WHOLE, so a test file not yet added still runs. A GITLINK
+        (`openWallet`) is LINKED: the sweep prunes it through the link exactly
+        as it prunes the real mount, and the composed adapter reaches the
+        real one through its own path, because the shim calls the real
+        adapter. Each file under `scripts/` is a FILE link, because a script
+        resolves its ROOT from its own location and holds no YAML a scan
+        reads. At the mirror's `scripts/validate-openxwallet.py` stands a
+        SHIM. For each
         invocation the shim runs the baseline and the composed adapter TWICE
         in the same working directory: over the argv AS GIVEN, and over it
         with `--strict` TOGGLED (added where the suite left it out, removed
@@ -693,31 +705,53 @@ def code_leg() -> tuple[Path | None, str | None]:
                   f"then `{INIT_CODE}` (scoped, never --recursive)")
 
 
-def _link_children(source: Path, into: Path, skip: tuple[str, ...]) -> None:
-    into.mkdir(parents=True)
-    if source.is_dir():
-        for entry in sorted(source.iterdir()):
-            if entry.name not in skip:
-                (into / entry.name).symlink_to(entry)
+GITLINK_MODE = "160000"
+
+
+def tracked_entries(source: Path) -> list[tuple[str, PurePosixPath]]:
+    """(mode, path) for every path the index of `source` tracks."""
+    done = git(source, "ls-files", "--stage", "-z")
+    if done.returncode != 0:
+        raise GateRefusal(
+            "neutrality-mirror-unreadable",
+            f"`git ls-files` failed in {source}, so its tracked tree cannot "
+            "be mirrored: " + decode(done.stderr).strip())
+    entries = []
+    for record in done.stdout.split(b"\0"):
+        meta, _, raw = record.partition(b"\t")
+        if not raw:
+            continue
+        path = PurePosixPath(os.fsdecode(raw))
+        if path.is_absolute() or ".." in path.parts:
+            raise GateRefusal("neutrality-mirror-unreadable",
+                              f"refusing to mirror the tree path {path}")
+        entries.append((meta.split(b" ")[0].decode("ascii"), path))
+    return entries
 
 
 def mirror(suite: Suite, into: Path) -> Path:
-    """A root whose `tests/<suite>` is a real copy, whose
-    `scripts/validate-openxwallet.py` is the shim, and whose every other
-    entry links to the suite's own root."""
+    """A root holding the suite root's tracked tree as real directories and
+    copied files (the module docstring, target iii): the suite's directory
+    copied whole, a gitlink linked, each `scripts/` file linked, and the
+    shim at `scripts/validate-openxwallet.py`."""
     source = suite.source_root
-    _link_children(source, into, (".git", "scripts", "tests"))
-    _link_children(source / "scripts", into / "scripts",
-                   (VALIDATOR_NAME, "__pycache__"))
+    own = PurePosixPath(suite.directory.relative_to(source).as_posix())
+    into.mkdir(parents=True)
+    for mode, path in tracked_entries(source):
+        if path == PurePosixPath(VALIDATOR_RELPATH) or own in path.parents:
+            continue    # the shim stands there; the suite is copied below
+        src, dest = source.joinpath(*path.parts), into.joinpath(*path.parts)
+        if not os.path.lexists(src):
+            continue    # deleted in the working tree: absent here as there
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        if mode == GITLINK_MODE or path.parts[0] == "scripts":
+            dest.symlink_to(src)
+        else:
+            shutil.copy2(src, dest, follow_symlinks=False)
+    (into / "scripts").mkdir(exist_ok=True)
     write_shim(into / "scripts" / VALIDATOR_NAME)
-    tests = into / "tests"
-    tests.mkdir()
-    for entry in sorted((source / "tests").iterdir()):
-        if entry == suite.directory:
-            shutil.copytree(entry, tests / entry.name,
-                            ignore=shutil.ignore_patterns("__pycache__"))
-        elif entry.is_file():
-            shutil.copy2(entry, tests / entry.name)
+    shutil.copytree(suite.directory, into.joinpath(*own.parts),
+                    ignore=shutil.ignore_patterns("__pycache__"))
     return into
 
 
