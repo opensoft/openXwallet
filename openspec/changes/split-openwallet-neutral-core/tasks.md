@@ -389,14 +389,57 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
       - root: `validate`;
       - spec leg: its OpenSpec gate;
       - code leg: `wallet-validation` and `pytest-suite`.
-- [ ] 4.8 `[openWallet-spec]` openWallet's birth change in the leg's own
+- [x] 4.8 `[openWallet-spec]` openWallet's birth change in the leg's own
       OpenSpec instance, after 4.3 lands. It MODIFIES *Agent authority is grant
       scope, not a parallel vocabulary* to the text drafted in `design.md` D8.
-      - Being authored by lane openXwallet-1 as change
-        `bind-approval-posture-vocabulary` in opensoft/openWallet-spec
-        (branch `birth/bind-approval-posture-vocabulary`, head `1cc53ce0`,
-        claimed on #25 2026-10-08). PR opensoft/openWallet-spec#3 open at head
-        `1cc53ce0`, awaiting the operator's word.
+      - **LANDED 2026-10-09** by lane openXwallet-1 in
+        opensoft/openWallet-spec#3 at merge
+        `1506bbdb4194a779bef63d8c4e5eecc7eac0bd68` (a merge commit; head
+        `5f95efdd38bb177c1a8ccd94da1a1c9ef45faf3b`, two commits on the carve
+        merge `15c15bb`), on Brett Heap's word in session, verbatim: "land it
+        when the fixes are in and the review is clean". Claimed on #25
+        2026-10-08
+        (https://github.com/opensoft/openXwallet/issues/25#issuecomment-6069656258).
+        Gated on the leg's named run `openspec-cli-pin` completed success for
+        the exact head; an independent Opus review of `5f95efdd` read CLEAN
+        after its five findings on `1cc53ce` were applied; Codex reviewed
+        `1cc53ce` (no major issues) and hit its usage limit on the second
+        pass. Administrator merge, author cannot self-approve.
+      - The change is `openspec/changes/bind-approval-posture-vocabulary/` in
+        that leg (`.openspec.yaml`, `proposal.md`, `design.md`, `tasks.md`,
+        one delta), `Status: proposed`: its ratification and archive in the
+        leg are the operator's acts (its tasks 1.2 and 3.1). The delta is ONE
+        `## MODIFIED Requirements` block on `openxwallet-agent-profile`, the
+        requirement titled character-for-character, its statement D8's two
+        sentences verbatim (compared by script), three scenarios: *authority
+        is carried by a grant* unchanged; *the approval vocabulary is reused,
+        not duplicated* re-bulleted onto the declared binding; *no binding is
+        declared, so a posture is refused rather than admitted because nothing
+        forbade it* new.
+      - Measured on the pinned 1.12.0: the leg's gate
+        `Totals: 4 passed, 0 failed`, `OK openspec-cli-pin`; dry archive in a
+        scratch copy `Totals: + 0, ~ 1, - 0, → 0` on
+        `openxwallet-agent-profile` only, archiving in either order with
+        `add-composition-drift-cascade` to byte-identical specs.
+      - **RULED** — Brett Heap, 2026-10-09, in session, by multiple choice,
+        label verbatim "Keep the promoted title, MODIFIED block
+        (Recommended)": scenario two keeps the promoted title "the approval
+        vocabulary is reused, not duplicated" (D8 listed it as "the bound
+        vocabulary is reused, not duplicated") because 1.12.0 refuses a
+        MODIFIED block that drops a scenario name the promoted spec still has;
+        the one route to D8's name (RENAMED to a placeholder, REMOVED, ADDED
+        under the original title, in one delta; archive `+ 1, ~ 0, - 1, → 1`)
+        breaks D8's form "MODIFIES exactly one requirement" and was not taken.
+        First ruled the same day as "Keep the promoted title (Recommended)" on
+        the change's incomplete premise, re-presented with the measured route
+        and re-ruled. Recorded on #25 and in the change's `.openspec.yaml`
+        `rulings`. D8's text is not amended.
+      - Observed in the code leg and not taken on (recorded in the change's
+        `design.md`; carried on the code-leg follow-up list by lane
+        openXwallet-2): rule (g)'s refusal message at `72313da` still names
+        "the neutral job envelope" though D4 says it stops; behaviour correct
+        (no binding → every posture refused, `legal terms: []`), wording
+        stale.
 - [ ] 4.9 **[OPERATOR]** `[openWallet-root]` First release — five coordinated
       values — on the ROOT:
       - the annotated `wallet-v*` tag on the root commit that pins both legs;
