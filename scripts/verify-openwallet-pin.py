@@ -62,8 +62,10 @@ THE ORDER OF EVALUATION follows dependency, not D6's numbering, and the codes do
 not move with it. The shape guards run first, because every later check
 compares AGAINST the values they validate: `pin-tag-only` for the referent,
 `pin-mount-mismatch` for a mount the entrypoints do not execute, and
-`pin-unreadable` for a HOLLOWED pin, one whose `files:` is not exactly the eight
-or whose `pinned_by_commit_only:` omits the two scripts the entrypoints load.
+`pin-unreadable` for a HOLLOWED pin, one whose `files:` does not name design.md
+D6's eight, each once and nothing else (`DIGESTED_MEMBERS`, a closed set: a
+count alone lets a duplicate row stand in for a required one), or whose
+`pinned_by_commit_only:` omits the two scripts the entrypoints load.
 Then the root, entirely: initialized, recorded, checked out, and the lockstep
 read from its objects. Only then the leg: initialized, checked out. Then the
 bytes: the digests, then each path-only member present and unmodified. A leg
@@ -111,6 +113,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+from collections import Counter
 import re
 import subprocess
 import sys
@@ -179,6 +182,27 @@ REFUSAL_CODES: tuple[str, ...] = (
 # does, and one that digests more names artifacts the design never named; both
 # are `pin-unreadable`, never a smaller satisfied claim.
 DIGESTED_MEMBER_COUNT = 8
+
+# WHICH eight, as a CLOSED set: the paths `files:` spells, relative to the root
+# mount, which D6 makes "the same strings the openWallet root manifest's owned
+# rows hold". Cross-checked when this list was written, in this order: the
+# pin's `files:`, the root manifest's eight owned rows at the pinned root, and
+# the carve commit's eight owned rows under `code/`. A count is not the claim:
+# a duplicate of one row standing in for another, with its own valid digest,
+# recomputes eight times and pins seven artifacts. `files:` must name each of
+# these once and nothing else, or the pin is `pin-unreadable`.
+DIGESTED_MEMBERS: tuple[str, ...] = (
+    "code/contracts/openxwallet/openxwallet-record.schema.yaml",
+    "code/contracts/openxwallet/openxwallet-custody-registry.schema.yaml",
+    "code/contracts/openxwallet/openxwallet-custody.registry.yaml",
+    "code/contracts/openxwallet/openxwallet-grant.schema.yaml",
+    "code/contracts/openxwallet/openxwallet-grant-exercise.schema.yaml",
+    "code/contracts/openxwallet/"
+    "openxwallet-distinct-holder-constraint.schema.yaml",
+    "code/contracts/openxwallet/openxwallet-subject-attestation.schema.yaml",
+    "code/contracts/openxwallet-agent-profile/"
+    "openxwallet-agent-composition.schema.yaml",
+)
 
 # The bytes this repository's two entrypoints path-load and RUN
 # (scripts/validate-openxwallet.py's CORE_PATH and
@@ -530,21 +554,48 @@ def _require_digests(checkout: Path, shown: str, pin: dict) -> int:
     return len(entries)
 
 
-def _require_pin_shape(pin: dict) -> None:
-    """The HOLLOWED-PIN guard, a shape check run with the referent's, before
-    a checkout is read: `files:` digests exactly design.md D6's eight, and
-    `pinned_by_commit_only:` covers the bytes the entrypoints run. Without it a
-    pin cut to one digest, or one that stopped naming the loaded core, would
-    verify clean while pinning less than this repository executes."""
-    entries = pin.get("files")
-    if not isinstance(entries, list) or len(entries) != DIGESTED_MEMBER_COUNT:
-        count = len(entries) if isinstance(entries, list) else entries
+def _require_digested_set(entries: list) -> None:
+    """`files:` names design.md D6's eight, EACH ONCE, and nothing else. Eight
+    rows that recompute are not eight artifacts pinned: a duplicate of one row
+    standing in for another, with its own valid digest, recomputes eight times
+    and leaves one published artifact unpinned. The refusal names what is
+    missing, what is extra and what is duplicated."""
+    paths = []
+    for index, entry in enumerate(entries):
+        if not isinstance(entry, dict):
+            raise PinRefusal("pin-unreadable",
+                             f"the pin's files[{index}] is not a mapping")
+        paths.append(_relative_path(entry.get("path"), f"files[{index}].path"))
+    seen = Counter(paths)
+    found = {
+        "missing": [path for path in DIGESTED_MEMBERS if path not in seen],
+        "extra": [path for path in seen if path not in DIGESTED_MEMBERS],
+        "duplicated": [path for path, times in seen.items() if times > 1],
+    }
+    named = "; ".join(f"{kind} {listed!r}" for kind, listed in found.items()
+                      if listed)
+    if named:
         raise PinRefusal(
             "pin-unreadable",
-            f"the pin's `files:` holds {count!r} entr(ies), not design.md "
-            f"D6's {DIGESTED_MEMBER_COUNT} digested artifacts; a pin that "
-            "digests fewer bytes than the design names is a hollowed claim, "
-            "not a smaller satisfied one")
+            f"the pin's `files:` holds {len(paths)} entr(ies), not design.md "
+            f"D6's {DIGESTED_MEMBER_COUNT} digested artifacts each named once "
+            f"({named}); a pin that digests fewer, other or repeated bytes "
+            "than the design names is a hollowed claim, not a smaller "
+            "satisfied one")
+
+
+def _require_pin_shape(pin: dict) -> None:
+    """The HOLLOWED-PIN guard, a shape check run with the referent's, before
+    a checkout is read: `files:` digests design.md D6's eight, each once, and
+    `pinned_by_commit_only:` covers the bytes the entrypoints run. Without it a
+    pin cut to one digest, one that digested a row twice in place of another,
+    or one that stopped naming the loaded core, would verify clean while
+    pinning less than this repository executes."""
+    entries = pin.get("files")
+    if not isinstance(entries, list):
+        raise PinRefusal("pin-unreadable",
+                         f"the pin's `files:` is not a list ({entries!r})")
+    _require_digested_set(entries)
     members = pin.get("pinned_by_commit_only")
     if not isinstance(members, list):
         raise PinRefusal("pin-unreadable",

@@ -2,8 +2,9 @@
 
 `split-openwallet-neutral-core` task 5.1: the verifier is trusted only once it
 has been seen refusing each of design.md D6's seven, a path-only member
-modified in its working tree (`pin-member-modified`), a HOLLOWED pin (fewer
-than the eight digests, or a path-only list without the two loaded scripts), a
+modified in its working tree (`pin-member-modified`), a HOLLOWED pin (a
+`files:` that is not the eight, each named once, or a path-only list without
+the two loaded scripts), a
 pin naming a mount the entrypoints do not execute (`pin-mount-mismatch`), and
 exiting 2 rather than tracebacking when `git` or a file cannot be read. So
 each test below is ONE fact away from a world that verifies clean, and the
@@ -82,6 +83,21 @@ REMEDIATION = (
 )
 ROOT_INIT = "git submodule update --init openWallet"
 LEG_INIT = "git -C openWallet submodule update --init code"
+
+# design.md D6's eight digested artifacts, as `files:` spells them: the root
+# manifest's owned rows, re-pathed under `code/`.
+D6_EIGHT = (
+    "code/contracts/openxwallet/openxwallet-record.schema.yaml",
+    "code/contracts/openxwallet/openxwallet-custody-registry.schema.yaml",
+    "code/contracts/openxwallet/openxwallet-custody.registry.yaml",
+    "code/contracts/openxwallet/openxwallet-grant.schema.yaml",
+    "code/contracts/openxwallet/openxwallet-grant-exercise.schema.yaml",
+    "code/contracts/openxwallet/"
+    "openxwallet-distinct-holder-constraint.schema.yaml",
+    "code/contracts/openxwallet/openxwallet-subject-attestation.schema.yaml",
+    "code/contracts/openxwallet-agent-profile/"
+    "openxwallet-agent-composition.schema.yaml",
+)
 
 
 @pytest.fixture(autouse=True)
@@ -535,6 +551,43 @@ def test_a_pin_cut_to_one_digest_refuses(tmp_path, upstream):
     assert "holds 1 entr(ies), not design.md D6's 8" in err, err
 
 
+def _blob_sha256(repo: Path, commit: str, rel: str) -> str:
+    shown = subprocess.run(["git", "-C", str(repo), "show", f"{commit}:{rel}"],
+                           capture_output=True, check=True)
+    return hashlib.sha256(shown.stdout).hexdigest()
+
+
+def test_a_duplicate_row_standing_in_for_a_required_one_refuses(tmp_path,
+                                                                upstream):
+    """Codex's example. Row 1 is replaced by a copy of row 0, VALID digest
+    and all: eight rows, eight recomputations, and the custody-registry
+    schema pinned by nothing."""
+    pin = _pin_for(upstream, upstream.root_good)
+    pin["files"][1] = dict(pin["files"][0])
+    adapter = build(tmp_path, upstream, pin=pin)
+    assert _verified_without(adapter, "_require_digested_set").digests == 8
+
+    err = assert_refused(verify(adapter), "pin-unreadable")
+    assert ("holds 8 entr(ies), not design.md D6's 8 digested artifacts each "
+            f"named once (missing {[D6_EIGHT[1]]!r}; duplicated "
+            f"{[D6_EIGHT[0]]!r})") in err, err
+
+
+def test_an_unrelated_path_standing_in_for_a_required_one_refuses(tmp_path,
+                                                                  upstream):
+    """A ninth path for one of the eight: a file the leg really holds, at its
+    real digest, in place of the grant schema."""
+    unrelated = "code/contracts/openxwallet/README.md"
+    pin = _pin_for(upstream, upstream.root_good)
+    pin["files"][3] = {"path": unrelated, "sha256": _blob_sha256(
+        upstream.leg, upstream.leg_good, _leg_relative(unrelated))}
+    adapter = build(tmp_path, upstream, pin=pin)
+    assert _verified_without(adapter, "_require_digested_set").digests == 8
+
+    err = assert_refused(verify(adapter), "pin-unreadable")
+    assert (f"(missing {[D6_EIGHT[3]]!r}; extra {[unrelated]!r})") in err, err
+
+
 @pytest.mark.parametrize("dropped", ["code/scripts/validate-openxwallet.py",
                                      "code/scripts/wallet-yaml-syntax-gate.py"])
 def test_a_pin_that_stops_naming_a_loaded_script_refuses(tmp_path, upstream,
@@ -623,6 +676,9 @@ CODE_SHAPE = re.compile(r"pin-[a-z]+(?:-[a-z]+)*")
 def test_the_hollowed_pin_guard_is_design_d6s_eight_and_the_loaded_scripts():
     module = _load_verifier()
     assert module.DIGESTED_MEMBER_COUNT == 8 == len(REAL["files"])
+    assert module.DIGESTED_MEMBERS == D6_EIGHT == tuple(
+        entry["path"] for entry in REAL["files"])
+    assert len(set(D6_EIGHT)) == module.DIGESTED_MEMBER_COUNT
     assert set(module.LOADED_BY_ENTRYPOINTS) == {
         "code/scripts/validate-openxwallet.py",
         "code/scripts/wallet-yaml-syntax-gate.py"}
