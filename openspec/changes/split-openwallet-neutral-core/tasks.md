@@ -660,7 +660,11 @@ them.
 openxFactory's factory-identity and clearing-dispatch gates import
 (`scripts/validate-factory-identity.py:217`,
 `scripts/validate-clearing-dispatch.py:352`), and lane openXwallet-3 confirmed
-it and folds the fix into #40 before it lands.
+it and folds the fix into #40 before it lands. The fix landed on #40's branch
+as commit `6ca9acd0097bc255c0c65e1b8c3ffe170b643011`, and #40's final head is
+`36c365dab5ca7c9db036cb413963d7cabb804375`, which re-pins the root to
+`b0af7c2c`. Lane openXwallet-1's independent review of the fix is CLEAR
+(https://github.com/opensoft/openXwallet/pull/40#issuecomment-6087335229).
 
 **A named successor (ruling 2).** openxFactory's promoted spec
 `openspec/specs/document-lifecycle/spec.md:316-344` cites
