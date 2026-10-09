@@ -39,6 +39,19 @@ MOUNTED_LEG = REPO_ROOT / "openWallet" / "code"
 
 ROOT_INIT = "git submodule update --init openWallet"
 LEG_INIT = "git -C openWallet submodule update --init code"
+VERIFY_PIN = "python3 scripts/verify-openwallet-pin.py"
+
+# design.md D5: every refusal carries the remediation for ITS level. Restated
+# here as literals, and the same in both entrypoints, so a reader sees the same
+# words whichever entrypoint refused.
+ROOT_REMEDIATION = (f"Remediation: run `{ROOT_INIT}`, then `{LEG_INIT}` "
+                    f"(scoped, never --recursive), then `{VERIFY_PIN}`.")
+LEG_REMEDIATION = (f"Remediation: run `{LEG_INIT}` (scoped, never "
+                   f"--recursive), then `{VERIFY_PIN}`.")
+CORE_REMEDIATION = (f"Remediation: run `{VERIFY_PIN}`, which names what is "
+                    f"wrong with the pinned checkout; restore it with "
+                    f"`{ROOT_INIT}`, then `{LEG_INIT}` (scoped, never "
+                    f"--recursive).")
 
 # A core that loads and exposes every name the adapter reads, and whose main()
 # reports what had been registered by the time it was called.
@@ -53,6 +66,7 @@ lines_for = load_yaml = _mapping = _hashable_set = None
 fingerprint_of_public_key = None
 
 def main():
+    print("doc", __doc__.splitlines()[0])
     print("binding", VOCABULARY_BINDING["label"], VOCABULARY_BINDING["pointer"])
     for name in ("GRANT_RULES", "SELF_TEST_HOOKS", "SELF_TEST_TAIL_HOOKS",
                  "TREE_CHECKS"):
@@ -102,10 +116,17 @@ def _run(root: Path, script: Path, *args: str) -> subprocess.CompletedProcess:
         capture_output=True, text=True, cwd=root.parent)
 
 
-def _assert_refused(done: subprocess.CompletedProcess, code: str) -> str:
+def _assert_refused(done: subprocess.CompletedProcess, code: str,
+                    remediation: str) -> str:
+    """Exit 2, nothing on stdout, ONE refusal under `code`, and its level's
+    remediation as the last line."""
     assert done.returncode == 2, done.stdout + done.stderr
     assert done.stdout == "", done.stdout
     assert done.stderr.startswith(f"REFUSE {code}: "), done.stderr
+    refusals = [line for line in done.stderr.splitlines()
+                if line.startswith("REFUSE ")]
+    assert len(refusals) == 1, done.stderr
+    assert done.stderr.endswith(f"\n{remediation}\n"), done.stderr
     return done.stderr
 
 
@@ -116,23 +137,25 @@ def test_an_uninitialized_root_refuses_with_its_own_remediation(tmp_path,
                                                                 script):
     root = _scratch_root(tmp_path, init_root=False)
     err = _assert_refused(_run(root, script, "."),
-                          "pin-submodule-uninitialized")
-    assert f"Run `{ROOT_INIT}` (never --recursive)" in err, err
+                          "pin-submodule-uninitialized", ROOT_REMEDIATION)
+    assert "openWallet/.git does not exist" in err, err
 
 
 @pytest.mark.parametrize("script", [VALIDATOR, GATE], ids=["validator", "gate"])
 def test_an_uninitialized_leg_refuses_with_its_own_remediation(tmp_path,
                                                                script):
     root = _scratch_root(tmp_path, init_leg=False)
-    err = _assert_refused(_run(root, script, "."), "pin-leg-uninitialized")
-    assert f"Run `{LEG_INIT}` (never --recursive)" in err, err
+    err = _assert_refused(_run(root, script, "."), "pin-leg-uninitialized",
+                          LEG_REMEDIATION)
+    assert "openWallet/code/.git does not exist" in err, err
 
 
 @pytest.mark.parametrize("script", [VALIDATOR, GATE], ids=["validator", "gate"])
 def test_a_core_that_does_not_load_refuses(tmp_path, script):
     broken = "raise RuntimeError('the pinned bytes are not a module')\n"
     root = _scratch_root(tmp_path, core=broken, gate=broken)
-    err = _assert_refused(_run(root, script, "."), "core-unloadable")
+    err = _assert_refused(_run(root, script, "."), "core-unloadable",
+                          CORE_REMEDIATION)
     assert "RuntimeError: the pinned bytes are not a module" in err, err
 
 
@@ -143,14 +166,23 @@ def test_a_core_that_exits_zero_while_loading_refuses(tmp_path, script):
     nothing: the silent green this family exists to refuse."""
     tampered = "raise SystemExit(0)\n"
     root = _scratch_root(tmp_path, core=tampered, gate=tampered)
-    err = _assert_refused(_run(root, script, "."), "core-unloadable")
+    err = _assert_refused(_run(root, script, "."), "core-unloadable",
+                          CORE_REMEDIATION)
     assert "SystemExit" in err, err
 
 
 @pytest.mark.parametrize("script", [VALIDATOR, GATE], ids=["validator", "gate"])
 def test_a_core_file_that_is_absent_refuses(tmp_path, script):
     root = _scratch_root(tmp_path, core=None, gate=None)
-    _assert_refused(_run(root, script, "."), "core-unloadable")
+    _assert_refused(_run(root, script, "."), "core-unloadable",
+                    CORE_REMEDIATION)
+
+
+def test_a_gate_without_main_refuses(tmp_path):
+    root = _scratch_root(tmp_path, gate="GATE = 'no entry point'\n")
+    err = _assert_refused(_run(root, GATE, "."), "core-unloadable",
+                          CORE_REMEDIATION)
+    assert "defines no main()" in err, err
 
 
 def test_a_core_without_the_composition_contract_refuses(tmp_path):
@@ -158,7 +190,8 @@ def test_a_core_without_the_composition_contract_refuses(tmp_path):
     adapter composes against; registering into it would be an AttributeError,
     a traceback and exit 1, which reads as FINDINGS."""
     root = _scratch_root(tmp_path, core="def main():\n    return 0\n")
-    err = _assert_refused(_run(root, VALIDATOR, "."), "core-unloadable")
+    err = _assert_refused(_run(root, VALIDATOR, "."), "core-unloadable",
+                          CORE_REMEDIATION)
     assert "'GRANT_RULES'" in err and "'SELF_TEST_HOOKS'" in err, err
 
 
@@ -167,7 +200,8 @@ def test_a_requirement_id_the_core_already_declares_refuses(tmp_path):
     core = STUB_CORE.replace('{"OXW-R1": "a core row"}',
                              '{"OXWR-R1": "the core claims this id"}')
     root = _scratch_root(tmp_path, core=core)
-    err = _assert_refused(_run(root, VALIDATOR, "."), "core-unloadable")
+    err = _assert_refused(_run(root, VALIDATOR, "."), "core-unloadable",
+                          CORE_REMEDIATION)
     assert "['OXWR-R1']" in err, err
 
 
@@ -185,13 +219,16 @@ def test_an_absent_envelope_is_the_hard_exit_it_always_was(tmp_path):
 # ------------------------------ composition --------------------------------
 
 def test_the_adapter_registers_before_the_core_runs(tmp_path):
-    """By the time the core's main() runs, the envelope is bound, every hook
-    is registered at its extension point, the two OXWR rows follow the core's
-    own, and the command line is passed through untouched."""
+    """By the time the core's main() runs, the core's docstring is the
+    adapter's (argparse's `--help` description), the envelope is bound, every
+    hook is registered at its extension point, the two OXWR rows follow the
+    core's own, and the command line is passed through untouched."""
     root = _scratch_root(tmp_path)
     done = _run(root, VALIDATOR, "some/tree", "--strict")
     assert done.returncode == 0, done.stdout + done.stderr
     assert done.stdout.splitlines() == [
+        "doc Validate the openxWallet contract families: openXwallet's "
+        "ADAPTER over the",
         "binding contracts/schemas/hermes-job-envelope.schema.yaml "
         "['properties', 'job', 'properties', 'approval_policy', 'properties']",
         "GRANT_RULES ['check_review_issuer']",
@@ -201,6 +238,22 @@ def test_the_adapter_registers_before_the_core_runs(tmp_path):
         "requirements ['OXW-R1', 'OXWR-R1', 'OXWR-R2']",
         "argv ['some/tree', '--strict']",
     ], done.stdout
+
+
+def test_help_through_the_entrypoint_is_the_adapters_docstring():
+    """`--help` describes what RUNS here: the adapter, its two rules and the
+    binding, not the neutral core alone."""
+    if not (MOUNTED_LEG / ".git").exists():
+        pytest.skip(f"openWallet/code is not initialized in this checkout; run "
+                    f"`{ROOT_INIT}`, then `{LEG_INIT}` (never --recursive)")
+    done = subprocess.run([sys.executable, str(VALIDATOR), "--help"],
+                          capture_output=True, text=True, cwd=REPO_ROOT)
+    assert done.returncode == 0, done.stdout + done.stderr
+    for words in ("openXwallet's ADAPTER over the",
+                  "(t) THE ISSUER IS RECORDED AND ROOTS ARE ANCHORED",
+                  "(u) THE REGISTER AND ITS READER RATIFY TOGETHER",
+                  "THE VOCABULARY BINDING IS UNCONDITIONAL"):
+        assert words in done.stdout, done.stdout
 
 
 def test_the_gate_entrypoint_delegates_with_its_command_line(tmp_path):

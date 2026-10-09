@@ -122,25 +122,39 @@ ADAPTER_NEGATIVE_GLOB = "grant-review-*.yaml"
 # --------------------------- composition: fail closed first ---------------------------
 
 class CompositionRefusal(Exception):
-    """A named refusal to compose: exit 2, printed as one `REFUSE` line."""
+    """A named refusal to compose: exit 2, printed as one `REFUSE` line and
+    the remediation for its level on the next (design.md D5)."""
 
-    def __init__(self, code: str, detail: str) -> None:
+    def __init__(self, code: str, detail: str, remediation: str) -> None:
         self.code = code
         self.detail = detail
+        self.remediation = remediation
         super().__init__(code, detail)
 
     def __str__(self) -> str:
-        return f"REFUSE {self.code}: {self.detail}"
+        return f"REFUSE {self.code}: {self.detail}\n{self.remediation}"
 
+
+# The remediations, one per level (design.md D5, "the remediation for THAT
+# level"). Scoped, never --recursive: the spec leg carries nothing this file
+# reads. Each ends at the pin verifier, which asks WHICH commit is checked out.
+ROOT_INIT = "git submodule update --init openWallet"
+LEG_INIT = "git -C openWallet submodule update --init code"
+VERIFY_PIN = "python3 scripts/verify-openwallet-pin.py"
+ROOT_REMEDIATION = (f"Remediation: run `{ROOT_INIT}`, then `{LEG_INIT}` "
+                    f"(scoped, never --recursive), then `{VERIFY_PIN}`.")
+LEG_REMEDIATION = (f"Remediation: run `{LEG_INIT}` (scoped, never "
+                   f"--recursive), then `{VERIFY_PIN}`.")
+CORE_REMEDIATION = (f"Remediation: run `{VERIFY_PIN}`, which names what is "
+                    f"wrong with the pinned checkout; restore it with "
+                    f"`{ROOT_INIT}`, then `{LEG_INIT}` (scoped, never "
+                    f"--recursive).")
 
 # Each level of the mount, the code scripts/verify-openwallet-pin.py gives the
-# same fact (one fact, one name), and the init that level needs. Scoped, never
-# --recursive: the spec leg carries nothing this file reads.
+# same fact (one fact, one name), and that level's remediation.
 MOUNT_LEVELS = (
-    ("openWallet", "pin-submodule-uninitialized",
-     "git submodule update --init openWallet"),
-    ("openWallet/code", "pin-leg-uninitialized",
-     "git -C openWallet submodule update --init code"),
+    ("openWallet", "pin-submodule-uninitialized", ROOT_REMEDIATION),
+    ("openWallet/code", "pin-leg-uninitialized", LEG_REMEDIATION),
 )
 
 # The names this file registers into, or reads through, the loaded core. A core
@@ -156,19 +170,20 @@ CORE_CONTRACT = (
 
 def load_core() -> ModuleType:
     """The pinned core, loaded in process, or a CompositionRefusal."""
-    for level, code, init in MOUNT_LEVELS:
+    for level, code, remediation in MOUNT_LEVELS:
         if not (ROOT / level / ".git").exists():
             raise CompositionRefusal(
                 code,
                 f"{level}/.git does not exist: {level} is not initialized, so "
-                f"the validator this entrypoint runs is not present. Run "
-                f"`{init}` (never --recursive)")
+                f"the validator this entrypoint runs is not present",
+                remediation)
     shown = CORE_PATH.relative_to(ROOT)
     spec = importlib.util.spec_from_file_location(
         "openwallet_validate_openxwallet", CORE_PATH)
     if spec is None or spec.loader is None:
         raise CompositionRefusal("core-unloadable",
-                                 f"{shown}: no importable module spec")
+                                 f"{shown}: no importable module spec",
+                                 CORE_REMEDIATION)
     module = importlib.util.module_from_spec(spec)
     try:
         spec.loader.exec_module(module)
@@ -177,15 +192,16 @@ def load_core() -> ModuleType:
     except BaseException as exc:  # noqa: BLE001 - SystemExit too: an exiting core refuses
         raise CompositionRefusal(
             "core-unloadable",
-            f"{shown} does not load ({type(exc).__name__}: {exc}); check the "
-            f"pinned checkout with scripts/verify-openwallet-pin.py") from exc
+            f"{shown} does not load ({type(exc).__name__}: {exc})",
+            CORE_REMEDIATION) from exc
     missing = [name for name in CORE_CONTRACT if not hasattr(module, name)]
     if missing:
         raise CompositionRefusal(
             "core-unloadable",
             f"{shown} loads but does not expose {missing}, which this adapter "
             f"registers into or reads through; it is not the core this "
-            f"entrypoint composes against")
+            f"entrypoint composes against",
+            CORE_REMEDIATION)
     return module
 
 
@@ -1893,13 +1909,20 @@ VOCABULARY_BINDING = {
 def compose() -> None:
     """Bind the envelope and register this file's rules at the core's extension
     points. A requirement id the core already declares would REWRITE a core
-    row, which this adapter never does, so it refuses instead."""
+    row, which this adapter never does, so it refuses instead.
+
+    The core's `main()` builds its argparse description from its module
+    `__doc__`, so this file's docstring replaces it: `--help` through this
+    entrypoint describes what RUNS here (the adapter, rule (t), rule (u), the
+    binding), not the core alone."""
     clash = sorted(set(ADAPTER_REQUIREMENTS) & set(core.REQUIREMENTS))
     if clash:
         raise CompositionRefusal(
             "core-unloadable",
             f"the pinned core already declares requirement(s) {clash}; this "
-            f"adapter adds rows to the core's closure and never rewrites one")
+            f"adapter adds rows to the core's closure and never rewrites one",
+            CORE_REMEDIATION)
+    core.__doc__ = __doc__
     core.VOCABULARY_BINDING = VOCABULARY_BINDING
     core.REQUIREMENTS.update(ADAPTER_REQUIREMENTS)
     core.GRANT_RULES.append(check_review_issuer)

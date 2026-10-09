@@ -41,33 +41,45 @@ ROOT = Path(__file__).resolve().parents[1]
 CORE_GATE_PATH = (ROOT / "openWallet" / "code" / "scripts"
                   / "wallet-yaml-syntax-gate.py")
 
-# Each level of the mount, its refusal code, and the init that level needs.
-# Scoped, never --recursive: the spec leg carries nothing this gate reads.
+# The remediations, one per level, worded as scripts/validate-openxwallet.py
+# words them (design.md D5, "the remediation for THAT level"). Scoped, never
+# --recursive: the spec leg carries nothing this gate reads.
+ROOT_INIT = "git submodule update --init openWallet"
+LEG_INIT = "git -C openWallet submodule update --init code"
+VERIFY_PIN = "python3 scripts/verify-openwallet-pin.py"
+ROOT_REMEDIATION = (f"Remediation: run `{ROOT_INIT}`, then `{LEG_INIT}` "
+                    f"(scoped, never --recursive), then `{VERIFY_PIN}`.")
+LEG_REMEDIATION = (f"Remediation: run `{LEG_INIT}` (scoped, never "
+                   f"--recursive), then `{VERIFY_PIN}`.")
+CORE_REMEDIATION = (f"Remediation: run `{VERIFY_PIN}`, which names what is "
+                    f"wrong with the pinned checkout; restore it with "
+                    f"`{ROOT_INIT}`, then `{LEG_INIT}` (scoped, never "
+                    f"--recursive).")
+
+# Each level of the mount, its refusal code, and that level's remediation.
 MOUNT_LEVELS = (
-    ("openWallet", "pin-submodule-uninitialized",
-     "git submodule update --init openWallet"),
-    ("openWallet/code", "pin-leg-uninitialized",
-     "git -C openWallet submodule update --init code"),
+    ("openWallet", "pin-submodule-uninitialized", ROOT_REMEDIATION),
+    ("openWallet/code", "pin-leg-uninitialized", LEG_REMEDIATION),
 )
 
 
-def refuse(code: str, detail: str) -> int:
-    print(f"REFUSE {code}: {detail}", file=sys.stderr)
+def refuse(code: str, detail: str, remediation: str) -> int:
+    print(f"REFUSE {code}: {detail}\n{remediation}", file=sys.stderr)
     return 2
 
 
 def main() -> int:
-    for level, code, init in MOUNT_LEVELS:
+    for level, code, remediation in MOUNT_LEVELS:
         if not (ROOT / level / ".git").exists():
             return refuse(code, f"{level}/.git does not exist: {level} is not "
                                 f"initialized, so the gate this entrypoint runs "
-                                f"is not present. Run `{init}` (never "
-                                f"--recursive)")
+                                f"is not present", remediation)
     shown = CORE_GATE_PATH.relative_to(ROOT)
     spec = importlib.util.spec_from_file_location(
         "openwallet_wallet_yaml_syntax_gate", CORE_GATE_PATH)
     if spec is None or spec.loader is None:
-        return refuse("core-unloadable", f"{shown}: no importable module spec")
+        return refuse("core-unloadable", f"{shown}: no importable module spec",
+                      CORE_REMEDIATION)
     gate = importlib.util.module_from_spec(spec)
     try:
         spec.loader.exec_module(gate)
@@ -75,9 +87,11 @@ def main() -> int:
         raise
     except BaseException as exc:  # noqa: BLE001 - SystemExit too: an exiting gate refuses
         return refuse("core-unloadable",
-                      f"{shown} does not load ({type(exc).__name__}: {exc})")
+                      f"{shown} does not load ({type(exc).__name__}: {exc})",
+                      CORE_REMEDIATION)
     if not callable(getattr(gate, "main", None)):
-        return refuse("core-unloadable", f"{shown} loads but defines no main()")
+        return refuse("core-unloadable", f"{shown} loads but defines no main()",
+                      CORE_REMEDIATION)
     return gate.main()
 
 
