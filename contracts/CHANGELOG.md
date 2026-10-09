@@ -117,8 +117,13 @@ same repository-relative path inside their leg.
   LedgerxFactory's estate run pin each by string. The validator now loads the
   pinned core in process from `openWallet/code/scripts/validate-openxwallet.py`
   and registers rule (t), the register reader and the hermes binding at the
-  core's declared extension points (RULED Q1, `design.md` D5). The syntax gate
-  delegates to the core's: one implementation.
+  core's declared extension points (RULED Q1, `design.md` D5). Imported by
+  path, as openxFactory's factory-identity and clearing-dispatch loaders
+  import it, the validator keeps the five key-decoder names they read off the
+  module: `decode_public_key_multibase` and `fingerprint_of_public_key`,
+  re-exported from the core, and its own `_decode_public_key`,
+  `_fingerprint_of` and `PUBLIC_KEY_B64U_LEN`. The syntax gate delegates to
+  the core's: one implementation.
 - **Both check tokens, `wallet-validation` and `pytest-suite`**, with their
   workflows rewritten in place: each initializes `openWallet` and then its
   `code` leg, two scoped lines and never `--recursive`, and
