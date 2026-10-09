@@ -29,6 +29,12 @@
 #     python3 scripts/validate-carve-manifest.py
 #     python3 scripts/validate-carve-manifest.py --at 90111df262d6f54f7e82651d860adc12345f83f4
 #
+# Under `phase: post-shed` (below) the `--at <carve commit>` form REFUSES
+# `carve-shed-incomplete` by design, because the shed rows are still present at
+# the carve commit, so the carve-commit answer is this file's phase-`carve`
+# history (`git log -- docs/openwallet-carve-manifest.yaml`); the checker is
+# unchanged.
+#
 # The checker recomputes every moved row's sha256 from the raw git blob at the
 # carve commit, walks the whole tree there for completeness, and asks of the
 # revision under test whether anything under the carve SURFACE (`moved_paths:`
