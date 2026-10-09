@@ -110,6 +110,17 @@ THE PLAN'S CALLS (task 5.4 left these open; each is recorded here):
     validator but records no tree invocation, or whose pytest run ends in an
     exit code other than 0 or 1, is a refusal, because a target that proves
     nothing is not a pass.
+  * THE SUITE SET IS PINNED. Discovery cannot say which suites SHOULD be
+    found: a suite respelled out of the literal (`REPO_ROOT /
+    "scripts/validate-openxwallet.py"`) would drop out with a false skip
+    reason and an IDENTICAL verdict over fewer suites. So the labels
+    discovery must find, kept and moved, are `EXPECTED_SUITES` in this file,
+    and a discovered set that differs in either direction refuses
+    `neutrality-suite-set-mismatch` before any suite runs, naming what is
+    missing and what is unexpected. Adding, removing or renaming a
+    validator-driving suite is a reviewed edit of that constant (this file is
+    under CODEOWNERS). Invocation counts are not pinned: they move as tests
+    are added, and a suite that records none already refuses as vacuous.
   * The moved suites run only where `openWallet/code` is initialized, and are
     skipped LOUDLY otherwise. They were written for the standalone core, so
     where the composed run differs from the core BY DESIGN (the corpus note
@@ -136,7 +147,9 @@ Exit codes:
   2  a refusal: the carve commit unreachable or malformed, the adapter
      missing, a validator refusing at self-test (its text printed verbatim), a
      target run ending at exit 2, a suite that proved nothing or whose records
-     do not pair, an export with no `governance/`, a `--report` that
+     do not pair, a discovered suite set that is not `EXPECTED_SUITES`
+     (`neutrality-suite-set-mismatch`), an export with no `governance/`, a
+     `--report` that
      normalises to a path outside the working directory, or an
      `--openxfactory-export` that resolves outside the working directory, the
      temporary directory and the home directory
@@ -203,6 +216,19 @@ MODES: tuple[tuple[str, tuple[str, ...]], ...] = (
 HELP_FLAGS = frozenset({"-h", "--help"})
 SELF_SUITE = "neutrality_gate"
 DRIVES_VALIDATOR = re.compile(r"""["']validate-openxwallet\.py["']""")
+
+# THE SUITE SET target (iii) must discover, kept then moved, by label (the
+# module docstring, "THE SUITE SET IS PINNED"). Discovery finding any other set
+# refuses `neutrality-suite-set-mismatch`; changing this is a reviewed act.
+EXPECTED_SUITES: tuple[str, ...] = (
+    "tests/nested_repo_prune",
+    "tests/openwallet_pin",
+    "tests/per_seat_register_entries",
+    "tests/register_reissuance",
+    "tests/widen_register_reader",
+    "openWallet/code/tests/multi_key_wallets",
+    "openWallet/code/tests/nested_repo_prune",
+)
 # A revision from the command line is 7 to 40 hexadecimal characters and
 # nothing else, gated BEFORE it reaches any git argument (the carve manifest
 # checker's REVISION_ARG_RE); what rev-parse hands back is checked to be a full
@@ -794,6 +820,29 @@ def discover_suites(source_root: Path,
     return suites, skipped
 
 
+def require_suite_set(suites: list[Suite]) -> None:
+    """The discovered suites are EXACTLY `EXPECTED_SUITES`, or the run
+    refuses before any suite runs."""
+    found = {suite.label for suite in suites}
+    missing = [label for label in EXPECTED_SUITES if label not in found]
+    unexpected = sorted(found - set(EXPECTED_SUITES))
+    if not missing and not unexpected:
+        return
+    named = "; ".join(
+        f"{kind} {labels}" for kind, labels in (
+            ("missing (each skipped above, with the reason discovery gave)",
+             missing), ("unexpected", unexpected)) if labels)
+    raise GateRefusal(
+        "neutrality-suite-set-mismatch",
+        f"target (iii) discovered {len(found)} suite(s), not the "
+        f"{len(EXPECTED_SUITES)} pinned in EXPECTED_SUITES: {named}. "
+        "Discovery finds a suite by the quoted literal "
+        '"validate-openxwallet.py", so a suite respelled out of it would '
+        "otherwise leave the comparison and the verdict would read IDENTICAL "
+        "over fewer suites. A suite added, removed or renamed is a reviewed "
+        "edit of EXPECTED_SUITES in scripts/neutrality-gate.py")
+
+
 def code_leg() -> tuple[Path | None, str | None]:
     """`openWallet/code` when initialized, else why the moved suites skip."""
     code = ROOT / "openWallet" / "code"
@@ -1019,6 +1068,9 @@ def _suite_phase(args: argparse.Namespace, scratch: Path, baseline: Path,
     for what, reason in skipped:
         print(f"SKIP       {what}: {reason}")
         evidence["skipped"].append({"what": what, "reason": reason})
+    evidence["suite_set"] = {"expected": list(EXPECTED_SUITES),
+                             "discovered": [s.label for s in suites]}
+    require_suite_set(suites)
     results = run_suites(suites, scratch, baseline, composed)
     for result in results:
         print_suite(result)

@@ -44,7 +44,7 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, Sequence
 
 import pytest
 import yaml
@@ -179,6 +179,14 @@ def test_nothing_drives_a_validator():
     assert True
 '''
 
+# TOY_SUITE with the validator's path respelled as lane 1 respelled one in
+# tests/register_reissuance: it still runs the validator, but no file spells
+# the quoted literal discovery looks for.
+RESPELLED_SUITE = TOY_SUITE.replace(
+    'REPO_ROOT / "scripts" / "validate-openxwallet.py"',
+    'REPO_ROOT / "scripts/validate-openxwallet.py"')
+assert RESPELLED_SUITE != TOY_SUITE
+
 # Names the validator in a quoted literal but never runs it.
 HOLLOW_SUITE = '''
 NAME = "validate-openxwallet.py"
@@ -206,14 +214,32 @@ def _write(root: Path, rel: str, text: str) -> None:
     dest.write_text(text, encoding="utf-8")
 
 
+def _gate_source(expected: Sequence[str]) -> str:
+    """The gate, with the toy repository's own EXPECTED_SUITES in place of
+    this repository's. The constant is the gate's pinned value, so a toy
+    declares its set in its own copy of the gate, never through a runtime
+    override the real gate would also honour."""
+    source = GATE.read_text(encoding="utf-8")
+    start = source.index("EXPECTED_SUITES: tuple[str, ...] = (\n")
+    end = source.index("\n)\n", start) + len("\n)\n")
+    return (source[:start] + "EXPECTED_SUITES: tuple[str, ...] = "
+            f"{tuple(expected)!r}\n" + source[end:])
+
+
 def _repo(tmp_path: Path, composed: str = "same",
           suites: dict[str, str] | None = None,
-          files: dict[str, str] | None = None) -> tuple[Path, str]:
+          files: dict[str, str] | None = None,
+          expected: Sequence[str] | None = None) -> tuple[Path, str]:
     """A throwaway repository: the toy baseline committed as the carve
-    commit, then the composed toy committed over it. Returns (repo, carve)."""
+    commit, then the composed toy committed over it. Returns (repo, carve).
+    EXPECTED pins the toy's suite set; by default, the suites that spell the
+    literal discovery looks for."""
     repo = tmp_path / "repo"
     (repo / "scripts").mkdir(parents=True)
-    shutil.copy2(GATE, repo / "scripts" / "neutrality-gate.py")
+    if expected is None:
+        expected = [f"tests/{name}" for name, source in (suites or {}).items()
+                    if MODULE.DRIVES_VALIDATOR.search(source)]
+    _write(repo, "scripts/neutrality-gate.py", _gate_source(expected))
     _write(repo, "contracts/README.md", "toy contracts\n")
     _write(repo, "scripts/validate-openxwallet.py", _toy("same"))
     for name, source in (suites or {}).items():
@@ -602,6 +628,68 @@ def test_a_suite_that_never_reaches_the_shim_refuses(tmp_path: Path) -> None:
     assert done.returncode == 2, done.stdout + done.stderr
     assert "[neutrality-suite-vacuous]" in done.stderr, done.stderr
     assert "tests/hollow_suite" in done.stderr
+
+
+def test_a_suite_respelled_out_of_discovery_refuses(tmp_path: Path) -> None:
+    """Lane 1's case. The respelled suite still runs the validator, but
+    discovery skips it with a false reason. UNPINNED (the control) the gate
+    then passes over fewer suites; pinned, it refuses before any suite
+    runs."""
+    unpinned, carve = _repo(tmp_path / "unpinned", "same",
+                            {"toy_suite": RESPELLED_SUITE}, expected=[])
+    done = _gate(unpinned, f"--carve-commit={carve}")
+    assert done.returncode == 0, done.stdout + done.stderr
+    assert "SKIP       tests/toy_suite: no file spells" in done.stdout
+    assert "over 0 suite(s)" in done.stdout, done.stdout
+
+    pinned, carve = _repo(tmp_path / "pinned", "same",
+                          {"toy_suite": RESPELLED_SUITE},
+                          expected=["tests/toy_suite"])
+    report = pinned / "report.json"
+    done = _gate(pinned, f"--carve-commit={carve}", f"--report={report}")
+    assert done.returncode == 2, done.stdout + done.stderr
+    assert "SKIP       tests/toy_suite: no file spells" in done.stdout
+    assert ("neutrality-gate: REFUSED [neutrality-suite-set-mismatch]: "
+            "target (iii) discovered 0 suite(s), not the 1 pinned in "
+            "EXPECTED_SUITES: missing (each skipped above, with the reason "
+            "discovery gave) ['tests/toy_suite'].") in done.stderr, done.stderr
+    assert "suite tests/toy_suite" not in done.stdout, done.stdout
+    evidence = _report(report)
+    assert evidence["refusal"]["code"] == "neutrality-suite-set-mismatch"
+    assert evidence["suite_set"] == {"expected": ["tests/toy_suite"],
+                                     "discovered": []}
+
+
+def test_a_suite_the_pin_does_not_name_refuses(tmp_path: Path) -> None:
+    repo, carve = _repo(tmp_path, "same", {"toy_suite": TOY_SUITE},
+                        expected=[])
+    done = _gate(repo, f"--carve-commit={carve}")
+    assert done.returncode == 2, done.stdout + done.stderr
+    assert ("[neutrality-suite-set-mismatch]: target (iii) discovered 1 "
+            "suite(s), not the 0 pinned in EXPECTED_SUITES: unexpected "
+            "['tests/toy_suite'].") in done.stderr, done.stderr
+
+
+def test_the_pinned_suite_set_is_this_repositorys() -> None:
+    """The seven suites, and the ones discovery finds in this checkout: the
+    kept suites always, the moved ones where the code leg is initialized."""
+    assert MODULE.EXPECTED_SUITES == (
+        "tests/nested_repo_prune", "tests/openwallet_pin",
+        "tests/per_seat_register_entries", "tests/register_reissuance",
+        "tests/widen_register_reader",
+        "openWallet/code/tests/multi_key_wallets",
+        "openWallet/code/tests/nested_repo_prune")
+    kept, _ = MODULE.discover_suites(REPO_ROOT, "kept")
+    assert [s.label for s in kept] == [
+        label for label in MODULE.EXPECTED_SUITES
+        if label.startswith("tests/")]
+    code, why = MODULE.code_leg()
+    if code is None:
+        pytest.skip(f"the moved suites cannot be discovered here: {why}")
+    moved, _ = MODULE.discover_suites(code, "moved")
+    assert [s.label for s in moved] == [
+        label for label in MODULE.EXPECTED_SUITES
+        if label.startswith("openWallet/")]
 
 
 def test_the_export_target_needs_a_governance_directory(tmp_path: Path) -> None:

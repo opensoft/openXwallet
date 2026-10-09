@@ -81,6 +81,23 @@ temporary directory.
    listed as skipped, with that reason. The gate's own suite is also skipped,
    because it drives toy validators.
 
+   **The suite set is pinned.** Discovery cannot say which suites should be
+   found: a suite respelled out of the literal (for example
+   `REPO_ROOT / "scripts/validate-openxwallet.py"`) would be skipped with a
+   false reason, and the verdict would read IDENTICAL over fewer suites. So
+   the gate holds the expected set, `EXPECTED_SUITES` in
+   `scripts/neutrality-gate.py`: today `tests/nested_repo_prune`,
+   `tests/openwallet_pin`, `tests/per_seat_register_entries`,
+   `tests/register_reissuance`, `tests/widen_register_reader`,
+   `openWallet/code/tests/multi_key_wallets` and
+   `openWallet/code/tests/nested_repo_prune`. A discovered set that differs
+   in either direction refuses `neutrality-suite-set-mismatch` before any
+   suite runs, naming the missing and the unexpected suites. Adding,
+   removing or renaming a validator-driving suite is therefore a reviewed
+   edit of that constant (the gate is under CODEOWNERS). Invocation counts
+   are not pinned, because they move as tests are added; a suite that
+   records none already refuses.
+
 ## The one declared new line
 
 Compared with the pre-split run of this tree (D0's output at `b7c6e0b`), target
@@ -124,7 +141,7 @@ python3 scripts/neutrality-gate.py --report run.json    # plus a JSON summary
 | `--openxfactory-export DIR` | target (ii); `DIR` must **contain** `governance/` and resolve below the working directory, the temporary directory or the home directory |
 | `--openxfactory-export-commit SHA` | the openxFactory commit the export was taken at, recorded in `--report` |
 | `--no-suite-trees` | skip target (iii) |
-| `--report PATH` | the report is written **below the invocation's working directory**: `PATH` is joined under it and normalised, an absolute path outside it is refused, and its directory must exist; write a JSON summary: the result, the revision tested (HEAD, uncommitted tracked changes, the `openWallet` and `code` checkouts), the carve commit, the baseline blob, the composed adapter's sha256, every target and mode with both exit codes, every suite's counts and differences, and every skip |
+| `--report PATH` | the report is written **below the invocation's working directory**: `PATH` is joined under it and normalised, an absolute path outside it is refused, and its directory must exist; write a JSON summary: the result, the revision tested (HEAD, uncommitted tracked changes, the `openWallet` and `code` checkouts), the carve commit, the baseline blob, the composed adapter's sha256, every target and mode with both exit codes, the expected and discovered suite sets, every suite's counts and differences, and every skip |
 | `--keep` | keep the run's temporary tree and print where it is (every child's `TMPDIR` is inside it) |
 
 | Exit | Meaning |
@@ -141,6 +158,8 @@ A run refuses (exit 2) when:
 - a target run exits 2 on either side;
 - a suite records no tree invocation, its records do not pair one plain with
   one strict run, or its pytest run ends in a code other than 0 or 1;
+- the suites discovered are not exactly the pinned `EXPECTED_SUITES`
+  (`neutrality-suite-set-mismatch`);
 - the export holds no `governance/`;
 - `--report` normalises to a path outside the invocation's working directory,
   or `--openxfactory-export` resolves, after `~` and links are followed,
