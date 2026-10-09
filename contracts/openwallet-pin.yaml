@@ -76,20 +76,25 @@ kind: pinned_contract_manifest
 # moved. The verifier refuses any one of them moving alone.
 # ============================================================================
 
-# openWallet has cut no release yet. Brett Heap has RULED the name of the
-# root's first tag, label verbatim "wallet-v1.6 (Recommended)", and that tag is
-# NOT cut. This field takes `wallet-v1.6` only once the annotated tag exists on
-# the root commit this pin records. A label naming a tag that does not exist
-# would label nothing.
-contract_bundle_tag: null
+# The annotated tag `wallet-v1.6` is on the root commit this pin records. Brett
+# Heap RULED the name of the root's first tag, label verbatim "wallet-v1.6
+# (Recommended)", and its place, label verbatim "Release commit on b4580d16,
+# tag its merge (Recommended)". The tag stays a LABEL beside `commit:`, never
+# the referent: the verifier prints it and checks nothing against it, because a
+# movable name is not a compatibility pin.
+contract_bundle_tag: wallet-v1.6
 source_repository: opensoft/openWallet
 
 # The gitlink this pin governs, mounting the openWallet ROOT.
 submodule_path: openWallet
 
-# The openWallet root at the merge of opensoft/openWallet#2 (task 4.5: the
-# root's carve layer, with both legs pinned at their carve). Exactly 40 hex.
-commit: "1c68717f1ae4ae132d6942f8c7f533baf292d0b6"
+# The openWallet root at the release merge of opensoft/openWallet#7 (task 4.9
+# of split-openwallet-neutral-core: the wallet-v1.6 release commit, which bumps
+# contracts/manifest.yaml, adds contracts/releases/wallet-v1.6.digests.yaml and
+# extends the CHANGELOG, and moves no gitlink and no digest, so `legs.code` and
+# `files:` below stand). Brett Heap's ruling, quoted at `contract_bundle_tag`
+# above, puts the annotated tag `wallet-v1.6` on this commit. Exactly 40 hex.
+commit: "b0af7c2ce53d63786a08a20aa3602a6f90345606"
 revision_kind: commit
 
 digest_algorithm: sha256
