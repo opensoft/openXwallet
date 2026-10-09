@@ -308,10 +308,11 @@ points AT THE POSITIONS THEIR CODE OCCUPIES TODAY — rule (t) inside
 probes where the self-test runs them, `OXWR-R1`/`OXWR-R2` and their three
 negatives inside the core's own per-requirement closure. The core never imports
 the adapter, and the adapter never suppresses or reorders a core finding. That
-buys MECHANICAL neutrality — on any tree the composed run's output is
-byte-identical to today's validator's — so openxFactory's pin bump is proven
-neutral by a plain `diff` (the widen packet's D6 standard) and its gate
-assertions do not move. `design.md` D5.
+buys MECHANICAL neutrality — over the three tree kinds D5 names (this tree, the
+openxFactory governance export, every suite-built fixture tree) the composed
+run's output is byte-identical to today's validator's — so openxFactory's pin
+bump is proven neutral by a plain `diff` (the widen packet's D6 standard) and
+its gate assertions do not move. `design.md` D5.
 
 ### Q2 — How does openWallet arrive here, and what does openxFactory re-path?
 
