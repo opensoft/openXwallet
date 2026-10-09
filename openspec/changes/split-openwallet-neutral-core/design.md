@@ -343,10 +343,24 @@ round, and the code leg's bytes exported elsewhere are EMPTY.
 The sentence is qualified rather than the skip changed because a change to the
 skip would move the code leg's bytes and so its pin, and the proof would run
 again. Qualified, the gate stays GREEN over its three kinds, and the code leg,
-the manifest and the pins do not change. Recorded, not fixed here: lane
-openXwallet-3's `scripts/neutrality-gate.py` (on `rebuild/adapter-group-5`)
-runs each suite in a mirror whose top-level entries are symbolic links that
-`os.walk` does not descend, so it cannot observe Finding 4's case.
+the manifest and the pins do not change. Recorded, not fixed here: at
+`a02c6c74`, lane openXwallet-3's `scripts/neutrality-gate.py` (on
+`rebuild/adapter-group-5`) ran each suite in a mirror whose top-level entries
+were symbolic links that `os.walk` does not descend, so it could not observe
+Finding 4's case.
+
+**UPDATED 2026-10-09.** Since lane openXwallet-3's `360801f` on
+`rebuild/adapter-group-5-r2` (opensoft/openXwallet#40, head `df7f82aa`), the
+gate builds each suite's mirror from the suite root's tracked tree
+(`git ls-files`) as real directories and copied files, so that a test that
+scans its mirrored root walks and reads what a scan of the real root does;
+three things are not copied: the suite's own directory is copied whole, a
+gitlink (`openWallet`) is linked, and each file under `scripts/` is a file
+link. Finding 4's case, the code leg's own checkout scanned in place, is not
+one of D5's three kinds of tree and the qualification above stands: none of
+the gate's targets is that checkout scanned in place, and in a mirror the
+copied custody registry is no validator's own, so both sides count it, as
+`360801f`'s message records.
 
 **Fail closed.** An uninitialized `openWallet/`, an uninitialized
 `openWallet/code/`, or a core that does not load is exit 2 with a named refusal

@@ -46,9 +46,19 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
 
       Both are encoded in `proposal.md`, `design.md` D7 and `.openspec.yaml`
       `origin.rulings`.
-- [ ] 1.4 On ratification: `Status: ratified`, the `Ratified:` line with the word
+- [x] 1.4 On ratification: `Status: ratified`, the `Ratified:` line with the word
       verbatim, and `.openspec.yaml` `approved_by` / `approved_on` filled. Every
       question is already ruled and encoded beside itself.
+      **DONE 2026-10-08**, performed by the ratification itself (1.2) and
+      landed with PR #26 at merge `bf2dd4db88edbb873d067425b16dacd3784fbaf5`
+      (its head, the commit recording the ratification, is
+      `fe0e8505f8a0678f5dd6b419c0f78b3c51ace8d6`).
+      - `proposal.md` "## Status" reads `Status: ratified` and **Ratified by
+        Brett Heap (openXwallet operator authority), in session,
+        2026-10-08T17:10:47Z, verbatim: "ratify 26 and merge"**, the change as
+        authored at head `2ae4eee1885536297e5653e64b6abb1b85cc8e9e`.
+      - `.openspec.yaml` carries `approved_by: Brett Heap (openXwallet
+        operator authority)` and `approved_on: 2026-10-08`.
 
 ## 2. Before the carve — this repository
 
@@ -385,6 +395,8 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
         output and the same exit code, plain and `--strict`, over the same
         tree, for each of this tree, the openxFactory governance export, and
         every test-suite fixture tree.
+      - Superseded 2026-10-09: the final root is opensoft/openWallet#7's merge
+        `b0af7c2c`, per the rulings recorded at 4.9.
       - **LANDED 2026-10-09** in opensoft/openWallet#3 at merge
         `52d75736156550b48992e39f7a69fb680c611287` (a merge commit; head
         `6b25be50`; commits `624e196` the proof, `b86c6a5` root docs status,
@@ -478,7 +490,7 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
         "the neutral job envelope" though D4 says it stops; behaviour correct
         (no binding → every posture refused, `legal terms: []`), wording
         stale.
-- [ ] 4.9 **[OPERATOR]** `[openWallet-root]` First release — five coordinated
+- [x] 4.9 **[OPERATOR]** `[openWallet-root]` First release — five coordinated
       values — on the ROOT:
       - the annotated `wallet-v*` tag on the root commit that pins both legs;
       - `contracts/manifest.yaml`, `contracts/CHANGELOG.md` and
@@ -498,6 +510,59 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
         (opensoft/openWallet#4 → `5a444cf2`) and "Re-pin to the archive merge
         before the tag (Recommended)" (opensoft/openWallet#5 → `bead4bd8`),
         so the first release carries 4.8 in its archived form.
+      - **RULED again** 2026-10-09, in two later acts that moved the tag's
+        commit:
+        - Brett Heap's word, verbatim, 2026-10-09T02:19:53Z: "tag goes on the
+          #6 merge, send it to lane 3". It names the merge commit of
+          opensoft/openWallet#6, root `main`
+          `b4580d1655a9f0df9bb94f35299163d7470609f4`, in place of `52d75736`.
+          Recorded at
+          https://github.com/opensoft/openXwallet/issues/25#issuecomment-6072926959.
+        - After 4.7's rulesets were ACTIVE, his word "cut the wallet-v1.6 tag
+          on b4580d16" (2026-10-09T02:37:39Z) met the root's rule that a
+          release is five coordinated values in one root commit (AGENTS.md
+          rule 5 at the root, and the runbook's Phase 6), while `b4580d16`
+          still declared `contract_bundle_version: wallet-v1.5` and carried
+          no v1.6 record or CHANGELOG entry. RULED by multiple choice, label
+          verbatim: "Release commit on b4580d16, tag its merge (Recommended)"
+          (2026-10-09T02:40Z;
+          https://github.com/opensoft/openXwallet/issues/25#issuecomment-6073154682).
+          The release commit is opensoft/openWallet#7, one commit
+          `88345cc8db2860edfde018739f4c71d8a18d75bd` on `b4580d16`:
+          `contract_bundle_version: wallet-v1.6`,
+          `contracts/releases/wallet-v1.6.digests.yaml` cut by recomputation
+          (8 of 8), and the CHANGELOG entry; no gitlink or pin moves. The tag
+          goes on that pull request's merge commit; the tick follows when the
+          merge and the tag exist.
+      - **DONE 2026-10-09** on Brett Heap's word in session, by multiple
+        choice, label verbatim "Land 7 and cut the tag (Recommended)"
+        (https://github.com/opensoft/openXwallet/issues/25#issuecomment-6086448281).
+        - opensoft/openWallet#7 landed at merge
+          `b0af7c2ce53d63786a08a20aa3602a6f90345606` on 2026-10-09T17:43:03Z,
+          a merge commit with parents `b4580d16` and the release commit
+          `88345cc8`. It was gated on `validate` completed success for head
+          `88345cc8`, with the lockstep-pins step (`pins ok`).
+        - The annotated tag `wallet-v1.6`, tag object
+          `3acfa611b69503e809043faff5f3622cc008a3eb`, message "openWallet
+          wallet-v1.6: the first release on the root, pinning both legs",
+          resolves to that merge, `b0af7c2c`. At the tag the root's gitlinks
+          read spec `1924500354f472a6298c02db44a3ae2b21b8908e` and code
+          `72313daab1f229c049cb90998931564c1904dbbc`. Neither leg carries a
+          tag.
+        - The five coordinated values, in or pinned by that one root commit:
+          - per-file `contract_schema_version`, inside each artifact's bytes
+            in the code leg the root pins, unchanged from wallet-v1.5 (the
+            release record lists 2 for `openxwallet-record` and 1 for the
+            other seven);
+          - `contract_bundle_version: wallet-v1.6` in
+            `contracts/manifest.yaml`;
+          - the annotated `wallet-v1.6` tag, on the merge;
+          - the release commit with per-file digests,
+            `contracts/releases/wallet-v1.6.digests.yaml` (8 of 8, cut by
+            recomputation);
+          - the `contracts/CHANGELOG.md` entry.
+        - The tag came after 4.6 was green and after 4.7's rulesets were
+          ACTIVE, both ticked above.
 
 ## 5. The adapter rebuild — this repository, one pull request
 
@@ -513,10 +578,17 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
       gitlink ≠ pin, a checkout ≠ pin, a leg-lockstep mismatch (the root's `code`
       gitlink vs its `contracts/code-pin.yaml` vs `legs.code.commit`, read from
       git objects) and a mutated digest.
-      - Group 5 is being authored by lane openXwallet-3 on branch
-        `rebuild/adapter-group-5` (claimed on #25, 2026-10-08). The FINAL root
-        to pin is `52d75736156550b48992e39f7a69fb680c611287` (re-pinned once
-        before that pull request lands).
+      - Group 5 is opensoft/openXwallet#40, authored by lane openXwallet-3
+        (claimed on #25, 2026-10-08), on branch `rebuild/adapter-group-5-r2`.
+        The review-fixed history took a sibling name because the ruleset
+        forbids force-push (organisation ruleset `8981805` carries
+        `non_fast_forward` on every branch); `rebuild/adapter-group-5`, at
+        `a02c6c7487171c110490b234643a7e586ed47153`, the head the proof
+        measured, stays on origin as that record. The FINAL root to pin is the
+        merge commit of opensoft/openWallet#7,
+        `b0af7c2ce53d63786a08a20aa3602a6f90345606`, the wallet-v1.6 release,
+        per the ruling recorded at 4.9; lane openXwallet-3 re-pins to it in
+        one commit, with `contract_bundle_tag: wallet-v1.6`, before #40 lands.
 - [ ] 5.2 `scripts/validate-openxwallet.py` recomposed per `design.md` D5:
       - the pinned core loaded in process from
         `openWallet/code/scripts/validate-openxwallet.py`;
@@ -588,7 +660,7 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
 
 ## 8. Travels with openWallet — named, not this change's gate
 
-- [ ] 8.1 `[openWallet-spec]` Rebase `add-composition-drift-cascade`'s MODIFIED
+- [x] 8.1 `[openWallet-spec]` Rebase `add-composition-drift-cascade`'s MODIFIED
       *Revocation propagates through the chain* onto the text multi-key's
       archive promoted, before that change archives.
       **Pre-performed here 2026-10-08**, in openXwallet PR #27 under Brett
@@ -596,6 +668,28 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
       (Recommended)"): the block carries the promoted sentence and scenario
       verbatim, so the change travels to openWallet already rebased and only
       the subject rewrite (4.4) remains for it there.
+      **DONE 2026-10-09**, verified in opensoft/openWallet-spec `main`
+      `1924500354f472a6298c02db44a3ae2b21b8908e`, the change still active
+      there (not archived):
+      - `openspec/changes/add-composition-drift-cascade/` is present, with
+        `proposal.md`, `design.md`, `tasks.md` and deltas under `specs/` for
+        `openxwallet` and `openxwallet-agent-profile`.
+      - Its `specs/openxwallet/spec.md` MODIFIED block *Revocation propagates
+        through the chain* opens with the promoted requirement paragraph
+        verbatim, including "Retiring one DECLARED KEY of a wallet SHALL stop
+        that key presenting the wallet's authority …", and carries the
+        scenario "retiring one key does not revoke the wallet" with its three
+        bullets, byte for byte, compared by script against the promoted
+        requirement at `openspec/specs/openxwallet/spec.md`; all three of the
+        promoted scenarios are in the block.
+      - 4.4's subject rewrite is applied there: a recursive `diff` of the
+        change directory at the carve commit `90111df` against the leg's
+        shows exactly three differing lines, each `openXwallet` read as
+        `openWallet` — `specs/openxwallet/spec.md` :7 and :36 and
+        `specs/openxwallet-agent-profile/spec.md` :7 — and the deltas hold no
+        `openXwallet`.
+      - The leg's own pinned gate on that tree reads `Totals: 3 passed, 0
+        failed`, `OK openspec-cli-pin`.
 - [ ] 8.2 `[openWallet]` After the carve, never in it: the root manifest's stale
       corpus counts, and the code leg validator's `:337` pointer.
 - [ ] 8.3 Named successors: the neutral-prefix MAJOR (deferred by ruling), rule
