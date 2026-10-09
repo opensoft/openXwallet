@@ -45,10 +45,14 @@ kind: pinned_contract_manifest
 # working tree, AS A WHOLE, is not its commit (`pin-leg-dirty`): any change or
 # untracked file `git status` lists there; any untracked file under
 # `contracts/` or `scripts/`, the directories the core reads, listed with NO
-# ignore rule applied, bytecode under `scripts/` aside; or an entry flagged
-# assume-unchanged or skip-worktree. The core reads its family directories by
-# glob, so an untracked schema replaces a digested one of the same name, and
-# an ignore rule hides it from `git status`. It refuses a HOLLOWED pin too:
+# ignore rule applied, bytecode under `scripts/` aside; an entry flagged
+# assume-unchanged or skip-worktree; or a tracked path under `contracts/` or
+# `scripts/` whose CONTENT is not its blob at the leg's commit, compared byte
+# for byte (`git hash-object --no-filters`) and never through git's stat
+# cache, which a same-size edit with a restored mtime fools. The core reads
+# its family directories by glob, so an untracked schema replaces a digested
+# one of the same name, and an ignore rule hides it from `git status`. It
+# refuses a HOLLOWED pin too:
 # `files:` must name exactly the eight, each once and no other path (a
 # duplicate row standing in for one of them is refused, even at a valid
 # digest), and `pinned_by_commit_only:` must name both scripts the
@@ -148,10 +152,12 @@ files:
 # (`git status --porcelain --untracked-files=all -- <member>` must be empty),
 # because a right commit under an edited file is not the pinned bytes. That
 # read applies ignore rules and cannot see an edit under assume-unchanged or
-# skip-worktree, so the leg is also held clean AS A WHOLE (`pin-leg-dirty`,
-# the header's WHAT REFUSES): no index flag, and no untracked file under
-# `contracts/` or `scripts/` with ignore rules NOT applied, bytecode under
-# `scripts/` aside. The first two are the bytes that RUN:
+# skip-worktree, and it trusts git's stat cache, so the leg is also held clean
+# AS A WHOLE (`pin-leg-dirty`, the header's WHAT REFUSES): no index flag, no
+# untracked file under `contracts/` or `scripts/` with ignore rules NOT
+# applied, bytecode under `scripts/` aside, and every tracked path there equal
+# in CONTENT to its blob, hashed from the bytes on disk. The first two are the
+# bytes that RUN:
 # scripts/validate-openxwallet.py and scripts/wallet-yaml-syntax-gate.py in
 # this repository load them in process, so the verifier refuses a pin that
 # omits either.

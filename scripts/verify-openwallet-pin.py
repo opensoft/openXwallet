@@ -76,9 +76,19 @@ as, not what its working tree holds now:
      `.pyc`, `.pyo`, `.pyd`). Whether that cache holds the pinned source's
      bytecode is not checked here, a known and deferred gap. Elsewhere in the
      leg, ignored content (a `.venv/`, a `.pytest_cache/`) is not read by the
-     core and does not refuse. The ROOT's working tree is not held to this
-     rule, because nothing the composed run reads lies in it outside `code/`:
-     the core's `ROOT` is `openWallet/code`.
+     core and does not refuse. Every read so far trusts git's STAT CACHE:
+     `git status` re-reads a file only when its cached stat data moved, so a
+     same-size edit with its mtime restored (under `core.checkStat minimal`,
+     or inside the second of the last index refresh) is invisible to it. So
+     the CONTENT of every tracked path under `contracts/` and `scripts/` is
+     compared with its blob at the leg's HEAD: the regular files by ONE
+     `git hash-object --no-filters --stdin-paths` (raw bytes, so no clean
+     filter or eol rule can map edited bytes back to the pinned blob; the leg
+     carries no `.gitattributes`), a symbolic link by its link text. A
+     tracked path that is missing, not a regular file, or of any other mode
+     refuses. The ROOT's working tree is not held to this rule, because
+     nothing the composed run reads lies in it outside `code/`: the core's
+     `ROOT` is `openWallet/code`.
 
 THE ORDER OF EVALUATION follows dependency, not D6's numbering, and the codes do
 not move with it. The shape guards run first, because every later check
@@ -254,6 +264,12 @@ LEG_DIRTY_SHOWN = 5
 LEG_READ_DIRS: tuple[str, ...] = ("contracts", "scripts")
 BYTECODE_SUFFIXES: tuple[str, ...] = (".pyc", ".pyo", ".pyd")
 
+# The tracked modes under LEG_READ_DIRS whose CONTENT check 9 compares: a
+# regular file by blob id, a symbolic link by its link text. Any other mode
+# refuses.
+REGULAR_MODES = frozenset({"100644", "100755"})
+SYMLINK_MODE = "120000"
+
 # Exactly 40 / 64 hex; case is normalized to lowercase before any comparison.
 COMMIT_RE = re.compile(r"^[0-9a-fA-F]{40}$")
 SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")
@@ -412,14 +428,15 @@ def _require_executed_mount(sub_path: str, leg_path: str) -> None:
 # reading git
 # --------------------------------------------------------------------------
 
-def _git(repo: Path, *args: str) -> subprocess.CompletedProcess:
+def _git(repo: Path, *args: str,
+         stdin: str | None = None) -> subprocess.CompletedProcess:
     """`git -C repo ...`, never taking an optional lock (a verifier writes
     nothing, not even a refreshed index), or EnvironmentFailure when `git`
     itself cannot be run."""
     try:
         return subprocess.run(
             ["git", "--no-optional-locks", "-C", str(repo), *args],
-            capture_output=True, text=True, check=False)
+            input=stdin, capture_output=True, text=True, check=False)
     except OSError as exc:
         raise EnvironmentFailure(
             f"git could not be run in {repo}: {exc}") from exc
@@ -706,6 +723,56 @@ def _is_written_bytecode(path: str) -> bool:
         "__pycache__" in parts.parts or parts.suffix in BYTECODE_SUFFIXES)
 
 
+def _content_drift(leg_checkout: Path, shown: str) -> list[str]:
+    """Every tracked path under LEG_READ_DIRS whose working-tree CONTENT is
+    not its blob at the leg's HEAD, each with why. Content, never git's stat
+    cache, which a same-size edit with a restored mtime fools. The regular
+    files are hashed as raw bytes by ONE `git hash-object --no-filters
+    --stdin-paths`; a symbolic link is compared by its link text."""
+    listed = _git(leg_checkout, "ls-tree", "-r", "-z", "HEAD", "--",
+                  *LEG_READ_DIRS)
+    if listed.returncode != 0:
+        raise PinRefusal(
+            "pin-leg-dirty",
+            f"`git ls-tree -r HEAD` could not be read in {shown} (exit "
+            f"{listed.returncode}: {listed.stderr.strip()}); a leg whose "
+            "tree cannot be read is not known to be its commit")
+    drift: list[str] = []
+    regular: list[tuple[str, str]] = []
+    for record in filter(None, listed.stdout.split("\0")):
+        meta, _, path = record.partition("\t")
+        mode, _, oid = meta.split(" ")
+        target = leg_checkout / path
+        if mode in REGULAR_MODES and "\n" not in path:
+            if target.is_symlink() or not target.is_file():
+                drift.append(f"{path} (missing, or not a regular file)")
+            else:
+                regular.append((path, oid))
+        elif mode == SYMLINK_MODE:
+            blob = _git(leg_checkout, "cat-file", "blob", oid)
+            if not target.is_symlink() or blob.returncode != 0 \
+                    or str(target.readlink()) != blob.stdout:
+                drift.append(f"{path} (not the symbolic link it is tracked "
+                             "as)")
+        else:
+            drift.append(f"{path!r} (tracked mode {mode}, which this check "
+                         "cannot compare)")
+    if not regular:
+        return drift
+    hashed = _git(leg_checkout, "hash-object", "--no-filters", "--stdin-paths",
+                  stdin="".join(f"{path}\n" for path, _ in regular))
+    actual = hashed.stdout.split()
+    if hashed.returncode != 0 or len(actual) != len(regular):
+        raise PinRefusal(
+            "pin-leg-dirty",
+            f"`git hash-object` could not hash the working tree of {shown} "
+            f"(exit {hashed.returncode}: {hashed.stderr.strip()}); a leg "
+            "whose content cannot be read is not known to be its commit")
+    return drift + [f"{path} (content is not its blob {oid[:12]})"
+                    for (path, oid), found in zip(regular, actual)
+                    if found != oid]
+
+
 def _require_leg_clean(leg_checkout: Path, shown: str) -> None:
     """Check 9: the code leg's working tree, AS A WHOLE, is its checked-out
     commit. The checks before it see only the paths the pin names, and the
@@ -715,9 +782,11 @@ def _require_leg_clean(leg_checkout: Path, shown: str) -> None:
     because each is blind where another sees: `git status` (no `--ignored`,
     so bytecode a run writes anywhere in the leg passes); `git ls-files -v`,
     because `git status` never reports an edit under assume-unchanged or
-    skip-worktree; and `git ls-files --others` under LEG_READ_DIRS with no
+    skip-worktree; `git ls-files --others` under LEG_READ_DIRS with no
     ignore rule, because an ignored file there is read by the core and seen
-    by neither of the others."""
+    by neither of the others; and the CONTENT of every tracked path under
+    LEG_READ_DIRS (`_content_drift`), because the three reads before it all
+    trust git's stat cache."""
     status = _git(leg_checkout, "status", "--porcelain",
                   "--untracked-files=all")
     index = _git(leg_checkout, "ls-files", "-v")
@@ -743,7 +812,11 @@ def _require_leg_clean(leg_checkout: Path, shown: str) -> None:
     hidden = [path for path in others.stdout.split("\0")
               if path and not _is_written_bytecode(path)
               and f"?? {path}" not in changed]
-    if not changed and not flagged and not hidden:
+    # A path `git status` already lists is not listed again for its content.
+    listed = {line[3:] for line in changed}
+    drift = [entry for entry in _content_drift(leg_checkout, shown)
+             if entry.rsplit(" (", 1)[0] not in listed]
+    if not changed and not flagged and not hidden and not drift:
         return
     found = []
     if changed:
@@ -758,6 +831,15 @@ def _require_leg_clean(leg_checkout: Path, shown: str) -> None:
         found.append(f"{len(hidden)} untracked file(s) under {read}, which "
                      "the core reads, hidden from `git status` by an ignore "
                      f"rule:\n{_first(hidden, '  ')}")
+    if drift:
+        read = " and ".join(f"{directory}/" for directory in LEG_READ_DIRS)
+        found.append(f"{len(drift)} tracked path(s) under {read} whose "
+                     "CONTENT is not the checked-out commit's, compared byte "
+                     "for byte (`git hash-object --no-filters`) and not "
+                     "through git's stat cache, which a same-size edit with "
+                     f"a restored mtime fools:\n{_first(drift, '  ')}\n"
+                     "if every text file differs, check core.autocrlf: the "
+                     "pinned bytes are LF")
     raise PinRefusal(
         "pin-leg-dirty",
         f"the working tree of {shown} is not its checked-out commit; "

@@ -157,9 +157,11 @@ directory or holding untracked content in its checkout's working tree
 (`pin-member-modified`); a code leg whose working tree is not its commit AS A
 WHOLE (`pin-leg-dirty`): a change or untracked file `git status` lists there,
 an untracked file under `contracts/` or `scripts/` listed with NO ignore rule
-applied (bytecode under `scripts/` aside), or an entry flagged assume-unchanged
-or skip-worktree, because the core reads its family directories by glob and
-an untracked schema replaces a digested one of the same name; a HOLLOWED pin,
+applied (bytecode under `scripts/` aside), an entry flagged assume-unchanged
+or skip-worktree, or a tracked file there whose CONTENT is not its blob,
+hashed from the bytes on disk rather than trusted from git's stat cache,
+because the core reads its family directories by glob and an untracked
+schema replaces a digested one of the same name; a HOLLOWED pin,
 whose `files:` does not name exactly the eight, each once and no other path,
 or whose `pinned_by_commit_only:` omits the two scripts the entrypoints load;
 and a pin whose `submodule_path` or `legs.code.submodule_path` is not

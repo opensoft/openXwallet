@@ -47,6 +47,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 
@@ -582,6 +583,39 @@ def test_ignored_bytecode_in_the_leg_does_not_refuse(tmp_path, upstream):
         _write(leg, rel, "bytecode\n")
     done = verify(adapter)
     assert done.returncode == 0, done.stdout + done.stderr
+
+
+def test_a_same_size_edit_the_stat_cache_hides_refuses(tmp_path, upstream):
+    """Review A's driver. Under `core.checkStat minimal` git compares the
+    file's whole-second mtime and size, so a same-size edit with its mtime
+    restored is not re-read: `git status` is EMPTY here, and so the member
+    check and the three stat-cache reads all pass. The content check reads
+    the bytes."""
+    adapter = build(tmp_path, upstream)
+    leg = adapter / SUB / LEG
+    _git(leg, "config", "core.checkStat", "minimal")
+    member = _path_only("scripts/validate-openxwallet.py")
+    target = adapter / SUB / member
+    old = time.time() - 3600
+    os.utime(target, (old, old))
+    _git(leg, "update-index", "--refresh")
+    time.sleep(2.2)
+    before = target.stat()
+    data = target.read_bytes()
+    edited = data.replace(b"# a path-only", b"# A path-only")
+    assert len(edited) == len(data) and edited != data
+    target.write_bytes(edited)
+    os.utime(target, ns=(before.st_atime_ns, before.st_mtime_ns))
+    assert _git(leg, "status", "--porcelain", "--untracked-files=all") == ""
+
+    err = assert_refused(verify(adapter), "pin-leg-dirty")
+    assert ("1 tracked path(s) under contracts/ and scripts/ whose CONTENT is "
+            "not the checked-out commit's, compared byte for byte (`git "
+            "hash-object --no-filters`) and not through git's stat cache, "
+            "which a same-size edit with a restored mtime fools:\n"
+            f"  {_leg_relative(member)} (content is not its blob ") in err, err
+    assert "check core.autocrlf: the pinned bytes are LF" in err, err
+    assert "`git status` lists" not in err, err
 
 
 def _hidden_refusal(planted: str) -> str:
