@@ -63,7 +63,7 @@ VOCABULARY_BINDING = None
 GRANT_RULES, SELF_TEST_HOOKS, SELF_TEST_TAIL_HOOKS, TREE_CHECKS = [], [], [], []
 Findings = Context = validate_record = expected_failure = codes_of = None
 lines_for = load_yaml = _mapping = _hashable_set = None
-fingerprint_of_public_key = None
+decode_public_key_multibase = fingerprint_of_public_key = None
 
 def main():
     print("doc", __doc__.splitlines()[0])
@@ -193,6 +193,7 @@ def test_a_core_without_the_composition_contract_refuses(tmp_path):
     err = _assert_refused(_run(root, VALIDATOR, "."), "core-unloadable",
                           CORE_REMEDIATION)
     assert "'GRANT_RULES'" in err and "'SELF_TEST_HOOKS'" in err, err
+    assert "'decode_public_key_multibase'" in err, err
 
 
 def test_a_requirement_id_the_core_already_declares_refuses(tmp_path):

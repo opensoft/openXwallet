@@ -167,7 +167,7 @@ CORE_CONTRACT = (
     "SELF_TEST_HOOKS", "SELF_TEST_TAIL_HOOKS", "TREE_CHECKS",
     "Findings", "Context", "validate_record", "expected_failure", "codes_of",
     "lines_for", "load_yaml", "_mapping", "_hashable_set",
-    "fingerprint_of_public_key", "yaml",
+    "decode_public_key_multibase", "fingerprint_of_public_key", "yaml",
 )
 
 
@@ -239,6 +239,17 @@ load_yaml = core.load_yaml
 _mapping = core._mapping
 _hashable_set = core._hashable_set
 yaml = core.yaml
+
+# RE-EXPORTED, and read nowhere in this file: consumers import this entrypoint
+# BY PATH and read these two off the module. openxFactory's factory-identity
+# and clearing-dispatch loaders (`load_pinned_reader` in its
+# scripts/validate-factory-identity.py and
+# scripts/validate-clearing-dispatch.py) exit without them, as
+# factory-identity's exits without `_decode_public_key`, `_fingerprint_of`
+# and PUBLIC_KEY_B64U_LEN below. The pre-split validator exposed all five,
+# so the adapter keeps that surface.
+decode_public_key_multibase = core.decode_public_key_multibase
+fingerprint_of_public_key = core.fingerprint_of_public_key
 
 # Rule (t). The review-authority intake composes this capability rather than
 # extending it, so its two restrictions live HERE as named constants instead of
