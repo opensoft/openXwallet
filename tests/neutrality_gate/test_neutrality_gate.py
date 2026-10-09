@@ -22,19 +22,13 @@ it: the gate's claim is "plain and `--strict`" over every fixture tree.
 
 THE GATE IS RUN AS A SUBPROCESS, the way CI and a reader invoke it, so the
 exit codes and printed lines are what is under test. The module is also loaded
-by path, for `write_shim` and the skip conditions.
+by path, for `write_shim`, the mirror and the skip conditions.
 
-THE REAL-REPOSITORY SEAT needs the carve commit in history, an initialized
-`openWallet/code` where this tree records the gitlink, and a tree the shed has
-reached. Where any is missing it SKIPS LOUDLY, naming what is missing and how
-to get it; it never counts a refusal as a pass. The third condition is a plan
-call this file records: while this tree still carries
-`contracts/openxwallet/openxwallet-custody.registry.yaml`, the validator under
-test has THIS tree as its ROOT and skips that registry by identity, while the
-relocated baseline counts it, so target (i) differs by one validated artifact.
-That is the gate telling the truth about an unfinished rebuild, not a property
-to pin, so the seat waits for the shed (task 5.5). On the composed, shed
-branch the seat runs and asserts exit 0.
+THE REAL-REPOSITORY SEAT needs the carve commit in history and an initialized
+`openWallet/code` where this tree records the gitlink. Where either is missing
+it SKIPS LOUDLY, naming what is missing and how to get it; it never counts a
+refusal as a pass. Otherwise it runs the gate over this tree and asserts exit
+0.
 
 Hermetic: no network; git runs with an empty global config, no system config
 and a repository-local identity.
@@ -62,7 +56,6 @@ FULL_HISTORY_WORKFLOW = ".github/workflows/neutrality-gate.yml"
 PRECEDENT_WORKFLOW = ".github/workflows/carve-manifest.yml"
 INIT_LINES = ("git submodule update --init openWallet",
               "git -C openWallet submodule update --init code")
-REGISTRY = "contracts/openxwallet/openxwallet-custody.registry.yaml"
 
 
 def _load():
@@ -421,6 +414,17 @@ def test_the_mirror_is_the_tracked_tree_as_real_directories(
     assert "_GATE.shim_main" in shim.read_text(encoding="utf-8")
 
 
+def test_every_child_gets_a_tmpdir_inside_the_run(tmp_path: Path) -> None:
+    """A temporary file a validator or a suite writes is removed with the
+    run's tree, never left in a shared temporary root."""
+    with MODULE.children_tmpdir(tmp_path) as tmp:
+        assert tmp.parent == tmp_path and tmp.is_dir()
+        assert MODULE.child_env()["TMPDIR"] == str(tmp)
+        # The shim's children inherit it from the shim's own environment.
+        assert MODULE.child_env({"X": "1"})["TMPDIR"] == str(tmp)
+    assert MODULE.child_env().get("TMPDIR") == os.environ.get("TMPDIR")
+
+
 def test_the_shim_refuses_outside_a_gate_run(tmp_path: Path) -> None:
     shim = MODULE.write_shim(tmp_path / "shim.py")
     env = {k: v for k, v in os.environ.items()
@@ -641,13 +645,9 @@ def _carries(commit: str) -> bool:
 
 def test_the_real_repository_is_neutral_over_its_own_tree(
         tmp_path: Path) -> None:
-    """Target (i) over THIS checkout, plain and --strict: exit 0.
-
-    Before the adapter rebuild the validator at scripts/ IS the carve
-    commit's, so this would be a comparison of a validator with itself, and
-    before the shed it is not even that (the module docstring). The seat that
-    matters runs on the composed, shed branch, in `neutrality-gate.yml`.
-    """
+    """Target (i) over THIS checkout, plain and --strict: exit 0. In CI the
+    seat runs in `neutrality-gate.yml`, at full history with both openWallet
+    levels initialized."""
     if not _carries(CARVE_COMMIT):
         pytest.skip(f"the carve commit {CARVE_COMMIT} is not in this "
                     "checkout's history (a depth-1 checkout, as "
@@ -659,11 +659,6 @@ def test_the_real_repository_is_neutral_over_its_own_tree(
         pytest.skip("openWallet/code is not initialized, so the composed "
                     f"adapter cannot load its core; run `{INIT_LINES[0]}` "
                     f"then `{INIT_LINES[1]}`")
-    if (REPO_ROOT / REGISTRY).is_file():
-        pytest.skip(f"this tree still carries {REGISTRY}: the in-tree "
-                    "validator skips it as its own canonical registry and the "
-                    "relocated baseline counts it, so target (i) differs by "
-                    "one validated artifact until the shed (task 5.5)")
     report = tmp_path / "report.json"
     done = subprocess.run(
         [sys.executable, str(GATE), "--no-suite-trees", f"--report={report}"],

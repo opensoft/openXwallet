@@ -73,18 +73,6 @@ carve-commit validator carries the same prune and prints the same line over
 the same tree. So the gate sees it on both sides, reports where it appears,
 and names it here so the new line is never mistaken for drift.
 
-ONE ASYMMETRY BEFORE THE SHED. `repo_scan` skips the custody registry BY
-IDENTITY with the validator's own `CUSTODY_REGISTRY_PATH`, which hangs off
-`ROOT`. While this tree still carries the carved corpus, the validator at
-`scripts/validate-openxwallet.py` has THIS tree as its ROOT and skips this
-tree's registry, while the baseline, whose ROOT is a temporary tree, counts it
-as a record: target (i) then reads `1 openxWallet artifact(s) validated`
-against `0`. Same bytes, different ROOT. The gate reports that as the
-difference it is and prints a note naming it. After the shed (task 5.5) the
-registry is gone from this tree, the composed core's ROOT is
-`openWallet/code` (pruned whole by the sweep), and no tree any target scans
-holds either validator's registry.
-
 THE PLAN'S CALLS (task 5.4 left these open; each is recorded here):
 
   * The verdict is stdout bytes and the exit code. stderr is captured and
@@ -122,9 +110,12 @@ THE PLAN'S CALLS (task 5.4 left these open; each is recorded here):
     precedent of `.github/workflows/carve-manifest.yml`.
   * The shim is generated for each run: a stub that loads THIS file by path
     and calls `shim_main`, so the gate and its shim are one file.
-  * Every child runs with `PYTHONDONTWRITEBYTECODE=1`. Every mirrored suite
-    runs with `GIT_CEILING_DIRECTORIES` at the run's temporary root and with
-    pytest's `--basetemp` inside it, so a mirror never discovers an enclosing
+  * Every child runs with `PYTHONDONTWRITEBYTECODE=1` and with `TMPDIR` at a
+    directory inside the run's temporary tree, so a temporary file a
+    validator or a suite writes is removed with the run and never lands in a
+    shared temporary root. Every mirrored suite runs with
+    `GIT_CEILING_DIRECTORIES` at the run's temporary root and with pytest's
+    `--basetemp` inside it, so a mirror never discovers an enclosing
     repository's history and never touches pytest's shared temporary root.
 
 Exit codes:
@@ -171,9 +162,6 @@ VALIDATOR_RELPATH = f"scripts/{VALIDATOR_NAME}"
 CARVE_COMMIT = "90111df262d6f54f7e82651d860adc12345f83f4"
 DECLARED_NEW_LINE = ("note  nested repositories pruned (not adjudicated): "
                      "openWallet")
-# The canonical custody registry. `repo_scan` skips it BY IDENTITY with its own
-# `CUSTODY_REGISTRY_PATH`, so it matters which ROOT a validator runs from.
-REGISTRY_RELPATH = "contracts/openxwallet/openxwallet-custody.registry.yaml"
 OWN_WORKFLOW = ".github/workflows/neutrality-gate.yml"
 PRECEDENT_WORKFLOW = ".github/workflows/carve-manifest.yml"
 INIT_ROOT = "git submodule update --init openWallet"
@@ -228,9 +216,29 @@ def identical(baseline: Run, composed: Run) -> bool:
     return baseline.stdout == composed.stdout and baseline.rc == composed.rc
 
 
+# Set by `children_tmpdir` for the life of a run's temporary tree. The shim
+# is a child too, so the validators it starts inherit the same TMPDIR.
+_CHILD_TMPDIR: Path | None = None
+
+
+@contextlib.contextmanager
+def children_tmpdir(scratch: Path) -> Iterator[Path]:
+    """TMPDIR for every child of this run, inside its temporary tree."""
+    global _CHILD_TMPDIR
+    tmp = scratch / "tmp"
+    tmp.mkdir()
+    _CHILD_TMPDIR = tmp
+    try:
+        yield tmp
+    finally:
+        _CHILD_TMPDIR = None
+
+
 def child_env(extra: dict[str, str] | None = None) -> dict[str, str]:
     env = dict(os.environ)
     env["PYTHONDONTWRITEBYTECODE"] = "1"
+    if _CHILD_TMPDIR is not None:
+        env["TMPDIR"] = str(_CHILD_TMPDIR)
     env.update(extra or {})
     return env
 
@@ -593,16 +601,6 @@ def export_tree(raw: str) -> Path:
     return export
 
 
-def print_registry_note() -> None:
-    """Name the one asymmetry a tree that still carries the corpus shows."""
-    if (ROOT / REGISTRY_RELPATH).is_file():
-        print(f"note  this tree still carries {REGISTRY_RELPATH}: a validator "
-              "whose ROOT is this tree skips it as its own canonical registry, "
-              "and the baseline, whose ROOT is elsewhere, counts it as a "
-              "record, so target root differs by one validated artifact until "
-              "the shed (task 5.5) removes it")
-
-
 def print_declared_line(result: TreeResult) -> None:
     seen = result.declared_line
     if seen.get("baseline") and seen.get("composed"):
@@ -930,7 +928,7 @@ def gate(args: argparse.Namespace, evidence: dict[str, Any]) -> int:
     evidence["composed"]["sha256"] = hashlib.sha256(
         composed.read_bytes()).hexdigest()
     targets = _targets(args)
-    with scratch_dir(args.keep) as scratch:
+    with scratch_dir(args.keep) as scratch, children_tmpdir(scratch):
         baseline = build_baseline(carve, scratch / "baseline")
         evidence["baseline"]["blob"] = git_text(
             ROOT, "rev-parse", "--verify", "--quiet", "--end-of-options",
@@ -943,7 +941,6 @@ def gate(args: argparse.Namespace, evidence: dict[str, Any]) -> int:
         trees = [compare_tree(name, path, shown, baseline, composed)
                  for name, path, shown in targets]
         print_declared_line(trees[0])
-        print_registry_note()
         suites = _suite_phase(args, scratch, baseline, composed, evidence)
     return verdict(trees, suites, evidence)
 

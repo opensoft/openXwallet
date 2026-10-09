@@ -13,7 +13,7 @@ claim instead of restating it.
 | Side | What runs | Where its `ROOT` is |
 | --- | --- | --- |
 | **baseline** | `scripts/validate-openxwallet.py` at the named carve commit `90111df262d6f54f7e82651d860adc12345f83f4`, read as raw git blobs | a temporary tree holding that commit's `contracts/` beside it, so its corpus, schemas and vendored envelope resolve there |
-| **composed** | this repository's `scripts/validate-openxwallet.py`, run where it stands | after the rebuild, the core's `ROOT` is `openWallet/code` |
+| **composed** | this repository's `scripts/validate-openxwallet.py`, run where it stands | the pinned core's `ROOT` is `openWallet/code`, which the sweep prunes whole |
 
 Both sides get the same argv in the same working directory, once plain and once
 with `--strict`: each tree of targets (i) and (ii) in both modes, and each suite
@@ -82,25 +82,10 @@ side printed it. D5 declares the line so that nobody mistakes it for drift.
 A consumer's output does not change, because a consumer's sweep already
 prunes `openXwallet/` whole.
 
-## Before the shed: one expected difference
-
-`repo_scan` skips the custody registry when its path is the validator's own
-`CUSTODY_REGISTRY_PATH`, which is derived from `ROOT`
-(`scripts/validate-openxwallet.py:3442` at the carve commit). Until the shed
-(task 5.5), this tree still contains
-`contracts/openxwallet/openxwallet-custody.registry.yaml`:
-
-- The validator at `scripts/` has this tree as its `ROOT`, so it skips the
-  registry.
-- The baseline's `ROOT` is elsewhere, so it counts the registry as a record.
-
-Target (i) then shows `1 openxWallet artifact(s) validated` against `0`. The
-gate reports this as a difference and prints a note that names the cause.
-
-After the shed, the registry is gone from this tree. The composed core's
-`ROOT` is then `openWallet/code`, which the sweep prunes whole, so no target
-scans either validator's registry. The test's real-repository seat skips
-loudly until then.
+Before the shed (task 5.5) this tree still held the custody registry, which
+`repo_scan` skips only when it is the validator's own, so the in-tree
+validator skipped it and the relocated baseline counted it; the gate landed
+after the shed, so no target it scans holds either validator's registry.
 
 ## Help invocations
 
@@ -124,7 +109,7 @@ python3 scripts/neutrality-gate.py --report run.json    # plus a JSON summary
 | `--openxfactory-export-commit SHA` | the openxFactory commit the export was taken at, recorded in `--report` |
 | `--no-suite-trees` | skip target (iii) |
 | `--report PATH` | write a JSON summary: the result, the revision tested (HEAD, uncommitted tracked changes, the `openWallet` and `code` checkouts), the carve commit, the baseline blob, the composed adapter's sha256, every target and mode with both exit codes, every suite's counts and differences, and every skip |
-| `--keep` | keep the run's temporary tree and print where it is |
+| `--keep` | keep the run's temporary tree and print where it is (every child's `TMPDIR` is inside it) |
 
 | Exit | Meaning |
 | --- | --- |
