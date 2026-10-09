@@ -620,12 +620,14 @@ def allowed_roots() -> tuple[str, ...]:
     """The roots a path given on the command line may resolve below, as real
     paths in plain strings: the invocation's working directory, the temporary
     directory and the home directory (left out where the platform cannot name
-    one)."""
+    one). A root that is the FILESYSTEM ROOT is left out too, as is common
+    for a container user whose HOME is `/`: its prefix is `/`, which every
+    absolute path starts with, so it would contain nothing."""
     roots = [os.path.realpath(os.getcwd()),
              os.path.realpath(tempfile.gettempdir())]
     with contextlib.suppress(RuntimeError):
         roots.append(os.path.realpath(str(Path.home())))
-    return tuple(roots)
+    return tuple(root for root in roots if os.path.dirname(root) != root)
 
 
 def contained_path(arg: str, *, kind: str) -> Path:

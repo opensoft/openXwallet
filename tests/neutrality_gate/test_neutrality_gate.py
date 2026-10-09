@@ -725,6 +725,23 @@ def test_an_export_outside_the_allowed_roots_is_refused(tmp_path: Path) -> None:
     assert "--openxfactory-export" in done.stderr, done.stderr
 
 
+def test_the_filesystem_root_is_never_an_allowed_root(
+        monkeypatch: pytest.MonkeyPatch) -> None:
+    """A container user without a home directory has HOME=/. Its prefix,
+    `/`, would admit every absolute path, so only the governance/ check
+    would stop an export of `/usr`."""
+    monkeypatch.setenv("HOME", "/")
+    roots = MODULE.allowed_roots()
+    assert os.sep not in roots, roots
+    assert all(os.path.dirname(root) != root for root in roots), roots
+    if any("/usr".startswith(root.rstrip(os.sep) + os.sep) for root in roots):
+        pytest.skip(f"/usr is below an allowed root here ({roots})")
+    with pytest.raises(MODULE.GateRefusal) as refused:
+        MODULE.contained_path("/usr", kind=MODULE.KIND_EXPORT)
+    assert refused.value.code == "path-outside-allowed-roots", \
+        refused.value.detail
+
+
 @pytest.mark.skipif(not Path("/usr").is_dir() or any(
     Path("/usr").is_relative_to(base) for base in MODULE.allowed_roots()),
     reason="needs a directory outside every allowed root")

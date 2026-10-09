@@ -146,7 +146,9 @@ A run refuses (exit 2) when:
   or `--openxfactory-export` resolves, after `~` and links are followed,
   outside the working directory, the temporary directory and the home
   directory (`path-outside-allowed-roots`): the gate says so before it runs
-  anything. The report's containment is lexical (a link below the working
+  anything. Any of the three that is the filesystem root itself, as a
+  container's `HOME=/` is, is left out, because `/` would contain every
+  absolute path. The report's containment is lexical (a link below the working
   directory is not followed), which is what the prefix check on a normalised
   path gives, and the operator controls the working directory;
 - `--report` names a file whose directory does not exist (`report-parent-missing`):
