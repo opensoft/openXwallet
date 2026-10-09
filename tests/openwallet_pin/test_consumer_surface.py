@@ -2,7 +2,7 @@
 
 `split-openwallet-neutral-core` task 5.2 (design.md D5), a review fix.
 openxFactory does not only RUN `scripts/validate-openxwallet.py`: it IMPORTS
-it by path and reads the key decoders off the module. Two loaders do, and each
+it by path and reads key functions off the module. Two loaders do, and each
 exits, rather than derive a key with arithmetic of its own, when a name is
 absent:
 
@@ -11,12 +11,14 @@ absent:
       functions and reads PUBLIC_KEY_B64U_LEN
       (scripts/mint-factory-origin-key.py goes through this loader);
   scripts/validate-clearing-dispatch.py  `load_pinned_reader` requires the
-      two decoders, and calls both.
+      first two, the decoder and the fingerprint function, and calls both.
 
 The pre-split validator was one file and carried all five. The adapter keeps
-that surface: three names are its own, and the two decoders are RE-EXPORTED
-from the pinned core, whose CORE_CONTRACT names both, so a core without one
-refuses at load instead of failing the entrypoint's import.
+that surface: `_decode_public_key` and PUBLIC_KEY_B64U_LEN are its own,
+`_fingerprint_of` is its alias of the core's `fingerprint_of_public_key`, and
+`decode_public_key_multibase` and `fingerprint_of_public_key` are
+RE-EXPORTED from the pinned core, whose CORE_CONTRACT names both, so a core
+without one refuses at load instead of failing the entrypoint's import.
 
 LOADED THE WAY THE CONSUMERS LOAD IT: in process, by path, under each loader's
 module name, through `spec_from_file_location`, `module_from_spec` and
@@ -92,7 +94,7 @@ def test_the_entrypoint_keeps_the_names_consumers_import():
     """openxFactory's factory-identity and clearing-dispatch loaders
     (`load_pinned_reader` in scripts/validate-factory-identity.py and
     scripts/validate-clearing-dispatch.py) both load this entrypoint, and each
-    load exposes all five names: the two decoders as the pinned core's own
+    load exposes all five names: the two re-exports as the pinned core's own
     objects, `_fingerprint_of` as the same function, and one key, in both its
     spellings, fingerprinting to its recorded value through either pair."""
     contract = _core_contract()
