@@ -31,6 +31,7 @@ finding, which a future rule change could make vacuously true.
 
 from __future__ import annotations
 
+import os
 import re
 import subprocess
 import sys
@@ -357,6 +358,39 @@ def test_this_repository_adjudicates_with_no_error_and_no_warning(tmp_path):
 # as the carve commit, do 2.4 and 2.5").
 CARVE_COMMIT = "90111df262d6f54f7e82651d860adc12345f83f4"
 
+# What `scripts/neutrality-gate.py` (task 5.4, target iii) sets for every
+# mirrored suite: its ENV_BASELINE, the carve commit's validator it built from
+# git objects beside that commit's `contracts/`, and its ENV_COMPOSED, the
+# composed adapter where it stands. The gate's shim reads the same two.
+GATE_BASELINE_ENV = "NEUTRALITY_BASELINE"
+GATE_COMPOSED_ENV = "NEUTRALITY_COMPOSED"
+
+
+def _gate_baseline() -> Path | None:
+    """Inside a neutrality-gate run, the baseline THE GATE built; else None.
+
+    The gate runs this suite in a MIRROR: the tracked tree copied with no
+    `.git`, under `GIT_CEILING_DIRECTORIES` at the gate's temporary root, so
+    `_baseline_script`'s `git show` finds no repository there. The gate has
+    already built its baseline from git objects before any suite runs, and
+    names it here. A name that holds no file, or a file with the composed
+    adapter's own bytes, is a broken run, so the test FAILS rather than skips:
+    a skip there is the gap this lookup closes.
+    """
+    named = os.environ.get(GATE_BASELINE_ENV)
+    if not named:
+        return None
+    baseline = Path(named)
+    if not baseline.is_file():
+        pytest.fail(f"{GATE_BASELINE_ENV}={named} names no file; the "
+                    "neutrality gate writes its baseline before any suite runs")
+    composed = Path(os.environ.get(GATE_COMPOSED_ENV) or VALIDATOR)
+    # The same guard as `_baseline_script`'s: never this version against ITSELF.
+    if composed.is_file() and baseline.read_bytes() == composed.read_bytes():
+        pytest.fail(f"{GATE_BASELINE_ENV} and {composed} hold the same bytes; "
+                    "comparing them would pass vacuously")
+    return baseline
+
 
 def _baseline_script(tmp_path: Path) -> Path | None:
     """The PRE-SPLIT validator, recovered from git history at the carve commit.
@@ -417,13 +451,23 @@ def test_the_composed_adapter_adjudicates_as_the_pre_split_validator_did(
     printed by both: the baseline scans the same tree, mount included.
     task 5.4's neutrality gate makes the claim over every fixture tree.
 
-    Skipped LOUDLY, with a reason, where the carve commit is not in this
-    checkout's history (a depth-1 CI checkout, as pytest-suite's is), and where
-    the recovered baseline cannot run; never counted as a pass in either case.
-    `.github/workflows/neutrality-gate.yml` runs this suite at fetch-depth: 0,
-    so in CI the claim is made there.
+    WHERE THE BASELINE COMES FROM. In a checkout, from git at the carve commit
+    (`_baseline_script`). Skipped LOUDLY, with a reason, where the carve commit
+    is not in this checkout's history (a depth-1 CI checkout, as pytest-suite's
+    is), and where the recovered baseline cannot run; never counted as a pass in
+    either case. `.github/workflows/neutrality-gate.yml` checks out at
+    fetch-depth: 0 and makes the claim in two steps. Its pytest step runs this
+    suite in place, with the baseline from git. Its gate step runs this suite in
+    the gate's mirror, which has no history: there the baseline is the one the
+    gate built and names in `NEUTRALITY_BASELINE` (`_gate_baseline`), so the
+    test runs rather than skips. In the mirror `VALIDATOR` is the gate's shim,
+    so every `after` run below is also a gate record: the shim runs both
+    validators over the argv as given and with `--strict` toggled, records both
+    modes, and replays the composed run that `after` asserts on. The consumer
+    tree's real verdict is therefore compared plain AND `--strict` by the gate,
+    where this test alone asks only for plain.
     """
-    baseline = _baseline_script(tmp_path)
+    baseline = _gate_baseline() or _baseline_script(tmp_path)
     if baseline is None:
         pytest.skip(f"the carve commit {CARVE_COMMIT} is not in this "
                     "checkout's history (a depth-1 checkout), so the pre-split "
