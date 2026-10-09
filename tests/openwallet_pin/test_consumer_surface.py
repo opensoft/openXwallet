@@ -14,9 +14,11 @@ absent:
       two decoders, and calls both.
 
 The pre-split validator was one file and carried all five. The adapter keeps
-that surface: three names are its own, and the two decoders are RE-EXPORTED
-from the pinned core, whose CORE_CONTRACT names both, so a core without one
-refuses at load instead of failing the entrypoint's import.
+that surface: `_decode_public_key` and PUBLIC_KEY_B64U_LEN are its own,
+`_fingerprint_of` is its alias of the core's `fingerprint_of_public_key`, and
+the two decoders are RE-EXPORTED from the pinned core, whose CORE_CONTRACT
+names both, so a core without one refuses at load instead of failing the
+entrypoint's import.
 
 LOADED THE WAY THE CONSUMERS LOAD IT: in process, by path, under each loader's
 module name, through `spec_from_file_location`, `module_from_spec` and
