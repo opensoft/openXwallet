@@ -301,7 +301,7 @@ def load_pin(pin_path: Path) -> dict:
             "unanswerable question, not an unpinned pass")
     try:
         loaded = yaml.safe_load(pin_path.read_text(encoding="utf-8"))
-    except (OSError, yaml.YAMLError) as exc:
+    except (OSError, UnicodeDecodeError, yaml.YAMLError) as exc:
         raise PinRefusal(
             "pin-unreadable",
             f"the pin file {pin_path} could not be read as YAML: {exc}") from exc

@@ -670,6 +670,73 @@ def test_a_pin_that_stops_naming_a_loaded_script_refuses(tmp_path, upstream,
     assert f"omits [{dropped!r}]" in err, err
 
 
+def test_a_pin_that_is_not_utf8_is_unreadable_never_a_traceback(tmp_path,
+                                                                upstream):
+    """`read_text` raises UnicodeDecodeError, which is neither an OSError nor
+    a YAMLError; uncaught, it was a traceback and exit 1."""
+    adapter = build(tmp_path, upstream)
+    pin = adapter / "contracts" / "openwallet-pin.yaml"
+    pin.write_bytes(b"# \xff\xfe not utf-8\n" + pin.read_bytes())
+    done = verify(adapter)
+    err = assert_refused(done, "pin-unreadable")
+    assert "could not be read as YAML: 'utf-8' codec can't decode" in err, err
+    assert "Traceback" not in err, err
+
+
+def _unsafe_path(pin: dict, field: str) -> str:
+    """Sets one pinned path to one that leaves its checkout; returns the
+    message the path guard gives it."""
+    if field == "files[0].path ../x":
+        pin["files"][0]["path"] = value = "../x"
+        named = "files[0].path"
+    elif field == "files[0].path /etc/passwd":
+        pin["files"][0]["path"] = value = "/etc/passwd"
+        named = "files[0].path"
+    elif field == "pinned_by_commit_only code/../../x":
+        value = "code/../../x"
+        named = f"pinned_by_commit_only[{len(pin['pinned_by_commit_only'])}]"
+        pin["pinned_by_commit_only"].append(value)
+    else:
+        assert field == "submodule_path ../openWallet", field
+        pin["submodule_path"] = value = "../openWallet"
+        named = "submodule_path"
+    return f"the pin's {named} {value!r} leaves the checkout it pins"
+
+
+@pytest.mark.parametrize("field", [
+    "files[0].path ../x",
+    "files[0].path /etc/passwd",
+    "pinned_by_commit_only code/../../x",
+    "submodule_path ../openWallet",
+])
+def test_a_pinned_path_that_leaves_its_checkout_is_unreadable(tmp_path,
+                                                              upstream, field):
+    """The path guard, by ITS message: the closed digest set, the mount guard
+    and the member checks would refuse some of these too, under other words
+    or codes. `../openWallet` is refused by the path guard, which runs while
+    the referent is read, before the mount is compared."""
+    pin = _pin_for(upstream, upstream.root_good)
+    guarded = _unsafe_path(pin, field)
+    err = assert_refused(verify(build(tmp_path, upstream, pin=pin)),
+                         "pin-unreadable")
+    assert guarded in err, err
+    assert "Traceback" not in err, err
+
+
+def test_a_pin_recording_the_spec_leg_is_unreadable(tmp_path, upstream):
+    """The pin records the code leg and nothing else (design.md D6); a spec
+    leg would be an assertion nobody checks."""
+    pin = _pin_for(upstream, upstream.root_good)
+    pin["legs"]["spec"] = {"source_repository": "opensoft/openWallet-spec",
+                           "submodule_path": "spec",
+                           "commit": upstream.leg_good}
+    err = assert_refused(verify(build(tmp_path, upstream, pin=pin)),
+                         "pin-unreadable")
+    assert "the pin's `legs` must record exactly the 'code' leg (got " \
+        "['code', 'spec'])" in err, err
+    assert "Traceback" not in err, err
+
+
 def test_a_git_that_cannot_run_is_exit_2_never_a_traceback(tmp_path,
                                                            upstream):
     """A traceback exits 1, which reads as something other than a refusal."""
