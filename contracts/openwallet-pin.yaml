@@ -39,8 +39,11 @@ kind: pinned_contract_manifest
 # `commit`; when the root's `code` gitlink, the root's contracts/code-pin.yaml
 # and `legs.code.commit` disagree at `commit`, read from GIT OBJECTS and never
 # from the working tree; when the checked-out code leg is not
-# `legs.code.commit`; on a digest drift in any of the eight; and when a
-# `pinned_by_commit_only` member is missing.
+# `legs.code.commit`; on a digest drift in any of the eight; when a
+# `pinned_by_commit_only` member is missing; and when one is modified in the
+# working tree of its checkout (`pin-member-modified`). It refuses a HOLLOWED
+# pin too: `files:` must hold exactly the eight, and `pinned_by_commit_only:`
+# must name both scripts the entrypoints load.
 #
 # OFFLINE LAW. The verifier reads this file, the git objects of this repository
 # and of openWallet/, and the files under openWallet/ that this file names. It
@@ -124,12 +127,16 @@ files:
 
 # PATH ONLY, with no invented per-file digests. The publisher declares these
 # members content-addressed by commit, and inventing digests for them would add
-# rows the publisher never published. Identity comes from the commits: the
-# verifier compares both the checked-out root and the checked-out code leg
-# against their pinned commits, so a swap of any of these files is a swap of a
-# commit. Presence is checked here. The first two are the bytes that RUN:
-# scripts/validate-openxwallet.py and scripts/wallet-yaml-syntax-gate.py in
-# this repository load them in process.
+# rows the publisher never published. PRESENCE is checked here. IDENTITY comes
+# from the commit AND the working tree: the verifier compares both the
+# checked-out root and the checked-out code leg against their pinned commits,
+# and it refuses any of these members that is modified, deleted, replaced by a
+# directory or holding untracked content in its checkout's working tree
+# (`git status --porcelain --untracked-files=all` must be empty), because a
+# right commit under an edited file is not the pinned bytes. The first two are
+# the bytes that RUN: scripts/validate-openxwallet.py and
+# scripts/wallet-yaml-syntax-gate.py in this repository load them in process,
+# so the verifier refuses a pin that omits either.
 pinned_by_commit_only:
   - code/scripts/validate-openxwallet.py
   - code/scripts/wallet-yaml-syntax-gate.py

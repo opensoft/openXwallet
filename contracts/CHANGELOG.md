@@ -144,8 +144,13 @@ closed on: an uninitialized `openWallet/` and, separately, an uninitialized
 `openWallet/code/`; the recorded gitlink or the checkout ≠ the pin; a
 leg-lockstep mismatch, read from git objects at the pinned root commit; the
 code leg's checkout ≠ `legs.code`; a drifted digest; a missing
-`pinned_by_commit_only:` member. Each refusal is OBSERVED on a mutated input
-before the verifier is trusted (task 5.1).
+`pinned_by_commit_only:` member, and one modified, deleted, replaced by a
+directory or holding untracked content in its checkout's working tree
+(`pin-member-modified`); and a HOLLOWED pin, whose `files:` is not exactly the
+eight or whose `pinned_by_commit_only:` omits the two scripts the entrypoints
+load. A `git` that cannot run or a file that cannot be read is exit 2, never a
+traceback. Each refusal is OBSERVED on a mutated input before the verifier is
+trusted (task 5.1).
 
 The pin is the ONLY record here of which openWallet bytes run.
 [`manifest.yaml`](./manifest.yaml) registers none of the eight, as owned or as

@@ -1,8 +1,12 @@
 """`scripts/verify-openwallet-pin.py` — every refusal OBSERVED on a mutated input.
 
 `split-openwallet-neutral-core` task 5.1: the verifier is trusted only once it
-has been seen refusing each of design.md D6's seven, so each test below is ONE
-fact away from a world that verifies clean, and the clean world is itself a
+has been seen refusing each of design.md D6's seven, a path-only member
+modified in its working tree (`pin-member-modified`), and a HOLLOWED pin (fewer
+than the eight digests, or a path-only list without the two loaded scripts),
+and exiting 2 rather than tracebacking when `git` or a file cannot be read. So
+each test below is ONE fact away from a world that verifies clean, and the
+clean world is itself a
 test (without it, every refusal below would pass just as well against a
 verifier that refused everything).
 
@@ -45,7 +49,8 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 VERIFIER = REPO_ROOT / "scripts" / "verify-openwallet-pin.py"
 REAL_PIN = REPO_ROOT / "contracts" / "openwallet-pin.yaml"
 
-# design.md D6's seven, in its order, and the referent guard.
+# design.md D6's seven, in its order, then the working-tree check D6's check 7
+# implies (`pin-member-modified`), and the referent guard.
 RATIFIED_CODES = (
     "pin-submodule-uninitialized",
     "pin-leg-uninitialized",
@@ -55,6 +60,7 @@ RATIFIED_CODES = (
     "pin-leg-checkout-mismatch",
     "pin-digest-mismatch",
     "pin-member-missing",
+    "pin-member-modified",
     "pin-tag-only",
 )
 
@@ -393,6 +399,110 @@ def test_a_removed_path_only_member_refuses(tmp_path, upstream):
     assert member in err, err
 
 
+# ---------------- a path-only member drifting in its working tree -------------
+
+def _path_only(suffix: str) -> str:
+    return next(m for m in REAL["pinned_by_commit_only"] if m.endswith(suffix))
+
+
+def test_a_modified_path_only_member_refuses(tmp_path, upstream):
+    """The leg is checked out at the pinned commit, so checks 3 and 5 pass, and
+    the loaded core gains ONE byte. A commit pins what the checkout started as;
+    only the working tree says what runs."""
+    adapter = build(tmp_path, upstream)
+    member = _path_only("scripts/validate-openxwallet.py")
+    with (adapter / SUB / member).open("ab") as handle:
+        handle.write(b"#")
+    err = assert_refused(verify(adapter), "pin-member-modified")
+    assert f"{SUB}/{member} is MODIFIED in the working tree of {SUB}/{LEG}" \
+        in err, err
+    assert f" M {_leg_relative(member)}" in err, err
+
+
+def test_a_path_only_member_replaced_by_a_directory_refuses(tmp_path,
+                                                            upstream):
+    """`exists()` is true of a directory, so presence alone would pass this."""
+    adapter = build(tmp_path, upstream)
+    member = _path_only("openxwallet/README.md")
+    target = adapter / SUB / member
+    target.unlink()
+    target.mkdir()
+    (target / "planted.yaml").write_text("kind: planted\n", encoding="utf-8")
+    err = assert_refused(verify(adapter), "pin-member-modified")
+    assert f" D {_leg_relative(member)}" in err, err
+    assert f"?? {_leg_relative(member)}/planted.yaml" in err, err
+
+
+def test_untracked_content_in_a_directory_member_refuses(tmp_path, upstream):
+    """A corpus directory is a member: a file planted in it is adjudicated by
+    the core's corpus loop as if the pinned commit carried it."""
+    adapter = build(tmp_path, upstream)
+    member = _path_only("openxwallet/examples")
+    (adapter / SUB / member / "planted.yaml").write_text(
+        "kind: planted\n", encoding="utf-8")
+    err = assert_refused(verify(adapter), "pin-member-modified")
+    assert f"?? {_leg_relative(member)}/planted.yaml" in err, err
+
+
+# ----------------------- a hollowed pin, and the environment -----------------
+
+def test_a_pin_cut_to_one_digest_refuses(tmp_path, upstream):
+    """Fewer digests than design.md D6's eight is a hollowed claim, never a
+    smaller satisfied one; the world under it is otherwise clean."""
+    pin = _pin_for(upstream, upstream.root_good)
+    pin["files"] = pin["files"][:1]
+    err = assert_refused(verify(build(tmp_path, upstream, pin=pin)),
+                         "pin-unreadable")
+    assert "holds 1 entr(ies), not design.md D6's 8" in err, err
+
+
+@pytest.mark.parametrize("dropped", ["code/scripts/validate-openxwallet.py",
+                                     "code/scripts/wallet-yaml-syntax-gate.py"])
+def test_a_pin_that_stops_naming_a_loaded_script_refuses(tmp_path, upstream,
+                                                         dropped):
+    pin = _pin_for(upstream, upstream.root_good)
+    pin["pinned_by_commit_only"] = [m for m in pin["pinned_by_commit_only"]
+                                    if m != dropped]
+    err = assert_refused(verify(build(tmp_path, upstream, pin=pin)),
+                         "pin-unreadable")
+    assert f"omits [{dropped!r}]" in err, err
+
+
+def test_a_git_that_cannot_run_is_exit_2_never_a_traceback(tmp_path,
+                                                           upstream):
+    """A traceback exits 1, which reads as something other than a refusal."""
+    adapter = build(tmp_path, upstream)
+    empty = tmp_path / "no-git-here"
+    empty.mkdir()
+    done = subprocess.run([sys.executable, str(VERIFIER), "--root",
+                           str(adapter)], capture_output=True, text=True,
+                          cwd=adapter.parent, env=dict(os.environ,
+                                                       PATH=str(empty)))
+    assert done.returncode == 2, done.stdout + done.stderr
+    assert done.stdout == "", done.stdout
+    assert done.stderr.startswith("ERROR verify-openwallet-pin: "), done.stderr
+    assert "git could not be run" in done.stderr, done.stderr
+    assert "Traceback" not in done.stderr, done.stderr
+
+
+@pytest.mark.skipif(hasattr(os, "geteuid") and os.geteuid() == 0,
+                    reason="root reads a mode-000 file, so nothing is "
+                           "unreadable to provoke")
+def test_an_unreadable_digested_member_is_exit_2_never_a_traceback(
+        tmp_path, upstream):
+    adapter = build(tmp_path, upstream)
+    target = adapter / SUB / REAL["files"][0]["path"]
+    target.chmod(0)
+    try:
+        done = verify(adapter)
+    finally:
+        target.chmod(0o644)
+    assert done.returncode == 2, done.stdout + done.stderr
+    assert done.stderr.startswith("ERROR verify-openwallet-pin: "), done.stderr
+    assert "could not be read to recompute its digest" in done.stderr
+    assert "Traceback" not in done.stderr, done.stderr
+
+
 @pytest.mark.parametrize("field, value", [
     ("revision_kind", "tag"),
     ("commit", "wallet-v1.6"),
@@ -429,6 +539,15 @@ def test_the_refusal_vocabulary_is_the_ratified_list():
 
 
 CODE_SHAPE = re.compile(r"pin-[a-z]+(?:-[a-z]+)*")
+
+
+def test_the_hollowed_pin_guard_is_design_d6s_eight_and_the_loaded_scripts():
+    module = _load_verifier()
+    assert module.DIGESTED_MEMBER_COUNT == 8 == len(REAL["files"])
+    assert set(module.LOADED_BY_ENTRYPOINTS) == {
+        "code/scripts/validate-openxwallet.py",
+        "code/scripts/wallet-yaml-syntax-gate.py"}
+    assert set(module.LOADED_BY_ENTRYPOINTS) <= set(REAL["pinned_by_commit_only"])
 
 
 def test_every_code_the_verifier_can_raise_is_in_the_vocabulary():

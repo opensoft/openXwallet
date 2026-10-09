@@ -172,7 +172,9 @@ def load_core() -> ModuleType:
     module = importlib.util.module_from_spec(spec)
     try:
         spec.loader.exec_module(module)
-    except Exception as exc:  # noqa: BLE001 - any load failure refuses, never a traceback
+    except KeyboardInterrupt:
+        raise
+    except BaseException as exc:  # noqa: BLE001 - SystemExit too: an exiting core refuses
         raise CompositionRefusal(
             "core-unloadable",
             f"{shown} does not load ({type(exc).__name__}: {exc}); check the "

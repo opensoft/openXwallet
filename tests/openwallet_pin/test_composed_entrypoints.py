@@ -137,6 +137,17 @@ def test_a_core_that_does_not_load_refuses(tmp_path, script):
 
 
 @pytest.mark.parametrize("script", [VALIDATOR, GATE], ids=["validator", "gate"])
+def test_a_core_that_exits_zero_while_loading_refuses(tmp_path, script):
+    """`SystemExit` is not an `Exception`. A tampered core that exits 0 at
+    import would otherwise end the entrypoint at exit 0 having adjudicated
+    nothing: the silent green this family exists to refuse."""
+    tampered = "raise SystemExit(0)\n"
+    root = _scratch_root(tmp_path, core=tampered, gate=tampered)
+    err = _assert_refused(_run(root, script, "."), "core-unloadable")
+    assert "SystemExit" in err, err
+
+
+@pytest.mark.parametrize("script", [VALIDATOR, GATE], ids=["validator", "gate"])
 def test_a_core_file_that_is_absent_refuses(tmp_path, script):
     root = _scratch_root(tmp_path, core=None, gate=None)
     _assert_refused(_run(root, script, "."), "core-unloadable")

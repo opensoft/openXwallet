@@ -71,7 +71,9 @@ def main() -> int:
     gate = importlib.util.module_from_spec(spec)
     try:
         spec.loader.exec_module(gate)
-    except Exception as exc:  # noqa: BLE001 - any load failure refuses, never a traceback
+    except KeyboardInterrupt:
+        raise
+    except BaseException as exc:  # noqa: BLE001 - SystemExit too: an exiting gate refuses
         return refuse("core-unloadable",
                       f"{shown} does not load ({type(exc).__name__}: {exc})")
     if not callable(getattr(gate, "main", None)):

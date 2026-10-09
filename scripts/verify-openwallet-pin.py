@@ -39,14 +39,26 @@ vocabulary `REFUSAL_CODES`:
   7. `pin-member-missing`: a digested or `pinned_by_commit_only` member is not
      in the checkout.
 
+and one more in D6's spirit, because a commit pins what a checkout STARTED
+as, not what its working tree holds now:
+
+  8. `pin-member-modified`: a `pinned_by_commit_only` member is modified,
+     deleted, replaced by a directory, or carries untracked content in the
+     working tree of its checkout (`git status --porcelain
+     --untracked-files=all -- <member>` is not empty). The eight digested
+     members need no such check: their bytes are recomputed.
+
 THE ORDER OF EVALUATION follows dependency, not D6's numbering, and the codes do
-not move with it. The shape guard (`pin-tag-only`) runs first, because every
-later check compares AGAINST the values it validates. Then the root, entirely:
-initialized, recorded, checked out, and the lockstep read from its objects.
-Only then the leg: initialized, checked out. Then the bytes. A leg check made
-against the wrong root commit would name the leg when the defect is the root,
-and the remediation it printed would not fix anything. First failure, named
-correctly, beats several failures that need triage.
+not move with it. The shape guards run first, because every later check
+compares AGAINST the values they validate: `pin-tag-only` for the referent, and
+`pin-unreadable` for a HOLLOWED pin, one whose `files:` is not exactly the eight
+or whose `pinned_by_commit_only:` omits the two scripts the entrypoints load.
+Then the root, entirely: initialized, recorded, checked out, and the lockstep
+read from its objects. Only then the leg: initialized, checked out. Then the
+bytes: the digests, then each path-only member present and unmodified. A leg
+check made against the wrong root commit would name the leg when the defect is
+the root, and the remediation it printed would not fix anything. First
+failure, named correctly, beats several failures that need triage.
 
 TWO GITLINK COMPARISONS, NOT ONE, at each level. A stale `git submodule update`
 leaves the recorded gitlink right and the checkout wrong; a bumped gitlink with
@@ -55,7 +67,8 @@ CHECKOUT, so without check 3 a stale checkout would be reported as content
 drift.
 
 OFFLINE LAW. This tool reads the pin, the git objects of this repository and of
-`openWallet/`, and the files under `openWallet/` the pin names. It never reads
+`openWallet/`, the files under `openWallet/` the pin names, and the working-tree
+status of the checkouts that hold them. It never reads
 the network, never reads an upstream tree, and never reads a
 `contracts/manifest.yaml`, this repository's or the root's: the cross-check
 against the root's manifest is a PIN-TIME obligation (the pin's header).
@@ -68,8 +81,10 @@ script sits in, and exists so the test suite can verify a throwaway adapter.
 
 Exit codes:
   0  the pin is satisfied at both levels, the eight digests recompute, and
-     every path-only member is present
-  2  ANY refusal, and any environment failure
+     every path-only member is present and unmodified in its working tree
+  2  ANY refusal, and any environment failure: a `git` that cannot be run or
+     a file that cannot be read is an `ERROR` line and exit 2, never a
+     traceback (whose exit 1 would read as something other than a refusal)
 
   There is deliberately NO exit 1, following openxFactory's
   `scripts/verify-openxwallet-pin.py`. This repository's sibling
@@ -110,7 +125,9 @@ REMEDIATION = (
     "moving only where the new root moved them (contracts/openwallet-pin.yaml)."
 )
 
-# The fixed vocabulary, in design.md D6's order, with the referent guard last.
+# The fixed vocabulary, in design.md D6's order, then `pin-member-modified`
+# (D6's check 7 carried into the working tree; the module docstring's 8), with
+# the referent guard last.
 #
 # `pin-unreadable` is NOT here, and its absence is the point, as it is in
 # openxFactory's verifier: these codes describe a TREE that disagrees with a
@@ -126,7 +143,24 @@ REFUSAL_CODES: tuple[str, ...] = (
     "pin-leg-checkout-mismatch",
     "pin-digest-mismatch",
     "pin-member-missing",
+    "pin-member-modified",
     "pin-tag-only",
+)
+
+# design.md D6: `files:` holds the per-file sha256 of "the eight digested
+# artifacts". A pin that digests fewer pins fewer bytes than the design says it
+# does, and one that digests more names artifacts the design never named; both
+# are `pin-unreadable`, never a smaller satisfied claim.
+DIGESTED_MEMBER_COUNT = 8
+
+# The bytes this repository's two entrypoints path-load and RUN
+# (scripts/validate-openxwallet.py's CORE_PATH and
+# scripts/wallet-yaml-syntax-gate.py's CORE_GATE_PATH), relative to
+# `submodule_path`. A pin whose `pinned_by_commit_only:` omits either does not
+# cover the code that executes, so it is `pin-unreadable`.
+LOADED_BY_ENTRYPOINTS: tuple[str, ...] = (
+    "code/scripts/validate-openxwallet.py",
+    "code/scripts/wallet-yaml-syntax-gate.py",
 )
 
 # Exactly 40 / 64 hex; case is normalized to lowercase before any comparison.
@@ -158,6 +192,12 @@ class PinRefusal(Exception):
 
     def __str__(self) -> str:
         return f"REFUSE {self.code}: {self.detail}\n{REMEDIATION}"
+
+
+class EnvironmentFailure(Exception):
+    """The verifier could not ask its question: `git` cannot be run, or a file
+    the pin names cannot be read. Not a refusal of the tree, and not a pass:
+    `main()` prints one `ERROR` line and exits 2."""
 
 
 class Verified(NamedTuple):
@@ -263,8 +303,16 @@ def _referent(pin: dict) -> tuple[str, str]:
 # --------------------------------------------------------------------------
 
 def _git(repo: Path, *args: str) -> subprocess.CompletedProcess:
-    return subprocess.run(["git", "-C", str(repo), *args],
-                          capture_output=True, text=True, check=False)
+    """`git -C repo ...`, never taking an optional lock (a verifier writes
+    nothing, not even a refreshed index), or EnvironmentFailure when `git`
+    itself cannot be run."""
+    try:
+        return subprocess.run(
+            ["git", "--no-optional-locks", "-C", str(repo), *args],
+            capture_output=True, text=True, check=False)
+    except OSError as exc:
+        raise EnvironmentFailure(
+            f"git could not be run in {repo}: {exc}") from exc
 
 
 def _gitlink_from(output: str, path: str) -> str | None:
@@ -399,11 +447,9 @@ def _require_lockstep(root_checkout: Path, shown: str, commit: str,
 def _require_digests(checkout: Path, shown: str, pin: dict) -> int:
     """Check 6, and check 7 for a digested member. Returns the count."""
     entries = pin.get("files")
-    if not isinstance(entries, list) or not entries:
-        raise PinRefusal(
-            "pin-unreadable",
-            "the pin lists no `files:` members, so it pins no bytes; an empty "
-            "claim is not a satisfied claim")
+    if not isinstance(entries, list):
+        raise PinRefusal("pin-unreadable",
+                         f"the pin's `files:` is not a list ({entries!r})")
     for index, entry in enumerate(entries):
         if not isinstance(entry, dict):
             raise PinRefusal("pin-unreadable",
@@ -422,7 +468,12 @@ def _require_digests(checkout: Path, shown: str, pin: dict) -> int:
                 "pin-member-missing",
                 f"{shown}/{rel} is MISSING from the checkout, but the pin "
                 "records a sha256 for it")
-        actual = hashlib.sha256(target.read_bytes()).hexdigest()
+        try:
+            actual = hashlib.sha256(target.read_bytes()).hexdigest()
+        except OSError as exc:
+            raise EnvironmentFailure(
+                f"{shown}/{rel} could not be read to recompute its digest: "
+                f"{exc}") from exc
         if actual != recorded.strip().lower():
             raise PinRefusal(
                 "pin-digest-mismatch",
@@ -433,10 +484,82 @@ def _require_digests(checkout: Path, shown: str, pin: dict) -> int:
     return len(entries)
 
 
-def _require_path_only(checkout: Path, shown: str, pin: dict) -> int:
-    """Check 7: presence only. Identity comes from checks 3 and 5, which pin
-    both checkouts to their commits; what a commit cannot catch is a member
-    deleted from the working tree after checkout. Returns the count."""
+def _require_pin_shape(pin: dict) -> None:
+    """The HOLLOWED-PIN guard, a shape check run with the referent's, before
+    any tree is read: `files:` digests exactly design.md D6's eight, and
+    `pinned_by_commit_only:` covers the bytes the entrypoints run. Without it a
+    pin cut to one digest, or one that stopped naming the loaded core, would
+    verify clean while pinning less than this repository executes."""
+    entries = pin.get("files")
+    if not isinstance(entries, list) or len(entries) != DIGESTED_MEMBER_COUNT:
+        count = len(entries) if isinstance(entries, list) else entries
+        raise PinRefusal(
+            "pin-unreadable",
+            f"the pin's `files:` holds {count!r} entr(ies), not design.md "
+            f"D6's {DIGESTED_MEMBER_COUNT} digested artifacts; a pin that "
+            "digests fewer bytes than the design names is a hollowed claim, "
+            "not a smaller satisfied one")
+    members = pin.get("pinned_by_commit_only")
+    if not isinstance(members, list):
+        raise PinRefusal("pin-unreadable",
+                         f"the pin's `pinned_by_commit_only` is not a list "
+                         f"({members!r})")
+    listed = {_relative_path(raw, f"pinned_by_commit_only[{index}]")
+              for index, raw in enumerate(members)}
+    absent = [path for path in LOADED_BY_ENTRYPOINTS if path not in listed]
+    if absent:
+        raise PinRefusal(
+            "pin-unreadable",
+            f"the pin's `pinned_by_commit_only:` omits {absent}, the bytes "
+            "scripts/validate-openxwallet.py and "
+            "scripts/wallet-yaml-syntax-gate.py load and run; a pin that does "
+            "not cover the code that executes pins the wrong thing")
+
+
+def _member_checkout(sub_root: Path, sub_path: str, leg_path: str,
+                     rel: str) -> tuple[Path, str, str]:
+    """(checkout, path inside it, the checkout as shown) for a member named
+    relative to `submodule_path`. A member under the leg lives in the LEG's
+    checkout, and only that repository's `git status` sees its working tree:
+    the root's status shows the leg as one gitlink, never the files in it."""
+    member, leg = PurePosixPath(rel), PurePosixPath(leg_path)
+    if member.is_relative_to(leg):
+        inside = member.relative_to(leg)
+        return sub_root / leg, str(inside), f"{sub_path}/{leg_path}"
+    return sub_root, rel, sub_path
+
+
+def _require_unmodified(checkout: Path, inside: str, shown: str,
+                        member: str) -> None:
+    """Check 8: the member's working tree is exactly the checked-out commit's.
+    `--untracked-files=all` lists every untracked file inside a directory
+    member, and a file member replaced by a directory reads as deleted."""
+    status = _git(checkout, "status", "--porcelain", "--untracked-files=all",
+                  "--", inside)
+    if status.returncode != 0:
+        raise PinRefusal(
+            "pin-member-modified",
+            f"{member}: `git status` could not be read in {shown} (exit "
+            f"{status.returncode}: {status.stderr.strip()}); a member whose "
+            "working tree cannot be read is not known to be the pinned bytes")
+    if status.stdout.strip():
+        changes = "\n".join(f"  {line}" for line in
+                            status.stdout.rstrip("\n").splitlines())
+        raise PinRefusal(
+            "pin-member-modified",
+            f"{member} is MODIFIED in the working tree of {shown}:\n{changes}\n"
+            "the pin addresses this member by commit, and the checkout's "
+            "commit is right, but these are not the bytes that commit holds")
+
+
+def _require_path_only(sub_root: Path, sub_path: str, leg_path: str,
+                       pin: dict) -> int:
+    """Checks 7 and 8 for the path-only members. Identity comes from checks 3
+    and 5, which pin both checkouts to their commits; what a commit cannot
+    catch is the working tree drifting after checkout. So each member must be
+    PRESENT (7) and UNMODIFIED in its own checkout's working tree (8): edited,
+    deleted, replaced by a directory, or holding untracked content all refuse.
+    Returns the count."""
     members = pin.get("pinned_by_commit_only")
     if not isinstance(members, list):
         raise PinRefusal("pin-unreadable",
@@ -444,12 +567,15 @@ def _require_path_only(checkout: Path, shown: str, pin: dict) -> int:
                          f"({members!r})")
     for index, raw in enumerate(members):
         rel = _relative_path(raw, f"pinned_by_commit_only[{index}]")
-        if not (checkout / rel).exists():
+        if not (sub_root / rel).exists():
             raise PinRefusal(
                 "pin-member-missing",
-                f"{shown}/{rel} is MISSING from the checkout; the pin declares "
-                "it content-addressed by commit, and a member absent from the "
-                "working tree is content-addressed by nothing")
+                f"{sub_path}/{rel} is MISSING from the checkout; the pin "
+                "declares it content-addressed by commit, and a member absent "
+                "from the working tree is content-addressed by nothing")
+        checkout, inside, shown = _member_checkout(sub_root, sub_path,
+                                                   leg_path, rel)
+        _require_unmodified(checkout, inside, shown, f"{sub_path}/{rel}")
     return len(members)
 
 
@@ -458,6 +584,7 @@ def verify(root: Path = ROOT) -> Verified:
     pin = load_pin(root / PIN_RELPATH)
     sub_path, commit = _referent(pin)
     leg_path, leg_commit = _leg(pin)
+    _require_pin_shape(pin)
     sub_root = root / sub_path
     leg_shown = f"{sub_path}/{leg_path}"
 
@@ -478,7 +605,7 @@ def verify(root: Path = ROOT) -> Verified:
 
     # Then the bytes.
     digests = _require_digests(sub_root, sub_path, pin)
-    members = _require_path_only(sub_root, sub_path, pin)
+    members = _require_path_only(sub_root, sub_path, leg_path, pin)
     tag = pin.get("contract_bundle_tag")
     return Verified(commit, leg_commit, source, digests, members,
                     tag if isinstance(tag, str) and tag else "<none yet>")
@@ -506,12 +633,17 @@ def main(argv: list[str] | None = None) -> int:
     except PinRefusal as exc:
         print(str(exc), file=sys.stderr)
         return 2
+    except (EnvironmentFailure, OSError) as exc:
+        print(f"ERROR verify-openwallet-pin: the question could not be asked: "
+              f"{exc}", file=sys.stderr)
+        return 2
 
     print(f"OK openwallet-pin verified: openWallet@{done.commit} (tag label "
           f"{done.tag_label}), gitlink read from {done.gitlink_source}, "
           f"{LEG_ROLE} leg @{done.leg_commit} in lockstep (gitlink, "
           f"{ROOT_LEG_PIN}, legs.{LEG_ROLE}), {done.digests} digest(s) "
-          f"recomputed, {done.members} path-only member(s) present")
+          f"recomputed, {done.members} path-only member(s) present and "
+          "unmodified")
     return 0
 
 
