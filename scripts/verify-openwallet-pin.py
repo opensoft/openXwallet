@@ -1,0 +1,954 @@
+#!/usr/bin/env python3
+"""Verify openXwallet's CONSUMPTION of opensoft/openWallet against its pin.
+
+openXwallet no longer carries the wallet standard's core; it RUNS it, in
+process, from the gitlink `openWallet/` (split-openwallet-neutral-core, design.md
+D5 and D6). `contracts/openwallet-pin.yaml` is the whole of that claim and this
+file is the running code that checks it. Everything the pin asserts is checked
+here, and nothing it does not assert is inferred.
+
+THE TRUSTED REFERENT IS `commit` PLUS THE EIGHT `sha256`s. `contract_bundle_tag`
+is a LABEL printed beside the commit, never the referent. A pin that declares a
+`revision_kind` other than `commit`, or a root or leg commit that is not exactly
+40 hex, is refused `pin-tag-only` rather than resolved: resolving a movable name
+is exactly the network read this tool exists not to perform.
+
+ONE CHAIN, TWO LEVELS (RULED Q2). The gitlink mounts the openWallet ROOT, and
+the code leg is reached through the root's own `code` gitlink. So the pin's
+`legs.code` is a LOCKSTEP MIRROR, and the mirror is checked against GIT OBJECTS
+at the pinned root commit, never against the working tree: the root's `code`
+gitlink (`git -C openWallet ls-tree <commit> code`), the `commit:` of the root's
+own `contracts/code-pin.yaml` at that commit (`git -C openWallet show
+<commit>:contracts/code-pin.yaml`), and `legs.code.commit`. All three equal, or
+`pin-leg-lockstep-mismatch`. This is the technique openxFactory uses for its
+openDox pin, read one level out.
+
+THE MOUNT IS THE ONE THE ENTRYPOINTS EXECUTE. `submodule_path` and
+`legs.code.submodule_path` are read from the pin, in openxFactory's grammar, and
+then REQUIRED to equal the mount this repository's two entrypoints path-load:
+`openWallet` and `code` (`EXECUTED_ROOT_MOUNT`, `EXECUTED_LEG_MOUNT`).
+scripts/validate-openxwallet.py and scripts/wallet-yaml-syntax-gate.py run
+`openWallet/code/scripts/...` whatever the pin says, so a pin naming another
+valid gitlink would authenticate a checkout nothing executes and report OK over
+bytes it never read. Any other value is refused `pin-mount-mismatch`, before a
+checkout is read.
+
+THE REFUSALS, design.md D6's seven, each under a NAMED code from the fixed
+vocabulary `REFUSAL_CODES`:
+
+  1. `pin-submodule-uninitialized` (`openWallet/`) and, SEPARATELY,
+     `pin-leg-uninitialized` (`openWallet/code/`): two codes, because the
+     remediations differ;
+  2. `pin-gitlink-mismatch`: the `openWallet` gitlink recorded at this
+     repository's HEAD (or, before the first commit, its index) is not `commit`;
+  3. `pin-checkout-mismatch`: the checked-out `openWallet/` is not `commit`;
+  4. `pin-leg-lockstep-mismatch`: the three-way mirror above disagrees;
+  5. `pin-leg-checkout-mismatch`: the checked-out `openWallet/code/` is not
+     `legs.code.commit`;
+  6. `pin-digest-mismatch`: a digest drift on any of the eight;
+  7. `pin-member-missing`: a digested or `pinned_by_commit_only` member is not
+     in the checkout.
+
+and two more in D6's spirit, because a commit pins what a checkout STARTED
+as, not what its working tree holds now:
+
+  8. `pin-member-modified`: a `pinned_by_commit_only` member is modified,
+     deleted, replaced by a directory, or carries untracked content in the
+     working tree of its checkout (`git status --porcelain
+     --untracked-files=all -- <member>` is not empty). The eight digested
+     members need no such check: their bytes are recomputed.
+  9. `pin-leg-dirty`: the code leg's working tree, AS A WHOLE, is not its
+     checked-out commit. `git -C openWallet/code status --porcelain
+     --untracked-files=all` is not empty, or `git ls-files -v` there tags an
+     entry assume-unchanged (a lowercase tag) or skip-worktree (`S`, `s`),
+     an entry whose edits `git status` never reports. Checks 6 to 8 see only
+     the paths the pin names, and the core reads more than those: its
+     `load_schemas()` globs `*.schema.yaml` in BOTH family directories into
+     one dict keyed by bare file name, so an untracked
+     `openxwallet-grant.schema.yaml` in `contracts/openxwallet-agent-profile/`
+     REPLACES the digested grant schema while all eight digests still
+     recompute. `git status` applies ignore rules (the leg's `.gitignore`,
+     its `info/exclude`, a `core.excludesFile`), so it is not the whole
+     answer: under `contracts/` and `scripts/`, the directories the core
+     reads, `git ls-files --others` is listed with NO ignore rule applied,
+     and every untracked file there refuses except the bytecode an
+     interpreter writes under `scripts/` (inside `__pycache__/`, or ending
+     `.pyc`, `.pyo`, `.pyd`). Whether that cache holds the pinned source's
+     bytecode is not checked here, a known and deferred gap. Elsewhere in the
+     leg, ignored content (a `.venv/`, a `.pytest_cache/`) is not read by the
+     core and does not refuse. Every read so far trusts git's STAT CACHE:
+     `git status` re-reads a file only when its cached stat data moved, so a
+     same-size edit with its mtime restored (under `core.checkStat minimal`,
+     or inside the second of the last index refresh) is invisible to it. So
+     the CONTENT of every tracked path under `contracts/` and `scripts/` is
+     compared with its blob at the leg's HEAD: the regular files by ONE
+     `git hash-object --no-filters --stdin-paths` (raw bytes, so no clean
+     filter or eol rule can map edited bytes back to the pinned blob; the leg
+     carries no `.gitattributes`), a symbolic link by its link text. A
+     tracked path that is missing, not a regular file, or of any other mode
+     refuses. The ROOT's working tree is not held to this rule, because
+     nothing the composed run reads lies in it outside `code/`: the core's
+     `ROOT` is `openWallet/code`.
+
+THE ORDER OF EVALUATION follows dependency, not D6's numbering, and the codes do
+not move with it. The shape guards run first, because every later check
+compares AGAINST the values they validate: `pin-tag-only` for the referent,
+`pin-mount-mismatch` for a mount the entrypoints do not execute, and
+`pin-unreadable` for a HOLLOWED pin, one whose `files:` does not name design.md
+D6's eight, each once and nothing else (`DIGESTED_MEMBERS`, a closed set: a
+count alone lets a duplicate row stand in for a required one), or whose
+`pinned_by_commit_only:` omits the two scripts the entrypoints load.
+Then the root, entirely: initialized, recorded, checked out, and the lockstep
+read from its objects. Only then the leg: initialized, checked out. Then the
+bytes: the digests, then each path-only member present and unmodified, then
+the leg's working tree as a whole (`pin-leg-dirty`). That one runs LAST:
+every member lives in the leg, so run earlier it would answer for a drifted
+digest, a missing member or a modified one under its own code, and checks 6
+to 8 would never be seen. A leg check made against the wrong root commit
+would name the leg when the defect is the root, and the remediation it
+printed would not fix anything. First failure, named correctly, beats several
+failures that need triage.
+
+TWO GITLINK COMPARISONS, NOT ONE, at each level. A stale `git submodule update`
+leaves the recorded gitlink right and the checkout wrong; a bumped gitlink with
+no update inverts that. The digests in check 6 are recomputed against the
+CHECKOUT, so without check 3 a stale checkout would be reported as content
+drift.
+
+OFFLINE LAW. This tool reads the pin, the git objects of this repository and of
+`openWallet/`, the files under `openWallet/` the pin names, and the working-tree
+status of the checkouts that hold them. It never reads
+the network, never reads an upstream tree, and never reads a
+`contracts/manifest.yaml`, this repository's or the root's: the cross-check
+against the root's manifest is a PIN-TIME obligation (the pin's header).
+
+Every refusal carries the one fixed `REMEDIATION` trailer, naming the two-level
+scoped init. `--recursive` is deliberately absent and the trailer says so.
+
+`--root PATH` names the repository to verify. It defaults to the repository this
+script sits in, and exists so the test suite can verify a throwaway adapter.
+
+Exit codes:
+  0  the pin is satisfied at both levels, the eight digests recompute, and
+     every path-only member is present and unmodified in its working tree
+  2  ANY refusal, and any environment failure: a `git` that cannot be run or
+     a file that cannot be read is an `ERROR` line and exit 2, never a
+     traceback (whose exit 1 would read as something other than a refusal)
+
+  There is deliberately NO exit 1, following openxFactory's
+  `scripts/verify-openxwallet-pin.py`. This repository's sibling
+  `scripts/verify-contract-pin.py` splits drift (1) from environment (2); that
+  split is not followed here, because this tool answers one question, "may the
+  composed validator run against these bytes", and the answer is the same for
+  "the pin is stale" and "the leg was never initialized". A two-valued failure
+  invites a workflow that treats one of them as a warning, and an unanswerable
+  question is never an implicit pass.
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import re
+import subprocess
+import sys
+from collections import Counter
+from pathlib import Path, PurePosixPath
+from typing import NamedTuple
+
+ROOT = Path(__file__).resolve().parents[1]
+PIN_RELPATH = PurePosixPath("contracts", "openwallet-pin.yaml")
+
+# The one leg this pin records, and the root's own pin file for it
+# (`contracts/<role>-pin.yaml`, the root's lockstep grammar).
+LEG_ROLE = "code"
+ROOT_LEG_PIN = f"contracts/{LEG_ROLE}-pin.yaml"
+
+# The mount this repository's two ENTRYPOINTS execute, whatever the pin says:
+# scripts/validate-openxwallet.py's CORE_PATH and
+# scripts/wallet-yaml-syntax-gate.py's CORE_GATE_PATH sit under
+# `<root mount>/<leg mount>/`, and the MOUNT_LEVELS of each name the same two
+# levels. The pin's `submodule_path` and `legs.code.submodule_path` must equal
+# these, or `pin-mount-mismatch`. tests/openwallet_pin reads the entrypoints'
+# constants and binds them to these, so neither side can move alone.
+EXECUTED_ROOT_MOUNT = "openWallet"
+EXECUTED_LEG_MOUNT = "code"
+ENTRYPOINTS: tuple[str, ...] = (
+    "scripts/validate-openxwallet.py",
+    "scripts/wallet-yaml-syntax-gate.py",
+)
+
+# The ONE fixed remediation trailer. Scoped, two levels, never the spec leg:
+# a recursive init would also fetch `openWallet/spec`, which nothing here reads.
+REMEDIATION = (
+    "Remediation: run `git submodule update --init openWallet`, then "
+    "`git -C openWallet submodule update --init code` (NOT --recursive; the "
+    "init is deliberately scoped to the root and its code leg, never the spec "
+    "leg). If the pin itself is stale, re-pin in ONE commit: the `openWallet` "
+    "gitlink and `commit:` together, with `legs.code.commit` and `files:` "
+    "moving only where the new root moved them (contracts/openwallet-pin.yaml)."
+)
+
+# The fixed vocabulary, in design.md D6's order, then `pin-member-modified`
+# and `pin-leg-dirty` (D6's check 7 carried into the working tree, per member
+# and for the leg as a whole; the module docstring's 8 and 9), with
+# the two referent guards last: `pin-tag-only` (which commit) and
+# `pin-mount-mismatch` (which mount).
+#
+# `pin-unreadable` is NOT here, and its absence is the point, as it is in
+# openxFactory's verifier: these codes describe a TREE that disagrees with a
+# well-formed pin, while `pin-unreadable` describes a pin that cannot be read as
+# one. It still exits 2; it is excluded from the vocabulary, not from
+# fail-closure.
+REFUSAL_CODES: tuple[str, ...] = (
+    "pin-submodule-uninitialized",
+    "pin-leg-uninitialized",
+    "pin-gitlink-mismatch",
+    "pin-checkout-mismatch",
+    "pin-leg-lockstep-mismatch",
+    "pin-leg-checkout-mismatch",
+    "pin-digest-mismatch",
+    "pin-member-missing",
+    "pin-member-modified",
+    "pin-leg-dirty",
+    "pin-tag-only",
+    "pin-mount-mismatch",
+)
+
+# design.md D6: `files:` holds the per-file sha256 of "the eight digested
+# artifacts". A pin that digests fewer pins fewer bytes than the design says it
+# does, and one that digests more names artifacts the design never named; both
+# are `pin-unreadable`, never a smaller satisfied claim.
+DIGESTED_MEMBER_COUNT = 8
+
+# WHICH eight, as a CLOSED set: the paths `files:` spells, relative to the root
+# mount, which D6 makes "the same strings the openWallet root manifest's owned
+# rows hold". Cross-checked when this list was written, in this order: the
+# pin's `files:`, the root manifest's eight owned rows at the pinned root, and
+# the carve commit's eight owned rows under `code/`. A count is not the claim:
+# a duplicate of one row standing in for another, with its own valid digest,
+# recomputes eight times and pins seven artifacts. `files:` must name each of
+# these once and nothing else, or the pin is `pin-unreadable`.
+DIGESTED_MEMBERS: tuple[str, ...] = (
+    "code/contracts/openxwallet/openxwallet-record.schema.yaml",
+    "code/contracts/openxwallet/openxwallet-custody-registry.schema.yaml",
+    "code/contracts/openxwallet/openxwallet-custody.registry.yaml",
+    "code/contracts/openxwallet/openxwallet-grant.schema.yaml",
+    "code/contracts/openxwallet/openxwallet-grant-exercise.schema.yaml",
+    ("code/contracts/openxwallet/"
+     "openxwallet-distinct-holder-constraint.schema.yaml"),
+    "code/contracts/openxwallet/openxwallet-subject-attestation.schema.yaml",
+    ("code/contracts/openxwallet-agent-profile/"
+     "openxwallet-agent-composition.schema.yaml"),
+)
+
+# The bytes this repository's two entrypoints path-load and RUN
+# (scripts/validate-openxwallet.py's CORE_PATH and
+# scripts/wallet-yaml-syntax-gate.py's CORE_GATE_PATH), relative to the root
+# mount, `EXECUTED_ROOT_MOUNT`. A pin whose `pinned_by_commit_only:` omits
+# either does not cover the code that executes, so it is `pin-unreadable`.
+LOADED_BY_ENTRYPOINTS: tuple[str, ...] = (
+    "code/scripts/validate-openxwallet.py",
+    "code/scripts/wallet-yaml-syntax-gate.py",
+)
+
+# How many offending entries a `pin-leg-dirty` refusal names before it elides
+# the rest with a count.
+LEG_DIRTY_SHOWN = 5
+
+# The leg directories the core READS: its ROOT is the leg, `contracts/` holds
+# the families, the schemas, the corpus and the registry, and `scripts/` holds
+# the core and the gate. Every untracked file under them refuses with NO
+# ignore rule applied, except the bytecode an interpreter writes under
+# `scripts/`.
+LEG_READ_DIRS: tuple[str, ...] = ("contracts", "scripts")
+BYTECODE_SUFFIXES: tuple[str, ...] = (".pyc", ".pyo", ".pyd")
+
+# The tracked modes under LEG_READ_DIRS whose CONTENT check 9 compares: a
+# regular file by blob id, a symbolic link by its link text. Any other mode
+# refuses.
+REGULAR_MODES = frozenset({"100644", "100755"})
+SYMLINK_MODE = "120000"
+
+# Exactly 40 / 64 hex; case is normalized to lowercase before any comparison.
+COMMIT_RE = re.compile(r"^[0-9a-fA-F]{40}$")
+SHA256_RE = re.compile(r"^[0-9a-fA-F]{64}$")
+
+# A gitlink is mode 160000 in both `ls-tree` and `ls-files -s` output. Matching
+# the MODE, not just the path, is what keeps a same-named regular file from
+# satisfying a gitlink check.
+GITLINK_MODE = "160000"
+
+try:
+    import yaml
+except ImportError:  # pragma: no cover
+    print("ERROR PyYAML is required to read contracts/openwallet-pin.yaml",
+          file=sys.stderr)
+    sys.exit(2)
+
+
+class PinRefusal(Exception):
+    """A named, remediable refusal. `str()` renders the code, the detail and
+    the fixed trailer, and `main()` prints exactly that, so no caller can drop
+    the trailer."""
+
+    def __init__(self, code: str, detail: str) -> None:
+        self.code = code
+        self.detail = detail
+        super().__init__(code, detail)
+
+    def __str__(self) -> str:
+        return f"REFUSE {self.code}: {self.detail}\n{REMEDIATION}"
+
+
+class EnvironmentFailure(Exception):
+    """The verifier could not ask its question: `git` cannot be run, or a file
+    the pin names cannot be read. Not a refusal of the tree, and not a pass:
+    `main()` prints one `ERROR` line and exits 2."""
+
+
+class Verified(NamedTuple):
+    """What a satisfied pin established, for the one OK line."""
+    commit: str
+    leg_commit: str
+    gitlink_source: str
+    digests: int
+    members: int
+    tag_label: str
+
+
+# --------------------------------------------------------------------------
+# reading the pin
+# --------------------------------------------------------------------------
+
+def load_pin(pin_path: Path) -> dict:
+    """The pin as a mapping, or `pin-unreadable`: without a parseable pin
+    there is no claim to check, and that is never a conformant tree."""
+    if not pin_path.is_file():
+        raise PinRefusal(
+            "pin-unreadable",
+            f"the pin file {pin_path} does not exist; openXwallet consumes "
+            "openWallet only through this pin, so its absence is an "
+            "unanswerable question, not an unpinned pass")
+    try:
+        loaded = yaml.safe_load(pin_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, yaml.YAMLError) as exc:
+        raise PinRefusal(
+            "pin-unreadable",
+            f"the pin file {pin_path} could not be read as YAML: {exc}") from exc
+    if not isinstance(loaded, dict):
+        raise PinRefusal(
+            "pin-unreadable",
+            f"the pin file {pin_path} is not a mapping")
+    return loaded
+
+
+def _relative_path(raw: object, field: str) -> str:
+    """A non-empty RELATIVE path that stays below its base, or
+    `pin-unreadable`. A pin cannot name a file outside the checkout it pins."""
+    if not isinstance(raw, str) or not raw.strip():
+        raise PinRefusal("pin-unreadable",
+                         f"the pin's {field} is not a usable path ({raw!r})")
+    path = PurePosixPath(raw.strip())
+    if path.is_absolute() or ".." in path.parts:
+        raise PinRefusal(
+            "pin-unreadable",
+            f"the pin's {field} {raw!r} leaves the checkout it pins; every "
+            "pinned path is relative and stays below its submodule")
+    return str(path)
+
+
+def _commit(raw: object, field: str) -> str:
+    """The 40-hex referent, lowercased, or `pin-tag-only`."""
+    if not isinstance(raw, str) or not COMMIT_RE.match(raw.strip()):
+        raise PinRefusal(
+            "pin-tag-only",
+            f"the pin records {field} {raw!r}, which is not exactly 40 hex "
+            "characters; an abbreviated oid, a branch or a tag is not a "
+            "compatibility pin")
+    return raw.strip().lower()
+
+
+def _leg(pin: dict) -> tuple[str, str]:
+    """(`legs.code.submodule_path`, `legs.code.commit`). The pin records the
+    code leg and nothing else: an unrecorded leg is design.md D6's call, and a
+    recorded leg this tool did not check would be an assertion nobody checks."""
+    legs = pin.get("legs")
+    if not isinstance(legs, dict) or set(legs) != {LEG_ROLE}:
+        raise PinRefusal(
+            "pin-unreadable",
+            f"the pin's `legs` must record exactly the {LEG_ROLE!r} leg (got "
+            f"{sorted(legs) if isinstance(legs, dict) else legs!r}); the spec "
+            "leg is fixed by the root commit and is never recorded here")
+    leg = legs[LEG_ROLE]
+    if not isinstance(leg, dict):
+        raise PinRefusal("pin-unreadable",
+                         f"the pin's legs.{LEG_ROLE} is not a mapping")
+    path = _relative_path(leg.get("submodule_path"),
+                          f"legs.{LEG_ROLE}.submodule_path")
+    return path, _commit(leg.get("commit"), f"legs.{LEG_ROLE}.commit")
+
+
+def _referent(pin: dict) -> tuple[str, str]:
+    """(`submodule_path`, `commit`), the shape guard included. It runs before
+    every comparison, because every comparison is made against these values,
+    and a malformed referent reported as a tree mismatch would name the wrong
+    defect."""
+    revision_kind = pin.get("revision_kind")
+    if revision_kind != "commit":
+        raise PinRefusal(
+            "pin-tag-only",
+            f"the pin declares revision_kind {revision_kind!r}, not 'commit'; "
+            "the trusted referent is a commit plus digests, and resolving a "
+            "movable name would need the network read this tool refuses")
+    path = _relative_path(pin.get("submodule_path"), "submodule_path")
+    return path, _commit(pin.get("commit"), "commit")
+
+
+def _require_executed_mount(sub_path: str, leg_path: str) -> None:
+    """The mount the pin authenticates is the mount the entrypoints execute. A
+    shape check, run with the referent's before a checkout is read: a pin
+    naming another valid gitlink would pass every later check against THAT
+    checkout while the entrypoints run `openWallet/code/` unverified."""
+    executed = " and ".join(f"{EXECUTED_ROOT_MOUNT}/{member}"
+                            for member in LOADED_BY_ENTRYPOINTS)
+    for field, recorded, mount in (
+            ("submodule_path", sub_path, EXECUTED_ROOT_MOUNT),
+            (f"legs.{LEG_ROLE}.submodule_path", leg_path, EXECUTED_LEG_MOUNT)):
+        if recorded != mount:
+            raise PinRefusal(
+                "pin-mount-mismatch",
+                f"the pin records {field} {recorded!r}, but "
+                f"{' and '.join(ENTRYPOINTS)} execute the mount {mount!r} "
+                f"({executed}); a pin that names another checkout "
+                "authenticates bytes that never run")
+
+
+# --------------------------------------------------------------------------
+# reading git
+# --------------------------------------------------------------------------
+
+def _git(repo: Path, *args: str,
+         stdin: str | None = None) -> subprocess.CompletedProcess:
+    """`git -C repo ...`, never taking an optional lock (a verifier writes
+    nothing, not even a refreshed index), or EnvironmentFailure when `git`
+    itself cannot be run."""
+    try:
+        return subprocess.run(
+            ["git", "--no-optional-locks", "-C", str(repo), *args],
+            input=stdin, capture_output=True, text=True, check=False)
+    except OSError as exc:
+        raise EnvironmentFailure(
+            f"git could not be run in {repo}: {exc}") from exc
+
+
+def _gitlink_from(output: str, path: str) -> str | None:
+    """The oid of the `160000` entry for `path` in either output shape:
+
+        ls-tree      160000 commit <oid>\\t<path>
+        ls-files -s  160000 <oid> 0\\t<path>
+    """
+    for line in output.splitlines():
+        head, _, entry = line.partition("\t")
+        fields = head.split()
+        if entry.strip().strip('"') != path or not fields \
+                or fields[0] != GITLINK_MODE:
+            continue
+        for field in fields[1:]:
+            if COMMIT_RE.match(field):
+                return field.lower()
+    return None
+
+
+def _recorded_gitlink(repo: Path, path: str) -> tuple[str | None, str]:
+    """(oid, source): HEAD first, then the index.
+
+    The index is consulted second for the reason openxFactory's verifier gives:
+    `ls-tree HEAD` is empty for a gitlink staged and not yet committed, which is
+    the state of a fresh `git submodule add`, and a gate unrunnable at the
+    moment its author most needs it trains people to skip it. The source is
+    reported in the OK line so no reader mistakes which record answered.
+    """
+    head = _git(repo, "ls-tree", "HEAD", "--", path)
+    oid = _gitlink_from(head.stdout, path) if head.returncode == 0 else None
+    if oid is not None:
+        return oid, "HEAD"
+    index = _git(repo, "ls-files", "-s", "--", path)
+    oid = _gitlink_from(index.stdout, path) if index.returncode == 0 else None
+    if oid is not None:
+        return oid, "the index (staged, not yet committed)"
+    return None, "nowhere"
+
+
+def _checked_out(checkout: Path) -> str | None:
+    head = _git(checkout, "rev-parse", "HEAD")
+    return head.stdout.strip().lower() if head.returncode == 0 else None
+
+
+def _root_leg_pin_commit(root_checkout: Path, commit: str) -> str | None:
+    """`commit:` of the root's own leg pin, read as a git BLOB at `commit`."""
+    shown = _git(root_checkout, "show", f"{commit}:{ROOT_LEG_PIN}")
+    if shown.returncode != 0:
+        return None
+    try:
+        doc = yaml.safe_load(shown.stdout)
+    except yaml.YAMLError:
+        return None
+    value = doc.get("commit") if isinstance(doc, dict) else None
+    return value.strip().lower() if isinstance(value, str) else None
+
+
+# --------------------------------------------------------------------------
+# the checks
+# --------------------------------------------------------------------------
+
+def _require_initialized(checkout: Path, shown: str, code: str,
+                         init: str) -> None:
+    """Check 1, at one level. `.exists()`, never `.is_dir()`: a submodule's
+    `.git` is a FILE holding a `gitdir:` line, and a nested clone's is a
+    directory; both are initialized checkouts."""
+    if not (checkout / ".git").exists():
+        raise PinRefusal(
+            code,
+            f"{shown}/.git does not exist: {shown} is not initialized, so the "
+            f"bytes this repository runs are not present to be checked. Run "
+            f"`{init}` for this level")
+
+
+def _require_checkout(checkout: Path, shown: str, expected: str, code: str,
+                      pinned_as: str) -> None:
+    """Checks 3 and 5: the checked-out revision is the pinned one."""
+    actual = _checked_out(checkout)
+    if actual != expected:
+        raise PinRefusal(
+            code,
+            f"{shown} is checked out at {actual or '<no resolvable HEAD>'}, "
+            f"but the pin records {pinned_as} {expected}; the working "
+            "checkout is not the revision this repository consumes")
+
+
+def _require_recorded_gitlink(root: Path, path: str, commit: str) -> str:
+    """Check 2. Returns the source that answered, for the OK line."""
+    recorded, source = _recorded_gitlink(root, path)
+    if recorded is None:
+        raise PinRefusal(
+            "pin-gitlink-mismatch",
+            f"{root} records no {GITLINK_MODE} gitlink for {path} in HEAD or "
+            f"in the index, so nothing fixes the pinned {commit}; a checkout "
+            "present on disk but absent from the tree is not a pinned "
+            "consumption")
+    if recorded != commit:
+        raise PinRefusal(
+            "pin-gitlink-mismatch",
+            f"the gitlink {root} records for {path} (read from {source}) is "
+            f"{recorded}, but the pin records {commit}; the tree and the pin "
+            "disagree about which openWallet root this repository consumes")
+    return source
+
+
+def _require_lockstep(root_checkout: Path, shown: str, commit: str,
+                      leg_path: str, leg_commit: str) -> None:
+    """Check 4, from GIT OBJECTS at the pinned root commit, never from the
+    working tree: a working-tree read would let an unrelated local edit to the
+    root's pin file pass or fail the mirror."""
+    listed = _git(root_checkout, "ls-tree", commit, "--", leg_path)
+    facts = {
+        f"the root's `{leg_path}` gitlink at {commit[:12]}":
+            _gitlink_from(listed.stdout, leg_path)
+            if listed.returncode == 0 else None,
+        f"`commit:` of the root's {ROOT_LEG_PIN} at {commit[:12]}":
+            _root_leg_pin_commit(root_checkout, commit),
+        f"legs.{LEG_ROLE}.commit in this pin": leg_commit,
+    }
+    if set(facts.values()) == {leg_commit}:
+        return
+    stated = "\n".join(f"  {name}: {value or '<absent>'}"
+                       for name, value in facts.items())
+    raise PinRefusal(
+        "pin-leg-lockstep-mismatch",
+        f"the {LEG_ROLE} leg is not in lockstep in {shown}:\n{stated}\n"
+        "the three are ONE invariant and move in ONE commit; a leg mirror that "
+        "disagrees with the root it mirrors names a leg the root does not pin")
+
+
+def _require_digests(checkout: Path, shown: str, pin: dict) -> int:
+    """Check 6, and check 7 for a digested member. Returns the count."""
+    entries = pin.get("files")
+    if not isinstance(entries, list):
+        raise PinRefusal("pin-unreadable",
+                         f"the pin's `files:` is not a list ({entries!r})")
+    for index, entry in enumerate(entries):
+        if not isinstance(entry, dict):
+            raise PinRefusal("pin-unreadable",
+                             f"the pin's files[{index}] is not a mapping")
+        rel = _relative_path(entry.get("path"), f"files[{index}].path")
+        recorded = entry.get("sha256")
+        if not isinstance(recorded, str) or not SHA256_RE.match(recorded.strip()):
+            raise PinRefusal(
+                "pin-digest-mismatch",
+                f"{shown}/{rel}: the pin records sha256 {recorded!r}, which is "
+                "not 64 hex characters; a recomputed digest can never equal a "
+                "digest that is not one")
+        target = checkout / rel
+        if not target.is_file():
+            raise PinRefusal(
+                "pin-member-missing",
+                f"{shown}/{rel} is MISSING from the checkout, but the pin "
+                "records a sha256 for it")
+        try:
+            actual = hashlib.sha256(target.read_bytes()).hexdigest()
+        except OSError as exc:
+            raise EnvironmentFailure(
+                f"{shown}/{rel} could not be read to recompute its digest: "
+                f"{exc}") from exc
+        if actual != recorded.strip().lower():
+            raise PinRefusal(
+                "pin-digest-mismatch",
+                f"{shown}/{rel}: DIGEST DRIFT\n"
+                f"  recorded   {recorded.strip().lower()}\n"
+                f"  recomputed {actual}\n"
+                "the bytes on disk are not the bytes this pin consumes")
+    return len(entries)
+
+
+def _require_digested_set(entries: list) -> None:
+    """`files:` names design.md D6's eight, EACH ONCE, and nothing else. Eight
+    rows that recompute are not eight artifacts pinned: a duplicate of one row
+    standing in for another, with its own valid digest, recomputes eight times
+    and leaves one published artifact unpinned. The refusal names what is
+    missing, what is extra and what is duplicated."""
+    paths = []
+    for index, entry in enumerate(entries):
+        if not isinstance(entry, dict):
+            raise PinRefusal("pin-unreadable",
+                             f"the pin's files[{index}] is not a mapping")
+        paths.append(_relative_path(entry.get("path"), f"files[{index}].path"))
+    seen = Counter(paths)
+    found = {
+        "missing": [path for path in DIGESTED_MEMBERS if path not in seen],
+        "extra": [path for path in seen if path not in DIGESTED_MEMBERS],
+        "duplicated": [path for path, times in seen.items() if times > 1],
+    }
+    named = "; ".join(f"{kind} {listed!r}" for kind, listed in found.items()
+                      if listed)
+    if named:
+        raise PinRefusal(
+            "pin-unreadable",
+            f"the pin's `files:` holds {len(paths)} entr(ies), not design.md "
+            f"D6's {DIGESTED_MEMBER_COUNT} digested artifacts each named once "
+            f"({named}); a pin that digests fewer, other or repeated bytes "
+            "than the design names is a hollowed claim, not a smaller "
+            "satisfied one")
+
+
+def _require_pin_shape(pin: dict) -> None:
+    """The HOLLOWED-PIN guard, a shape check run with the referent's, before
+    a checkout is read: `files:` digests design.md D6's eight, each once, and
+    `pinned_by_commit_only:` covers the bytes the entrypoints run. Without it a
+    pin cut to one digest, one that digested a row twice in place of another,
+    or one that stopped naming the loaded core, would verify clean while
+    pinning less than this repository executes."""
+    entries = pin.get("files")
+    if not isinstance(entries, list):
+        raise PinRefusal("pin-unreadable",
+                         f"the pin's `files:` is not a list ({entries!r})")
+    _require_digested_set(entries)
+    members = pin.get("pinned_by_commit_only")
+    if not isinstance(members, list):
+        raise PinRefusal("pin-unreadable",
+                         f"the pin's `pinned_by_commit_only` is not a list "
+                         f"({members!r})")
+    listed = {_relative_path(raw, f"pinned_by_commit_only[{index}]")
+              for index, raw in enumerate(members)}
+    absent = [path for path in LOADED_BY_ENTRYPOINTS if path not in listed]
+    if absent:
+        raise PinRefusal(
+            "pin-unreadable",
+            f"the pin's `pinned_by_commit_only:` omits {absent}, the bytes "
+            "scripts/validate-openxwallet.py and "
+            "scripts/wallet-yaml-syntax-gate.py load and run; a pin that does "
+            "not cover the code that executes pins the wrong thing")
+
+
+def _member_checkout(sub_root: Path, sub_path: str, leg_path: str,
+                     rel: str) -> tuple[Path, str, str]:
+    """(checkout, path inside it, the checkout as shown) for a member named
+    relative to `submodule_path`. A member under the leg lives in the LEG's
+    checkout, and only that repository's `git status` sees its working tree:
+    the root's status shows the leg as one gitlink, never the files in it."""
+    member, leg = PurePosixPath(rel), PurePosixPath(leg_path)
+    if member.is_relative_to(leg):
+        inside = member.relative_to(leg)
+        return sub_root / leg, str(inside), f"{sub_path}/{leg_path}"
+    return sub_root, rel, sub_path
+
+
+def _require_unmodified(checkout: Path, inside: str, shown: str,
+                        member: str) -> None:
+    """Check 8: the member's working tree is exactly the checked-out commit's.
+    `--untracked-files=all` lists every untracked file inside a directory
+    member, and a file member replaced by a directory reads as deleted."""
+    status = _git(checkout, "status", "--porcelain", "--untracked-files=all",
+                  "--", inside)
+    if status.returncode != 0:
+        raise PinRefusal(
+            "pin-member-modified",
+            f"{member}: `git status` could not be read in {shown} (exit "
+            f"{status.returncode}: {status.stderr.strip()}); a member whose "
+            "working tree cannot be read is not known to be the pinned bytes")
+    if status.stdout.strip():
+        changes = "\n".join(f"  {line}" for line in
+                            status.stdout.rstrip("\n").splitlines())
+        raise PinRefusal(
+            "pin-member-modified",
+            f"{member} is MODIFIED in the working tree of {shown}:\n{changes}\n"
+            "the pin addresses this member by commit, and the checkout's "
+            "commit is right, but these are not the bytes that commit holds")
+
+
+def _first(entries: list[str], indent: str) -> str:
+    """At most LEG_DIRTY_SHOWN entries, one per line, then a count of the
+    rest."""
+    lines = [f"{indent}{entry}" for entry in entries[:LEG_DIRTY_SHOWN]]
+    if len(entries) > LEG_DIRTY_SHOWN:
+        lines.append(f"{indent}... and {len(entries) - LEG_DIRTY_SHOWN} more")
+    return "\n".join(lines)
+
+
+def _is_written_bytecode(path: str) -> bool:
+    """Bytecode an interpreter writes under `scripts/` when it loads the
+    core: inside a `__pycache__/`, or a `.pyc`, `.pyo` or `.pyd` file."""
+    parts = PurePosixPath(path)
+    return parts.parts[:1] == ("scripts",) and (
+        "__pycache__" in parts.parts or parts.suffix in BYTECODE_SUFFIXES)
+
+
+def _content_drift(leg_checkout: Path, shown: str) -> list[str]:
+    """Every tracked path under LEG_READ_DIRS whose working-tree CONTENT is
+    not its blob at the leg's HEAD, each with why. Content, never git's stat
+    cache, which a same-size edit with a restored mtime fools. The regular
+    files are hashed as raw bytes by ONE `git hash-object --no-filters
+    --stdin-paths`; a symbolic link is compared by its link text."""
+    listed = _git(leg_checkout, "ls-tree", "-r", "-z", "HEAD", "--",
+                  *LEG_READ_DIRS)
+    if listed.returncode != 0:
+        raise PinRefusal(
+            "pin-leg-dirty",
+            f"`git ls-tree -r HEAD` could not be read in {shown} (exit "
+            f"{listed.returncode}: {listed.stderr.strip()}); a leg whose "
+            "tree cannot be read is not known to be its commit")
+    drift: list[str] = []
+    regular: list[tuple[str, str]] = []
+    for record in filter(None, listed.stdout.split("\0")):
+        meta, _, path = record.partition("\t")
+        mode, _, oid = meta.split(" ")
+        target = leg_checkout / path
+        if mode in REGULAR_MODES and "\n" not in path:
+            if target.is_symlink() or not target.is_file():
+                drift.append(f"{path} (missing, or not a regular file)")
+            else:
+                regular.append((path, oid))
+        elif mode == SYMLINK_MODE:
+            blob = _git(leg_checkout, "cat-file", "blob", oid)
+            if not target.is_symlink() or blob.returncode != 0 \
+                    or str(target.readlink()) != blob.stdout:
+                drift.append(f"{path} (not the symbolic link it is tracked "
+                             "as)")
+        else:
+            drift.append(f"{path!r} (tracked mode {mode}, which this check "
+                         "cannot compare)")
+    if not regular:
+        return drift
+    hashed = _git(leg_checkout, "hash-object", "--no-filters", "--stdin-paths",
+                  stdin="".join(f"{path}\n" for path, _ in regular))
+    actual = hashed.stdout.split()
+    if hashed.returncode != 0 or len(actual) != len(regular):
+        raise PinRefusal(
+            "pin-leg-dirty",
+            f"`git hash-object` could not hash the working tree of {shown} "
+            f"(exit {hashed.returncode}: {hashed.stderr.strip()}); a leg "
+            "whose content cannot be read is not known to be its commit")
+    return drift + [f"{path} (content is not its blob {oid[:12]})"
+                    for (path, oid), found in zip(regular, actual)
+                    if found != oid]
+
+
+def _require_leg_clean(leg_checkout: Path, shown: str) -> None:
+    """Check 9: the code leg's working tree, AS A WHOLE, is its checked-out
+    commit. The checks before it see only the paths the pin names, and the
+    core reads its family directories by glob: `load_schemas()` keys every
+    `*.schema.yaml` in both by bare file name, so an untracked same-named
+    schema in the profile directory replaces a digested one. Three reads,
+    because each is blind where another sees: `git status` (no `--ignored`,
+    so bytecode a run writes anywhere in the leg passes); `git ls-files -v`,
+    because `git status` never reports an edit under assume-unchanged or
+    skip-worktree; `git ls-files --others` under LEG_READ_DIRS with no
+    ignore rule, because an ignored file there is read by the core and seen
+    by neither of the others; and the CONTENT of every tracked path under
+    LEG_READ_DIRS (`_content_drift`), because the three reads before it all
+    trust git's stat cache."""
+    status = _git(leg_checkout, "status", "--porcelain",
+                  "--untracked-files=all")
+    index = _git(leg_checkout, "ls-files", "-v")
+    # No --exclude* option: ls-files then applies NO ignore rule at all.
+    others = _git(leg_checkout, "ls-files", "-z", "--others", "--",
+                  *LEG_READ_DIRS)
+    for done, asked in ((status, "git status"), (index, "git ls-files -v"),
+                        (others, "git ls-files --others")):
+        if done.returncode != 0:
+            raise PinRefusal(
+                "pin-leg-dirty",
+                f"`{asked}` could not be read in {shown} (exit "
+                f"{done.returncode}: {done.stderr.strip()}); a leg whose "
+                "working tree cannot be read is not known to be its commit")
+    changed = status.stdout.rstrip("\n").splitlines() \
+        if status.stdout.strip() else []
+    # `ls-files -v`: "<tag> <path>". A lowercase tag is assume-unchanged; `S`
+    # is skip-worktree (`s`, both, is lowercase too).
+    flagged = [line[2:] for line in index.stdout.splitlines()
+               if line[:1].islower() or line[:1] == "S"]
+    # What an ignore rule hides from `git status`; a file it already listed
+    # is not listed twice.
+    hidden = [path for path in others.stdout.split("\0")
+              if path and not _is_written_bytecode(path)
+              and f"?? {path}" not in changed]
+    # A path `git status` already lists is not listed again for its content.
+    listed = {line[3:] for line in changed}
+    drift = [entry for entry in _content_drift(leg_checkout, shown)
+             if entry.rsplit(" (", 1)[0] not in listed]
+    if not changed and not flagged and not hidden and not drift:
+        return
+    found = []
+    if changed:
+        found.append(f"`git status` lists {len(changed)} change(s):\n"
+                     f"{_first(changed, '  ')}")
+    if flagged:
+        found.append(f"{len(flagged)} index entr(ies) flagged assume-unchanged "
+                     "or skip-worktree, whose edits `git status` never "
+                     f"reports:\n{_first(flagged, '  ')}")
+    if hidden:
+        read = " and ".join(f"{directory}/" for directory in LEG_READ_DIRS)
+        found.append(f"{len(hidden)} untracked file(s) under {read}, which "
+                     "the core reads, hidden from `git status` by an ignore "
+                     f"rule:\n{_first(hidden, '  ')}")
+    if drift:
+        read = " and ".join(f"{directory}/" for directory in LEG_READ_DIRS)
+        found.append(f"{len(drift)} tracked path(s) under {read} whose "
+                     "CONTENT is not the checked-out commit's, compared byte "
+                     "for byte (`git hash-object --no-filters`) and not "
+                     "through git's stat cache, which a same-size edit with "
+                     f"a restored mtime fools:\n{_first(drift, '  ')}\n"
+                     "if every text file differs, check core.autocrlf: the "
+                     "pinned bytes are LF")
+    raise PinRefusal(
+        "pin-leg-dirty",
+        f"the working tree of {shown} is not its checked-out commit; "
+        + "\n".join(found) + "\n"
+        "the composed validator reads the leg's directories, not only the "
+        "paths this pin names (an untracked `*.schema.yaml` in either family "
+        "directory replaces the digested schema of the same name), so a leg "
+        "that is not exactly its commit is not the code this pin verifies. "
+        f"Inspect it with `git -C {shown} status`; a change to the standard "
+        "is an openWallet pull request, never an edit in place (AGENTS.md "
+        "rule 3)")
+
+
+def _require_path_only(sub_root: Path, sub_path: str, leg_path: str,
+                       pin: dict) -> int:
+    """Checks 7 and 8 for the path-only members. Identity comes from checks 3
+    and 5, which pin both checkouts to their commits; what a commit cannot
+    catch is the working tree drifting after checkout. So each member must be
+    PRESENT (7) and UNMODIFIED in its own checkout's working tree (8): edited,
+    deleted, replaced by a directory, or holding untracked content all refuse.
+    Returns the count."""
+    members = pin.get("pinned_by_commit_only")
+    if not isinstance(members, list):
+        raise PinRefusal("pin-unreadable",
+                         f"the pin's `pinned_by_commit_only` is not a list "
+                         f"({members!r})")
+    for index, raw in enumerate(members):
+        rel = _relative_path(raw, f"pinned_by_commit_only[{index}]")
+        if not (sub_root / rel).exists():
+            raise PinRefusal(
+                "pin-member-missing",
+                f"{sub_path}/{rel} is MISSING from the checkout; the pin "
+                "declares it content-addressed by commit, and a member absent "
+                "from the working tree is content-addressed by nothing")
+        checkout, inside, shown = _member_checkout(sub_root, sub_path,
+                                                   leg_path, rel)
+        _require_unmodified(checkout, inside, shown, f"{sub_path}/{rel}")
+    return len(members)
+
+
+def verify(root: Path = ROOT) -> Verified:
+    """Every check, first failure raised and nothing past it. Prints nothing."""
+    pin = load_pin(root / PIN_RELPATH)
+    sub_path, commit = _referent(pin)
+    leg_path, leg_commit = _leg(pin)
+    _require_executed_mount(sub_path, leg_path)
+    _require_pin_shape(pin)
+    sub_root = root / sub_path
+    leg_shown = f"{sub_path}/{leg_path}"
+
+    # The root, entirely.
+    _require_initialized(sub_root, sub_path, "pin-submodule-uninitialized",
+                         f"git submodule update --init {sub_path}")
+    source = _require_recorded_gitlink(root, sub_path, commit)
+    _require_checkout(sub_root, sub_path, commit, "pin-checkout-mismatch",
+                      "commit")
+    _require_lockstep(sub_root, sub_path, commit, leg_path, leg_commit)
+
+    # Then the leg.
+    _require_initialized(sub_root / leg_path, leg_shown,
+                         "pin-leg-uninitialized",
+                         f"git -C {sub_path} submodule update --init {leg_path}")
+    _require_checkout(sub_root / leg_path, leg_shown, leg_commit,
+                      "pin-leg-checkout-mismatch", f"legs.{LEG_ROLE}.commit")
+
+    # Then the bytes.
+    digests = _require_digests(sub_root, sub_path, pin)
+    members = _require_path_only(sub_root, sub_path, leg_path, pin)
+    _require_leg_clean(sub_root / leg_path, leg_shown)
+    tag = pin.get("contract_bundle_tag")
+    return Verified(commit, leg_commit, source, digests, members,
+                    tag if isinstance(tag, str) and tag else "<none yet>")
+
+
+# --------------------------------------------------------------------------
+# command line
+# --------------------------------------------------------------------------
+
+def main(argv: list[str] | None = None) -> int:
+    """Print one OK line and return 0, or the refusal on stderr and 2."""
+    parser = argparse.ArgumentParser(
+        prog="verify-openwallet-pin.py",
+        description=("Verify contracts/openwallet-pin.yaml against the "
+                     "openWallet gitlink, both checkouts, the leg lockstep and "
+                     "the digests. Offline."))
+    parser.add_argument(
+        "--root", metavar="PATH", type=Path, default=ROOT,
+        help=("the repository to verify (default: the repository this script "
+              "sits in)"))
+    args = parser.parse_args(argv)
+
+    try:
+        done = verify(args.root.resolve())
+    except PinRefusal as exc:
+        print(str(exc), file=sys.stderr)
+        return 2
+    except (EnvironmentFailure, OSError) as exc:
+        print(f"ERROR verify-openwallet-pin: the question could not be asked: "
+              f"{exc}", file=sys.stderr)
+        return 2
+
+    print(f"OK openwallet-pin verified: openWallet@{done.commit} (tag label "
+          f"{done.tag_label}), gitlink read from {done.gitlink_source}, "
+          f"{LEG_ROLE} leg @{done.leg_commit} in lockstep (gitlink, "
+          f"{ROOT_LEG_PIN}, legs.{LEG_ROLE}), {done.digests} digest(s) "
+          f"recomputed, {done.members} path-only member(s) present and "
+          "unmodified")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

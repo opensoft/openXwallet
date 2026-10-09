@@ -1,0 +1,81 @@
+# THE NEUTRALITY GATE, for every pull request to main
+# (`split-openwallet-neutral-core` task 5.4; `design.md` D5 "NEUTRALITY BY
+# CONSTRUCTION", D7 "The proof" part three; `docs/neutrality-gate.md`).
+#
+# WHY THIS FILE EXISTS. `scripts/neutrality-gate.py` runs the carve commit's
+# validator (`90111df262d6f54f7e82651d860adc12345f83f4`, read from git objects)
+# and the composed adapter over the same trees and requires byte-identical
+# stdout and equal exit codes, plain and `--strict`: over this repository's
+# tree, and over every fixture tree the kept and moved test suites build, each
+# suite invocation run as the suite gave it and again with `--strict` toggled.
+#
+# WHY `fetch-depth: 0`. The baseline IS the carve commit's validator, so the
+# carve commit must be in the checkout's history; a depth-1 `actions/checkout`
+# does not carry it, and the gate REFUSES rather than compare against nothing.
+# This is `carve-manifest.yml`'s precedent, for the same reason. In
+# `pytest-suite`'s depth-1 run the test's real-repository seat SKIPS LOUDLY and
+# names this workflow; the throwaway-repository tests run in both. The pytest
+# step runs `tests/nested_repo_prune` here too, because its FR-009 test (the
+# composed adapter against the carve commit's validator, whole output and exit
+# code) needs the same history: at depth 1 it skips loudly, naming this file.
+#
+# WHY THE TWO-LEVEL INIT, AND WHY IT IS SCOPED. The composed adapter loads the
+# pinned core in process from `openWallet/code/scripts/validate-openxwallet.py`,
+# so it needs the `openWallet` gitlink (the ROOT) and, inside it, the `code`
+# leg. The checkout initializes no submodule, and each level is named: the spec
+# leg holds nothing the gate reads, and a recursive init would fetch it anyway
+# (design D6, "Init is scoped, never `--recursive`"). An uninitialized level is
+# the adapter's own named refusal (exit 2), which the gate prints verbatim.
+#
+# TARGET (ii) IS EVIDENCE, NOT CI (ruled by Brett Heap, label verbatim
+# "Evidence, not CI (Recommended)"). The export of openxFactory's live
+# `governance/` tree carries the operator's email and the seats' keys and is
+# never committed here, and every gate here is offline (AGENTS.md rule 4). It
+# is run locally with `--openxfactory-export` and its result recorded in
+# `docs/neutrality-gate.md`, "Evidence".
+#
+# The job id is the TOKEN THAT NAMES THE FUNCTION, like `wallet-validation`, and
+# the job carries no display name on purpose, so the status check surfaces as
+# exactly `neutrality-gate`.
+#
+# THE DEPENDENCY LINE IS PINNED AND WHEEL-ONLY, copied from
+# `carve-manifest.yml`, whose header records its verification.
+#
+# THE WORKFLOW REPORTS; IT DOES NOT BLOCK. Making `neutrality-gate` a REQUIRED
+# status check is Brett Heap's console act on the ruleset, as it was for
+# `openspec-cli-pin` (docs/openspec-cli-pin.md, "Making the check required"),
+# and a check is not selectable until it has reported once.
+name: neutrality-gate
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  neutrality-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: false
+
+      - run: git submodule update --init openWallet
+
+      - run: git -C openWallet submodule update --init code
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Quoted: `:all: ` would otherwise read as a YAML mapping key.
+      - run: "pip install --only-binary :all: pyyaml==6.0.3 jsonschema==4.26.0 rfc3339-validator==0.1.4 pytest==9.1.1"
+
+      - run: python3 scripts/neutrality-gate.py
+
+      - run: python3 -m pytest tests/neutrality_gate tests/nested_repo_prune -q

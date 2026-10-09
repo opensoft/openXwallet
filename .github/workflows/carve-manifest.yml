@@ -8,13 +8,16 @@
 # for completeness, and asks whether anything under the carve surface has
 # changed, vanished or appeared since — so it needs the carve commit IN THE
 # CHECKOUT'S HISTORY. `pytest-suite.yml` checks out at depth 1, which does not
-# carry it, and `pytest-suite.yml` is itself a carved row of the manifest
-# (moved to the code leg, kept here): editing it would refuse as a file
-# CHANGED SINCE THE CARVE and need a re-cut at a new carve commit. So it is not
-# edited, and this NEW workflow — a path the carve does not touch — runs the
-# checker and its test with `fetch-depth: 0` instead. In `pytest-suite`'s
-# depth-1 run the test's real-repository seat SKIPS LOUDLY and names this
-# workflow; the throwaway-repository tests run in both.
+# carry it. `pytest-suite.yml` is itself a carved row of the manifest (moved to
+# the code leg, kept here): before the shed an edit to it refused as a file
+# CHANGED SINCE THE CARVE, so this NEW workflow — a path the carve does not
+# touch — was written to run the checker and its test with `fetch-depth: 0`
+# instead. Under the manifest's `phase: post-shed` a kept moved row's bytes are
+# no longer compared with the carve commit, only its path required present, so
+# the adapter rebuild rewrote `pytest-suite.yml` in place (`tasks.md` 5.6) and
+# kept its depth-1 checkout. In `pytest-suite`'s depth-1 run the test's
+# real-repository seat SKIPS LOUDLY and names this workflow; the
+# throwaway-repository tests run in both.
 #
 # The job id is the TOKEN THAT NAMES THE FUNCTION, like `wallet-validation`, and
 # the job carries no display name on purpose, so the status check surfaces as
@@ -27,9 +30,9 @@
 # in a fresh Python 3.12 environment: the pinned line and all ten of its
 # transitive dependencies install as wheels. Transitive versions are resolved
 # by pip, not locked here. `wallet-validation.yml` and `pytest-suite.yml` are
-# carved rows of the manifest, so they keep their unpinned line until the
-# adapter rebuild rewrites them (`tasks.md` 5.6); editing them now would
-# refuse as CHANGED SINCE THE CARVE.
+# carved rows of the manifest, kept here; the adapter rebuild rewrote both
+# (`tasks.md` 5.6), which `phase: post-shed` allows, and both now carry this
+# pinned, wheel-only line (`wallet-validation.yml` without pytest).
 #
 # THE WORKFLOW REPORTS; IT DOES NOT BLOCK. Making `carve-manifest` a REQUIRED
 # status check is Brett Heap's console act on the ruleset, as it was for

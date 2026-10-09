@@ -2,20 +2,255 @@
 
 Status: standard
 
-The wallet standard's own release history. Bundles are `wallet-v<major>.<minor>`
-and are identified by five coordinated values: per-file `contract_schema_version`,
+openXwallet's release history. From `wallet-v1.0` to `wallet-v1.5` this
+repository owned the neutral wallet standard, and those entries are the
+standard's history: they travelled verbatim to the openWallet ROOT
+(`opensoft/openWallet`), where the `wallet-v*` series now continues (RULED Q4,
+"openWallet continues wallet-v* (Recommended)"). From the adapter rebuild on,
+this repository is the openxFactory ADAPTER over the pinned openWallet, and its
+releases are the adapter's OWN series, `xwallet-v*`, first `xwallet-v1.0`
+(ruled, "Adapter series `xwallet-v*`, first `xwallet-v1.0` (Recommended)"),
+while `wallet-v*` continues at the openWallet root. A release is identified by
+five coordinated values (AGENTS.md rule 6): per-file `contract_schema_version`,
 `contract_bundle_version` in [`manifest.yaml`](./manifest.yaml), an annotated
-`wallet-v<major>.<minor>` tag, the exact release commit with per-file SHA-256
-digests, and the matching entry below. Consumers pin the exact commit and digests
-— **a movable branch or tag is not a compatibility pin.**
+tag, the exact release commit with per-file SHA-256 digests, and the matching
+entry below. Consumers pin the exact commit and digests — **a movable branch or
+tag is not a compatibility pin.**
 
-**Release-surface rule.** `wallet-vN.M.digests.yaml` selects
+**Release-surface rule.** A release's digest inventory selects
 `member_class: owned` **only**. Exclusion is by DECLARED FIELD, never by a
-`contracts/schemas/` path heuristic — that heuristic breaks the day openXwallet
-publishes a schema of its own there. The one consumed member
-(`contracts/schemas/hermes-job-envelope.schema.yaml`, vendored from openxFactory
-at a digest pin) carries `release_surface: false` and is never part of a wallet
-bundle.
+`contracts/schemas/` path heuristic — that heuristic breaks the day a
+repository publishes a schema of its own there. Since the adapter rebuild
+[`manifest.yaml`](./manifest.yaml) registers NO owned row: the eight digested
+artifacts are openWallet's, their owned rows sit in the openWallet root's
+manifest at `code/contracts/…`, and the `wallet-v1.0…v1.5` inventories
+(`contracts/releases/`) went to that root with them. The one row left here is
+the consumed member (`contracts/schemas/hermes-job-envelope.schema.yaml`,
+vendored from openxFactory at a digest pin), which carries
+`release_surface: false` and is never part of a bundle. So this repository's
+release surface holds no contract artifact, and which openWallet bytes one of
+its releases runs is recorded in `contracts/openwallet-pin.yaml`, never as a
+second digest in the manifest.
+
+---
+
+## xwallet-v1.0 — 2026-10-09 (the adapter rebuild; split-openwallet-neutral-core §5; tagged at the merge commit by task 5.8)
+
+**The adapter's first release, in its own series.** Brett Heap ruled the
+series, label verbatim "Adapter series `xwallet-v*`, first `xwallet-v1.0`
+(Recommended)", and that [`manifest.yaml`](./manifest.yaml)'s
+`contract_bundle_version` holds the tag's value, label verbatim "The adapter's
+tag value (Recommended)". The `wallet-v*` series continues at the openWallet
+root (RULED Q4).
+
+**Change class: the standard LEAVES; the adapter stays.** No contract content
+changes and no digest moves: the eight digested artifacts leave this repository
+at the sha256 they carried at `wallet-v1.5` and arrive in openWallet's code leg
+as the same bytes. What a consumer sees is one prefix — a code-leg path `P` is
+`openWallet/code/P` here and `openXwallet/openWallet/code/P` inside
+openxFactory, and its sha256 is the same at every depth.
+
+Realizes §5 of the openXwallet change `split-openwallet-neutral-core` —
+**ratified 2026-10-08T17:10:47Z by Brett Heap, operator authority**, in-session
+ruling "ratify 26 and merge" — in one pull request: the pin and its verifier
+(5.1), the recomposed validator (5.2), the syntax-gate entrypoint (5.3), the
+neutrality gate (5.4), the shed (5.5), and the manifest, this changelog, the
+README, `AGENTS.md`, `CODEOWNERS` and the two workflows (5.6).
+
+### What left — the standard, to openWallet
+
+The standard was carved out of this repository at the NAMED CARVE COMMIT
+**`90111df262d6f54f7e82651d860adc12345f83f4`** (named by Brett Heap,
+2026-10-08T18:07:19Z, "name 90111df as the carve commit, do 2.4 and 2.5") into
+openWallet's three PUBLIC repositories (RULED Q3, Q5), every carved path
+keeping its repository-relative path inside its leg.
+[`../docs/openwallet-carve-manifest.yaml`](../docs/openwallet-carve-manifest.yaml)
+declares every tracked path at that commit, the one place it goes, and whether
+it stays here. This rebuild sheds exactly its 106 `retained_here: shed` rows.
+
+- **To the CODE leg** `opensoft/openWallet-code`: `contracts/openxwallet/`
+  (less the three adapter negatives) and `contracts/openxwallet-agent-profile/`
+  — both families, the eight digested artifacts, the packaged corpus — with
+  `tests/multi_key_wallets/` and `tests/wallet_yaml_syntax_gate/`. The core
+  validator, the syntax gate and the prune half of `tests/nested_repo_prune/`
+  went there too, the validator with its declared, enumerated hunks (a)–(e);
+  all three are KEPT here (below).
+- **To the SPEC leg** `opensoft/openWallet-spec`: the travelling change
+  `add-composition-drift-cascade`, and Speckit `006-openxwallet-contracts`,
+  `010-wallet-validator-ci` and `015-multi-key-wallets`. The promoted specs
+  `openxwallet` and `openxwallet-agent-profile` went there as well, and stay
+  here until this change's ARCHIVE retires them (`retired_by_archive`). The
+  archive records of `add-openxwallet` and `add-multi-key-wallets`, and
+  `openspec/config.yaml`, went there as copies and stay here, the records
+  never edited.
+- **To the ROOT** `opensoft/openWallet`: the release identity —
+  `contracts/releases/wallet-v1.0…v1.5.digests.yaml`, MOVED and shed here, and
+  copies of [`manifest.yaml`](./manifest.yaml), this changelog,
+  `docs/byte-identity-wallet-v1.0.md` and `LICENSE`, which stay here as this
+  repository's own (Q4's placement, `design.md` D7).
+
+Every entry below this one is therefore history. The paths it names under
+`contracts/openxwallet*/`, `contracts/releases/`, `specs/006-…`, `specs/010-…`,
+`specs/015-…` and the two shed test suites now resolve in openWallet, at the
+same repository-relative path inside their leg.
+
+### What stays — the adapter
+
+- **The hermes binding.** `contract_pin.yaml`, the vendored
+  `contracts/schemas/hermes-job-envelope.schema.yaml` (the manifest's ONE row,
+  consumed) and `scripts/verify-contract-pin.py`. The adapter binds the pinned
+  validator's approval vocabulary to the envelope's `approval_policy`
+  properties, unconditionally, with no flag a caller can omit (RULED Q6,
+  `design.md` D4); openWallet carries no openxFactory input.
+- **Rule (t), the root-issuer operator anchor**, with its three negatives at
+  the path they always had —
+  `contracts/openxwallet/examples/negative/grant-review-authority-omits-issued-by.yaml`,
+  `…/grant-review-root-issuer-is-a-machine.yaml` and
+  `…/grant-review-root-issuer-says-opensoft.yaml` — attributed to `OXWR-R1`
+  and `OXWR-R2`.
+- **The register reader**: capability `review-authority-register-reader`, with
+  no delta, and its active change `widen-register-reader-for-a-second-council`.
+- **Both consumer entrypoints, at their paths**: `scripts/validate-openxwallet.py`
+  and `scripts/wallet-yaml-syntax-gate.py`, with the one positional scan target,
+  `--strict`, the `validate-openxwallet: N error(s), M warning(s)` summary and
+  the `wallet-validation` check token — openxFactory's REQUIRED gate and
+  LedgerxFactory's estate run pin each by string. The validator now loads the
+  pinned core in process from `openWallet/code/scripts/validate-openxwallet.py`
+  and registers rule (t), the register reader and the hermes binding at the
+  core's declared extension points (RULED Q1, `design.md` D5). Imported by
+  path, as openxFactory's factory-identity and clearing-dispatch loaders
+  import it, the validator keeps the five key-decoder names they read off the
+  module: `decode_public_key_multibase` and `fingerprint_of_public_key`,
+  re-exported from the core, and its own `_decode_public_key`,
+  `_fingerprint_of` and `PUBLIC_KEY_B64U_LEN`. The syntax gate delegates to
+  the core's: one implementation.
+- **Both check tokens, `wallet-validation` and `pytest-suite`**, with their
+  workflows rewritten in place: each initializes `openWallet` and then its
+  `code` leg, two scoped lines and never `--recursive`, and
+  `wallet-validation` then runs the two verifiers before the gates, the
+  validator plain and `--strict`. Both install a pinned, wheel-only dependency
+  line.
+- **The kept suites**: the register reader's three, `tests/nested_repo_prune/`
+  through the composed entrypoint, and `tests/carve_manifest/`, joined by the
+  openWallet pin's and the neutrality gate's.
+
+### The new pin: `contracts/openwallet-pin.yaml`
+
+The gitlink `openWallet/` mounts the openWallet ASSEMBLY ROOT — the one commit
+that names both legs — and `contracts/openwallet-pin.yaml` declares it a second
+time, in the same commit (RULED Q2, "Nested gitlink, one chain
+(Recommended)"; `design.md` D6):
+
+- the root `commit:`;
+- `legs.code`, the code-leg commit that root pins, held as a LOCKSTEP MIRROR
+  of the root's `code` gitlink and of the root's own `contracts/code-pin.yaml`;
+- the per-file sha256 of the eight digested artifacts at `code/contracts/…`,
+  the same strings the openWallet root manifest's owned rows hold;
+- `pinned_by_commit_only:` at `code/…` for the rest.
+
+The spec leg is not recorded: nothing here reads it at run time, and the root
+commit fixes it anyway.
+
+`scripts/verify-openwallet-pin.py` runs SECOND in `wallet-validation`, after
+`scripts/verify-contract-pin.py` and before any gate. It is offline and fails
+closed on: an uninitialized `openWallet/` and, separately, an uninitialized
+`openWallet/code/`; the recorded gitlink or the checkout ≠ the pin; a
+leg-lockstep mismatch, read from git objects at the pinned root commit; the
+code leg's checkout ≠ `legs.code`; a drifted digest; a missing
+`pinned_by_commit_only:` member, and one modified, deleted, replaced by a
+directory or holding untracked content in its checkout's working tree
+(`pin-member-modified`); a code leg whose working tree is not its commit AS A
+WHOLE (`pin-leg-dirty`): a change or untracked file `git status` lists there,
+an untracked file under `contracts/` or `scripts/` listed with NO ignore rule
+applied (bytecode under `scripts/` aside), an entry flagged assume-unchanged
+or skip-worktree, or a tracked file there whose CONTENT is not its blob,
+hashed from the bytes on disk rather than trusted from git's stat cache,
+because the core reads its family directories by glob and an untracked
+schema replaces a digested one of the same name; a HOLLOWED pin,
+whose `files:` does not name exactly the eight, each once and no other path,
+or whose `pinned_by_commit_only:` omits the two scripts the entrypoints load;
+and a pin whose `submodule_path` or `legs.code.submodule_path` is not
+`openWallet` or `code`, the mount the two entrypoints execute
+(`pin-mount-mismatch`). A `git` that cannot run or a file that cannot be read
+is exit 2, never a traceback. Each refusal is OBSERVED on a mutated input
+before the verifier is trusted (task 5.1).
+
+The pin is the ONLY record here of which openWallet bytes run.
+[`manifest.yaml`](./manifest.yaml) registers none of the eight, as owned or as
+consumed, and keeps no second digest (`design.md` D6, "No mirror copies").
+
+### Neutrality: the composed run is byte-identical to the pre-split validator
+
+This is the property the rebuild exists to keep. Over three kinds of tree,
+(i) this repository's own tree, (ii) an export of openxFactory's live
+`governance/` tree and (iii) every fixture tree the kept and moved test suites
+build, the composed adapter's output is BYTE-IDENTICAL to the output of the
+validator at the carve commit: the same notes, finding codes and summary line,
+in the same order (`design.md` D5, as amended 2026-10-09: its first wording
+claimed every tree, which was wider than the gate measures, and is withdrawn;
+the known tree outside the three kinds, the code leg's own checkout scanned in
+place, differs by one summary line, `repo scan: 1` against `0`). Task 5.4's
+gate runs both over exactly those three kinds: this tree, an export of
+openxFactory's live `governance/` tree, and every fixture tree the test suites
+build. It requires an EMPTY `diff`, plain and under `--strict`, with the same
+exit code: each suite invocation runs as the suite gave it and again with
+`--strict` toggled, so a fixture tree is compared in both modes whichever one
+its suite asked for.
+It is `scripts/neutrality-gate.py`, with its tests in `tests/neutrality_gate/`,
+and its workflow `neutrality-gate.yml` reports on every pull request.
+So openxFactory's pin bump moves no literal assertion: `8 of 8`, the five-key
+wallet note and `repo scan:` survive.
+
+**One line is new, and it is declared rather than hidden.** THIS repository's
+own run gains
+
+```text
+note  nested repositories pruned (not adjudicated): openWallet
+```
+
+because the sweep prune now finds a nested checkout here. `openWallet/` is
+pruned whole, so neither of its legs is adjudicated as this repository's
+records. A consumer's output does not change, because its sweep already prunes
+`openXwallet/` whole.
+
+### What a consumer must do
+
+**Nothing at this commit.** A consumer pinned at `wallet-v1.5` or earlier keeps
+every path it reads. On its next pin bump past this release:
+
+- **openxFactory** re-paths its pin's `files:` ONCE, to
+  `openWallet/code/contracts/…`, keeps `submodule_path: openXwallet`, and
+  records NO openWallet commit. It reaches both openWallet commits through this
+  repository's pin: ONE chain (`tasks.md` §6).
+- **Every consumer** initializes three named levels, never `--recursive`:
+
+  ```sh
+  git submodule update --init openXwallet
+  git -C openXwallet submodule update --init openWallet
+  git -C openXwallet/openWallet submodule update --init code
+  ```
+
+  A recursive init would also fetch `openWallet/spec`, which nothing in a gate
+  reads (`design.md` D6, "Init is scoped"). A level left uninitialized is exit
+  2 with a refusal naming that level, never a quiet green.
+
+No `kind:` value, finding code, schema `$id`, filename or capability id moves
+("keep the prefix", RULED 2026-10-08), so no assertion that pins one by name
+moves either.
+
+### The version
+
+**`xwallet-v1.0`, the first value of the adapter's own series** (ruled,
+"Adapter series `xwallet-v*`, first `xwallet-v1.0` (Recommended)").
+[`manifest.yaml`](./manifest.yaml) moves `contract_bundle_version` from
+`wallet-v1.5`, the last value this repository cut while it owned the standard,
+to `xwallet-v1.0`, the adapter's tag value (ruled, "The adapter's tag value
+(Recommended)"). The annotated tag is task 5.8, Brett Heap's OPERATOR act, at
+this change's merge commit. The manifest registers no owned row, so no per-file
+`contract_schema_version` moves; the per-file digests of the openWallet bytes
+this release runs are the eight in `contracts/openwallet-pin.yaml`; and the
+`contracts/releases/` inventories went to the openWallet root with the
+standard.
 
 ---
 

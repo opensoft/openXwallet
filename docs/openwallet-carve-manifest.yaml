@@ -29,17 +29,27 @@
 #     python3 scripts/validate-carve-manifest.py
 #     python3 scripts/validate-carve-manifest.py --at 90111df262d6f54f7e82651d860adc12345f83f4
 #
+# Under `phase: post-shed` (below) the `--at <carve commit>` form REFUSES
+# `carve-shed-incomplete` by design, because the shed rows are still present at
+# the carve commit, so the carve-commit answer is this file's phase-`carve`
+# history (`git log -- docs/openwallet-carve-manifest.yaml`); the checker is
+# unchanged.
+#
 # The checker recomputes every moved row's sha256 from the raw git blob at the
 # carve commit, walks the whole tree there for completeness, and asks of the
 # revision under test whether anything under the carve SURFACE (`moved_paths:`
-# below) has changed, vanished or appeared since. In CI it runs in
-# `.github/workflows/carve-manifest.yml` (job `carve-manifest`) at
-# `fetch-depth: 0`, beside `tests/carve_manifest/test_carve_manifest.py`. A
-# depth-1 checkout (the default `actions/checkout`, which `pytest-suite.yml`
-# uses, and which is a carved row and so not edited) does not carry the carve
-# commit: the checker REFUSES there (`carve-revision-mismatch`) rather than
-# pass on a history it cannot read, and the test's real-repository seat SKIPS
-# LOUDLY there, naming the commit and that workflow.
+# below) has changed, vanished or appeared since (under `phase: post-shed`,
+# below, a `kept` row may change but may not go, under the surface or outside
+# it). In CI it runs in `.github/workflows/carve-manifest.yml` (job
+# `carve-manifest`) at `fetch-depth: 0`, beside
+# `tests/carve_manifest/test_carve_manifest.py`. A depth-1 checkout (the
+# default `actions/checkout`, which `pytest-suite.yml` uses; that workflow is a
+# `kept` moved row, rewritten here by the adapter rebuild, which `post-shed`
+# allows because it no longer compares a kept row's bytes with the carve
+# commit, only requires its path present) does not carry the carve commit: the
+# checker REFUSES there (`carve-revision-mismatch`) rather than pass on a
+# history it cannot read, and the test's real-repository seat SKIPS LOUDLY
+# there, naming the commit and that workflow.
 #
 # THE GRAMMAR IS openDox's (openxFactory `docs/opendox-carve-manifest.yaml`,
 # checked by its `scripts/validate-carve-manifest.py`), with these differences,
@@ -110,11 +120,15 @@ kind: openwallet-carve-manifest
 # at two values. `carve` (what an absent key means): every row's source path is
 # still here, and every MOVED row's blob must still be its carve-commit blob.
 # `post-shed`: the adapter rebuild (`tasks.md` 5.5) has removed exactly the
-# `retained_here: shed` rows, which must then be ABSENT; a `kept` row is still
-# required present; a `retired_by_archive` row may be present (unchanged) or
-# gone, because it leaves by this change's archive, a later act. The flip and
-# the shed land in ONE commit, or the checker refuses.
-phase: carve
+# `retained_here: shed` rows, which must then be ABSENT
+# (`carve-shed-incomplete`); every `kept` row, moved or `not_moved`, under the
+# carve surface or outside it, is still required PRESENT at its path
+# (`carve-path-absent`), though a kept moved row's bytes are no longer compared
+# with the carve commit, because the adapter rewrites those in place; a
+# `retired_by_archive` row may be present (unchanged) or gone, because it
+# leaves by this change's archive, a later act. The flip and the shed land in
+# ONE commit, or the checker refuses.
+phase: post-shed
 
 header: >-
   The openWallet carve manifest: one row per tracked path at the NAMED CARVE

@@ -1,5 +1,5 @@
-# The offline test suite for every pull request to main, over the syntax gate's
-# tests carried by the wallet-v1.0 carve (tests/wallet_yaml_syntax_gate/).
+# The offline test suite for every pull request to main. REQUIRED on this
+# repository's default branch by the same ruleset as wallet-validation.
 #
 # The job carries no display name on purpose, for the same reason
 # wallet-validation.yml does: the status check must surface as exactly
@@ -9,6 +9,34 @@
 # `-q` keeps the log readable but the SUMMARY LINE is the evidence: a suite that
 # collected zero tests and a suite that passed are both "green" to a ruleset, so
 # the collected count is what distinguishes them.
+#
+# HISTORY. At wallet-v1.0 this file ran the syntax gate's tests carried by that
+# carve (tests/wallet_yaml_syntax_gate/). The openWallet carve took it to
+# openWallet's code leg verbatim, with the standard's suites, which run there
+# now (docs/openwallet-carve-manifest.yaml: `moved_verbatim`,
+# `retained_here: kept`). The adapter rebuild rewrote the copy kept here
+# (split-openwallet-neutral-core tasks.md 5.6); under the carve manifest's
+# `phase: post-shed` a kept row is not compared with the carve, so the rewrite
+# does not refuse there. It runs the suites this repository keeps (README.md,
+# "What is here").
+#
+# THE SAME TWO SCOPED INIT LINES AS wallet-validation, BEFORE THE SUITE, because
+# the kept suites drive the composed entrypoint, and the entrypoint loads its
+# core from openWallet/code/scripts/validate-openxwallet.py (RULED Q1;
+# design.md D5). Without the code leg it refuses, exit 2, and the suite would
+# test nothing of the adapter. The root first, then its code leg, never
+# `--recursive` and never the spec leg, which nothing here reads (design.md D6,
+# "Init is scoped"). Both repositories are PUBLIC (RULED Q5), so the default
+# token clones them and the job needs no secret.
+#
+# The checkout stays at depth 1. The carve manifest's real-repository test seat
+# needs the carve commit in history, so it skips loudly here, naming
+# carve-manifest.yml, which runs it at `fetch-depth: 0`.
+#
+# THE DEPENDENCY LINE IS PINNED AND WHEEL-ONLY: carve-manifest.yml's line. Each
+# package is pinned to the exact version verified there on 2026-10-08 in a
+# fresh Python 3.12 environment, and `--only-binary :all:` refuses any source
+# distribution, so no `setup.py` runs at install.
 name: pytest-suite
 
 on:
@@ -22,14 +50,24 @@ permissions:
 jobs:
   pytest-suite:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # A plan call: the suite runs ~8 min locally, and a timeout is not a verdict.
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: false
 
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - run: pip install pyyaml jsonschema rfc3339-validator pytest
+      # Quoted: `:all: ` would otherwise read as a YAML mapping key.
+      - run: "pip install --only-binary :all: pyyaml==6.0.3 jsonschema==4.26.0 rfc3339-validator==0.1.4 pytest==9.1.1"
+
+      - name: Initialize the openWallet root (scoped, never --recursive)
+        run: git submodule update --init openWallet
+
+      - name: Initialize the openWallet code leg (never the spec leg)
+        run: git -C openWallet submodule update --init code
 
       - run: python3 -m pytest tests/ -q
