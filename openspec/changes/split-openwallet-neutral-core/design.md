@@ -304,12 +304,14 @@ POINTS, EMPTY by default, at exactly the positions hunks (c) and (d) vacate:
 
 The core never imports the adapter; the adapter never suppresses, rewrites or
 reorders a core finding. **The property this buys is NEUTRALITY BY
-CONSTRUCTION:** on any tree, the composed run's output is byte-identical to the
-pre-split validator's. The gate that proves it runs the validator at the carve
-commit and the composed adapter over (i) this repository's tree, (ii) an export
-of openxFactory's live `governance/` tree (the widen packet's §4 method) and (iii)
-every fixture tree the kept and moved test suites build — `diff` EMPTY, plain and
-`--strict`, the same exit code. Under that gate openxFactory's pin bump moves no
+CONSTRUCTION, stated over THREE KINDS OF TREE:** over (i) this repository's own
+tree, (ii) an export of openxFactory's live `governance/` tree (the widen
+packet's §4 method) and (iii) every fixture tree the kept and moved test suites
+build, the composed run's output is byte-identical to the pre-split validator's
+(the amendment below says what that does not cover). The gate that proves it
+runs the validator at the carve commit and the composed adapter over those same
+three kinds — `diff` EMPTY, plain and `--strict`, the same exit code. Under that
+gate openxFactory's pin bump moves no
 literal assertion: `8 of 8`, the five-key wallet note and `repo scan:` all
 survive. One output line is new and is declared rather than hidden: THIS
 repository's own run gains `nested repositories pruned (not adjudicated):
@@ -317,6 +319,34 @@ openWallet`, because the sweep prune (`:3333-3398`) now finds a nested checkout
 here — `openWallet/` whole, so its `code/` and `spec/` are never visited; a
 consumer's output is unchanged, because the consumer's sweep already prunes
 `openXwallet/` whole.
+
+**AMENDED 2026-10-09.** Brett Heap, operator authority, in session, by multiple
+choice, label verbatim: "Qualify D5's sentence; gate stays GREEN (Recommended)"
+(opensoft/openXwallet#25, comment 6072537370, recorded 2026-10-09T01:43Z). The
+sentence above first read that "on any tree, the composed run's output is
+byte-identical to the pre-split validator's". That was wider than the gate
+measures, and it is withdrawn. The proof at the openWallet root,
+`docs/byte-identity-wallet-v1.6.md` (opensoft/openWallet#3, merge `52d75736`),
+measured the gate EMPTY, plain and `--strict`, over the three kinds the
+sentence now names: (i) this repository's own tree, at `a02c6c74` of
+`rebuild/adapter-group-5`; (ii) an export of openxFactory's live `governance/`
+tree, at `c8dde131`; (iii) every fixture tree the suites build, 110 trees. Its
+Finding 4 found one tree outside those kinds, the code leg's own checkout
+scanned in place, where the carve-commit validator and the composed adapter
+differ by one summary line, `repo scan: 1` against `0`, with 0 errors and exit
+0 on both: `repo_scan` skips a validator's own packaged registry by resolved
+path, and each validator's `ROOT`, and so that path, is wherever it stands. The
+controls say the difference follows the validator's location, not the
+composition: the carve-commit tree scanned in place differs the other way
+round, and the code leg's bytes exported elsewhere are EMPTY.
+
+The sentence is qualified rather than the skip changed because a change to the
+skip would move the code leg's bytes and so its pin, and the proof would run
+again. Qualified, the gate stays GREEN over its three kinds, and the code leg,
+the manifest and the pins do not change. Recorded, not fixed here: lane
+openXwallet-3's `scripts/neutrality-gate.py` (on `rebuild/adapter-group-5`)
+runs each suite in a mirror whose top-level entries are symbolic links that
+`os.walk` does not descend, so it cannot observe Finding 4's case.
 
 **Fail closed.** An uninitialized `openWallet/`, an uninitialized
 `openWallet/code/`, or a core that does not load is exit 2 with a named refusal
