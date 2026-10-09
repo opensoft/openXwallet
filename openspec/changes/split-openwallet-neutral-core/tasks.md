@@ -787,8 +787,33 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
         `contracts/CHANGELOG.md` and in the docstring of
         `tests/openwallet_pin/test_consumer_surface.py`, lane openXwallet-3's
         docs follow-up.
-- [ ] 5.8 **[OPERATOR]** The adapter's first release in Q4's series, five
+- [x] 5.8 **[OPERATOR]** The adapter's first release in Q4's series, five
       values, tagged at the merge commit.
+      - **TAGGED 2026-10-09** by lane openXwallet-1 on Brett Heap's word in
+        session, verbatim: "cut the xwallet-v1.0 tag on 815b86ce". The
+        annotated tag `xwallet-v1.0` (tagger Brett Heap,
+        2026-10-09T20:14:30Z), tag object
+        `b15368b05e0c43696cc9d01fbe59263b0468801b`, peels to
+        `815b86cef18c6227f649d2cefedb05720069362b`, the merge commit of
+        opensoft/openXwallet#40, which landed 5.1 to 5.7. Recorded at
+        https://github.com/opensoft/openXwallet/issues/25#issuecomment-6088524111.
+      - The five coordinated values (AGENTS.md rule 6), as they stand at
+        `815b86ce`:
+        - per-file `contract_schema_version`: none moves, because
+          `contracts/manifest.yaml` registers no owned row;
+        - `contract_bundle_version: xwallet-v1.0` in
+          `contracts/manifest.yaml`, the adapter's tag value, ruled "The
+          adapter's tag value (Recommended)";
+        - the annotated tag `xwallet-v1.0`, on the merge;
+        - the release commit with per-file digests, the merge itself: its
+          `contracts/openwallet-pin.yaml` carries the eight digests of the
+          openWallet bytes the release runs, pinning the root `b0af7c2c`,
+          which carries `wallet-v1.6`, and the code leg `72313daa`;
+        - the `contracts/CHANGELOG.md` entry
+          `## xwallet-v1.0 — 2026-10-09 (…)`.
+      - The series is Brett Heap's ruling, label verbatim "Adapter series
+        `xwallet-v*`, first `xwallet-v1.0` (Recommended)"; `wallet-v*`
+        continues at the openWallet root.
 
 ## 6. openxFactory — one pull request `[openxFactory]`
 
