@@ -14,9 +14,11 @@ refusal at self-test, a refusal over a tree and a suite that never reaches
 the shim must each fail with their own exit code. A help-text difference must
 be reported and kept out of the verdict (the gate's docstring says why).
 
-THE SHIM is tested directly as well: it must record both runs and replay the
-composed one byte for byte, because a suite run through it asserts on what it
-replays.
+THE SHIM is tested directly as well: it must record both validators in BOTH
+modes, the argv as given and with `--strict` toggled, and replay the as-given
+composed run byte for byte, because a suite run through it asserts on what it
+replays. A suite that never asks for `--strict` must still be compared under
+it: the gate's claim is "plain and `--strict`" over every fixture tree.
 
 THE GATE IS RUN AS A SUBPROCESS, the way CI and a reader invoke it, so the
 exit codes and printed lines are what is under test. The module is also loaded
@@ -121,6 +123,9 @@ def main():
         target = Path(paths[0]).resolve()
         found = [p for p in target.rglob("*.yaml") if ".git" not in p.parts]
         extra = " (and one more)" if BEHAVIOUR == "scan-differs" else ""
+        if (BEHAVIOUR == "strict-scan-differs" and "--strict" in argv
+                and found):
+            extra = " (strict only)"
         print(f"note  repo scan: {len(found)} yaml file(s){extra}")
     print("")
     print("validate-toy: 0 error(s)")
@@ -155,6 +160,25 @@ def test_a_fixture_tree(tmp_path):
 
 def test_the_help_text():
     assert _run("--help").stdout.startswith("usage: toy validator")
+'''
+
+# The same shape, but it never asks for --strict. Its assertion holds only
+# for the PLAIN output, so it also proves the replay is the as-given run.
+PLAIN_SUITE = '''
+import subprocess
+import sys
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+VALIDATOR = REPO_ROOT / "scripts" / "validate-openxwallet.py"
+
+
+def test_a_fixture_tree_scanned_plain(tmp_path):
+    (tmp_path / "record.yaml").write_text("kind: toy\\n", encoding="utf-8")
+    r = subprocess.run([sys.executable, str(VALIDATOR), str(tmp_path)],
+                       capture_output=True, text=True)
+    assert "note  repo scan: 1 yaml file(s)" in r.stdout.splitlines(), \\
+        r.stdout + r.stderr
 '''
 
 QUIET_SUITE = '''
@@ -231,9 +255,10 @@ def _mode_line(verdict: str, target: str, mode: str) -> re.Pattern[str]:
 # (a) the shim records and replays
 # --------------------------------------------------------------------------
 
-def _run_shim(tmp_path: Path, baseline: str,
-              composed: str) -> tuple[subprocess.CompletedProcess[bytes],
-                                      list[dict[str, Any]]]:
+def _run_shim(tmp_path: Path, baseline: str, composed: str,
+              argv: tuple[str, ...] = (".", "--strict"),
+              ) -> tuple[subprocess.CompletedProcess[bytes],
+                         list[dict[str, Any]]]:
     for side, behaviour in (("baseline", baseline), ("composed", composed)):
         _write(tmp_path, f"{side}/contracts/README.md", "toy\n")
         _write(tmp_path, f"{side}/scripts/validate-openxwallet.py",
@@ -248,48 +273,109 @@ def _run_shim(tmp_path: Path, baseline: str,
                NEUTRALITY_COMPOSED=str(
                    tmp_path / "composed/scripts/validate-openxwallet.py"),
                NEUTRALITY_REPORT=str(report))
-    done = subprocess.run([sys.executable, str(shim), ".", "--strict"],
+    done = subprocess.run([sys.executable, str(shim), *argv],
                           cwd=tree, env=env, capture_output=True, check=False)
     records = [json.loads(line) for line in
                report.read_text(encoding="utf-8").splitlines()]
     return done, records
 
 
+def _replayed(records: list[dict[str, Any]]) -> dict[str, Any]:
+    [record] = [r for r in records if r["replayed"]]
+    return record
+
+
 def test_the_shim_records_two_validators_that_agree_and_replays(
         tmp_path: Path) -> None:
     done, records = _run_shim(tmp_path, "same", "same")
-    assert len(records) == 1, records
-    record = records[0]
-    assert record["identical"] is True
-    assert record["help"] is False
-    assert record["argv"] == [".", "--strict"]
-    assert record["cwd"] == str(tmp_path / "tree")
-    assert record["baseline"]["stdout"] == record["composed"]["stdout"]
-    assert "repo scan: 1 yaml file(s)" in record["composed"]["stdout"]
-    # The replay IS the composed run.
-    assert done.returncode == record["composed"]["rc"] == 0
-    assert done.stdout.decode() == record["composed"]["stdout"]
+    assert len(records) == 2, records
+    as_given, toggled = records
+    assert (as_given["argv"], as_given["mode"], as_given["replayed"]) == \
+        ([".", "--strict"], "strict", True)
+    assert (toggled["argv"], toggled["mode"], toggled["replayed"]) == \
+        (["."], "plain", False)
+    for record in records:
+        assert record["identical"] is True
+        assert record["help"] is False
+        assert record["cwd"] == str(tmp_path / "tree")
+        assert record["baseline"]["stdout"] == record["composed"]["stdout"]
+        assert "repo scan: 1 yaml file(s)" in record["composed"]["stdout"]
+    # The replay IS the as-given composed run.
+    assert done.returncode == as_given["composed"]["rc"] == 0
+    assert done.stdout.decode() == as_given["composed"]["stdout"]
 
 
 def test_the_shim_records_a_disagreement_and_replays_the_composed_run(
         tmp_path: Path) -> None:
     done, records = _run_shim(tmp_path, "same", "strict-rc-differs")
-    record = records[0]
+    record = _replayed(records)
     assert record["identical"] is False
     assert record["baseline"]["rc"] == 0
     assert record["composed"]["rc"] == 1
     assert done.returncode == 1  # the composed code, replayed
     assert done.stdout.decode() == record["composed"]["stdout"]
+    [toggled] = [r for r in records if not r["replayed"]]
+    assert (toggled["mode"], toggled["identical"]) == ("plain", True)
+
+
+def test_the_shim_compares_the_mode_a_suite_never_asked_for(
+        tmp_path: Path) -> None:
+    """A plain argv is also run with --strict added, and that run is
+    recorded, never replayed: the suite still sees the plain run."""
+    done, records = _run_shim(tmp_path, "same", "strict-rc-differs",
+                              argv=(".",))
+    as_given, toggled = records
+    assert (as_given["argv"], as_given["mode"], as_given["replayed"],
+            as_given["identical"]) == (["."], "plain", True, True)
+    assert (toggled["argv"], toggled["mode"], toggled["replayed"],
+            toggled["identical"]) == ([".", "--strict"], "strict", False,
+                                      False)
+    assert done.returncode == 0  # the as-given composed run, replayed
+    assert done.stdout.decode() == as_given["composed"]["stdout"]
+
+
+def test_the_shim_runs_a_help_invocation_once(tmp_path: Path) -> None:
+    done, records = _run_shim(tmp_path, "same", "same", argv=("--help",))
+    [record] = records
+    assert (record["help"], record["replayed"]) == (True, True)
+    assert done.stdout.decode() == record["composed"]["stdout"]
+
+
+@pytest.mark.parametrize("argv, other", [
+    ([".", "--strict"], ["."]),
+    (["--strict", "."], ["."]),
+    (["."], [".", "--strict"]),
+    ([".", "--str"], ["."]),  # argparse takes an abbreviation for the flag
+    ([], ["--strict"]),
+])
+def test_strict_is_toggled_both_ways(argv: list[str],
+                                     other: list[str]) -> None:
+    assert MODULE.toggle_strict(argv) == other
+    assert {MODULE.mode_of(argv), MODULE.mode_of(other)} == {"plain",
+                                                              "strict"}
 
 
 def test_the_shim_replays_stderr_and_a_refusal(tmp_path: Path) -> None:
     done, records = _run_shim(tmp_path, "same", "refuses")
-    record = records[0]
-    assert record["identical"] is False
+    assert [r["identical"] for r in records] == [False, False]
+    record = _replayed(records)
     assert done.returncode == 2
     assert done.stdout == b""
     assert b"openWallet/code is not initialized" in done.stderr
     assert done.stderr.decode() == record["composed"]["stderr"]
+
+
+def test_records_that_do_not_pair_are_a_refusal(tmp_path: Path) -> None:
+    """Every tree invocation records one plain and one strict run. A report
+    holding only one of them would let a mode go uncompared."""
+    suite = MODULE.Suite("kept", tmp_path, tmp_path / "tests" / "toy")
+    one = {"help": False, "replayed": True, "mode": "plain",
+           "identical": True}
+    pair = [one, dict(one, replayed=False, mode="strict")]
+    assert MODULE.SuiteResult(suite, pair, 0, "").paired is True
+    assert MODULE.SuiteResult(suite, [one], 0, "").paired is False
+    assert MODULE.SuiteResult(suite, [one, dict(one, replayed=False)], 0,
+                              "").paired is False
 
 
 def test_the_shim_refuses_outside_a_gate_run(tmp_path: Path) -> None:
@@ -357,20 +443,23 @@ def test_agreeing_validators_pass_over_the_tree_and_a_suite(
     for mode in ("plain", "--strict"):
         assert _mode_line("IDENTICAL", "root", mode).search(done.stdout), \
             done.stdout
-    assert re.search(r"^IDENTICAL\s+suite tests/toy_suite\s+1 of 1 tree "
-                     r"invocation\(s\) identical; help 1 of 1 identical",
-                     done.stdout, re.M), done.stdout
+    assert re.search(r"^IDENTICAL\s+suite tests/toy_suite\s+2 of 2 tree "
+                     r"record\(s\) identical: 1 invocation\(s\) × 2 modes; "
+                     r"help 1 of 1 identical", done.stdout, re.M), done.stdout
     assert "SKIP       tests/quiet_suite: no file spells" in done.stdout
     assert "SKIP       openWallet/code/tests (the moved suites)" in done.stdout
-    assert "neutrality-gate: IDENTICAL:" in done.stdout
+    assert ("neutrality-gate: IDENTICAL: 1 tree(s) × 2 modes = 2 target "
+            "run(s), and 1 suite invocation(s) × 2 modes = 2 suite record(s) "
+            "over 1 suite(s)") in done.stdout, done.stdout
     evidence = _report(report)
     assert evidence["result"] == "identical"
     assert evidence["exit_code"] == 0
     assert evidence["carve_commit"] == carve
     assert evidence["revision"]["head"] == _git(repo, "rev-parse", "HEAD")
     [suite] = evidence["suites"]
-    assert (suite["suite"], suite["tree_invocations"], suite["identical"],
-            suite["pytest_rc"]) == ("tests/toy_suite", 1, 1, 0)
+    assert (suite["suite"], suite["tree_invocations"], suite["modes"],
+            suite["tree_records"], suite["identical"],
+            suite["pytest_rc"]) == ("tests/toy_suite", 1, 2, 2, 2, 0)
 
 
 def test_a_stdout_difference_fails_with_its_diff(tmp_path: Path) -> None:
@@ -382,12 +471,42 @@ def test_a_stdout_difference_fails_with_its_diff(tmp_path: Path) -> None:
         assert _mode_line("DIFFERENT", "root", mode).search(done.stdout)
     assert "+note  repo scan: 0 yaml file(s) (and one more)" in done.stdout
     assert "-note  repo scan: 0 yaml file(s)" in done.stdout
-    assert re.search(r"^DIFFERENT\s+suite tests/toy_suite\s+0 of 1",
+    assert re.search(r"^DIFFERENT\s+suite tests/toy_suite\s+0 of 2",
                      done.stdout, re.M), done.stdout
     evidence = _report(report)
     assert evidence["result"] == "different"
-    assert evidence["suites"][0]["differences"][0]["test"].endswith(
-        "::test_a_fixture_tree")
+    differences = evidence["suites"][0]["differences"]
+    assert [d["mode"] for d in differences] == ["strict", "plain"]
+    assert all(d["test"].endswith("::test_a_fixture_tree")
+               for d in differences)
+
+
+def test_a_suite_that_never_asks_for_strict_is_compared_under_strict(
+        tmp_path: Path) -> None:
+    """The composed toy departs ONLY under --strict, and only over a tree
+    holding YAML. The toy root holds none, so target (i) agrees in both
+    modes, and the suite asks only for plain runs, which agree too. The one
+    difference is the mode the suite never asked for, and the gate must see
+    it."""
+    repo, carve = _repo(tmp_path, "strict-scan-differs",
+                        {"plain_suite": PLAIN_SUITE})
+    report = tmp_path / "report.json"
+    done = _gate(repo, f"--carve-commit={carve}", f"--report={report}")
+    assert done.returncode == 1, done.stdout + done.stderr
+    for mode in ("plain", "--strict"):
+        assert _mode_line("IDENTICAL", "root", mode).search(done.stdout), \
+            done.stdout
+    assert re.search(r"^DIFFERENT\s+suite tests/plain_suite\s+1 of 2 tree "
+                     r"record\(s\) identical: 1 invocation\(s\) × 2 modes",
+                     done.stdout, re.M), done.stdout
+    assert "strict (--strict toggled)" in done.stdout, done.stdout
+    assert "+note  repo scan: 1 yaml file(s) (strict only)" in done.stdout
+    assert "neutrality-gate: DIFFERENT: 1 of 4 comparison(s)" in done.stdout
+    [suite] = _report(report)["suites"]
+    [difference] = suite["differences"]
+    assert (difference["mode"], difference["replayed"]) == ("strict", False)
+    # The suite itself passed: it was replayed the plain run it asked for.
+    assert suite["pytest_rc"] == 0, suite
 
 
 def test_an_exit_code_difference_alone_fails(tmp_path: Path) -> None:

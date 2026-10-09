@@ -163,7 +163,10 @@ adapter's output is BYTE-IDENTICAL to the output of the validator at the carve
 commit: the same notes, finding codes and summary line, in the same order. Task
 5.4's gate runs both over this tree, over an export of openxFactory's live
 `governance/` tree, and over every fixture tree the test suites build. It
-requires an EMPTY `diff`, plain and under `--strict`, with the same exit code.
+requires an EMPTY `diff`, plain and under `--strict`, with the same exit code:
+each suite invocation runs as the suite gave it and again with `--strict`
+toggled, so a fixture tree is compared in both modes whichever one its suite
+asked for.
 It is `scripts/neutrality-gate.py`, with its tests in `tests/neutrality_gate/`,
 and its workflow `neutrality-gate.yml` reports on every pull request.
 So openxFactory's pin bump moves no literal assertion: `8 of 8`, the five-key

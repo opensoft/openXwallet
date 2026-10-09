@@ -16,8 +16,10 @@ claim instead of restating it.
 | **composed** | this repository's `scripts/validate-openxwallet.py`, run where it stands | after the rebuild, the core's `ROOT` is `openWallet/code` |
 
 Both sides get the same argv in the same working directory, once plain and once
-with `--strict`. A tree **passes** when stdout is byte-identical in both modes
-and the exit codes are equal. stderr is shown but not compared, because a
+with `--strict`: each tree of targets (i) and (ii) in both modes, and each suite
+invocation of target (iii) as the suite gave it and again with `--strict`
+toggled. A tree **passes** when stdout is byte-identical in both modes and the
+exit codes are equal. stderr is shown but not compared, because a
 validator's own refusals name its own `ROOT`, and the baseline's `ROOT` is a
 temporary directory.
 
@@ -37,11 +39,18 @@ temporary directory.
    - every other top-level entry is linked;
    - a **shim** stands at `scripts/validate-openxwallet.py`.
 
-   For each invocation, the shim runs both validators, records the pair as
-   one JSON line, and then replays the composed run (stdout, stderr and exit
-   code). The suite therefore asserts on exactly what the composed adapter
-   says. The suite's own pass or fail is printed as information. The verdict
-   comes from the records: every one must be identical.
+   For each invocation, the shim runs both validators twice: over the argv
+   as given, and with `--strict` toggled (added where the suite left it out,
+   removed where the suite put it in). It records each pair as one JSON line
+   carrying its `mode` (`plain` or `strict`) and whether it is the one
+   `replayed`, and then replays the as-given composed run (stdout, stderr
+   and exit code). The suite therefore asserts on exactly what the composed
+   adapter says to what it asked, and every fixture tree is still compared in
+   both modes, whichever one its suite asked for. The suite's own pass or
+   fail is printed as information. The verdict comes from the records, both
+   modes of every invocation: every one must be identical, and a suite whose
+   records do not pair refuses. Each suite's line reads `N invocation(s) × 2
+   modes`.
 
    A suite counts as a target when one of its files contains the quoted literal
    `"validate-openxwallet.py"`. Suites that never invoke the validator are
@@ -88,8 +97,9 @@ loudly until then.
 ## Help invocations
 
 `--help` scans no tree. argparse prints the module docstring, and D3 splits
-that docstring between the core and the adapter on purpose. So a help record
-is reported, with its own identity count, and is **kept out of the verdict**.
+that docstring between the core and the adapter on purpose. So a help
+invocation runs once, as given, and its record is reported, with its own
+identity count, and is **kept out of the verdict**.
 
 ## Running it
 
@@ -120,8 +130,8 @@ A run refuses (exit 2) when:
 - the adapter is missing;
 - a validator refuses at self-test (its own text is printed verbatim);
 - a target run exits 2 on either side;
-- a suite records no tree invocation, or its pytest run ends in a code other
-  than 0 or 1;
+- a suite records no tree invocation, its records do not pair one plain with
+  one strict run, or its pytest run ends in a code other than 0 or 1;
 - the export holds no `governance/`.
 
 ### Uninitialized submodules

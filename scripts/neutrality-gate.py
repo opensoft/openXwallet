@@ -36,12 +36,18 @@ THE THREE TARGETS (D5):
         a temporary root, its test files COPIED (`Path.resolve()` would follow
         a link back home) and every other top-level entry linked, and at the
         mirror's `scripts/validate-openxwallet.py` stands a SHIM. For each
-        invocation the shim runs the baseline and the composed adapter over
-        the same argv in the same working directory, appends one JSON record
-        to the run's report, and REPLAYS the composed run (stdout, stderr and
-        exit code), so the suite sees what the composed adapter says. The
-        suite's own pass or fail is printed as INFORMATION; the verdict is the
-        records, every one identical.
+        invocation the shim runs the baseline and the composed adapter TWICE
+        in the same working directory: over the argv AS GIVEN, and over it
+        with `--strict` TOGGLED (added where the suite left it out, removed
+        where the suite put it in). So every fixture tree is compared plain
+        AND `--strict`, as targets (i) and (ii) are, whichever mode the suite
+        happened to ask for. It appends one JSON record per mode to the run's
+        report, each carrying its `mode` ("plain" or "strict") and whether it
+        is the one `replayed`, and REPLAYS the as-given composed run (stdout,
+        stderr and exit code), so the suite sees what the composed adapter
+        says to exactly what it asked. The suite's own pass or fail is printed
+        as INFORMATION; the verdict is the records, BOTH modes of every
+        invocation, every one identical.
 
 THE ONE DECLARED NEW LINE. Relative to the PRE-SPLIT run of THIS tree (the
 output D0 recorded at `b7c6e0b`), target (i) gains exactly one line, which D5
@@ -74,8 +80,9 @@ THE PLAN'S CALLS (task 5.4 left these open; each is recorded here):
     the baseline's is a temporary directory.
   * A HELP invocation (`-h`, `--help`) adjudicates no tree. argparse prints the
     module docstring, which D3 deliberately splits between core and adapter,
-    so a help record is reported with its own identity flag and kept OUT of
-    the verdict. Every other record is in it.
+    so a help invocation runs once, as given, and its record is reported with
+    its own identity flag and kept OUT of the verdict. Every other record, in
+    both modes, is in it.
   * Before any target, each validator runs once with no path (self-test
     only). Exit 2 there REFUSES the whole run, and the validator's own text is
     printed verbatim. An uninitialized `openWallet/` or `openWallet/code/`
@@ -113,8 +120,8 @@ Exit codes:
   1  any difference; each is printed, with a unified diff of stdout
   2  a refusal: the carve commit unreachable or malformed, the adapter
      missing, a validator refusing at self-test (its text printed verbatim), a
-     target run ending at exit 2, a suite that proved nothing, an export with
-     no `governance/`
+     target run ending at exit 2, a suite that proved nothing or whose records
+     do not pair, an export with no `governance/`
 
 Run: `python3 scripts/neutrality-gate.py [--carve-commit SHA]
 [--openxfactory-export DIR [--openxfactory-export-commit SHA]]
@@ -164,8 +171,9 @@ ENV_BASELINE = "NEUTRALITY_BASELINE"
 ENV_COMPOSED = "NEUTRALITY_COMPOSED"
 ENV_REPORT = "NEUTRALITY_REPORT"
 
+STRICT = "--strict"
 MODES: tuple[tuple[str, tuple[str, ...]], ...] = (
-    ("plain", ()), ("--strict", ("--strict",)))
+    ("plain", ()), (STRICT, (STRICT,)))
 HELP_FLAGS = frozenset({"-h", "--help"})
 SELF_SUITE = "neutrality_gate"
 DRIVES_VALIDATOR = re.compile(r"""["']validate-openxwallet\.py["']""")
@@ -223,13 +231,21 @@ def run_validator(script: Path, argv: Sequence[str], cwd: Path,
     return Run(done.returncode, done.stdout, done.stderr)
 
 
+def run_all(jobs: Sequence[tuple[Path, Sequence[str]]], cwd: Path,
+            timeout: float | None = None) -> list[Run]:
+    """Each (script, argv) in one directory, concurrently, in order."""
+    with concurrent.futures.ThreadPoolExecutor(max_workers=len(jobs)) as pool:
+        futures = [pool.submit(run_validator, script, argv, cwd, timeout)
+                   for script, argv in jobs]
+        return [future.result() for future in futures]
+
+
 def run_pair(baseline: Path, composed: Path, argv: Sequence[str], cwd: Path,
              timeout: float | None = None) -> tuple[Run, Run]:
     """Both validators over one argv in one directory, concurrently."""
-    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
-        first = pool.submit(run_validator, baseline, argv, cwd, timeout)
-        second = pool.submit(run_validator, composed, argv, cwd, timeout)
-        return first.result(), second.result()
+    first, second = run_all([(baseline, argv), (composed, argv)], cwd,
+                            timeout)
+    return first, second
 
 
 def clipped(lines: list[str], limit: int) -> list[str]:
@@ -257,8 +273,8 @@ SHIM_TEMPLATE = '''#!/usr/bin/env python3
 """GENERATED by scripts/neutrality-gate.py for one run; never committed.
 
 It stands where a mirrored suite expects scripts/validate-openxwallet.py: it
-runs the baseline and the composed adapter, records both, and replays the
-composed run.
+runs the baseline and the composed adapter over the argv as given and with
+--strict toggled, records both modes, and replays the as-given composed run.
 """
 import importlib.util
 import sys
@@ -282,14 +298,37 @@ def _side(run: Run) -> dict[str, Any]:
             "stderr": decode(run.stderr)}
 
 
+def is_help(argv: Sequence[str]) -> bool:
+    return bool(HELP_FLAGS & set(argv))
+
+
+def _is_strict(arg: str) -> bool:
+    """`--strict`, or an abbreviation argparse would take for it."""
+    return arg.startswith("--s") and STRICT.startswith(arg)
+
+
+def mode_of(argv: Sequence[str]) -> str:
+    return "strict" if any(_is_strict(arg) for arg in argv) else "plain"
+
+
+def toggle_strict(argv: Sequence[str]) -> list[str]:
+    """The argv in the OTHER mode: `--strict` removed where it is given (with
+    any abbreviation of it), appended where it is not."""
+    if mode_of(argv) == "strict":
+        return [arg for arg in argv if not _is_strict(arg)]
+    return [*argv, STRICT]
+
+
 def make_record(argv: Sequence[str], cwd: Path, baseline: Run,
-                composed: Run) -> dict[str, Any]:
+                composed: Run, replayed: bool = True) -> dict[str, Any]:
     test = os.environ.get("PYTEST_CURRENT_TEST", "")
     return {
         "test": test.rsplit(" (", 1)[0],
         "argv": list(argv),
         "cwd": str(cwd),
-        "help": bool(HELP_FLAGS & set(argv)),
+        "help": is_help(argv),
+        "mode": mode_of(argv),
+        "replayed": replayed,
         "identical": identical(baseline, composed),
         "stderr_identical": baseline.stderr == composed.stderr,
         "baseline": _side(baseline),
@@ -298,7 +337,9 @@ def make_record(argv: Sequence[str], cwd: Path, baseline: Run,
 
 
 def shim_main(argv: Sequence[str]) -> int:
-    """Run both validators, record the pair, replay the composed run."""
+    """Run both validators over the argv as given and, unless it asks for
+    help, with `--strict` toggled; record one pair per mode; replay the
+    as-given composed run."""
     missing = [name for name in (ENV_BASELINE, ENV_COMPOSED, ENV_REPORT)
                if not os.environ.get(name)]
     if missing:
@@ -306,16 +347,26 @@ def shim_main(argv: Sequence[str]) -> int:
               "runs only under scripts/neutrality-gate.py", file=sys.stderr)
         return 2
     cwd = Path.cwd()
-    baseline, composed = run_pair(Path(os.environ[ENV_BASELINE]),
-                                  Path(os.environ[ENV_COMPOSED]), argv, cwd)
-    record = make_record(argv, cwd, baseline, composed)
+    baseline = Path(os.environ[ENV_BASELINE])
+    composed = Path(os.environ[ENV_COMPOSED])
+    variants = [list(argv)]
+    if not is_help(argv):
+        variants.append(toggle_strict(argv))
+    runs = run_all([(script, variant) for variant in variants
+                    for script in (baseline, composed)], cwd)
+    records = [make_record(variant, cwd, runs[2 * index],
+                           runs[2 * index + 1], replayed=index == 0)
+               for index, variant in enumerate(variants)]
+    # ONE write for both records, so a suite's report never holds a mode
+    # without its partner.
     with open(os.environ[ENV_REPORT], "a", encoding="utf-8") as report:
-        report.write(json.dumps(record) + "\n")
-    sys.stdout.buffer.write(composed.stdout)
+        report.write("".join(json.dumps(record) + "\n" for record in records))
+    replay = runs[1]
+    sys.stdout.buffer.write(replay.stdout)
     sys.stdout.buffer.flush()
-    sys.stderr.buffer.write(composed.stderr)
+    sys.stderr.buffer.write(replay.stderr)
     sys.stderr.buffer.flush()
-    return composed.rc
+    return replay.rc
 
 
 # --------------------------------------------------------------------------
@@ -585,6 +636,18 @@ class SuiteResult:
         return [r for r in self.records if r["help"]]
 
     @property
+    def invocations(self) -> int:
+        """Tree invocations the suite made: one replayed record each."""
+        return sum(1 for r in self.judged if r["replayed"])
+
+    @property
+    def paired(self) -> bool:
+        """Every tree invocation recorded in both modes, and no more."""
+        modes = [r["mode"] for r in self.judged]
+        return (len(self.judged) == 2 * self.invocations
+                and modes.count("plain") == modes.count("strict"))
+
+    @property
     def differences(self) -> list[dict[str, Any]]:
         return [r for r in self.judged if not r["identical"]]
 
@@ -690,6 +753,12 @@ def run_suite(suite: Suite, workdir: Path, baseline: Path, composed: Path,
     elif not result.judged:
         result.refusal = ("the suite recorded no tree invocation: the shim "
                           "was never reached, so this target proves nothing")
+    elif not result.paired:
+        result.refusal = (f"the shim's records do not pair: "
+                          f"{len(result.judged)} tree record(s) for "
+                          f"{result.invocations} invocation(s), where every "
+                          "invocation records exactly one plain and one "
+                          "strict run")
     return result
 
 
@@ -720,13 +789,15 @@ def print_suite(result: SuiteResult) -> None:
                   "tree, outside the verdict)" if helps else "")
     print(f"{verdict:<9}  suite {result.suite.label}  "
           f"{len(judged) - len(result.differences)} of {len(judged)} tree "
-          f"invocation(s) identical{help_tally}")
+          f"record(s) identical: {result.invocations} invocation(s) × 2 "
+          f"modes{help_tally}")
     if result.refusal:
         print(f"    {result.refusal}")
     for record in result.differences:
+        how = "as given" if record["replayed"] else "--strict toggled"
         print(f"    DIFFERENT  {record['test'] or '(no test id)'}  argv "
-              f"{record['argv']}  rc {record['baseline']['rc']}/"
-              f"{record['composed']['rc']}")
+              f"{record['argv']}  {record['mode']} ({how})  rc "
+              f"{record['baseline']['rc']}/{record['composed']['rc']}")
         _print_difference(record["baseline"]["stdout"],
                           record["composed"]["stdout"],
                           record["baseline"]["stderr"],
@@ -738,11 +809,14 @@ def print_suite(result: SuiteResult) -> None:
 def suite_summary(result: SuiteResult) -> dict[str, Any]:
     return {
         "suite": result.suite.label, "leg": result.suite.leg,
-        "tree_invocations": len(result.judged),
+        "tree_invocations": result.invocations,
+        "modes": 2,
+        "tree_records": len(result.judged),
         "identical": len(result.judged) - len(result.differences),
         "help_invocations": len(result.helps),
         "help_identical": sum(1 for r in result.helps if r["identical"]),
         "differences": [{"test": r["test"], "argv": r["argv"],
+                         "mode": r["mode"], "replayed": r["replayed"],
                          "baseline_rc": r["baseline"]["rc"],
                          "composed_rc": r["composed"]["rc"]}
                         for r in result.differences],
@@ -854,6 +928,7 @@ def verdict(trees: list[TreeResult], suites: list[SuiteResult],
             "neutrality-suite-vacuous",
             "; ".join(f"{r.suite.label}: {r.refusal}" for r in refused))
     runs = sum(len(t.modes) for t in trees)
+    invocations = sum(r.invocations for r in suites)
     records = sum(len(r.judged) for r in suites)
     differing = (sum(1 for t in trees for m in t.modes if not m["identical"])
                  + sum(len(r.differences) for r in suites))
@@ -862,10 +937,10 @@ def verdict(trees: list[TreeResult], suites: list[SuiteResult],
               "comparison(s) differ (above)")
         evidence["result"] = "different"
         return 1
-    print(f"neutrality-gate: IDENTICAL: {runs} target run(s) over "
-          f"{len(trees)} tree(s) and {records} suite invocation(s) over "
-          f"{len(suites)} suite(s); every stdout byte-identical, every exit "
-          "code equal")
+    print(f"neutrality-gate: IDENTICAL: {len(trees)} tree(s) × 2 modes = "
+          f"{runs} target run(s), and {invocations} suite invocation(s) × 2 "
+          f"modes = {records} suite record(s) over {len(suites)} suite(s); "
+          "every stdout byte-identical, every exit code equal")
     evidence["result"] = "identical"
     return 0
 

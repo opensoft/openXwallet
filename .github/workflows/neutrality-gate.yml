@@ -6,7 +6,8 @@
 # validator (`90111df262d6f54f7e82651d860adc12345f83f4`, read from git objects)
 # and the composed adapter over the same trees and requires byte-identical
 # stdout and equal exit codes, plain and `--strict`: over this repository's
-# tree, and over every fixture tree the kept and moved test suites build.
+# tree, and over every fixture tree the kept and moved test suites build, each
+# suite invocation run as the suite gave it and again with `--strict` toggled.
 #
 # WHY `fetch-depth: 0`. The baseline IS the carve commit's validator, so the
 # carve commit must be in the checkout's history; a depth-1 `actions/checkout`
