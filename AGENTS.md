@@ -83,6 +83,9 @@ trust-anchor and identity-brokering compositions) stays in openxFactory.
    realization: per-file `contract_schema_version`, `contract_bundle_version`, an
    annotated tag, the release commit with per-file digests, and the
    `contracts/CHANGELOG.md` entry. The `wallet-v<major>.<minor>` series continues
-   at the openWallet root (RULED Q4). This repository's tag opens the adapter's
-   own series, spelled and numbered at its first release
-   (`split-openwallet-neutral-core` task 5.8, an operator act).
+   at the openWallet root (RULED Q4). This repository's series is
+   `xwallet-v<major>.<minor>`, first `xwallet-v1.0` (ruled, "Adapter series
+   `xwallet-v*`, first `xwallet-v1.0` (Recommended)"), and
+   `contract_bundle_version` holds the tag's value ("The adapter's tag value
+   (Recommended)"). `xwallet-v1.0` is tagged at the adapter rebuild's merge
+   commit by `split-openwallet-neutral-core` task 5.8, an operator act.

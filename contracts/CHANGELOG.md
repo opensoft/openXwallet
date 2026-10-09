@@ -8,8 +8,9 @@ standard's history: they travelled verbatim to the openWallet ROOT
 (`opensoft/openWallet`), where the `wallet-v*` series now continues (RULED Q4,
 "openWallet continues wallet-v* (Recommended)"). From the adapter rebuild on,
 this repository is the openxFactory ADAPTER over the pinned openWallet, and its
-releases open the adapter's OWN series, spelled and numbered at its first
-release (`split-openwallet-neutral-core` task 5.8). A release is identified by
+releases are the adapter's OWN series, `xwallet-v*`, first `xwallet-v1.0`
+(ruled, "Adapter series `xwallet-v*`, first `xwallet-v1.0` (Recommended)"),
+while `wallet-v*` continues at the openWallet root. A release is identified by
 five coordinated values (AGENTS.md rule 6): per-file `contract_schema_version`,
 `contract_bundle_version` in [`manifest.yaml`](./manifest.yaml), an annotated
 tag, the exact release commit with per-file SHA-256 digests, and the matching
@@ -33,7 +34,14 @@ second digest in the manifest.
 
 ---
 
-## Unreleased — the adapter rebuild (`split-openwallet-neutral-core` §5; the version is named at task 5.8)
+## xwallet-v1.0 — 2026-10-09 (the adapter rebuild; split-openwallet-neutral-core §5; tagged at the merge commit by task 5.8)
+
+**The adapter's first release, in its own series.** Brett Heap ruled the
+series, label verbatim "Adapter series `xwallet-v*`, first `xwallet-v1.0`
+(Recommended)", and that [`manifest.yaml`](./manifest.yaml)'s
+`contract_bundle_version` holds the tag's value, label verbatim "The adapter's
+tag value (Recommended)". The `wallet-v*` series continues at the openWallet
+root (RULED Q4).
 
 **Change class: the standard LEAVES; the adapter stays.** No contract content
 changes and no digest moves: the eight digested artifacts leave this repository
@@ -211,11 +219,17 @@ moves either.
 
 ### The version
 
-**Not allocated here.** The adapter's first release is task 5.8, Brett Heap's
-OPERATOR act: five coordinated values, tagged at this rebuild's merge commit, in
-the adapter's own series (Q4). Until then [`manifest.yaml`](./manifest.yaml)
-keeps `contract_bundle_version: wallet-v1.5`, carried rather than reissued, and
-this heading stays "Unreleased".
+**`xwallet-v1.0`, the first value of the adapter's own series** (ruled,
+"Adapter series `xwallet-v*`, first `xwallet-v1.0` (Recommended)").
+[`manifest.yaml`](./manifest.yaml) moves `contract_bundle_version` from
+`wallet-v1.5`, the last value this repository cut while it owned the standard,
+to `xwallet-v1.0`, the adapter's tag value (ruled, "The adapter's tag value
+(Recommended)"). The annotated tag is task 5.8, Brett Heap's OPERATOR act, at
+this change's merge commit. The manifest registers no owned row, so no per-file
+`contract_schema_version` moves; the per-file digests of the openWallet bytes
+this release runs are the eight in `contracts/openwallet-pin.yaml`; and the
+`contracts/releases/` inventories went to the openWallet root with the
+standard.
 
 ---
 

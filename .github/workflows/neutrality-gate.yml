@@ -27,7 +27,8 @@
 # (design D6, "Init is scoped, never `--recursive`"). An uninitialized level is
 # the adapter's own named refusal (exit 2), which the gate prints verbatim.
 #
-# TARGET (ii) IS EVIDENCE, NOT CI. The export of openxFactory's live
+# TARGET (ii) IS EVIDENCE, NOT CI (ruled by Brett Heap, label verbatim
+# "Evidence, not CI (Recommended)"). The export of openxFactory's live
 # `governance/` tree carries the operator's email and the seats' keys and is
 # never committed here, and every gate here is offline (AGENTS.md rule 4). It
 # is run locally with `--openxfactory-export` and its result recorded in

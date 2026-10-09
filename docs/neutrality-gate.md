@@ -155,7 +155,8 @@ test's real-repository seat skips loudly and names `neutrality-gate.yml`.
 
 The export contains the operator's email and the seats' keys. It is **never
 committed here**, and CI never runs it, because every gate here is offline
-(AGENTS.md rule 4). The method is the one the widen packet used
+(AGENTS.md rule 4): Brett Heap ruled target (ii) "Evidence, not CI
+(Recommended)". The method is the one the widen packet used
 (`widen-register-reader-for-a-second-council`, design D0 and D6): take a probe
 copy of the live tree, run it locally, and record the output.
 

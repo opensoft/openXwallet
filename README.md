@@ -42,7 +42,7 @@ This is the three-layer split of `split-openwallet-neutral-core`, ratified
 | `contract_pin.yaml`, `contracts/schemas/hermes-job-envelope.schema.yaml`, `scripts/verify-contract-pin.py` | The hermes binding: the one vendored openxFactory artifact, its digest pin, and the verifier that **fails closed** on it. |
 | `contracts/openxwallet/examples/negative/grant-review-*.yaml` | The adapter's own corpus: three negatives, attributed to `OXWR-R1` and `OXWR-R2`, at the path they always had. |
 | `contracts/manifest.yaml` | No owned row. One declared CONSUMED member, the vendored envelope. |
-| `contracts/CHANGELOG.md` | The release history: the standard's through `wallet-v1.5`, then the adapter's. |
+| `contracts/CHANGELOG.md` | The release history: the standard's through `wallet-v1.5`, then the adapter's, `xwallet-v*` from `xwallet-v1.0`. |
 | `tests/` | The suites this repository keeps: the register reader's (`per_seat_register_entries`, `register_reissuance`, `widen_register_reader`), the prune and register note through the composed entrypoint (`nested_repo_prune`), the openWallet pin's (`openwallet_pin`), the neutrality gate's (`neutrality_gate`) and the carve manifest's (`carve_manifest`). The standard's suites run in openWallet's code leg. |
 | `openspec/specs/` | `review-authority-register-reader` (three requirements) is the adapter's own. `openxwallet` (eight) and `openxwallet-agent-profile` (three) stay until `split-openwallet-neutral-core`'s archive retires them; their successors live in openWallet's spec leg. The same archive adds `openxwallet-factory-binding` (five), leaving eight requirements in two capabilities. |
 | `specs/` | Speckit features `012-wallet-issuer-anchor`, `013-nested-repo-prune-register-note` and `014-per-seat-register-entries`, kept as records. `006-openxwallet-contracts`, `010-wallet-validator-ci` and `015-multi-key-wallets` left for openWallet's spec leg. |
@@ -289,10 +289,12 @@ A release is five coordinated values: per-file `contract_schema_version`,
 `contract_bundle_version` in `contracts/manifest.yaml`, an annotated tag, the
 exact release commit with per-file digests, and a matching
 `contracts/CHANGELOG.md` entry. The `wallet-v*` series continues at the
-openWallet root (RULED Q4). This repository's next release opens the adapter's
-own series, spelled and numbered at its first release
-(`split-openwallet-neutral-core` task 5.8). Version numbers are allocated at
-realization, never reserved in a proposal.
+openWallet root (RULED Q4). This repository's series is `xwallet-v*`, first
+`xwallet-v1.0` (ruled, "Adapter series `xwallet-v*`, first `xwallet-v1.0`
+(Recommended)"), with `contract_bundle_version` holding the tag's value ("The
+adapter's tag value (Recommended)"); `xwallet-v1.0` is tagged at the adapter
+rebuild's merge commit (`split-openwallet-neutral-core` task 5.8). Version
+numbers are allocated at realization, never reserved in a proposal.
 
 ## License
 

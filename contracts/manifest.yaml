@@ -43,18 +43,20 @@ kind: contract_manifest
 # finding codes and filenames are unchanged ("keep the prefix", 2026-10-08).
 # ============================================================================
 
-# contract_bundle_version — CARRIED, NOT ALLOCATED. `wallet-v1.5` is the last
-# value this repository cut while it owned the standard (2026-09-06; the
-# release notes for it and for `wallet-v1.4`, each of which moved this line and
-# nothing else, are in contracts/CHANGELOG.md). Q4 RULED "openWallet continues
-# wallet-v* (Recommended)": that series continues at the openWallet ROOT, which
-# carries this same value until its own first release (task 4.9). openXwallet's
-# next value opens the adapter's OWN series — "spelled at its first release",
-# in Q4's rationale on record — and is allocated by task 5.8, Brett Heap's
-# OPERATOR act at the adapter rebuild's merge commit, together with the other
-# four values of AGENTS.md rule 6. This line moves then, and not before: a
-# version is allocated at realization, never reserved.
-contract_bundle_version: wallet-v1.5
+# contract_bundle_version — THE ADAPTER'S TAG VALUE. Two rulings by Brett Heap,
+# labels verbatim: "Adapter series `xwallet-v*`, first `xwallet-v1.0`
+# (Recommended)" names the adapter's OWN series and its first value, and "The
+# adapter's tag value (Recommended)" says this field holds that tag's value.
+# Task 5.8, Brett Heap's OPERATOR act, tags this change's merge commit
+# `xwallet-v1.0`, with the other values of AGENTS.md rule 6. This manifest
+# registers no owned row, so no per-file `contract_schema_version` moves with
+# it; the per-file digests of the openWallet bytes the release runs live in
+# `contracts/openwallet-pin.yaml`; and the `contracts/releases/` digest
+# inventories were shed to the openWallet root by ruling (Q4's placement, the
+# carve manifest's `retained_here: shed`). The `wallet-v*` series, whose last
+# value here was `wallet-v1.5` (2026-09-06), continues at the openWallet ROOT
+# (RULED Q4, "openWallet continues wallet-v* (Recommended)").
+contract_bundle_version: xwallet-v1.0
 
 # The machine-read one of THREE provenance records for the FIRST carve — the
 # one that created this repository. The other two are `carve_commit:` in
