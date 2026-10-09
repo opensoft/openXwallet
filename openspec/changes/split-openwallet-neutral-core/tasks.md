@@ -404,11 +404,29 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
         the word "land the proof PR when green" and the ruling "Land it now
         (Recommended)". `validate` completed success with the lockstep-pins
         step. Codex did not review.
-- [ ] 4.7 **[OPERATOR]** Three rulesets, each EVALUATE → one trivial pull request
+- [x] 4.7 **[OPERATOR]** Three rulesets, each EVALUATE → one trivial pull request
       so its checks report → ACTIVE. Each is an org-admin act in `opensoft`.
       - root: `validate`;
       - spec leg: its OpenSpec gate;
       - code leg: `wallet-validation` and `pytest-suite`.
+      - **DONE 2026-10-09** on Brett Heap's word "run both steps and tick 4.7"
+        (an org-admin act, performed by lane openXwallet-2 under the operator's
+        account). Three repository rulesets, each created in EVALUATE and
+        promoted to ACTIVE once its checks had reported on real pull requests,
+        read back from `repos/opensoft/<repo>/rules/branches/main`:
+        opensoft/openWallet ruleset `24763933` ("openWallet root gate (require
+        validate)"), main requires `validate`; opensoft/openWallet-spec ruleset
+        `24763934` ("openWallet-spec gate (require openspec-cli-pin)"), main
+        requires `openspec-cli-pin`; opensoft/openWallet-code ruleset `24763935`
+        ("openWallet-code gate (require wallet-validation + pytest-suite)"),
+        main requires `wallet-validation` and `pytest-suite`. Each targets
+        `~DEFAULT_BRANCH`, strict mode off, bypass OrganizationAdmin always (the
+        shape of openXwallet's own ruleset `21607344`). Rollback: enforcement
+        back to `evaluate`, or delete; no commit touched. No trivial pull
+        request was needed: every context had already reported (root `validate`
+        on every PR since the scaffold; `openspec-cli-pin` on
+        openWallet-spec#2–#4; `wallet-validation` and `pytest-suite` on
+        openWallet-code#2).
 - [x] 4.8 `[openWallet-spec]` openWallet's birth change in the leg's own
       OpenSpec instance, after 4.3 lands. It MODIFIES *Agent authority is grant
       scope, not a parallel vocabulary* to the text drafted in `design.md` D8.
