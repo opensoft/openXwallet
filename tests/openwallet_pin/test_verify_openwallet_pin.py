@@ -5,7 +5,8 @@ has been seen refusing each of design.md D6's seven, a path-only member
 modified in its working tree (`pin-member-modified`), a HOLLOWED pin (a
 `files:` that is not the eight, each named once, or a path-only list without
 the two loaded scripts), a
-pin naming a mount the entrypoints do not execute (`pin-mount-mismatch`), and
+pin naming a mount the entrypoints do not execute (`pin-mount-mismatch`), a
+code leg whose working tree is not its commit as a whole (`pin-leg-dirty`), and
 exiting 2 rather than tracebacking when `git` or a file cannot be read. So
 each test below is ONE fact away from a world that verifies clean, and the
 clean world is itself a
@@ -68,6 +69,7 @@ RATIFIED_CODES = (
     "pin-digest-mismatch",
     "pin-member-missing",
     "pin-member-modified",
+    "pin-leg-dirty",
     "pin-tag-only",
     "pin-mount-mismatch",
 )
@@ -188,6 +190,8 @@ def upstream(tmp_path_factory: pytest.TempPathFactory) -> Upstream:
 
 def _build_upstream(base: Path) -> Upstream:
     leg = _init(base / "openWallet-code")
+    # The real leg's ignore rules for what every run writes.
+    _write(leg, ".gitignore", "__pycache__/\n*.py[cod]\n")
     digests = {}
     for entry in REAL["files"]:
         text = f"# a digested member: {entry['path']}\n"
@@ -537,6 +541,72 @@ def test_a_pin_naming_another_valid_leg_gitlink_refuses(tmp_path, upstream):
     err = assert_refused(verify(adapter), "pin-mount-mismatch")
     assert (f"the pin records legs.code.submodule_path {ALT_LEG!r}, but "
             f"{EXECUTED} 'code' ({LOADED})") in err, err
+
+
+# ------------- the code leg's working tree, as a whole ----------------------
+
+PROFILE_DIR = "contracts/openxwallet-agent-profile"
+SHADOW = f"{PROFILE_DIR}/openxwallet-grant.schema.yaml"
+
+
+def test_an_untracked_schema_shadowing_a_digested_one_refuses(tmp_path,
+                                                              upstream):
+    """Lane 1's case: the core's load_schemas() keys every `*.schema.yaml` in
+    both family directories by bare file name, so this untracked file in the
+    PROFILE directory replaces the digested grant schema. It is no member and
+    no digested path, so checks 6 to 8 all pass."""
+    adapter = build(tmp_path, upstream)
+    _write(adapter / SUB / LEG, SHADOW,
+           "$schema: https://json-schema.org/draft/2020-12/schema\n"
+           "$id: shadow\ntype: object\n")
+    assert _verified_without(adapter, "_require_leg_clean").digests == 8
+
+    err = assert_refused(verify(adapter), "pin-leg-dirty")
+    assert (f"the working tree of {SUB}/{LEG} is not its checked-out commit; "
+            f"`git status` lists 1 change(s):\n  ?? {SHADOW}\n") in err, err
+    assert f"Inspect it with `git -C {SUB}/{LEG} status`" in err, err
+
+
+def test_ignored_bytecode_in_the_leg_does_not_refuse(tmp_path, upstream):
+    """What every run writes, and the leg's tracked `.gitignore` ignores, is
+    not a dirty leg: `--ignored` is deliberately not passed."""
+    adapter = build(tmp_path, upstream)
+    for rel in ("__pycache__/x.pyc",
+                "scripts/__pycache__/validate-openxwallet.cpython-312.pyc"):
+        _write(adapter / SUB / LEG, rel, "bytecode\n")
+    done = verify(adapter)
+    assert done.returncode == 0, done.stdout + done.stderr
+
+
+def test_a_dirty_leg_names_its_first_entries_and_counts_the_rest(tmp_path,
+                                                                 upstream):
+    adapter = build(tmp_path, upstream)
+    planted = [f"{PROFILE_DIR}/planted-{n}.yaml" for n in range(7)]
+    for rel in planted:
+        _write(adapter / SUB / LEG, rel, "kind: planted\n")
+    err = assert_refused(verify(adapter), "pin-leg-dirty")
+    assert "`git status` lists 7 change(s):\n" + "".join(
+        f"  ?? {rel}\n" for rel in planted[:5]) + "  ... and 2 more\n" in err, err
+
+
+@pytest.mark.parametrize("flag", ["--assume-unchanged", "--skip-worktree"])
+def test_an_edit_hidden_from_git_status_by_an_index_flag_refuses(tmp_path,
+                                                                 upstream,
+                                                                 flag):
+    """`git status` never reports an edit under assume-unchanged or
+    skip-worktree, so the per-member check is blind to it; the loaded core
+    gains one byte and would run."""
+    adapter = build(tmp_path, upstream)
+    member = _path_only("scripts/validate-openxwallet.py")
+    _git(adapter / SUB / LEG, "update-index", flag, _leg_relative(member))
+    with (adapter / SUB / member).open("ab") as handle:
+        handle.write(b"#")
+    assert _verified_without(adapter, "_require_leg_clean").members == 6
+
+    err = assert_refused(verify(adapter), "pin-leg-dirty")
+    assert ("1 index entr(ies) flagged assume-unchanged or skip-worktree, "
+            "whose edits `git status` never reports:\n"
+            f"  {_leg_relative(member)}\n") in err, err
 
 
 # ----------------------- a hollowed pin, and the environment -----------------

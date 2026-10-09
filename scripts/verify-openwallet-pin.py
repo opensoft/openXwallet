@@ -49,7 +49,7 @@ vocabulary `REFUSAL_CODES`:
   7. `pin-member-missing`: a digested or `pinned_by_commit_only` member is not
      in the checkout.
 
-and one more in D6's spirit, because a commit pins what a checkout STARTED
+and two more in D6's spirit, because a commit pins what a checkout STARTED
 as, not what its working tree holds now:
 
   8. `pin-member-modified`: a `pinned_by_commit_only` member is modified,
@@ -57,6 +57,21 @@ as, not what its working tree holds now:
      working tree of its checkout (`git status --porcelain
      --untracked-files=all -- <member>` is not empty). The eight digested
      members need no such check: their bytes are recomputed.
+  9. `pin-leg-dirty`: the code leg's working tree, AS A WHOLE, is not its
+     checked-out commit. `git -C openWallet/code status --porcelain
+     --untracked-files=all` is not empty, or `git ls-files -v` there tags an
+     entry assume-unchanged (a lowercase tag) or skip-worktree (`S`, `s`),
+     an entry whose edits `git status` never reports. Checks 6 to 8 see only
+     the paths the pin names, and the core reads more than those: its
+     `load_schemas()` globs `*.schema.yaml` in BOTH family directories into
+     one dict keyed by bare file name, so an untracked
+     `openxwallet-grant.schema.yaml` in `contracts/openxwallet-agent-profile/`
+     REPLACES the digested grant schema while all eight digests still
+     recompute. `--ignored` is deliberately absent: the leg's own tracked
+     `.gitignore` lists `__pycache__/` and `*.py[cod]`, which every run
+     writes. The ROOT's working tree is not held to this rule, because
+     nothing the composed run reads lies in it outside `code/`: the core's
+     `ROOT` is `openWallet/code`.
 
 THE ORDER OF EVALUATION follows dependency, not D6's numbering, and the codes do
 not move with it. The shape guards run first, because every later check
@@ -68,10 +83,14 @@ count alone lets a duplicate row stand in for a required one), or whose
 `pinned_by_commit_only:` omits the two scripts the entrypoints load.
 Then the root, entirely: initialized, recorded, checked out, and the lockstep
 read from its objects. Only then the leg: initialized, checked out. Then the
-bytes: the digests, then each path-only member present and unmodified. A leg
-check made against the wrong root commit would name the leg when the defect is
-the root, and the remediation it printed would not fix anything. First
-failure, named correctly, beats several failures that need triage.
+bytes: the digests, then each path-only member present and unmodified, then
+the leg's working tree as a whole (`pin-leg-dirty`). That one runs LAST:
+every member lives in the leg, so run earlier it would answer for a drifted
+digest, a missing member or a modified one under its own code, and checks 6
+to 8 would never be seen. A leg check made against the wrong root commit
+would name the leg when the defect is the root, and the remediation it
+printed would not fix anything. First failure, named correctly, beats several
+failures that need triage.
 
 TWO GITLINK COMPARISONS, NOT ONE, at each level. A stale `git submodule update`
 leaves the recorded gitlink right and the checkout wrong; a bumped gitlink with
@@ -154,7 +173,8 @@ REMEDIATION = (
 )
 
 # The fixed vocabulary, in design.md D6's order, then `pin-member-modified`
-# (D6's check 7 carried into the working tree; the module docstring's 8), with
+# and `pin-leg-dirty` (D6's check 7 carried into the working tree, per member
+# and for the leg as a whole; the module docstring's 8 and 9), with
 # the two referent guards last: `pin-tag-only` (which commit) and
 # `pin-mount-mismatch` (which mount).
 #
@@ -173,6 +193,7 @@ REFUSAL_CODES: tuple[str, ...] = (
     "pin-digest-mismatch",
     "pin-member-missing",
     "pin-member-modified",
+    "pin-leg-dirty",
     "pin-tag-only",
     "pin-mount-mismatch",
 )
@@ -213,6 +234,10 @@ LOADED_BY_ENTRYPOINTS: tuple[str, ...] = (
     "code/scripts/validate-openxwallet.py",
     "code/scripts/wallet-yaml-syntax-gate.py",
 )
+
+# How many offending entries a `pin-leg-dirty` refusal names before it elides
+# the rest with a count.
+LEG_DIRTY_SHOWN = 5
 
 # Exactly 40 / 64 hex; case is normalized to lowercase before any comparison.
 COMMIT_RE = re.compile(r"^[0-9a-fA-F]{40}$")
@@ -649,6 +674,63 @@ def _require_unmodified(checkout: Path, inside: str, shown: str,
             "commit is right, but these are not the bytes that commit holds")
 
 
+def _first(entries: list[str], indent: str) -> str:
+    """At most LEG_DIRTY_SHOWN entries, one per line, then a count of the
+    rest."""
+    lines = [f"{indent}{entry}" for entry in entries[:LEG_DIRTY_SHOWN]]
+    if len(entries) > LEG_DIRTY_SHOWN:
+        lines.append(f"{indent}... and {len(entries) - LEG_DIRTY_SHOWN} more")
+    return "\n".join(lines)
+
+
+def _require_leg_clean(leg_checkout: Path, shown: str) -> None:
+    """Check 9: the code leg's working tree, AS A WHOLE, is its checked-out
+    commit. The checks before it see only the paths the pin names, and the
+    core reads its family directories by glob: `load_schemas()` keys every
+    `*.schema.yaml` in both by bare file name, so an untracked same-named
+    schema in the profile directory replaces a digested one. `git status`
+    never reports an edit under assume-unchanged or skip-worktree, so
+    `git ls-files -v` is read too. No `--ignored`: the leg's tracked
+    `.gitignore` covers the bytecode every run writes."""
+    status = _git(leg_checkout, "status", "--porcelain",
+                  "--untracked-files=all")
+    index = _git(leg_checkout, "ls-files", "-v")
+    for done, asked in ((status, "git status"), (index, "git ls-files -v")):
+        if done.returncode != 0:
+            raise PinRefusal(
+                "pin-leg-dirty",
+                f"`{asked}` could not be read in {shown} (exit "
+                f"{done.returncode}: {done.stderr.strip()}); a leg whose "
+                "working tree cannot be read is not known to be its commit")
+    changed = status.stdout.rstrip("\n").splitlines() \
+        if status.stdout.strip() else []
+    # `ls-files -v`: "<tag> <path>". A lowercase tag is assume-unchanged; `S`
+    # is skip-worktree (`s`, both, is lowercase too).
+    flagged = [line[2:] for line in index.stdout.splitlines()
+               if line[:1].islower() or line[:1] == "S"]
+    if not changed and not flagged:
+        return
+    found = []
+    if changed:
+        found.append(f"`git status` lists {len(changed)} change(s):\n"
+                     f"{_first(changed, '  ')}")
+    if flagged:
+        found.append(f"{len(flagged)} index entr(ies) flagged assume-unchanged "
+                     "or skip-worktree, whose edits `git status` never "
+                     f"reports:\n{_first(flagged, '  ')}")
+    raise PinRefusal(
+        "pin-leg-dirty",
+        f"the working tree of {shown} is not its checked-out commit; "
+        + "\n".join(found) + "\n"
+        "the composed validator reads the leg's directories, not only the "
+        "paths this pin names (an untracked `*.schema.yaml` in either family "
+        "directory replaces the digested schema of the same name), so a leg "
+        "that is not exactly its commit is not the code this pin verifies. "
+        f"Inspect it with `git -C {shown} status`; a change to the standard "
+        "is an openWallet pull request, never an edit in place (AGENTS.md "
+        "rule 3)")
+
+
 def _require_path_only(sub_root: Path, sub_path: str, leg_path: str,
                        pin: dict) -> int:
     """Checks 7 and 8 for the path-only members. Identity comes from checks 3
@@ -704,6 +786,7 @@ def verify(root: Path = ROOT) -> Verified:
     # Then the bytes.
     digests = _require_digests(sub_root, sub_path, pin)
     members = _require_path_only(sub_root, sub_path, leg_path, pin)
+    _require_leg_clean(sub_root / leg_path, leg_shown)
     tag = pin.get("contract_bundle_tag")
     return Verified(commit, leg_commit, source, digests, members,
                     tag if isinstance(tag, str) and tag else "<none yet>")
