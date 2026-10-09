@@ -105,10 +105,10 @@ python3 scripts/neutrality-gate.py --report run.json    # plus a JSON summary
 | Flag | Meaning |
 | --- | --- |
 | `--carve-commit SHA` | the baseline's commit (default: the named carve commit); 7 to 40 hex characters, checked before git sees it |
-| `--openxfactory-export DIR` | target (ii); `DIR` must **contain** `governance/` |
+| `--openxfactory-export DIR` | target (ii); `DIR` must **contain** `governance/` and resolve below the working directory, the temporary directory or the home directory |
 | `--openxfactory-export-commit SHA` | the openxFactory commit the export was taken at, recorded in `--report` |
 | `--no-suite-trees` | skip target (iii) |
-| `--report PATH` | write a JSON summary: the result, the revision tested (HEAD, uncommitted tracked changes, the `openWallet` and `code` checkouts), the carve commit, the baseline blob, the composed adapter's sha256, every target and mode with both exit codes, every suite's counts and differences, and every skip |
+| `--report PATH` | `PATH` must resolve below the working directory, the temporary directory or the home directory, and its directory must exist; write a JSON summary: the result, the revision tested (HEAD, uncommitted tracked changes, the `openWallet` and `code` checkouts), the carve commit, the baseline blob, the composed adapter's sha256, every target and mode with both exit codes, every suite's counts and differences, and every skip |
 | `--keep` | keep the run's temporary tree and print where it is (every child's `TMPDIR` is inside it) |
 
 | Exit | Meaning |
@@ -125,7 +125,13 @@ A run refuses (exit 2) when:
 - a target run exits 2 on either side;
 - a suite records no tree invocation, its records do not pair one plain with
   one strict run, or its pytest run ends in a code other than 0 or 1;
-- the export holds no `governance/`.
+- the export holds no `governance/`;
+- `--report` or `--openxfactory-export` resolves, after `~` and links are
+  followed, outside the invocation's working directory, the temporary directory
+  and the home directory (`path-outside-allowed-roots`): the gate reads and
+  writes only below those roots, and says so before it runs anything;
+- `--report` names a file whose directory does not exist (`report-parent-missing`):
+  the gate does not create it.
 
 ### Uninitialized submodules
 

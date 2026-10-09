@@ -632,6 +632,71 @@ def test_the_export_target_runs_and_records_its_commit(tmp_path: Path) -> None:
         ["root", "openxfactory-export"]
 
 
+# A root that exists on no machine: outside every allowed root, whatever the
+# working directory, the temporary directory and the home directory are.
+OUTSIDE_ROOT = "/nonexistent-root-xyz"
+
+
+def _refused_before_the_run(done: subprocess.CompletedProcess[str],
+                            code: str) -> None:
+    assert done.returncode == 2, done.stdout + done.stderr
+    assert f"neutrality-gate: REFUSED [{code}]" in done.stderr, done.stderr
+    assert "neutrality-gate: baseline" not in done.stdout, done.stdout
+
+
+def test_a_relative_report_is_resolved_against_the_working_directory(
+        tmp_path: Path) -> None:
+    repo, carve = _repo(tmp_path)
+    done = _gate(repo, f"--carve-commit={carve}", "--no-suite-trees",
+                 "--report=out.json")
+    assert done.returncode == 0, done.stdout + done.stderr
+    assert _report(repo / "out.json")["result"] == "identical"
+
+
+def test_a_report_outside_the_allowed_roots_is_refused(tmp_path: Path) -> None:
+    repo, carve = _repo(tmp_path)
+    done = _gate(repo, f"--carve-commit={carve}", "--no-suite-trees",
+                 f"--report={OUTSIDE_ROOT}/out.json")
+    _refused_before_the_run(done, "path-outside-allowed-roots")
+    assert "--report" in done.stderr and OUTSIDE_ROOT in done.stderr
+    assert not Path(OUTSIDE_ROOT).exists()
+
+
+def test_an_export_outside_the_allowed_roots_is_refused(tmp_path: Path) -> None:
+    repo, carve = _repo(tmp_path)
+    done = _gate(repo, f"--carve-commit={carve}", "--no-suite-trees",
+                 f"--openxfactory-export={OUTSIDE_ROOT}")
+    _refused_before_the_run(done, "path-outside-allowed-roots")
+    assert "--openxfactory-export" in done.stderr, done.stderr
+
+
+def test_a_report_whose_directory_is_missing_is_refused(tmp_path: Path) -> None:
+    """A clearly named code of its own, `report-parent-missing`: the path is
+    inside the allowed roots, so it is not an outside-roots refusal. The gate
+    does not create the directory."""
+    repo, carve = _repo(tmp_path)
+    done = _gate(repo, f"--carve-commit={carve}", "--no-suite-trees",
+                 f"--report={tmp_path / 'missing-dir' / 'out.json'}")
+    _refused_before_the_run(done, "report-parent-missing")
+    assert not (tmp_path / "missing-dir").exists()
+
+
+@pytest.mark.skipif(not Path("/usr").is_dir() or any(
+    Path("/usr").is_relative_to(base) for base in MODULE.allowed_roots()),
+    reason="needs a directory outside every allowed root")
+def test_a_link_out_of_the_allowed_roots_is_followed_before_containing(
+        tmp_path: Path) -> None:
+    """The containment check is on the RESOLVED path: a link below the
+    temporary directory that points out of the allowed roots does not pass."""
+    repo, carve = _repo(tmp_path)
+    (tmp_path / "escape").symlink_to("/usr", target_is_directory=True)
+    done = _gate(repo, f"--carve-commit={carve}", "--no-suite-trees",
+                 f"--report={tmp_path / 'escape' / 'out.json'}")
+    _refused_before_the_run(done, "path-outside-allowed-roots")
+    assert "resolves to /usr/out.json" in done.stderr, done.stderr
+    assert not Path("/usr/out.json").exists()
+
+
 # --------------------------------------------------------------------------
 # (c) the real repository
 # --------------------------------------------------------------------------

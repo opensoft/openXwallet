@@ -124,12 +124,18 @@ Exit codes:
   2  a refusal: the carve commit unreachable or malformed, the adapter
      missing, a validator refusing at self-test (its text printed verbatim), a
      target run ending at exit 2, a suite that proved nothing or whose records
-     do not pair, an export with no `governance/`
+     do not pair, an export with no `governance/`, a `--report` or
+     `--openxfactory-export` path that resolves outside the allowed roots
+     (`path-outside-allowed-roots`), a `--report` whose directory does not
+     exist (`report-parent-missing`)
 
 Run: `python3 scripts/neutrality-gate.py [--carve-commit SHA]
 [--openxfactory-export DIR [--openxfactory-export-commit SHA]]
 [--no-suite-trees] [--report PATH] [--keep]`. Standard library only; offline;
-it writes nothing outside its temporary tree and `--report`. Driven by
+it writes nothing outside its temporary tree and `--report`. Both paths are
+RESOLVED and then CONTAINED before the run starts: each must resolve below the
+working directory, the temporary directory or the home directory, else the
+gate refuses before it reads or writes anything. Driven by
 `tests/neutrality_gate/test_neutrality_gate.py` and
 `.github/workflows/neutrality-gate.yml`.
 """
@@ -183,6 +189,9 @@ DRIVES_VALIDATOR = re.compile(r"""["']validate-openxwallet\.py["']""")
 # object id before it goes back to git.
 REVISION_ARG_RE = re.compile(r"^[0-9a-fA-F]{7,40}$")
 RESOLVED_RE = re.compile(r"^[0-9a-f]{40}(?:[0-9a-f]{24})?$")
+REFUSAL_OUTSIDE_ROOTS = "path-outside-allowed-roots"
+KIND_REPORT = "report"
+KIND_EXPORT = "openxfactory-export"
 DIFF_LINE_LIMIT = 200
 OUTPUT_LINE_LIMIT = 40
 RUN_TIMEOUT = 900       # seconds: one validator over one tree
@@ -588,17 +597,65 @@ def compare_tree(name: str, tree: Path, shown: str, baseline: Path,
     return result
 
 
-def export_tree(raw: str) -> Path:
-    export = Path(raw).resolve()
-    if not (export / "governance").is_dir():
+def allowed_roots() -> tuple[Path, ...]:
+    """The roots a path given on the command line may resolve below: the
+    invocation's working directory, the temporary directory and the home
+    directory (left out where the platform cannot name one)."""
+    roots = [Path.cwd().resolve(), Path(tempfile.gettempdir()).resolve()]
+    with contextlib.suppress(RuntimeError):
+        roots.append(Path.home().resolve())
+    return tuple(roots)
+
+
+def contained_path(arg: str, *, kind: str) -> Path:
+    """RESOLVE, then CONTAIN: a path from the command line (`--report`, or
+    `--openxfactory-export`, named by KIND) is resolved to its real location,
+    `~` and symbolic links included, and must sit below one of the allowed
+    roots before the gate reads or writes it. The resolved path is the only
+    one used afterwards. A `--report` also needs its directory to exist; an
+    export needs the `governance/` directory it is checked for here."""
+    try:
+        candidate = Path(arg).expanduser().resolve()
+    except (OSError, RuntimeError, ValueError) as exc:
+        raise GateRefusal(
+            REFUSAL_OUTSIDE_ROOTS,
+            f"--{kind} {arg!r} does not resolve to a real location "
+            f"({exc.__class__.__name__}), so it cannot be shown to sit below "
+            "the working directory, the temporary directory or the home "
+            "directory") from exc
+    if not any(candidate.is_relative_to(base) for base in allowed_roots()):
+        raise GateRefusal(
+            REFUSAL_OUTSIDE_ROOTS,
+            f"--{kind} {arg!r} resolves to {candidate}, outside the "
+            "invocation's working directory, the temporary directory and the "
+            "home directory; the gate writes and reads only below those roots")
+    if kind == KIND_REPORT and not candidate.parent.is_dir():
+        raise GateRefusal(
+            "report-parent-missing",
+            f"--report {arg!r} resolves to {candidate}, whose directory "
+            f"{candidate.parent} does not exist; the gate does not create it")
+    if kind == KIND_EXPORT and not (candidate / "governance").is_dir():
         raise GateRefusal(
             "neutrality-export-invalid",
-            f"--openxfactory-export {raw!r} holds no governance/ directory. "
+            f"--openxfactory-export {arg!r} holds no governance/ directory. "
             "Pass the directory that CONTAINS governance/: the register "
             "reader joins the scan target with governance/review-authority, "
             "so a directory that IS governance/ would read no register and "
             "compare two empty reads")
-    return export
+    return candidate
+
+
+def validated_paths(args: argparse.Namespace,
+                    ) -> tuple[Path | None, Path | None]:
+    """The resolved, contained `--report` and `--openxfactory-export` paths
+    (None where a flag was not given). Everything after this uses these and
+    never the raw arguments."""
+    report = export = None
+    if args.report:
+        report = contained_path(args.report, kind=KIND_REPORT)
+    if args.openxfactory_export:
+        export = contained_path(args.openxfactory_export, kind=KIND_EXPORT)
+    return report, export
 
 
 def print_declared_line(result: TreeResult) -> None:
@@ -886,11 +943,10 @@ def scratch_dir(keep: bool) -> Iterator[Path]:
         yield Path(name)
 
 
-def _targets(args: argparse.Namespace) -> list[tuple[str, Path, str]]:
+def _targets(export: Path | None) -> list[tuple[str, Path, str]]:
     targets = [("root", ROOT, ".")]
-    if args.openxfactory_export:
-        export = export_tree(args.openxfactory_export)
-        targets.append(("openxfactory-export", export, str(export)))
+    if export is not None:
+        targets.append((KIND_EXPORT, export, str(export)))
     return targets
 
 
@@ -918,7 +974,8 @@ def _suite_phase(args: argparse.Namespace, scratch: Path, baseline: Path,
     return results
 
 
-def gate(args: argparse.Namespace, evidence: dict[str, Any]) -> int:
+def gate(args: argparse.Namespace, evidence: dict[str, Any],
+         export: Path | None) -> int:
     composed = ROOT / VALIDATOR_RELPATH
     if not composed.is_file():
         raise GateRefusal("neutrality-adapter-missing",
@@ -927,7 +984,7 @@ def gate(args: argparse.Namespace, evidence: dict[str, Any]) -> int:
     evidence["carve_commit"] = carve
     evidence["composed"]["sha256"] = hashlib.sha256(
         composed.read_bytes()).hexdigest()
-    targets = _targets(args)
+    targets = _targets(export)
     with scratch_dir(args.keep) as scratch, children_tmpdir(scratch):
         baseline = build_baseline(carve, scratch / "baseline")
         evidence["baseline"]["blob"] = git_text(
@@ -1007,31 +1064,45 @@ def parse_args(argv: Sequence[str] | None) -> argparse.Namespace:
     return args
 
 
-def main(argv: Sequence[str] | None = None) -> int:
-    args = parse_args(argv)
-    evidence: dict[str, Any] = {
+def new_evidence(export: Path | None, declared_commit: str | None,
+                 ) -> dict[str, Any]:
+    return {
         "gate": "neutrality-gate", "design": "split-openwallet-neutral-core "
         "design.md D5", "result": None, "revision": revision_facts(),
         "carve_commit": None,
         "baseline": {"script": VALIDATOR_RELPATH, "blob": None},
         "composed": {"script": VALIDATOR_RELPATH, "sha256": None},
         "openxfactory_export": (
-            {"path": str(Path(args.openxfactory_export).resolve()),
-             "declared_commit": args.openxfactory_export_commit}
-            if args.openxfactory_export else None),
+            {"path": str(export), "declared_commit": declared_commit}
+            if export is not None else None),
         "skipped": [], "refusal": None}
+
+
+def print_refusal(exc: GateRefusal) -> None:
+    print(f"neutrality-gate: REFUSED [{exc.code}]: {exc.detail}",
+          file=sys.stderr)
+
+
+def main(argv: Sequence[str] | None = None) -> int:
+    args = parse_args(argv)
     try:
-        code = gate(args, evidence)
+        report, export = validated_paths(args)
     except GateRefusal as exc:
-        print(f"neutrality-gate: REFUSED [{exc.code}]: {exc.detail}",
-              file=sys.stderr)
+        # Before the run: nothing has been read or written, so no evidence.
+        print_refusal(exc)
+        return 2
+    evidence = new_evidence(export, args.openxfactory_export_commit)
+    try:
+        code = gate(args, evidence, export)
+    except GateRefusal as exc:
+        print_refusal(exc)
         evidence["result"] = "refused"
         evidence["refusal"] = {"code": exc.code, "detail": exc.detail}
         code = 2
     evidence["exit_code"] = code
-    if args.report:
-        Path(args.report).write_text(json.dumps(evidence, indent=2) + "\n",
-                                     encoding="utf-8")
+    if report is not None:
+        report.write_text(json.dumps(evidence, indent=2) + "\n",
+                          encoding="utf-8")
     return code
 
 
