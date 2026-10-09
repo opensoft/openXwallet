@@ -366,11 +366,12 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
         "Start now, neutrality half later (Recommended)": parts zero, one, two,
         four and five authored now by lane openXwallet-2; part three's
         composed-adapter half is filled when group 5's composed validator
-        exists (lane openXwallet-3). In progress.
+        exists (lane openXwallet-3). Landed; see below.
       - **PENDING**, part three's second half: the neutrality gate over the
-        composed adapter. It is filled in by a follow-up commit once lane
+        composed adapter. It WAS measured, at the head `a02c6c74` of lane
         openXwallet-3's branch `rebuild/adapter-group-5` of opensoft/openXwallet
-        is runnable (it is not yet); nothing here waits for it. The shape,
+        (see the LANDED bullet below); the pinned root cited below, `1c68717f`,
+        was the development pin, and the final root is `52d75736`. The shape,
         as that lane gave it: from an openXwallet checkout at that branch,
         with openWallet pinned at the root merge
         `1c68717f1ae4ae132d6942f8c7f533baf292d0b6` (its `code` gitlink
