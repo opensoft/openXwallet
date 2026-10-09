@@ -1,0 +1,139 @@
+schema_version: 1
+kind: pinned_contract_manifest
+
+# ============================================================================
+# openwallet-pin.yaml — content-addressed consumption of opensoft/openWallet.
+#
+# openXwallet is the ADAPTER over the neutral wallet standard. The validator
+# core, the two contract families and the packaged corpus are openWallet's;
+# this repository runs them in process through the gitlink `openWallet/`, at
+# the commit below (split-openwallet-neutral-core, design.md D5 and D6). This
+# file is the whole of that claim, and scripts/verify-openwallet-pin.py is the
+# running code that checks it.
+#
+# WHY `kind: pinned_contract_manifest` UNCHANGED. The grammar is ratified and
+# realized three times: this repository's own contract_pin.yaml, openxFactory's
+# contracts/openxwallet-pin.yaml (whose field layout this file follows), and
+# the openWallet root's contracts/code-pin.yaml. Only the consumer is new.
+#
+# ONE CHAIN, MOUNTED AT THE ROOT (RULED Q2, "Nested gitlink, one chain"). The
+# gitlink mounts openWallet's ASSEMBLY ROOT: the one commit that names both
+# legs, and the commit a release tag names. It never mounts a leg directly.
+# The code leg is reached THROUGH the root's own `code` gitlink, so `legs.code`
+# below records nothing the root does not already fix. It is a MIRROR, checked,
+# never an independent choice.
+#
+# THE TRUSTED REFERENT IS `commit` PLUS THE EIGHT `sha256`s. `revision_kind:
+# commit` is declared and a tag-only pin is REFUSED (`pin-tag-only`).
+# `contract_bundle_tag` is a LABEL beside the commit, never the referent: a
+# movable name is not a compatibility pin.
+#
+# THE SPEC LEG IS NOT RECORDED (design.md D6). No byte this repository reads at
+# run time is in it. The validator, the contracts and the corpus are all in the
+# code leg (RULED Q7), and the root commit fixes the spec leg's commit anyway,
+# through its own gitlink. No gate here initializes it.
+#
+# WHAT REFUSES. The verifier exits 2 under a named code when `openWallet/` or
+# `openWallet/code/` is not initialized (two codes, two remediations); when the
+# `openWallet` gitlink this repository records, or the checked-out root, is not
+# `commit`; when the root's `code` gitlink, the root's contracts/code-pin.yaml
+# and `legs.code.commit` disagree at `commit`, read from GIT OBJECTS and never
+# from the working tree; when the checked-out code leg is not
+# `legs.code.commit`; on a digest drift in any of the eight; and when a
+# `pinned_by_commit_only` member is missing.
+#
+# OFFLINE LAW. The verifier reads this file, the git objects of this repository
+# and of openWallet/, and the files under openWallet/ that this file names. It
+# never reads the network, never reads an upstream tree, and never reads a
+# contracts/manifest.yaml, this repository's or the root's. The cross-check
+# against the root's manifest is a PIN-TIME obligation: the eight values below
+# were copied from it and re-verified by recomputation when this pin was
+# written.
+#
+# A RE-PIN IS ONE COMMIT. It moves the `openWallet` gitlink and `commit:`
+# together. `legs.code.commit` moves in that same commit only when the new root
+# commit moves its own `code` gitlink, and `files:` only when a digested byte
+# moved. The verifier refuses any one of them moving alone.
+# ============================================================================
+
+# openWallet has cut no release yet. Brett Heap has RULED the name of the
+# root's first tag, label verbatim "wallet-v1.6 (Recommended)", and that tag is
+# NOT cut. This field takes `wallet-v1.6` only once the annotated tag exists on
+# the root commit this pin records. A label naming a tag that does not exist
+# would label nothing.
+contract_bundle_tag: null
+source_repository: opensoft/openWallet
+
+# The gitlink this pin governs, mounting the openWallet ROOT.
+submodule_path: openWallet
+
+# The openWallet root at the merge of opensoft/openWallet#2 (task 4.5: the
+# root's carve layer, with both legs pinned at their carve). Exactly 40 hex.
+commit: "1c68717f1ae4ae132d6942f8c7f533baf292d0b6"
+revision_kind: commit
+
+digest_algorithm: sha256
+
+# The ROOT's contracts/manifest.yaml is where the eight digests are published,
+# on its owned rows at `code/contracts/...`. Recorded so a re-pin knows which
+# document to reconcile against. It is never read at CI time.
+digest_source: contracts/manifest.yaml
+
+# The byte-identity referent: the openXwallet commit openWallet was carved
+# from (task 2.3, named by Brett Heap, 2026-10-08). Every digest below equals
+# the value this repository's contracts/manifest.yaml recorded at it.
+carve_commit: "90111df262d6f54f7e82651d860adc12345f83f4"
+
+verify_pin: scripts/verify-openwallet-pin.py
+
+# THE CODE LEG, A LOCKSTEP MIRROR. The root's own contracts/code-pin.yaml says
+# of itself: "THIS FILE IS HALF OF ONE INVARIANT. The other halves are the
+# GITLINK this repository records at `submodule_path` and every
+# `.github/workflows/*.yml` reference of the form `<org>/<leg>/...@<sha>`. All
+# three move in ONE commit." This entry is that invariant read one level out:
+# `commit` below must equal the root's `code` gitlink AND the `commit:` of the
+# root's contracts/code-pin.yaml, both read as git objects at the root commit
+# above. Paths here are relative to `submodule_path`.
+legs:
+  code:
+    source_repository: opensoft/openWallet-code
+    submodule_path: code
+    commit: "72313daab1f229c049cb90998931564c1904dbbc"
+
+# The EIGHT digested members, relative to `submodule_path` as openxFactory's
+# are relative to `openXwallet`. Each path is the string the root manifest's
+# owned row holds, and each value is copied from that row and RECOMPUTED over
+# openWallet/code/contracts/... at this commit: 8 of 8.
+files:
+  - path: code/contracts/openxwallet/openxwallet-record.schema.yaml
+    sha256: "20ba39c07564c93b8ffe47382126677a165771244d28fb0c4976ab950173c40a"
+  - path: code/contracts/openxwallet/openxwallet-custody-registry.schema.yaml
+    sha256: "df72638497a7f90c2a4dff47c429cb794bc4b6e270ce2dd2b17116478ae3b51a"
+  - path: code/contracts/openxwallet/openxwallet-custody.registry.yaml
+    sha256: "94d631d6ee76dab015628a1856afd82582b98d6a3733622c9afe8b13b5278539"
+  - path: code/contracts/openxwallet/openxwallet-grant.schema.yaml
+    sha256: "fde433c5821e2e6f62926a72c58a67a784961d2e9e27e9f2b3520fcc8e738e88"
+  - path: code/contracts/openxwallet/openxwallet-grant-exercise.schema.yaml
+    sha256: "f16ad31246186cec36e142ae39bd831d98fbc5c0afd48685057bc39e113c8858"
+  - path: code/contracts/openxwallet/openxwallet-distinct-holder-constraint.schema.yaml
+    sha256: "c2a6d2fd23fb3743fdaf0e165dabc4cb1dff24e52a8262a38c86ed1482374b25"
+  - path: code/contracts/openxwallet/openxwallet-subject-attestation.schema.yaml
+    sha256: "d29eca519462aff7871de3786f19c820e9fc3b95115ce30e57d1f1cc2bc0c0b2"
+  - path: code/contracts/openxwallet-agent-profile/openxwallet-agent-composition.schema.yaml
+    sha256: "aed3978e8ae952f3ff5b3de1f672bba5da350d5aaeb442feafaa870b4de4be91"
+
+# PATH ONLY, with no invented per-file digests. The publisher declares these
+# members content-addressed by commit, and inventing digests for them would add
+# rows the publisher never published. Identity comes from the commits: the
+# verifier compares both the checked-out root and the checked-out code leg
+# against their pinned commits, so a swap of any of these files is a swap of a
+# commit. Presence is checked here. The first two are the bytes that RUN:
+# scripts/validate-openxwallet.py and scripts/wallet-yaml-syntax-gate.py in
+# this repository load them in process.
+pinned_by_commit_only:
+  - code/scripts/validate-openxwallet.py
+  - code/scripts/wallet-yaml-syntax-gate.py
+  - code/contracts/openxwallet/examples
+  - code/contracts/openxwallet-agent-profile/examples
+  - code/contracts/openxwallet/README.md
+  - code/contracts/openxwallet-agent-profile/README.md

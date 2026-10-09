@@ -1,0 +1,3 @@
+[submodule "openWallet"]
+	path = openWallet
+	url = https://github.com/opensoft/openWallet.git
