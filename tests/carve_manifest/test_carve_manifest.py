@@ -982,7 +982,8 @@ def test_the_real_manifest_names_the_ruled_carve_commit_and_d7s_counts() -> None
         return
     doc = yaml.safe_load(manifest.read_text(encoding="utf-8"))
     assert doc["carve_commit"] == CARVE_COMMIT
-    assert doc.get("phase", "carve") == "carve"
+    # The adapter rebuild (tasks.md 5.5) flipped the phase in the shed's own commit; the checker's post-shed pass proves the shed complete.
+    assert doc.get("phase", "carve") == "post-shed"
     rows = doc["rows"]
     assert len(rows) == 232
     paths = [r["source_path"] for r in rows]
