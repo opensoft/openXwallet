@@ -133,9 +133,10 @@ Run: `python3 scripts/neutrality-gate.py [--carve-commit SHA]
 [--openxfactory-export DIR [--openxfactory-export-commit SHA]]
 [--no-suite-trees] [--report PATH] [--keep]`. Standard library only; offline;
 it writes nothing outside its temporary tree and `--report`. Both paths are
-RESOLVED and then CONTAINED before the run starts: each must resolve below the
-working directory, the temporary directory or the home directory, else the
-gate refuses before it reads or writes anything. Driven by
+NORMALISED, RESOLVED and then CONTAINED before the run starts: each must
+resolve (`~` and links followed) to a string that starts with the working
+directory, the temporary directory or the home directory, else the gate
+refuses before it reads or writes anything. Driven by
 `tests/neutrality_gate/test_neutrality_gate.py` and
 `.github/workflows/neutrality-gate.yml`.
 """
@@ -597,44 +598,52 @@ def compare_tree(name: str, tree: Path, shown: str, baseline: Path,
     return result
 
 
-def allowed_roots() -> tuple[Path, ...]:
-    """The roots a path given on the command line may resolve below: the
-    invocation's working directory, the temporary directory and the home
-    directory (left out where the platform cannot name one)."""
-    roots = [Path.cwd().resolve(), Path(tempfile.gettempdir()).resolve()]
+def allowed_roots() -> tuple[str, ...]:
+    """The roots a path given on the command line may resolve below, as real
+    paths in plain strings: the invocation's working directory, the temporary
+    directory and the home directory (left out where the platform cannot name
+    one)."""
+    roots = [os.path.realpath(os.getcwd()),
+             os.path.realpath(tempfile.gettempdir())]
     with contextlib.suppress(RuntimeError):
-        roots.append(Path.home().resolve())
+        roots.append(os.path.realpath(str(Path.home())))
     return tuple(roots)
 
 
 def contained_path(arg: str, *, kind: str) -> Path:
-    """RESOLVE, then CONTAIN: a path from the command line (`--report`, or
-    `--openxfactory-export`, named by KIND) is resolved to its real location,
-    `~` and symbolic links included, and must sit below one of the allowed
-    roots before the gate reads or writes it. The resolved path is the only
-    one used afterwards. A `--report` also needs its directory to exist; an
-    export needs the `governance/` directory it is checked for here."""
-    try:
-        candidate = Path(arg).expanduser().resolve()
-    except (OSError, RuntimeError, ValueError) as exc:
-        raise GateRefusal(
-            REFUSAL_OUTSIDE_ROOTS,
-            f"--{kind} {arg!r} does not resolve to a real location "
-            f"({exc.__class__.__name__}), so it cannot be shown to sit below "
-            "the working directory, the temporary directory or the home "
-            "directory") from exc
-    if not any(candidate.is_relative_to(base) for base in allowed_roots()):
-        raise GateRefusal(
-            REFUSAL_OUTSIDE_ROOTS,
-            f"--{kind} {arg!r} resolves to {candidate}, outside the "
-            "invocation's working directory, the temporary directory and the "
-            "home directory; the gate writes and reads only below those roots")
-    if kind == KIND_REPORT and not candidate.parent.is_dir():
+    """NORMALISE, RESOLVE, then CONTAIN: a path from the command line
+    (`--report`, or `--openxfactory-export`, named by KIND) is joined under a
+    trusted root, normalised, resolved to its real location (`~` and symbolic
+    links included) and accepted only where the resolved string starts with
+    that root. The `Path` returned is the string that passed that prefix
+    check, and it is the only path used afterwards. A relative argument is
+    anchored at the working directory first, so `../x` means what it says
+    there and is never re-read against another root. A `--report` also needs
+    its directory to exist; an export needs a `governance/` directory."""
+    anchored = os.path.join(os.getcwd(), os.path.expanduser(arg))
+    resolved = anchored
+    for root in allowed_roots():
+        candidate = os.path.normpath(os.path.join(root, anchored))
+        resolved = os.path.realpath(candidate)
+        if resolved == root:
+            return require_kind(Path(root), arg, kind)
+        if resolved.startswith(root.rstrip(os.sep) + os.sep):
+            return require_kind(Path(resolved), arg, kind)
+    raise GateRefusal(
+        REFUSAL_OUTSIDE_ROOTS,
+        f"--{kind} {arg!r} resolves to {resolved}, outside the "
+        "invocation's working directory, the temporary directory and the "
+        "home directory; the gate writes and reads only below those roots")
+
+
+def require_kind(accepted: Path, arg: str, kind: str) -> Path:
+    """What each flag needs of a path that is already contained."""
+    if kind == KIND_REPORT and not accepted.parent.is_dir():
         raise GateRefusal(
             "report-parent-missing",
-            f"--report {arg!r} resolves to {candidate}, whose directory "
-            f"{candidate.parent} does not exist; the gate does not create it")
-    if kind == KIND_EXPORT and not (candidate / "governance").is_dir():
+            f"--report {arg!r} resolves to {accepted}, whose directory "
+            f"{accepted.parent} does not exist; the gate does not create it")
+    if kind == KIND_EXPORT and not (accepted / "governance").is_dir():
         raise GateRefusal(
             "neutrality-export-invalid",
             f"--openxfactory-export {arg!r} holds no governance/ directory. "
@@ -642,7 +651,7 @@ def contained_path(arg: str, *, kind: str) -> Path:
             "reader joins the scan target with governance/review-authority, "
             "so a directory that IS governance/ would read no register and "
             "compare two empty reads")
-    return candidate
+    return accepted
 
 
 def validated_paths(args: argparse.Namespace,
@@ -871,8 +880,12 @@ def _pytest_digest(output: str) -> list[str]:
 
 def print_suite(result: SuiteResult) -> None:
     judged, helps = result.judged, result.helps
-    verdict = ("REFUSED" if result.refusal else
-               "DIFFERENT" if result.differences else "IDENTICAL")
+    if result.refusal:
+        verdict = "REFUSED"
+    elif result.differences:
+        verdict = "DIFFERENT"
+    else:
+        verdict = "IDENTICAL"
     same_help = sum(1 for r in helps if r["identical"])
     help_tally = (f"; help {same_help} of {len(helps)} identical (not a "
                   "tree, outside the verdict)" if helps else "")

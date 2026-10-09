@@ -83,9 +83,17 @@ def main() -> int:
     gate = importlib.util.module_from_spec(spec)
     try:
         spec.loader.exec_module(gate)
-    except KeyboardInterrupt:
+    except SystemExit as exc:
+        # An exiting gate is a gate that did not load: a tampered one that
+        # exits 0 at import would otherwise end this entrypoint green with
+        # nothing adjudicated. Say so, then leave through the SAME exception
+        # with the refusal's exit code. KeyboardInterrupt is not caught.
+        refuse("core-unloadable",
+               f"{shown} exits while loading (SystemExit: exit code "
+               f"{exc.code!r})", CORE_REMEDIATION)
+        exc.code = 2
         raise
-    except BaseException as exc:  # noqa: BLE001 - SystemExit too: an exiting gate refuses
+    except Exception as exc:  # noqa: BLE001 - any failure to load is a refusal
         return refuse("core-unloadable",
                       f"{shown} does not load ({type(exc).__name__}: {exc})",
                       CORE_REMEDIATION)

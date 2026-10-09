@@ -653,6 +653,18 @@ def test_a_relative_report_is_resolved_against_the_working_directory(
     assert _report(repo / "out.json")["result"] == "identical"
 
 
+def test_a_relative_report_leaving_the_working_directory_is_anchored_there(
+        tmp_path: Path) -> None:
+    """`../out-up.json` is read against the working directory, never against
+    another allowed root: it lands beside the repository, under the temporary
+    directory, which is allowed."""
+    repo, carve = _repo(tmp_path)
+    done = _gate(repo, f"--carve-commit={carve}", "--no-suite-trees",
+                 "--report=../out-up.json")
+    assert done.returncode == 0, done.stdout + done.stderr
+    assert _report(tmp_path / "out-up.json")["result"] == "identical"
+
+
 def test_a_report_outside_the_allowed_roots_is_refused(tmp_path: Path) -> None:
     repo, carve = _repo(tmp_path)
     done = _gate(repo, f"--carve-commit={carve}", "--no-suite-trees",

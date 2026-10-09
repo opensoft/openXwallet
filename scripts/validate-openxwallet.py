@@ -187,9 +187,18 @@ def load_core() -> ModuleType:
     module = importlib.util.module_from_spec(spec)
     try:
         spec.loader.exec_module(module)
-    except KeyboardInterrupt:
+    except SystemExit as exc:
+        # An exiting core is a core that did not load: a tampered one that
+        # exits 0 at import would otherwise end this entrypoint green with
+        # nothing adjudicated. Say so, then leave through the SAME exception
+        # with the refusal's exit code. KeyboardInterrupt is not caught.
+        print(CompositionRefusal(
+            "core-unloadable",
+            f"{shown} exits while loading (SystemExit: exit code "
+            f"{exc.code!r})", CORE_REMEDIATION), file=sys.stderr)
+        exc.code = 2
         raise
-    except BaseException as exc:  # noqa: BLE001 - SystemExit too: an exiting core refuses
+    except Exception as exc:  # noqa: BLE001 - any failure to load is a refusal
         raise CompositionRefusal(
             "core-unloadable",
             f"{shown} does not load ({type(exc).__name__}: {exc})",
