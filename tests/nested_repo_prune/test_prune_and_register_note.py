@@ -11,6 +11,14 @@ script as a SUBPROCESS, not an in-process import, so the exit codes the
 workflows act on are the ones under test, and build every fixture tree under
 `tmp_path` so nothing here can touch the repository.
 
+UNDER COMPOSITION (`split-openwallet-neutral-core`, design.md D2 and D5) the
+two behaviours live in different repositories. The sweep prune is the neutral
+core's, carved to opensoft/openWallet-code with its tests; this entrypoint runs
+that core in process from the pinned `openWallet/` mount. So this file keeps the
+REGISTER half (US2, whose reader is openXwallet's), the pinned corpus note of the
+COMPOSED corpus, a composed-entrypoint regression of the prune note, and the
+FR-009 claim restated against the pre-split validator at the named carve commit.
+
 The prune's whole point is that a nested repository's YAML stops being
 adjudicated as a live record of the scanned tree. So the assertions are on the
 `repo scan:` note's VALIDATED COUNT — the one number that says how many records
@@ -20,7 +28,6 @@ finding, which a future rule change could make vacuously true.
 
 from __future__ import annotations
 
-import os
 import re
 import subprocess
 import sys
@@ -43,7 +50,9 @@ ABSENT_REGISTER_NOTE = "note  no intake register at this tree; nothing to read"
 # wallet-v1.3 (`add-multi-key-wallets`) added four positives and nine negatives
 # for the declared key set. The count is LITERAL, not a wildcard, for the same
 # reason the register's seat-key count is: a corpus that silently lost a fixture
-# and a corpus that passed are both "green" to a pattern.
+# and a corpus that passed are both "green" to a pattern. It is the COMPOSED
+# count: the pinned core's 21 / 42 / 11 of 11, plus rule (t)'s three negatives
+# and the two OXWR rows they probe, which stay in this repository.
 CORPUS_NOTE = ("note  corpus: 21 positive example(s), 45 negative "
                "confirmation(s) across 13/13 requirements")
 
@@ -113,51 +122,33 @@ def _write_wallet(directory: Path, wallet_id: str) -> Path:
     return dest
 
 
-# ------------------- US1: the sweep prunes nested repositories -------------
+# ------------------- the composed entrypoint: corpus and prune -------------
 
-def test_nested_repo_with_a_dot_git_FILE_is_not_adjudicated(tmp_path):
-    """A submodule's `.git` is a FILE — which is all `SKIP_DIR_NAMES` misses.
-
-    This is the exact hole D4 closes: `set(path.parts) & SKIP_DIR_NAMES` can
-    only match a path COMPONENT named `.git`, and a submodule checkout has no
-    such component.
-    """
-    root = tmp_path / "root"
-    root.mkdir()
-    _write_wallet(_nested_repo(root / "pinned-product", "file"), "wal-nested-0001")
-
-    r = _run(root)
-    assert _validated(r.stdout) == 0, r.stdout
-    assert _pruned(r.stdout) == ["pinned-product"], r.stdout
+def test_the_repository_itself_still_reports_its_own_corpus(tmp_path):
+    """21 positives and 45 negatives over 13/13 requirements: the core's corpus
+    and closure, joined by this repository's three rule (t) negatives and the
+    two requirement rows they probe."""
+    r = _run(REPO_ROOT)
+    assert CORPUS_NOTE in r.stdout, r.stdout + r.stderr
+    assert r.returncode == 0, r.stdout + r.stderr
 
 
-def test_nested_repo_with_a_dot_git_DIRECTORY_is_not_adjudicated(tmp_path):
-    """The other real shape: a plain clone nested inside another tree."""
-    root = tmp_path / "root"
-    root.mkdir()
-    _write_wallet(_nested_repo(root / "vendored-clone", "dir"), "wal-nested-0002")
-
-    r = _run(root)
-    assert _validated(r.stdout) == 0, r.stdout
-    assert _pruned(r.stdout) == ["vendored-clone"], r.stdout
-
-
-def test_the_control_same_record_outside_any_nested_repo_IS_adjudicated(tmp_path):
-    """The prune is a nested-repository rule, not a blanket exclusion.
-
-    Without this case the two above would pass just as well if the sweep had
-    stopped adjudicating anything at all.
-    """
-    root = tmp_path / "root"
-    _write_wallet(root / "tenants" / "acme", "wal-outside-0001")
-
-    r = _run(root)
-    assert _validated(r.stdout) == 1, r.stdout
-    assert _pruned(r.stdout) == [], r.stdout
+def test_the_composed_entrypoint_prunes_the_mounted_openwallet_root(tmp_path):
+    """design.md D5's ONE declared new line. The mount `openWallet/` carries a
+    `.git` entry, so the sweep prunes it WHOLE: the pinned core's own corpus,
+    schemas and legs are never adjudicated as live records of this tree. The
+    line is asserted exactly, because a consumer gate parses it."""
+    r = _run(REPO_ROOT)
+    assert ("note  nested repositories pruned (not adjudicated): openWallet"
+            in r.stdout.splitlines()), r.stdout + r.stderr
+    assert _pruned(r.stdout) == ["openWallet"], r.stdout
 
 
-def test_one_tree_both_cases_at_once(tmp_path):
-    """Three copies of one record; only the one outside is adjudicated."""
+def test_the_composed_entrypoint_prunes_both_nested_shapes(tmp_path):
+    """The regression the adapter keeps of the prune it no longer owns: through
+    THIS entrypoint, a `.git` FILE (a submodule) and a `.git` DIRECTORY (a
+    nested clone) are both pruned, and the one record outside them is the one
+    record adjudicated. The shapes' own tests travel with the core."""
     root = tmp_path / "root"
     root.mkdir()
     _write_wallet(_nested_repo(root / "sub-as-file", "file"), "wal-a-0001")
@@ -165,85 +156,8 @@ def test_one_tree_both_cases_at_once(tmp_path):
     _write_wallet(root / "own-records", "wal-c-0001")
 
     r = _run(root)
-    assert _validated(r.stdout) == 1, r.stdout
+    assert _validated(r.stdout) == 1, r.stdout + r.stderr
     assert _pruned(r.stdout) == ["sub-as-dir", "sub-as-file"], r.stdout
-
-
-def test_the_scan_root_is_never_pruned_by_its_own_dot_git(tmp_path):
-    """The ordinary case: a repository scanning itself.
-
-    A prune that keyed on `.git` without excepting the root would make the
-    validator adjudicate nothing, everywhere — a silent vacuous pass in every
-    real consumer.
-    """
-    root = tmp_path / "root"
-    _nested_repo(root, "file")
-    _write_wallet(root / "records", "wal-root-0001")
-
-    r = _run(root)
-    assert _validated(r.stdout) == 1, r.stdout
-    assert _pruned(r.stdout) == [], r.stdout
-
-
-def test_a_nested_repo_inside_a_pruned_one_is_not_reported_twice(tmp_path):
-    """The outer prune already removed everything below it."""
-    root = tmp_path / "root"
-    root.mkdir()
-    outer = _nested_repo(root / "outer", "file")
-    _write_wallet(_nested_repo(outer / "inner", "dir"), "wal-inner-0001")
-
-    r = _run(root)
-    assert _validated(r.stdout) == 0, r.stdout
-    assert _pruned(r.stdout) == ["outer"], r.stdout
-
-
-def test_no_prune_note_when_there_is_nothing_to_prune(tmp_path):
-    """A clean tree's output is unchanged from wallet-v1.0's."""
-    root = tmp_path / "root"
-    _write_wallet(root / "records", "wal-clean-0001")
-
-    r = _run(root)
-    assert PRUNE_NOTE.search(r.stdout) is None, r.stdout
-
-
-def test_skip_dir_names_still_behaves_as_it_did(tmp_path):
-    """`SKIP_DIR_NAMES` keeps its job: the prune is additive, not a rewrite."""
-    root = tmp_path / "root"
-    for skipped in (".venv", "node_modules", "__pycache__"):
-        _write_wallet(root / skipped / "nested", f"wal-{skipped.strip('._')}-0001")
-    _write_wallet(root / "records", "wal-kept-0001")
-
-    r = _run(root)
-    assert _validated(r.stdout) == 1, r.stdout
-
-
-def test_the_packaged_corpus_exclusion_still_keys_on_path_parts(tmp_path):
-    """S4.6: the corpus exclusion holds INSIDE a nested repository too.
-
-    Both mechanisms firing on one path is not an error — and the exclusion is
-    what keeps the 36 negatives from being re-adjudicated as live records when a
-    consumer vendors the family. Asserted here because the real hazard the
-    prune addresses is the NON-`examples/` YAML a carve brings along.
-    """
-    root = tmp_path / "root"
-    # Corpus-shaped path OUTSIDE any nested repository: excluded by parts.
-    corpus = root / "contracts" / "openxwallet" / "examples"
-    _write_wallet(corpus, "wal-corpus-0001")
-    # Corpus-shaped path INSIDE a nested repository: excluded twice over.
-    nested = _nested_repo(root / "pinned", "file")
-    _write_wallet(nested / "contracts" / "openxwallet" / "examples",
-                  "wal-corpus-0002")
-
-    r = _run(root)
-    assert _validated(r.stdout) == 0, r.stdout
-    assert r.returncode == 0, r.stdout + r.stderr
-
-
-def test_the_repository_itself_still_reports_its_own_corpus(tmp_path):
-    """The 17 positives and 36 negatives, unchanged, over 13/13 requirements."""
-    r = _run(REPO_ROOT)
-    assert CORPUS_NOTE in r.stdout, r.stdout
-    assert r.returncode == 0, r.stdout + r.stderr
 
 
 # ------------------- US2: the durable register-read NOTE -------------------
@@ -304,8 +218,8 @@ def _register_tree(root: Path, rows: list[dict] | None = None) -> Path:
 
     Shaped on the validator's own S4 self-test fixtures (`_s4_tree`,
     `s4_row`, `s4_grant`, `s4_wallet`, `s4_attest`), which are local to
-    `self_test()` and so cannot be imported — a subprocess-driven test needs
-    them as FILES anyway.
+    `self_test_register_reader()` and so cannot be imported — a
+    subprocess-driven test needs them as FILES anyway.
     """
     records = root / "governance" / "wallets"
     records.mkdir(parents=True)
@@ -425,7 +339,7 @@ def test_the_command_line_surface_is_unchanged(tmp_path):
 def test_this_repository_adjudicates_with_no_error_and_no_warning(tmp_path):
     """The durable half of the corpus-identity proof, runnable anywhere.
 
-    The self-test adjudicates all 17 positives and all 36 negatives on every
+    The self-test adjudicates all 21 positives and all 45 negatives on every
     invocation and asserts each negative fails with its EXPECTED code, so a
     clean summary line over this repository IS the corpus identity statement —
     and unlike the git-based half below, it needs no history.
@@ -435,128 +349,107 @@ def test_this_repository_adjudicates_with_no_error_and_no_warning(tmp_path):
     assert r.returncode == 0, r.stdout + r.stderr
 
 
+# The pre-split validator design.md D5's neutrality claim is made against: the
+# one at the NAMED CARVE COMMIT (task 2.3; Brett Heap, 2026-10-08, "name 90111df
+# as the carve commit, do 2.4 and 2.5").
+CARVE_COMMIT = "90111df262d6f54f7e82651d860adc12345f83f4"
+
+
 def _baseline_script(tmp_path: Path) -> Path | None:
-    """The PREVIOUS version of the validator, recovered from git history.
+    """The PRE-SPLIT validator, recovered from git history at the carve commit.
 
     Never by stashing or checking out: this repository's working tree is not
-    this test's to mutate. The copy is written into a scratch `scripts/`
-    directory whose sibling `contracts/` is a symlink to the real one, because
-    the script derives `ROOT` from its own location.
+    this test's to mutate. The script is written into a scratch `scripts/`
+    directory beside THE CARVE COMMIT'S OWN `contracts/`, because it derives
+    `ROOT` from its own location and adjudicates the corpus it finds there.
+
+    WHY NOT "THE PREVIOUS VERSION" ANY MORE. Until the split this test copied the
+    current script into a second scratch root and ran it over the previous
+    corpus. The composed adapter cannot run from a scratch root: it loads its
+    core from `openWallet/` beside it and refuses, exit 2, where there is none.
+    Compared that way the refusal would be an empty finding set, equal to the
+    baseline's, and the test would pass on a validator that adjudicated nothing.
+    So the current entrypoint runs IN PLACE and the baseline is fixed at the
+    commit the neutrality claim names, which is also the last pre-split blob.
     """
     current = VALIDATOR.read_text(encoding="utf-8")
-    for ref in ("origin/main", "main", "HEAD^1", "HEAD^"):
-        got = subprocess.run(
-            ["git", "show", f"{ref}:scripts/validate-openxwallet.py"],
-            capture_output=True, text=True, cwd=REPO_ROOT)
-        if got.returncode != 0 or not got.stdout:
-            continue
-        # NEVER fall back to a blob equal to the working copy. A candidate list
-        # ending at `HEAD` would compare this version against ITSELF wherever
-        # the base ref is unreachable -- a depth-1 CI checkout of a merge ref,
-        # say -- and pass vacuously. Vacuous passes are the exact failure class
-        # this wave refuses, so an identical blob is treated as no baseline at
-        # all and the test SKIPS with its reason.
-        if got.stdout == current:
-            continue
-        shadow = tmp_path / "baseline"
-        (shadow / "scripts").mkdir(parents=True)
-        dest = shadow / "scripts" / "validate-openxwallet.py"
-        dest.write_text(got.stdout, encoding="utf-8")
-        # THE BASELINE'S OWN CONTRACTS, not the working tree's. Recovered from
-        # the same ref as the script, because a release that adds corpus
-        # fixtures makes "the previous reader over the current corpus" a
-        # comparison of two different questions — see the test below, whose
-        # direction this enables.
-        archive = subprocess.run(
-            ["git", "archive", ref, "contracts"],
-            capture_output=True, cwd=REPO_ROOT)
-        if archive.returncode != 0:  # pragma: no cover
-            return None
-        subprocess.run(["tar", "-x", "-C", str(shadow)],
-                       input=archive.stdout, check=True)
-        # A SECOND root: the CURRENT reader over the BASELINE corpus. Both roots
-        # point at the same recovered contracts directory, so the only variable
-        # between the two runs is the reader.
-        current_over_baseline = tmp_path / "current-over-baseline"
-        (current_over_baseline / "scripts").mkdir(parents=True)
-        (current_over_baseline / "scripts" / "validate-openxwallet.py"
-         ).write_text(current, encoding="utf-8")
-        os.symlink(shadow / "contracts", current_over_baseline / "contracts")
-        return dest
-    return None
+    got = subprocess.run(
+        ["git", "show", f"{CARVE_COMMIT}:scripts/validate-openxwallet.py"],
+        capture_output=True, text=True, cwd=REPO_ROOT)
+    # NEVER compare against a blob equal to the working copy: that would compare
+    # this version against ITSELF and pass vacuously.
+    if got.returncode != 0 or not got.stdout or got.stdout == current:
+        return None
+    archive = subprocess.run(["git", "archive", CARVE_COMMIT, "contracts"],
+                             capture_output=True, cwd=REPO_ROOT)
+    if archive.returncode != 0:  # pragma: no cover
+        return None
+    shadow = tmp_path / "pre-split"
+    (shadow / "scripts").mkdir(parents=True)
+    dest = shadow / "scripts" / "validate-openxwallet.py"
+    dest.write_text(got.stdout, encoding="utf-8")
+    subprocess.run(["tar", "-x", "-C", str(shadow)], input=archive.stdout,
+                   check=True)
+    return dest
 
 
-def test_this_version_adjudicates_the_previous_corpus_identically(tmp_path):
-    """FR-009, in the only direction that stays meaningful. Notes move by design.
+def test_the_composed_adapter_adjudicates_as_the_pre_split_validator_did(
+        tmp_path):
+    """FR-009 under composition: nothing anyone already declares changes verdict.
 
-    THE DIRECTION FLIPPED AT `wallet-v1.3`, and saying why matters more than the
-    assertion. Through `wallet-v1.2` every release changed the READER alone, so
-    "run the previous reader over this tree and diff the findings" was exactly
-    the no-regression claim. `wallet-v1.3` (`add-multi-key-wallets`) adds corpus
-    fixtures AND the rules they probe, so the previous reader cannot adjudicate
-    this tree at all — it would refuse the new multi-key positives for lacking
-    rules it does not have, which proves nothing about regression.
+    THE CLAIM. The pre-split validator at the carve commit, over its own corpus,
+    and the composed adapter in place, over the pinned core's corpus plus this
+    repository's three rule (t) negatives, print THE SAME BYTES and exit with
+    the same code, on the same targets: the self-test alone, this repository
+    plain and `--strict`, and a consumer tree whose register reads clean but
+    whose second review grant names the legacy org issuer. That last tree is
+    what keeps the comparison from being two empty finding sets: its findings
+    are asserted PRESENT, so equality there is equality of a real verdict.
 
-    So the comparison is now: THIS reader over the PREVIOUS corpus, against the
-    PREVIOUS reader over the PREVIOUS corpus. That is the claim a consumer
-    actually depends on — "nothing you already declare changes verdict" — and it
-    is the claim `add-multi-key-wallets` made in prose ("existing single-key
-    records remain valid; the set has one member").
+    WHY WHOLE OUTPUT AND NOT A FINDING SET. Through `wallet-v1.3` this test
+    compared record-level findings and excluded the harness codes, because the
+    two runs adjudicated different corpora. Here the corpora are the carve's two
+    halves, so nothing needs excluding, and design.md D5 claims byte identity.
+    The declared new line, the `openWallet` prune note over this repository, is
+    printed by both: the baseline scans the same tree, mount included.
+    task 5.4's neutrality gate makes the claim over every fixture tree.
 
-    Skipped LOUDLY, with a reason, when git history is unavailable (a tarball
-    export, or a depth-1 CI checkout of a merge ref whose parents were never
-    fetched). A skip that says why is honest; a silent pass is the
-    vacuous-pass class this whole wave refuses.
+    Skipped LOUDLY, with a reason, where the carve commit is not in this
+    checkout's history (a depth-1 CI checkout), and where the recovered baseline
+    cannot run; never counted as a pass in either case.
     """
     baseline = _baseline_script(tmp_path)
     if baseline is None:
-        pytest.skip("no git blob for a DIFFERENT, previous "
-                    "scripts/validate-openxwallet.py is reachable from this "
-                    "checkout, so there is nothing to compare against")
-    current = (tmp_path / "current-over-baseline" / "scripts"
-               / "validate-openxwallet.py")
+        pytest.skip(f"the carve commit {CARVE_COMMIT} is not in this "
+                    "checkout's history (a depth-1 checkout), so the pre-split "
+                    "validator cannot be recovered to compare against")
 
-    # HARNESS codes are excluded, and the exclusion is the point rather than a
-    # convenience. `examples-missing`, `examples-invalid` and `negative-*` are
-    # claims about the CORPUS's own completeness — "this release's named probes
-    # are present", "no packaged key id collides" — so they necessarily differ
-    # when a release adds fixtures, and the previous corpus lacking this
-    # release's probes is not a regression, it is the release. What must not
-    # move is the verdict on a RECORD, which is every other code.
-    HARNESS = ("examples-missing", "examples-invalid", "negative-should-fail",
-               "negative-wrong-reason", "negative-requirement-unknown",
-               "negative-requirement-uncovered")
+    consumer = _register_tree(tmp_path / "consumer")
+    (consumer / "governance" / "wallets" / "legacy-grant.yaml").write_text(
+        yaml.safe_dump(dict(REGISTER_GRANT, grant_id="grant-legacy-0001",
+                            issued_by="opensoft")), encoding="utf-8")
 
-    def findings(out: str) -> set[str]:
-        # Labels are root-relative and the two roots differ, so the roots are
-        # normalised away. Codes and messages are the payload.
-        keep = set()
-        for line in out.splitlines():
-            if not line.startswith(("ERROR [", "WARN  [")):
-                continue
-            if any(f"[{code}]" in line for code in HARNESS):
-                continue
-            keep.add(line.replace(str(baseline.parent.parent), "<root>")
-                         .replace(str(current.parent.parent), "<root>"))
-        return keep
+    targets = (("the self-test alone", ()),
+               ("this repository", (str(REPO_ROOT),)),
+               ("this repository, --strict", (str(REPO_ROOT), "--strict")),
+               ("a consumer tree with refusals", (str(consumer),)))
+    for label, args in targets:
+        before = subprocess.run([sys.executable, str(baseline), *args],
+                                capture_output=True, text=True, cwd=REPO_ROOT)
+        after = subprocess.run([sys.executable, str(VALIDATOR), *args],
+                               capture_output=True, text=True, cwd=REPO_ROOT)
+        if before.returncode == 2:  # pragma: no cover
+            pytest.skip(f"the recovered baseline could not run on {label}: "
+                        f"{before.stderr}")
+        assert after.returncode != 2, (label, after.stderr)
+        assert CORPUS_NOTE in after.stdout, (label, after.stdout)
+        assert after.stdout == before.stdout, (
+            f"{label}: the composed adapter's output moved.\nBEFORE:\n"
+            f"{before.stdout}\nAFTER:\n{after.stdout}")
+        assert after.returncode == before.returncode, (label, after.stdout)
 
-    before = subprocess.run([sys.executable, str(baseline), "--strict"],
-                            capture_output=True, text=True)
-    after = subprocess.run([sys.executable, str(current), "--strict"],
-                           capture_output=True, text=True)
-    if before.returncode == 2:  # pragma: no cover
-        pytest.skip(f"the recovered baseline could not run: {before.stderr}")
-
-    assert findings(before.stdout) == findings(after.stdout), (
-        f"finding set moved on the PREVIOUS corpus.\nBEFORE:\n{before.stdout}"
-        f"\nAFTER:\n{after.stdout}")
-    # And it is EMPTY, not merely equal: two identical non-empty sets would say
-    # the previous corpus was already failing, which is a different claim.
-    assert not findings(before.stdout), before.stdout
-    # The baseline exits clean over its own corpus. The current reader does NOT,
-    # and must not: over the previous corpus it reports this release's named
-    # probes as absent, which is the harness telling the truth. Asserting a
-    # clean exit here would either be false or would require deleting the probe
-    # check — so the exit code is asserted where it means something (the
-    # baseline) and the record-level verdict is what carries the comparison.
-    assert before.returncode == 0, before.stdout
+    # The refused tree's verdict is REAL: rule (t) and the register reader both
+    # bit, through the composed entrypoint, exactly as they did before.
+    assert after.returncode == 1, after.stdout
+    assert "ERROR [root-issuer-unanchored]" in after.stdout, after.stdout
+    assert "ERROR [register-no-active-row]" in after.stdout, after.stdout
