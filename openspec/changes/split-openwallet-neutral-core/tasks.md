@@ -781,12 +781,18 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
       - Known, deferred (#40's body): A2, a crafted cached `.pyc` served
         instead of the pinned source; A4, `compose()` not idempotent across
         two in-process `main()` calls; the pre-existing, neutral
-        `s4-selftest-*` directories left in TMPDIR; the entrypoints'
-        remediation naming the mount as this repository sees it; and the
-        wording of `_fingerprint_of` as an "own" name in
+        `s4-selftest-*` directories left in TMPDIR; and the entrypoints'
+        remediation naming the mount as this repository sees it.
+      - **LANDED 2026-10-09**, the docs follow-up this tick named: the
+        wording of `_fingerprint_of` as an "own" name, by lane openXwallet-3
+        in opensoft/openXwallet#44 at merge
+        `989f334ccc96db7d017b2839d8828d7fcf653c8a` (head `6fb912b3`), on
+        Brett Heap's word "land 44". `1f124251` names `_fingerprint_of` the
+        core's alias of `fingerprint_of_public_key` in
         `contracts/CHANGELOG.md` and in the docstring of
-        `tests/openwallet_pin/test_consumer_surface.py`, lane openXwallet-3's
-        docs follow-up.
+        `tests/openwallet_pin/test_consumer_surface.py`, and says "five
+        names"; `6fb912b3` stops the test docstrings calling
+        `fingerprint_of_public_key` a decoder.
 - [x] 5.8 **[OPERATOR]** The adapter's first release in Q4's series, five
       values, tagged at the merge commit.
       - **TAGGED 2026-10-09** by lane openXwallet-1 on Brett Heap's word in
