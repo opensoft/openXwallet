@@ -395,6 +395,8 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
         output and the same exit code, plain and `--strict`, over the same
         tree, for each of this tree, the openxFactory governance export, and
         every test-suite fixture tree.
+      - Superseded 2026-10-09: the final root is opensoft/openWallet#7's merge
+        `b0af7c2c`, per the rulings recorded at 4.9.
       - **LANDED 2026-10-09** in opensoft/openWallet#3 at merge
         `52d75736156550b48992e39f7a69fb680c611287` (a merge commit; head
         `6b25be50`; commits `624e196` the proof, `b86c6a5` root docs status,
@@ -488,7 +490,7 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
         "the neutral job envelope" though D4 says it stops; behaviour correct
         (no binding → every posture refused, `legal terms: []`), wording
         stale.
-- [ ] 4.9 **[OPERATOR]** `[openWallet-root]` First release — five coordinated
+- [x] 4.9 **[OPERATOR]** `[openWallet-root]` First release — five coordinated
       values — on the ROOT:
       - the annotated `wallet-v*` tag on the root commit that pins both legs;
       - `contracts/manifest.yaml`, `contracts/CHANGELOG.md` and
@@ -532,6 +534,35 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
           (8 of 8), and the CHANGELOG entry; no gitlink or pin moves. The tag
           goes on that pull request's merge commit; the tick follows when the
           merge and the tag exist.
+      - **DONE 2026-10-09** on Brett Heap's word in session, by multiple
+        choice, label verbatim "Land 7 and cut the tag (Recommended)"
+        (https://github.com/opensoft/openXwallet/issues/25#issuecomment-6086448281).
+        - opensoft/openWallet#7 landed at merge
+          `b0af7c2ce53d63786a08a20aa3602a6f90345606` on 2026-10-09T17:43:03Z,
+          a merge commit with parents `b4580d16` and the release commit
+          `88345cc8`. It was gated on `validate` completed success for head
+          `88345cc8`, with the lockstep-pins step (`pins ok`).
+        - The annotated tag `wallet-v1.6`, tag object
+          `3acfa611b69503e809043faff5f3622cc008a3eb`, message "openWallet
+          wallet-v1.6: the first release on the root, pinning both legs",
+          resolves to that merge, `b0af7c2c`. At the tag the root's gitlinks
+          read spec `1924500354f472a6298c02db44a3ae2b21b8908e` and code
+          `72313daab1f229c049cb90998931564c1904dbbc`. Neither leg carries a
+          tag.
+        - The five coordinated values, in or pinned by that one root commit:
+          - per-file `contract_schema_version`, inside each artifact's bytes
+            in the code leg the root pins, unchanged from wallet-v1.5 (the
+            release record lists 2 for `openxwallet-record` and 1 for the
+            other seven);
+          - `contract_bundle_version: wallet-v1.6` in
+            `contracts/manifest.yaml`;
+          - the annotated `wallet-v1.6` tag, on the merge;
+          - the release commit with per-file digests,
+            `contracts/releases/wallet-v1.6.digests.yaml` (8 of 8, cut by
+            recomputation);
+          - the `contracts/CHANGELOG.md` entry.
+        - The tag came after 4.6 was green and after 4.7's rulesets were
+          ACTIVE, both ticked above.
 
 ## 5. The adapter rebuild — this repository, one pull request
 
@@ -554,9 +585,10 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
         `non_fast_forward` on every branch); `rebuild/adapter-group-5`, at
         `a02c6c7487171c110490b234643a7e586ed47153`, the head the proof
         measured, stays on origin as that record. The FINAL root to pin is the
-        merge commit of opensoft/openWallet#7, the wallet-v1.6 release, per
-        the ruling recorded at 4.9; lane openXwallet-3 re-pins to it in one
-        commit, with `contract_bundle_tag: wallet-v1.6`, before #40 lands.
+        merge commit of opensoft/openWallet#7,
+        `b0af7c2ce53d63786a08a20aa3602a6f90345606`, the wallet-v1.6 release,
+        per the ruling recorded at 4.9; lane openXwallet-3 re-pins to it in
+        one commit, with `contract_bundle_tag: wallet-v1.6`, before #40 lands.
 - [ ] 5.2 `scripts/validate-openxwallet.py` recomposed per `design.md` D5:
       - the pinned core loaded in process from
         `openWallet/code/scripts/validate-openxwallet.py`;
