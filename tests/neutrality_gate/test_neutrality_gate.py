@@ -40,11 +40,11 @@ import importlib.util
 import json
 import os
 import re
-import shutil
 import subprocess
 import sys
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Any
 
 import pytest
 import yaml
@@ -717,11 +717,13 @@ def test_a_test_that_skips_inside_the_mirror_is_named_not_judged(
         r"^SKIPPED\s+in suite tests/toy_suite: 1 test\(s\) skipped inside the "
         r"mirror and built no tree there, so none of their trees is "
         r"compared; first: tests/toy_suite/test_toy_suite\.py:\d+: needs git "
-        r"history the mirror does not have$", done.stdout, re.M), done.stdout
+        r"history the mirror does not have$", done.stdout, re.MULTILINE), \
+        done.stdout
     assert ("note  1 test(s) skipped inside the mirror, in 1 of 1 suite(s)"
             in done.stdout), done.stdout
     assert re.search(r"^IDENTICAL\s+suite tests/toy_suite\s+2 of 2 tree "
-                     r"record\(s\) identical", done.stdout, re.M), done.stdout
+                     r"record\(s\) identical", done.stdout, re.MULTILINE), \
+        done.stdout
     evidence = _report(report)
     assert (evidence["result"], evidence["skipped_tests"]) == ("identical", 1)
     [suite] = evidence["suites"]

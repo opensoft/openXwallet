@@ -139,10 +139,10 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-from collections import Counter
 import re
 import subprocess
 import sys
+from collections import Counter
 from pathlib import Path, PurePosixPath
 from typing import NamedTuple
 
@@ -225,11 +225,11 @@ DIGESTED_MEMBERS: tuple[str, ...] = (
     "code/contracts/openxwallet/openxwallet-custody.registry.yaml",
     "code/contracts/openxwallet/openxwallet-grant.schema.yaml",
     "code/contracts/openxwallet/openxwallet-grant-exercise.schema.yaml",
-    "code/contracts/openxwallet/"
-    "openxwallet-distinct-holder-constraint.schema.yaml",
+    ("code/contracts/openxwallet/"
+     "openxwallet-distinct-holder-constraint.schema.yaml"),
     "code/contracts/openxwallet/openxwallet-subject-attestation.schema.yaml",
-    "code/contracts/openxwallet-agent-profile/"
-    "openxwallet-agent-composition.schema.yaml",
+    ("code/contracts/openxwallet-agent-profile/"
+     "openxwallet-agent-composition.schema.yaml"),
 )
 
 # The bytes this repository's two entrypoints path-load and RUN

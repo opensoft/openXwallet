@@ -94,11 +94,11 @@ D6_EIGHT = (
     "code/contracts/openxwallet/openxwallet-custody.registry.yaml",
     "code/contracts/openxwallet/openxwallet-grant.schema.yaml",
     "code/contracts/openxwallet/openxwallet-grant-exercise.schema.yaml",
-    "code/contracts/openxwallet/"
-    "openxwallet-distinct-holder-constraint.schema.yaml",
+    ("code/contracts/openxwallet/"
+     "openxwallet-distinct-holder-constraint.schema.yaml"),
     "code/contracts/openxwallet/openxwallet-subject-attestation.schema.yaml",
-    "code/contracts/openxwallet-agent-profile/"
-    "openxwallet-agent-composition.schema.yaml",
+    ("code/contracts/openxwallet-agent-profile/"
+     "openxwallet-agent-composition.schema.yaml"),
 )
 
 
