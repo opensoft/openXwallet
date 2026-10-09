@@ -1,26 +1,53 @@
 # openXwallet code owners.
 #
-# The floor is narrow on purpose: the two checkers, the contract content they
-# check, the pin that decides WHICH vendored artifact they read, and the
-# workflows that decide whether they run at all. A pull request that could
+# The floor is narrow on purpose: the checkers, the content they check, the
+# pins that decide WHICH vendored artifact and WHICH openWallet they read, and
+# the workflows that decide whether they run at all. A pull request that could
 # change what runs cannot clear itself.
 
-# The conformance validator. Its bytes are inside the wallet-v1.0
-# byte-identity floor; a change here is a contract-behaviour change.
+# The conformance validator ENTRYPOINT. It composes the pinned openWallet core
+# with the adapter's rules (rule (t), the register reader, the hermes binding),
+# and every consumer's required check runs it; a change here is a
+# contract-behaviour change.
 /scripts/validate-openxwallet.py   @brettheap
 
-# The syntax gate.
+# The syntax-gate entrypoint, delegating to the pinned core's.
 /scripts/wallet-yaml-syntax-gate.py   @brettheap
 
 # The pin verifier: the only thing standing between a swapped vendored schema
 # and a validator that checks presence rather than identity.
 /scripts/verify-contract-pin.py   @brettheap
 
-# The contract content, the manifest, the changelog, and the vendored artifact.
+# The openWallet pin verifier: the only thing standing between a moved gitlink,
+# a code leg out of lockstep or a drifted digest and a validator that runs
+# whatever is checked out under openWallet/.
+/scripts/verify-openwallet-pin.py   @brettheap
+
+# The neutrality gate: the proof that the composed run is byte-identical to the
+# pre-split validator, and that the one new line on this tree is the declared
+# one. A pull request that weakened it could hide a changed finding.
+/scripts/neutrality-gate.py   @brettheap
+
+# The manifest, the changelog, the vendored artifact and the three adapter
+# negatives.
 /contracts/   @brettheap
+
+# WHICH openWallet root commit, WHICH code-leg commit and WHICH eight digests
+# the composed validator runs against. Already under /contracts/; named so its
+# reason is on record, as /contract_pin.yaml's is.
+/contracts/openwallet-pin.yaml   @brettheap
 
 # WHICH openxFactory commit and WHICH digest the vendored artifact must match.
 /contract_pin.yaml   @brettheap
+
+# WHERE the openWallet submodule is cloned from and WHERE it mounts. The
+# gitlink fixes the commit; this file names the repository and the path that
+# the init lines and the verifier read.
+/.gitmodules   @brettheap
+
+# The openWallet gitlink: WHICH openWallet root this repository runs. It moves
+# only together with /contracts/openwallet-pin.yaml, in one commit.
+/openWallet   @brettheap
 
 # Whether the checks run, in what order, and under which status-check token.
 /.github/workflows/   @brettheap
