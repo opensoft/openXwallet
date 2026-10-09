@@ -362,6 +362,22 @@ the gate's targets is that checkout scanned in place, and in a mirror the
 copied custody registry is no validator's own, so both sides count it, as
 `360801f`'s message records.
 
+**AMENDED 2026-10-09 by measurement.** Brett Heap, operator authority, in
+session, by multiple choice, label verbatim: "Amend 6.x and 7.x by measurement
+(Recommended)" (opensoft/openXwallet#25, comment 6086531327, recorded
+2026-10-09T18:06Z). The first paragraph above says that openxFactory's pin bump
+moves no literal assertion and names `8 of 8`, the five-key wallet note and
+`repo scan:`; that sentence is kept. Measured at openxFactory `93d13d6c`, in
+`.github/workflows/openxwallet-consumer-gate.yml` and
+`tests/openxwallet_consumer_gate/test_gate_invocation.py`, the literal is
+`9 of 9`, and has been since 2026-09-12 (workflow `:181`, test `:285`);
+`8 of 8` survives only in comments. A second counted wallet note,
+`wal-agent-grc-0001` with six keys, is also asserted (workflow `:218`, test
+`:356-357`), beside the five-key note, `wal-agent-mrc-0001`. So the literals
+are `9 of 9`, the five-key note, the six-key note and `repo scan:`. What the
+paragraph says of the pin bump is not amended. `tasks.md` 6.5 carries the list
+as amended.
+
 **Fail closed.** An uninitialized `openWallet/`, an uninitialized
 `openWallet/code/`, or a core that does not load is exit 2 with a named refusal
 and the remediation for THAT level (`git submodule update --init openWallet`,

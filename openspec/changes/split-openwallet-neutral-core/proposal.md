@@ -504,6 +504,13 @@ no-openxFactory-input boundary (`design.md` D7).
   `tests/openxwallet_consumer_gate/test_gate_invocation.py`, which pins the
   scoped-init line verbatim (`:47`). Its gate literals (`8 of 8`, the five-key
   wallet note, `repo scan:`) do NOT move, which is the neutrality Q1 buys.
+  - **AMENDED 2026-10-09 by measurement**, on the same ruling
+    (opensoft/openXwallet#25, comment 6086531327): the gate literals as
+    measured at openxFactory `93d13d6c` are `9 of 9` (per-seat signing keys
+    adjudicated; `8 of 8` has not been asserted since 2026-09-12), the five-key
+    wallet note (`wal-agent-mrc-0001`), a six-key wallet note
+    (`wal-agent-grc-0001`) and `repo scan:`. `tasks.md` 6.5 as amended carries
+    the list.
 - **LedgerxWallet** — nothing on day one (it pins openXwallet at `wallet-v1.1`);
   initializes `openXwallet/openWallet` and its `code` leg on its next bump; may
   later pin openWallet directly instead, per Q2.
@@ -512,6 +519,22 @@ no-openxFactory-input boundary (`design.md` D7).
   `repo scan:` (as the precedent measured it; not checked out here, re-measured
   at realization); both survive, and its checkout must initialize two levels
   deeper.
+  - **AMENDED 2026-10-09 by measurement**, on the same ruling
+    (opensoft/openXwallet#25, comment 6086531327): LedgerxWallet (the bullet
+    above; `main` `0a0141ca`) already initializes with `git submodule update
+    --init --recursive openXwallet`
+    (`.github/workflows/pin-validation.yml:82`), so its next pin bump
+    initializes `openXwallet/openWallet` and its legs with no textual change,
+    and `tasks.md` 7.1 is already satisfied. LedgerxFactory (`main` `ba86f758`)
+    does not initialize openxFactory's submodules: its gitlinks are
+    `LedgerxAvatar` and `LedgerxWallet`, its estate run initializes
+    `LedgerxWallet` with `--init --recursive`
+    (`.github/workflows/validate.yml:176-178`), and its CI run invokes the
+    reader from `LedgerxWallet/openXwallet` (`:188-191`), not from
+    `openxFactory/openXwallet`. So the real chain is
+    `LedgerxWallet/openXwallet/openWallet/code`, reached with no textual change
+    (`tasks.md` 7.2 as amended). The `code_surface` summary's items (5)–(7) are
+    qualified by tasks 6.x and 7.x as amended.
 - **codexFactory** — none expected: `scripts/merge_master/openxfactory_floor.py`
   already floors the `openXwallet` gitlink as a protected root file, and under
   Q2 openxFactory gains no second wallet gitlink. A direct openWallet mount would
