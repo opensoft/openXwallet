@@ -879,7 +879,7 @@ as commit `6ca9acd0097bc255c0c65e1b8c3ffe170b643011`, and #40's final head is
 cites stale, and its pull request leaves that spec alone: the stale cites are
 a named successor for openxFactory's own OpenSpec flow (8.3).
 
-- [ ] 6.1 `contracts/openxwallet-pin.yaml`:
+- [x] 6.1 `contracts/openxwallet-pin.yaml`:
       - `files:` re-pathed to `openWallet/code/contracts/…`;
       - `pinned_by_commit_only:` keeps `scripts/validate-openxwallet.py` and
         `scripts/wallet-yaml-syntax-gate.py`, re-paths the corpora and READMEs to
@@ -903,7 +903,28 @@ a named successor for openxFactory's own OpenSpec flow (8.3).
         RULED `xwallet-v1.0` (5.8), label verbatim "Adapter series
         `xwallet-v*`, first `xwallet-v1.0` (Recommended)"
         (https://github.com/opensoft/openXwallet/issues/25#issuecomment-6072312849).
-- [ ] 6.2 `.github/workflows/openxwallet-consumer-gate.yml` (`:99`): the scoped
+      - **DONE 2026-10-09** in opensoft/openxFactory#1290, merged on Brett
+        Heap's word "land the group 6 PR when green" as
+        `a8ab30396e6a7cf63f6d039872aee4b58b4d6d93`, a merge commit of head
+        `bcc1685f0757b96492ead6e3e093eaa9f66d0bf8` onto openxFactory `main`
+        `9a272c6d`; this task is its commit `e49dfdb3`. Claimed at
+        https://github.com/opensoft/openXwallet/issues/25#issuecomment-6088689249,
+        landing recorded at
+        https://github.com/opensoft/openXwallet/issues/25#issuecomment-6090102317.
+        At `a8ab3039` the pin file reads
+        `commit: "815b86cef18c6227f649d2cefedb05720069362b"` and
+        `contract_bundle_tag: xwallet-v1.0`, with `digest_source:
+        openWallet/contracts/manifest.yaml`, eight `files:` entries under
+        `openWallet/code/contracts/…` and eight `pinned_by_commit_only:`
+        members; the `openXwallet` gitlink is `815b86ce`. Every check on the
+        head completed success (fifteen, Sourcery skipped). Re-measured on a
+        fresh clone at `a8ab3039` with the chain initialized, the verifier
+        prints `OK openxwallet-pin verified:
+        openXwallet@815b86cef18c6227f649d2cefedb05720069362b (tag label
+        xwallet-v1.0), gitlink read from HEAD, nested parity
+        openXwallet/openWallet@b0af7c2ce53d,
+        openXwallet/openWallet/code@72313daab1f2, 8 digest(s) recomputed`.
+- [x] 6.2 `.github/workflows/openxwallet-consumer-gate.yml` (`:99`): the scoped
       init extended to three named levels — `openXwallet`, then
       `openXwallet/openWallet`, then its `code` leg — never `--recursive`. In the
       same commit: `tests/openxwallet_consumer_gate/test_gate_invocation.py`
@@ -918,7 +939,18 @@ a named successor for openxFactory's own OpenSpec flow (8.3).
         `git -C openXwallet/openWallet submodule update --init code`; without
         them 95 tests fail, 7 in `tests/openxwallet_pin`, 87 in
         `tests/trust-anchor` and 1 in `tests/signed_execution_chain`.
-- [ ] 6.3 `scripts/verify-openxwallet-pin.py`: nested-checkout parity through BOTH
+      - **DONE 2026-10-09** in #1290's merge `a8ab3039`, commit `f683ab85`.
+        The wallet init is three named levels, never `--recursive`, in the
+        four workflows: `openxwallet-consumer-gate.yml` (`:110`, `:117`,
+        `:120`), `clearing-dispatch-gate.yml` (`:95`, `:101`, `:104`),
+        `signed-execution-chain-gate.yml` (`:106`, `:112`, `:115`) and
+        `pytest-suite.yml` (`:430-432`). The test's tuple is now
+        `SCOPED_INIT_RUNS`, plural, at
+        `tests/openxwallet_consumer_gate/test_gate_invocation.py:51`, and the
+        verifier's `REMEDIATION` trailer
+        (`scripts/verify-openxwallet-pin.py:106-112`) names all three
+        commands.
+- [x] 6.3 `scripts/verify-openxwallet-pin.py`: nested-checkout parity through BOTH
       levels, observed refusing at each.
       - **AMENDED 2026-10-09 by measurement**, as the dry run did it, recorded
         as the approach measured and not as a new requirement: the nested
@@ -933,7 +965,19 @@ a named successor for openxFactory's own OpenSpec flow (8.3).
         fixture, `tests/openxwallet_pin/test_verify_pin.py`'s scratch wallet,
         becomes a chain of three repositories, and a new test covers an
         uninitialized code leg.
-- [ ] 6.4 `scripts/validate-trust-anchor.py` `OPENXWALLET_REGISTRY_PATH`
+      - **DONE 2026-10-09** in #1290's merge `a8ab3039`, commit `9301aea1`, as
+        the amendment measured it: `NESTED_CHAIN = ("openWallet", "code")`
+        (`scripts/verify-openxwallet-pin.py:120`, walked at `:366`) and the six
+        `REFUSAL_CODES` (`:132-139`), none added. The scratch wallet of
+        `tests/openxwallet_pin/test_verify_pin.py` is a chain of three
+        repositories, and seven nested cases are observed refusing: the root
+        uninitialized, recorded nowhere, checked out stale, and its gitlink
+        differing, then the code leg uninitialized, checked out stale, and its
+        gitlink differing. The test
+        `test_the_real_nested_chain_is_checked_out_as_recorded` reads the
+        shipped tree. `bcc1685f` re-measured the doc-health pin-shape
+        citations into the verifier, which this edit moved.
+- [x] 6.4 `scripts/validate-trust-anchor.py` `OPENXWALLET_REGISTRY_PATH`
       (`:348-350`) becomes `ROOT / "openXwallet" / "openWallet" / "code" /
       "contracts" / "openxwallet" / "openxwallet-custody.registry.yaml"`, with
       `tests/trust-anchor/test_openxwallet_pin_refusal.py` (`:199`) in the same
@@ -944,7 +988,18 @@ a named successor for openxFactory's own OpenSpec flow (8.3).
         verifier's literal by
         `tests/trust-anchor/test_openxwallet_pin_refusal.py` `:302`), moves
         with that literal.
-- [ ] 6.5 The gate's LITERAL assertions do not move and are green — `9 of 9`,
+      - **DONE 2026-10-09** in #1290's merge `a8ab3039`, commit `1e025573`:
+        `OPENXWALLET_REGISTRY_PATH` (`scripts/validate-trust-anchor.py:350-352`)
+        reads `ROOT / "openXwallet" / "openWallet" / "code" / "contracts" /
+        "openxwallet" / "openxwallet-custody.registry.yaml"`, with
+        `tests/trust-anchor/test_openxwallet_pin_refusal.py` in the same
+        commit and a new test that an uninitialized code leg refuses by name.
+        The held-equal remediation copy `OPENXWALLET_REMEDIATION_FALLBACK`
+        (`:2607`) moved with the verifier's trailer, in `f683ab85`. The
+        signed-chain reader's `PINNED_WALLET_DIR`
+        (`scripts/validate-signed-execution-chain.py:160`) and its test
+        landed beside it, as `c9c9d568`.
+- [x] 6.5 The gate's LITERAL assertions do not move and are green — `9 of 9`,
       the five-key wallet note, the six-key wallet note, `repo scan:`.
       - **AMENDED 2026-10-09 by measurement**: this task first read "The
         gate's LITERAL assertions do not move and are green — `8 of 8`, the
@@ -959,7 +1014,19 @@ a named successor for openxFactory's own OpenSpec flow (8.3).
         literals are `9 of 9`, the five-key note (`wal-agent-mrc-0001`,
         workflow `:204`), the six-key note, and `repo scan:` (workflow
         `:143`). None of them moves in this group.
-- [ ] 6.6 `doc-health-reusable.yml`'s nested init — only if a leg reads wallet
+      - **DONE 2026-10-09** in #1290's merge `a8ab3039`, no commit of its own,
+        because nothing moved: #1290's diff over `9a272c6d` touches none of
+        the literals in `.github/workflows/openxwallet-consumer-gate.yml` or
+        `tests/openxwallet_consumer_gate/test_gate_invocation.py`. At
+        `a8ab3039` they read `9 of 9` (workflow `:203`, test `:311`), the
+        five-key note (`wal-agent-mrc-0001`, workflow `:226`), the six-key
+        note (`wal-agent-grc-0001`, workflow `:240`) and `repo scan:`
+        (workflow `:165`, test `:268`); the workflow lines moved down by the 22
+        lines of nested init that 6.2 added above them. `wallet-validation`
+        completed success on the head, and `tests/openxwallet_consumer_gate`
+        passes when re-run on a fresh clone at `a8ab3039` with the chain
+        initialized.
+- [x] 6.6 `doc-health-reusable.yml`'s nested init — only if a leg reads wallet
       content; checked, not assumed.
       - **AMENDED 2026-10-09 by measurement**, checked: it applies to the
         prepare job only. `doc-health-reusable.yml` inits at `:464` (prepare),
@@ -969,10 +1036,18 @@ a named successor for openxFactory's own OpenSpec flow (8.3).
         and reads no wallet bytes, and is unchanged. `doc-health-py314.yml`
         (init at `:81`) was checked and is not needed: `tests/doc-health`
         passed 2157 of 2157 with the chain absent and present.
+      - **DONE 2026-10-09** in #1290's merge `a8ab3039`, commit `93513678`, to
+        the prepare job only, as checked: `doc-health-reusable.yml` gains the
+        nested init after its one-level init at `:464`, `openWallet` at `:476`
+        and then its `code` leg at `:479`, each guarded on the level's
+        `.gitmodules` declaring the path, so a pin from before the nested
+        chain skips and does not fail the nightly. The finalize job (from
+        `:1272`) and `doc-health-py314.yml` are untouched by #1290, and
+        `doc-health-py314` completed success on the head.
 
 ## 7. Consumer notices and verifications
 
-- [ ] 7.1 `[LedgerxWallet]` Nothing on day one. At its next pin bump, the
+- [x] 7.1 `[LedgerxWallet]` Nothing on day one. At its next pin bump, the
       nested init of `openXwallet/openWallet` and its `code` leg. One direct
       upstream per Q2.
       - **AMENDED 2026-10-09 by measurement**, on Brett Heap's ruling "Amend
@@ -990,7 +1065,18 @@ a named successor for openxFactory's own OpenSpec flow (8.3).
         commit as ` M openWallet`, which it refuses as dirty; an UNINITIALIZED
         `openWallet` or `openWallet/code` shows nothing, and would surface
         only through the adapter's own refusal.
-- [ ] 7.2 `[LedgerxFactory]` Its estate run initializes two levels deeper, to
+      - **DONE 2026-10-09**, re-confirmed against `opensoft/LedgerxWallet`
+        `main` `0a0141cafc1fecd5d0e38b14e4f40a67a54a08d3`, unchanged since the
+        amendment: `.github/workflows/pin-validation.yml:82` still runs
+        `git submodule update --init --recursive openXwallet` (the same
+        command is built at `tests/validate_pin.py:62`), so
+        `openXwallet/openWallet` and its `code` leg initialize at the next
+        pin bump with no textual change, and the nested init is satisfied.
+        Its `openXwallet` gitlink is still `63f5a1ad` (`wallet-v1.1`), which
+        has no nested chain yet. Check 4 still reads only the top-level
+        `openXwallet` (`tests/validate_pin.py:347`, `:384`, `:400`), so the
+        notice above stands.
+- [x] 7.2 `[LedgerxFactory]` Its estate run initializes two levels deeper, to
       `LedgerxWallet/openXwallet/openWallet/code`. Its `--strict` run and its
       `repo scan:` parse stay green.
       - **AMENDED 2026-10-09 by measurement**, on Brett Heap's ruling "Amend
@@ -1017,10 +1103,29 @@ a named successor for openxFactory's own OpenSpec flow (8.3).
         (`tests/validate_wallet_estate.py:905`).
       - Its `stack.yaml` `openxwallet.contract_ref` must equal LedgerxWallet's
         gitlink at bump time (`tests/validate_wallet_estate.py:884-891`).
-- [ ] 7.3 `[codexFactory]` Confirm `openxfactory_floor.py` still floors the
+      - **DONE 2026-10-09**, re-confirmed against
+        `ledgerXfactory/LedgerxFactory` `main`
+        `ba86f758b97f3a4fe0e38c86d10b152613e8c297`, whose gitlinks are still
+        `LedgerxAvatar` and `LedgerxWallet` (`0a0141ca`) and whose
+        estate run still initializes `LedgerxWallet` with `--init
+        --recursive` (`.github/workflows/validate.yml:176-178`). Re-measured
+        on a fresh clone: `LedgerxWallet` initialized that way, its nested
+        `openXwallet` moved to `815b86ce`, the released `xwallet-v1.0`, and
+        `openWallet` (root `b0af7c2c`) and its `code` leg (`72313daa`)
+        initialized. The strict run of `validate.yml:188-191`, `python3
+        scripts/validate-openxwallet.py <LedgerxFactory root> --strict` from
+        `LedgerxWallet/openXwallet`, exits 0 and prints `repo scan: 5
+        openxWallet artifact(s) validated, 605 document(s) skipped as another
+        kind`, the same line as the control run at the pinned `wallet-v1.1`
+        (`63f5a1ad`); the floor at `tests/validate_wallet_estate.py:909` is
+        still at least 5, so headroom is still zero. The estate test over the
+        same nest, `python3 tests/validate_wallet_estate.py`, ends `WALLET
+        ESTATE: PASS (6 negative probes red, real records conformant,
+        ratification pins held)`.
+- [x] 7.3 `[codexFactory]` Confirm `openxfactory_floor.py` still floors the
       `openXwallet` gitlink and that Q2 adds no second wallet gitlink; record it.
-      - **PRE-CHECKED 2026-10-09**, read-only, and not ticked: it is
-        re-confirmed when group 6 lands. codexFactory
+      - **PRE-CHECKED 2026-10-09**, read-only, and re-confirmed when group
+        6 landed (the DONE note below). codexFactory
         (`codeXfactory/codexFactory` at `2bc5015d`)
         `scripts/merge_master/openxfactory_floor.py:285-292`
         `PROTECTED_ROOT_FILES` includes `"openXwallet"` (`:289`), and
@@ -1032,16 +1137,50 @@ a named successor for openxFactory's own OpenSpec flow (8.3).
         codexFactory names `openWallet`, so Q2 adds no second wallet gitlink.
         Group 6.1 touches two never-clearable paths, the pin file and the
         `openXwallet` gitlink, so its pull request is the operator's to clear.
-- [ ] 7.4 `[xFactory]` No root `openWallet` gitlink under Q2; if one is ever
+      - **DONE 2026-10-09**, re-confirmed against codexFactory
+        (`codeXfactory/codexFactory`) `main`
+        `33b916c12a1dcccf882557d6edcf396c98824f31`, which the pre-check read
+        as `2bc5015d`. `scripts/merge_master/openxfactory_floor.py:285-292`
+        `PROTECTED_ROOT_FILES` still lists `"openXwallet"` (`:289`), and
+        `floor/openxfactory-review-authority-floor.yaml:114-121`
+        `never_clearable_paths` still lists `contracts/openxwallet-pin.yaml`
+        (`:117`) and `openXwallet` (`:121`). At openxFactory
+        `a8ab30396e6a7cf63f6d039872aee4b58b4d6d93`, #1290's merge,
+        `git ls-tree -r` lists exactly four 160000 entries,
+        `installs/omnigent-install`, `openDox`, `openXdox` and `openXwallet`
+        (`815b86ce`), and no `openWallet`; the one `openWallet` gitlink in the
+        chain is the adapter's own, inside `openXwallet` at `815b86ce`
+        (`b0af7c2c`). Nothing in codexFactory names `openWallet`
+        (`git grep -i openwallet` finds nothing), so Q2 adds no second wallet
+        gitlink. #1290 touched both never-clearable paths, the pin file and
+        the gitlink, and `merge-master-approval` completed success on its head
+        `bcc1685f`; Brett Heap merged it.
+- [x] 7.4 `[xFactory]` No root `openWallet` gitlink under Q2; if one is ever
       added, root-gitlink parity against openXwallet's pin.
-      - **PRE-CHECKED 2026-10-09**, read-only, and not ticked: it is
-        re-confirmed when group 6 lands. xFactory (`opensoft/xFactory`, `main`
+      - **PRE-CHECKED 2026-10-09**, read-only, and re-confirmed when group
+        6 landed (the DONE note below). xFactory (`opensoft/xFactory`, `main`
         `39b66b6c`) has no `openWallet` gitlink. Its root `openXwallet`
         gitlink (`f3eb929b`) is held equal to openxFactory's nested
         `openXwallet` by `tests/test_openxwallet_gitlink_parity.py` (D11,
         assertion `:103`). When xFactory's `openxFactory` pointer moves to
         group 6's merge, its root `openXwallet` must move to the same commit
         in the same sync commit.
+      - **DONE 2026-10-09**, re-confirmed against xFactory (`opensoft/xFactory`)
+        `main` `fa81060326d8ed0c7d4463d114d0c28a21a11c8e`, which the pre-check
+        read as `39b66b6c`: its 24 gitlinks include no `openWallet`, and the
+        only wallet gitlink is the root `openXwallet`, `f3eb929b`
+        (`wallet-v1.5`), so the task's condition holds. Its `openxFactory`
+        pointer is `0992369a`, whose own `openXwallet` gitlink is also
+        `f3eb929b`, so `tests/test_openxwallet_gitlink_parity.py` (D11,
+        assertion `:103`) holds today.
+      - **Notice, the sync rule.** When xFactory's `openxFactory` pointer
+        moves to `a8ab3039` or later, its root `openXwallet` gitlink must move
+        in the same sync commit to the `openXwallet` gitlink at that
+        openxFactory commit, which is `815b86ce` (`xwallet-v1.0`) at
+        `a8ab3039`. If it does not,
+        `test_root_gitlink_equals_openxfactory_nested_gitlink` fails with
+        "openXwallet gitlink DRIFT (D11)" wherever openxFactory is
+        initialized.
 
 ## 8. Travels with openWallet — named, not this change's gate
 
