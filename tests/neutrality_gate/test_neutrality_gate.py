@@ -1,0 +1,546 @@
+"""`scripts/neutrality-gate.py` (`split-openwallet-neutral-core` task 5.4,
+`design.md` D5): the gate observed failing before it is trusted, and the real
+repository's seat.
+
+WHY TOY VALIDATORS. The gate's whole job is to say DIFFERENT when two
+validators disagree, and this repository holds no second validator that
+disagrees with the first on purpose. So each case builds a throwaway
+repository under `tmp_path`: a copy of the gate at `scripts/neutrality-gate.py`
+(it derives `ROOT` from its own location), a `contracts/` directory, and a toy
+`scripts/validate-openxwallet.py` committed as the "carve commit". A second
+commit replaces the toy with the "composed adapter", one behaviour away from
+it. Agreeing toys must pass; a stdout difference, an exit-code difference, a
+refusal at self-test, a refusal over a tree and a suite that never reaches
+the shim must each fail with their own exit code. A help-text difference must
+be reported and kept out of the verdict (the gate's docstring says why).
+
+THE SHIM is tested directly as well: it must record both runs and replay the
+composed one byte for byte, because a suite run through it asserts on what it
+replays.
+
+THE GATE IS RUN AS A SUBPROCESS, the way CI and a reader invoke it, so the
+exit codes and printed lines are what is under test. The module is also loaded
+by path, for `write_shim` and the skip conditions.
+
+THE REAL-REPOSITORY SEAT needs the carve commit in history, an initialized
+`openWallet/code` where this tree records the gitlink, and a tree the shed has
+reached. Where any is missing it SKIPS LOUDLY, naming what is missing and how
+to get it; it never counts a refusal as a pass. The third condition is a plan
+call this file records: while this tree still carries
+`contracts/openxwallet/openxwallet-custody.registry.yaml`, the validator under
+test has THIS tree as its ROOT and skips that registry by identity, while the
+relocated baseline counts it, so target (i) differs by one validated artifact.
+That is the gate telling the truth about an unfinished rebuild, not a property
+to pin, so the seat waits for the shed (task 5.5). On the composed, shed
+branch the seat runs and asserts exit 0.
+
+Hermetic: no network; git runs with an empty global config, no system config
+and a repository-local identity.
+"""
+
+from __future__ import annotations
+
+import importlib.util
+import json
+import os
+import re
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+from typing import Any
+
+import pytest
+import yaml
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+GATE = REPO_ROOT / "scripts" / "neutrality-gate.py"
+CARVE_COMMIT = "90111df262d6f54f7e82651d860adc12345f83f4"
+FULL_HISTORY_WORKFLOW = ".github/workflows/neutrality-gate.yml"
+PRECEDENT_WORKFLOW = ".github/workflows/carve-manifest.yml"
+INIT_LINES = ("git submodule update --init openWallet",
+              "git -C openWallet submodule update --init code")
+REGISTRY = "contracts/openxwallet/openxwallet-custody.registry.yaml"
+
+
+def _load():
+    spec = importlib.util.spec_from_file_location("neutrality_gate", GATE)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module  # dataclasses resolve their module by name
+    spec.loader.exec_module(module)
+    return module
+
+
+MODULE = _load()
+
+
+@pytest.fixture(autouse=True)
+def _hermetic_git(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("GIT_CONFIG_GLOBAL", os.devnull)
+    monkeypatch.setenv("GIT_CONFIG_NOSYSTEM", "1")
+    monkeypatch.setenv("GIT_AUTHOR_NAME", "neutrality-gate-test")
+    monkeypatch.setenv("GIT_AUTHOR_EMAIL", "neutrality-test@example.invalid")
+    monkeypatch.setenv("GIT_COMMITTER_NAME", "neutrality-gate-test")
+    monkeypatch.setenv("GIT_COMMITTER_EMAIL", "neutrality-test@example.invalid")
+
+
+# --------------------------------------------------------------------------
+# toys
+# --------------------------------------------------------------------------
+
+# One toy validator; BEHAVIOUR, prepended per file, is the one way a
+# "composed" toy departs from the "baseline" one. Its output imitates the real
+# validator's shape: a self-test note, a scan note over a path, a summary.
+TOY_BODY = '''
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def main():
+    argv = sys.argv[1:]
+    if "--help" in argv:
+        extra = " (composed)" if BEHAVIOUR == "help-differs" else ""
+        print("usage: toy validator" + extra)
+        return 0
+    if BEHAVIOUR == "refuses":
+        print("ERROR openWallet/code is not initialized; run the scoped init",
+              file=sys.stderr)
+        return 2
+    if not (ROOT / "contracts").is_dir():
+        print("ERROR contracts not found", file=sys.stderr)
+        return 2
+    print("note  toy self-test: 1 positive example(s)")
+    paths = [a for a in argv if not a.startswith("-")]
+    if paths:
+        if BEHAVIOUR == "refuses-trees":
+            print("ERROR harness failure: toy", file=sys.stderr)
+            return 2
+        target = Path(paths[0]).resolve()
+        found = [p for p in target.rglob("*.yaml") if ".git" not in p.parts]
+        extra = " (and one more)" if BEHAVIOUR == "scan-differs" else ""
+        print(f"note  repo scan: {len(found)} yaml file(s){extra}")
+    print("")
+    print("validate-toy: 0 error(s)")
+    strict = "--strict" in argv
+    return 1 if strict and BEHAVIOUR == "strict-rc-differs" else 0
+
+
+sys.exit(main())
+'''
+
+# A suite shaped like the real ones: REPO_ROOT from its own location, the
+# validator driven as a subprocess, a fixture tree under tmp_path.
+TOY_SUITE = '''
+import subprocess
+import sys
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+VALIDATOR = REPO_ROOT / "scripts" / "validate-openxwallet.py"
+
+
+def _run(*args):
+    return subprocess.run([sys.executable, str(VALIDATOR), *args],
+                          capture_output=True, text=True)
+
+
+def test_a_fixture_tree(tmp_path):
+    (tmp_path / "record.yaml").write_text("kind: toy\\n", encoding="utf-8")
+    r = _run(str(tmp_path), "--strict")
+    assert "repo scan: 1 yaml file(s)" in r.stdout, r.stdout + r.stderr
+
+
+def test_the_help_text():
+    assert _run("--help").stdout.startswith("usage: toy validator")
+'''
+
+QUIET_SUITE = '''
+def test_nothing_drives_a_validator():
+    assert True
+'''
+
+# Names the validator in a quoted literal but never runs it.
+HOLLOW_SUITE = '''
+NAME = "validate-openxwallet.py"
+
+
+def test_names_but_never_runs():
+    assert NAME
+'''
+
+
+def _toy(behaviour: str) -> str:
+    return f"BEHAVIOUR = {behaviour!r}\n" + TOY_BODY
+
+
+def _git(root: Path, *args: str) -> str:
+    done = subprocess.run(["git", "-C", str(root), *args],
+                          capture_output=True, text=True, check=False)
+    assert done.returncode == 0, f"git {' '.join(args)}: {done.stderr}"
+    return done.stdout.strip()
+
+
+def _write(root: Path, rel: str, text: str) -> None:
+    dest = root / rel
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_text(text, encoding="utf-8")
+
+
+def _repo(tmp_path: Path, composed: str = "same",
+          suites: dict[str, str] | None = None) -> tuple[Path, str]:
+    """A throwaway repository: the toy baseline committed as the carve
+    commit, then the composed toy committed over it. Returns (repo, carve)."""
+    repo = tmp_path / "repo"
+    (repo / "scripts").mkdir(parents=True)
+    shutil.copy2(GATE, repo / "scripts" / "neutrality-gate.py")
+    _write(repo, "contracts/README.md", "toy contracts\n")
+    _write(repo, "scripts/validate-openxwallet.py", _toy("same"))
+    for name, source in (suites or {}).items():
+        _write(repo, f"tests/{name}/test_{name}.py", source)
+    _git(repo, "init", "-q")
+    _git(repo, "add", "-A")
+    _git(repo, "commit", "-q", "-m", "the carve commit")
+    carve = _git(repo, "rev-parse", "HEAD")
+    # Different BYTES even when the behaviour is the same: the gate compares
+    # what the validators say, never their source.
+    _write(repo, "scripts/validate-openxwallet.py",
+           _toy(composed) + "\n# the composed adapter\n")
+    _git(repo, "commit", "-q", "-am", "the composed adapter")
+    return repo, carve
+
+
+def _gate(repo: Path, *args: str) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [sys.executable, str(repo / "scripts" / "neutrality-gate.py"), *args],
+        cwd=repo, capture_output=True, text=True, check=False)
+
+
+def _report(path: Path) -> dict[str, Any]:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _mode_line(verdict: str, target: str, mode: str) -> re.Pattern[str]:
+    return re.compile(rf"^{verdict}\s+target {target}\s+{re.escape(mode)}\s",
+                      re.M)
+
+
+# --------------------------------------------------------------------------
+# (a) the shim records and replays
+# --------------------------------------------------------------------------
+
+def _run_shim(tmp_path: Path, baseline: str,
+              composed: str) -> tuple[subprocess.CompletedProcess[bytes],
+                                      list[dict[str, Any]]]:
+    for side, behaviour in (("baseline", baseline), ("composed", composed)):
+        _write(tmp_path, f"{side}/contracts/README.md", "toy\n")
+        _write(tmp_path, f"{side}/scripts/validate-openxwallet.py",
+               _toy(behaviour))
+    shim = MODULE.write_shim(tmp_path / "shim.py")
+    tree = tmp_path / "tree"
+    _write(tree, "a.yaml", "kind: toy\n")
+    report = tmp_path / "records.jsonl"
+    env = dict(os.environ,
+               NEUTRALITY_BASELINE=str(
+                   tmp_path / "baseline/scripts/validate-openxwallet.py"),
+               NEUTRALITY_COMPOSED=str(
+                   tmp_path / "composed/scripts/validate-openxwallet.py"),
+               NEUTRALITY_REPORT=str(report))
+    done = subprocess.run([sys.executable, str(shim), ".", "--strict"],
+                          cwd=tree, env=env, capture_output=True, check=False)
+    records = [json.loads(line) for line in
+               report.read_text(encoding="utf-8").splitlines()]
+    return done, records
+
+
+def test_the_shim_records_two_validators_that_agree_and_replays(
+        tmp_path: Path) -> None:
+    done, records = _run_shim(tmp_path, "same", "same")
+    assert len(records) == 1, records
+    record = records[0]
+    assert record["identical"] is True
+    assert record["help"] is False
+    assert record["argv"] == [".", "--strict"]
+    assert record["cwd"] == str(tmp_path / "tree")
+    assert record["baseline"]["stdout"] == record["composed"]["stdout"]
+    assert "repo scan: 1 yaml file(s)" in record["composed"]["stdout"]
+    # The replay IS the composed run.
+    assert done.returncode == record["composed"]["rc"] == 0
+    assert done.stdout.decode() == record["composed"]["stdout"]
+
+
+def test_the_shim_records_a_disagreement_and_replays_the_composed_run(
+        tmp_path: Path) -> None:
+    done, records = _run_shim(tmp_path, "same", "strict-rc-differs")
+    record = records[0]
+    assert record["identical"] is False
+    assert record["baseline"]["rc"] == 0
+    assert record["composed"]["rc"] == 1
+    assert done.returncode == 1  # the composed code, replayed
+    assert done.stdout.decode() == record["composed"]["stdout"]
+
+
+def test_the_shim_replays_stderr_and_a_refusal(tmp_path: Path) -> None:
+    done, records = _run_shim(tmp_path, "same", "refuses")
+    record = records[0]
+    assert record["identical"] is False
+    assert done.returncode == 2
+    assert done.stdout == b""
+    assert b"openWallet/code is not initialized" in done.stderr
+    assert done.stderr.decode() == record["composed"]["stderr"]
+
+
+def test_the_shim_refuses_outside_a_gate_run(tmp_path: Path) -> None:
+    shim = MODULE.write_shim(tmp_path / "shim.py")
+    env = {k: v for k, v in os.environ.items()
+           if not k.startswith("NEUTRALITY_")}
+    done = subprocess.run([sys.executable, str(shim), "."], env=env,
+                          capture_output=True, text=True, check=False)
+    assert done.returncode == 2
+    assert "NEUTRALITY_BASELINE" in done.stderr, done.stderr
+
+
+# --------------------------------------------------------------------------
+# (b) the carve commit must be reachable
+# --------------------------------------------------------------------------
+
+def test_an_unreachable_carve_commit_refuses_and_names_full_history(
+        tmp_path: Path) -> None:
+    """The default carve commit is not in a throwaway repository, exactly as
+    it is not in a depth-1 checkout."""
+    repo, _ = _repo(tmp_path)
+    done = _gate(repo, "--no-suite-trees")
+    assert done.returncode == 2, done.stdout + done.stderr
+    assert "[neutrality-carve-unreachable]" in done.stderr, done.stderr
+    assert CARVE_COMMIT in done.stderr
+    assert "fetch-depth: 0" in done.stderr
+    assert PRECEDENT_WORKFLOW in done.stderr
+    assert FULL_HISTORY_WORKFLOW in done.stderr
+
+
+def test_a_carve_commit_that_is_not_an_ancestor_refuses(tmp_path: Path) -> None:
+    repo, _ = _repo(tmp_path)
+    home = _git(repo, "rev-parse", "--abbrev-ref", "HEAD")
+    _git(repo, "checkout", "-q", "--orphan", "elsewhere")
+    _git(repo, "commit", "-q", "-m", "an unrelated root")
+    stranger = _git(repo, "rev-parse", "HEAD")
+    _git(repo, "checkout", "-q", home)
+    done = _gate(repo, f"--carve-commit={stranger}", "--no-suite-trees")
+    assert done.returncode == 2, done.stdout + done.stderr
+    assert "NOT AN ANCESTOR of HEAD" in done.stderr, done.stderr
+
+
+@pytest.mark.parametrize("value", ["main", "HEAD~1", "--output=probe", "abc12",
+                                   "z" * 40])
+def test_a_carve_commit_that_is_not_hex_is_refused_before_git(
+        tmp_path: Path, value: str) -> None:
+    repo, _ = _repo(tmp_path)
+    done = _gate(repo, f"--carve-commit={value}", "--no-suite-trees")
+    assert done.returncode == 2, done.stdout + done.stderr
+    assert "[neutrality-carve-invalid]" in done.stderr, done.stderr
+    assert not (repo / "probe").exists()
+
+
+# --------------------------------------------------------------------------
+# the verdict, end to end over toys
+# --------------------------------------------------------------------------
+
+def test_agreeing_validators_pass_over_the_tree_and_a_suite(
+        tmp_path: Path) -> None:
+    repo, carve = _repo(tmp_path, "same", {"toy_suite": TOY_SUITE,
+                                           "quiet_suite": QUIET_SUITE})
+    report = tmp_path / "report.json"
+    done = _gate(repo, f"--carve-commit={carve}", f"--report={report}")
+    assert done.returncode == 0, done.stdout + done.stderr
+    for mode in ("plain", "--strict"):
+        assert _mode_line("IDENTICAL", "root", mode).search(done.stdout), \
+            done.stdout
+    assert re.search(r"^IDENTICAL\s+suite tests/toy_suite\s+1 of 1 tree "
+                     r"invocation\(s\) identical; help 1 of 1 identical",
+                     done.stdout, re.M), done.stdout
+    assert "SKIP       tests/quiet_suite: no file spells" in done.stdout
+    assert "SKIP       openWallet/code/tests (the moved suites)" in done.stdout
+    assert "neutrality-gate: IDENTICAL:" in done.stdout
+    evidence = _report(report)
+    assert evidence["result"] == "identical"
+    assert evidence["exit_code"] == 0
+    assert evidence["carve_commit"] == carve
+    assert evidence["revision"]["head"] == _git(repo, "rev-parse", "HEAD")
+    [suite] = evidence["suites"]
+    assert (suite["suite"], suite["tree_invocations"], suite["identical"],
+            suite["pytest_rc"]) == ("tests/toy_suite", 1, 1, 0)
+
+
+def test_a_stdout_difference_fails_with_its_diff(tmp_path: Path) -> None:
+    repo, carve = _repo(tmp_path, "scan-differs", {"toy_suite": TOY_SUITE})
+    report = tmp_path / "report.json"
+    done = _gate(repo, f"--carve-commit={carve}", f"--report={report}")
+    assert done.returncode == 1, done.stdout + done.stderr
+    for mode in ("plain", "--strict"):
+        assert _mode_line("DIFFERENT", "root", mode).search(done.stdout)
+    assert "+note  repo scan: 0 yaml file(s) (and one more)" in done.stdout
+    assert "-note  repo scan: 0 yaml file(s)" in done.stdout
+    assert re.search(r"^DIFFERENT\s+suite tests/toy_suite\s+0 of 1",
+                     done.stdout, re.M), done.stdout
+    evidence = _report(report)
+    assert evidence["result"] == "different"
+    assert evidence["suites"][0]["differences"][0]["test"].endswith(
+        "::test_a_fixture_tree")
+
+
+def test_an_exit_code_difference_alone_fails(tmp_path: Path) -> None:
+    repo, carve = _repo(tmp_path, "strict-rc-differs")
+    done = _gate(repo, f"--carve-commit={carve}", "--no-suite-trees")
+    assert done.returncode == 1, done.stdout + done.stderr
+    assert _mode_line("IDENTICAL", "root", "plain").search(done.stdout)
+    assert _mode_line("DIFFERENT", "root", "--strict").search(done.stdout)
+    assert "stdout byte-identical; the exit codes differ" in done.stdout
+
+
+def test_a_help_text_difference_is_reported_outside_the_verdict(
+        tmp_path: Path) -> None:
+    repo, carve = _repo(tmp_path, "help-differs", {"toy_suite": TOY_SUITE})
+    report = tmp_path / "report.json"
+    done = _gate(repo, f"--carve-commit={carve}", f"--report={report}")
+    assert done.returncode == 0, done.stdout + done.stderr
+    assert "help 0 of 1 identical" in done.stdout, done.stdout
+    suite = _report(report)["suites"][0]
+    assert (suite["help_invocations"], suite["help_identical"]) == (1, 0)
+
+
+def test_a_refusal_at_self_test_is_surfaced_verbatim(tmp_path: Path) -> None:
+    repo, carve = _repo(tmp_path, "refuses")
+    done = _gate(repo, f"--carve-commit={carve}", "--no-suite-trees")
+    assert done.returncode == 2, done.stdout + done.stderr
+    assert "[neutrality-validator-refused]" in done.stderr
+    assert "the composed adapter refused" in done.stderr
+    assert ("ERROR openWallet/code is not initialized; run the scoped init"
+            in done.stderr), done.stderr
+    assert "DIFFERENT" not in done.stdout
+
+
+def test_a_refusal_over_a_tree_is_never_compared(tmp_path: Path) -> None:
+    repo, carve = _repo(tmp_path, "refuses-trees")
+    done = _gate(repo, f"--carve-commit={carve}", "--no-suite-trees")
+    assert done.returncode == 2, done.stdout + done.stderr
+    assert "[neutrality-run-refused]" in done.stderr, done.stderr
+    assert "ERROR harness failure: toy" in done.stderr
+
+
+def test_a_suite_that_never_reaches_the_shim_refuses(tmp_path: Path) -> None:
+    repo, carve = _repo(tmp_path, "same", {"hollow_suite": HOLLOW_SUITE})
+    done = _gate(repo, f"--carve-commit={carve}")
+    assert done.returncode == 2, done.stdout + done.stderr
+    assert "[neutrality-suite-vacuous]" in done.stderr, done.stderr
+    assert "tests/hollow_suite" in done.stderr
+
+
+def test_the_export_target_needs_a_governance_directory(tmp_path: Path) -> None:
+    repo, carve = _repo(tmp_path)
+    (tmp_path / "export" / "governance").mkdir(parents=True)
+    done = _gate(repo, f"--carve-commit={carve}", "--no-suite-trees",
+                 f"--openxfactory-export={tmp_path / 'export' / 'governance'}")
+    assert done.returncode == 2, done.stdout + done.stderr
+    assert "[neutrality-export-invalid]" in done.stderr, done.stderr
+
+
+def test_the_export_target_runs_and_records_its_commit(tmp_path: Path) -> None:
+    repo, carve = _repo(tmp_path)
+    export = tmp_path / "export"
+    _write(export, "governance/review-authority/register.yaml", "rows: []\n")
+    report = tmp_path / "report.json"
+    declared = "c8dde1315e3f4cfdbcc75872306493cb88c9cd2d"
+    done = _gate(repo, f"--carve-commit={carve}", "--no-suite-trees",
+                 f"--openxfactory-export={export}",
+                 f"--openxfactory-export-commit={declared}",
+                 f"--report={report}")
+    assert done.returncode == 0, done.stdout + done.stderr
+    for mode in ("plain", "--strict"):
+        assert _mode_line("IDENTICAL", "openxfactory-export",
+                          mode).search(done.stdout), done.stdout
+    evidence = _report(report)
+    assert evidence["openxfactory_export"]["declared_commit"] == declared
+    assert [t["target"] for t in evidence["targets"]] == \
+        ["root", "openxfactory-export"]
+
+
+# --------------------------------------------------------------------------
+# (c) the real repository
+# --------------------------------------------------------------------------
+
+def _carries(commit: str) -> bool:
+    done = subprocess.run(
+        ["git", "-C", str(REPO_ROOT), "cat-file", "-e", f"{commit}^{{commit}}"],
+        capture_output=True, check=False)
+    return done.returncode == 0
+
+
+def test_the_real_repository_is_neutral_over_its_own_tree(
+        tmp_path: Path) -> None:
+    """Target (i) over THIS checkout, plain and --strict: exit 0.
+
+    Before the adapter rebuild the validator at scripts/ IS the carve
+    commit's, so this would be a comparison of a validator with itself, and
+    before the shed it is not even that (the module docstring). The seat that
+    matters runs on the composed, shed branch, in `neutrality-gate.yml`.
+    """
+    if not _carries(CARVE_COMMIT):
+        pytest.skip(f"the carve commit {CARVE_COMMIT} is not in this "
+                    "checkout's history (a depth-1 checkout, as "
+                    f"pytest-suite's is); {FULL_HISTORY_WORKFLOW} (job "
+                    "`neutrality-gate`) runs the gate and this test with "
+                    "fetch-depth: 0")
+    code, why = MODULE.code_leg()
+    if code is None and "not initialized" in (why or ""):
+        pytest.skip("openWallet/code is not initialized, so the composed "
+                    f"adapter cannot load its core; run `{INIT_LINES[0]}` "
+                    f"then `{INIT_LINES[1]}`")
+    if (REPO_ROOT / REGISTRY).is_file():
+        pytest.skip(f"this tree still carries {REGISTRY}: the in-tree "
+                    "validator skips it as its own canonical registry and the "
+                    "relocated baseline counts it, so target (i) differs by "
+                    "one validated artifact until the shed (task 5.5)")
+    report = tmp_path / "report.json"
+    done = subprocess.run(
+        [sys.executable, str(GATE), "--no-suite-trees", f"--report={report}"],
+        cwd=REPO_ROOT, capture_output=True, text=True, check=False)
+    assert done.returncode == 0, done.stdout + done.stderr
+    for mode in ("plain", "--strict"):
+        assert _mode_line("IDENTICAL", "root", mode).search(done.stdout), \
+            done.stdout
+    evidence = _report(report)
+    assert evidence["result"] == "identical"
+    assert evidence["carve_commit"] == CARVE_COMMIT
+    if code is not None:
+        # D5's declared new line: both sides prune the mounted openWallet/.
+        assert evidence["declared_new_line"]["baseline"] is True
+        assert evidence["declared_new_line"]["composed"] is True
+
+
+def test_the_full_history_workflow_runs_the_gate_at_fetch_depth_zero() -> None:
+    """The loud skips above are honest only while something runs the seat
+    with the carve commit in history and both levels of openWallet
+    initialized. Pin the workflow that does."""
+    workflow = yaml.safe_load(
+        (REPO_ROOT / FULL_HISTORY_WORKFLOW).read_text(encoding="utf-8"))
+    triggers = workflow.get("on", workflow.get(True))  # YAML 1.1 reads `on`
+    assert triggers == {"pull_request": {"branches": ["main"]}}, triggers
+    assert workflow["permissions"] == {"contents": "read"}
+    job = workflow["jobs"]["neutrality-gate"]
+    assert "name" not in job, job
+    steps = job["steps"]
+    checkout = next(s for s in steps
+                    if str(s.get("uses", "")).startswith("actions/checkout@"))
+    assert checkout["with"]["fetch-depth"] == 0, checkout
+    assert checkout["with"]["submodules"] is False, checkout
+    runs = [s["run"] for s in steps if "run" in s]
+    assert runs[:2] == list(INIT_LINES), runs
+    assert not any("--recursive" in r for r in runs), runs
+    assert "python3 scripts/neutrality-gate.py" in runs, runs
+    assert "python3 -m pytest tests/neutrality_gate -q" in runs, runs
+    pip = next(r for r in runs if r.startswith("pip install"))
+    words = pip.split()
+    assert words[2:4] == ["--only-binary", ":all:"], pip
+    assert all("==" in p and p.split("==")[1] for p in words[4:]), pip
