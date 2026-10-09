@@ -187,6 +187,16 @@ RESPELLED_SUITE = TOY_SUITE.replace(
     'REPO_ROOT / "scripts/validate-openxwallet.py"')
 assert RESPELLED_SUITE != TOY_SUITE
 
+# TOY_SUITE plus a validator-driving test that SKIPS before it builds a tree,
+# as a test needing git history skips inside the gate's mirror.
+SKIPPING_SUITE = TOY_SUITE + '''
+
+def test_a_tree_the_mirror_cannot_build(tmp_path):
+    import pytest
+    pytest.skip("needs git history the mirror does not have")
+    _run(str(tmp_path))
+'''
+
 # Names the validator in a quoted literal but never runs it.
 HOLLOW_SUITE = '''
 NAME = "validate-openxwallet.py"
@@ -525,6 +535,8 @@ def test_agreeing_validators_pass_over_the_tree_and_a_suite(
     assert ("neutrality-gate: IDENTICAL: 1 tree(s) × 2 modes = 2 target "
             "run(s), and 1 suite invocation(s) × 2 modes = 2 suite record(s) "
             "over 1 suite(s)") in done.stdout, done.stdout
+    assert "note  0 test(s) skipped inside the mirror, in 0 of 1 suite(s)" \
+        in done.stdout, done.stdout
     evidence = _report(report)
     assert evidence["result"] == "identical"
     assert evidence["exit_code"] == 0
@@ -690,6 +702,33 @@ def test_the_pinned_suite_set_is_this_repositorys() -> None:
     assert [s.label for s in moved] == [
         label for label in MODULE.EXPECTED_SUITES
         if label.startswith("openWallet/")]
+
+
+def test_a_test_that_skips_inside_the_mirror_is_named_not_judged(
+        tmp_path: Path) -> None:
+    """A skipped test builds no tree in the mirror, so none is compared. The
+    gate names it under its suite, in its output and its report, and leaves
+    the verdict as the trees it did compare make it."""
+    repo, carve = _repo(tmp_path, "same", {"toy_suite": SKIPPING_SUITE})
+    report = repo / "report.json"
+    done = _gate(repo, f"--carve-commit={carve}", f"--report={report}")
+    assert done.returncode == 0, done.stdout + done.stderr
+    assert re.search(
+        r"^SKIPPED\s+in suite tests/toy_suite: 1 test\(s\) skipped inside the "
+        r"mirror and built no tree there, so none of their trees is "
+        r"compared; first: tests/toy_suite/test_toy_suite\.py:\d+: needs git "
+        r"history the mirror does not have$", done.stdout, re.M), done.stdout
+    assert ("note  1 test(s) skipped inside the mirror, in 1 of 1 suite(s)"
+            in done.stdout), done.stdout
+    assert re.search(r"^IDENTICAL\s+suite tests/toy_suite\s+2 of 2 tree "
+                     r"record\(s\) identical", done.stdout, re.M), done.stdout
+    evidence = _report(report)
+    assert (evidence["result"], evidence["skipped_tests"]) == ("identical", 1)
+    [suite] = evidence["suites"]
+    assert suite["skipped_tests"] == 1
+    [line] = suite["skip_lines"]
+    assert line.startswith("SKIPPED [1] tests/toy_suite/test_toy_suite.py:")
+    assert line.endswith(": needs git history the mirror does not have")
 
 
 def test_the_export_target_needs_a_governance_directory(tmp_path: Path) -> None:

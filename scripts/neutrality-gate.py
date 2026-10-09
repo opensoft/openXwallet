@@ -63,13 +63,20 @@ THE THREE TARGETS (D5):
         invocation the shim runs the baseline and the composed adapter TWICE
         in the same working directory: over the argv AS GIVEN, and over it
         with `--strict` TOGGLED (added where the suite left it out, removed
-        where the suite put it in). So every fixture tree is compared plain
-        AND `--strict`, as targets (i) and (ii) are, whichever mode the suite
-        happened to ask for. It appends one JSON record per mode to the run's
-        report, each carrying its `mode` ("plain" or "strict") and whether it
-        is the one `replayed`, and REPLAYS the as-given composed run (stdout,
-        stderr and exit code), so the suite sees what the composed adapter
-        says to exactly what it asked. The suite's own pass or fail is printed
+        where the suite put it in). So every fixture tree a test BUILDS
+        inside the mirror is compared plain AND `--strict`, as targets (i)
+        and (ii) are, whichever mode the suite happened to ask for. A test
+        that SKIPS inside the mirror builds no tree there, so none of its
+        trees is compared: the gate names each such skip under its suite, in
+        its output and its report, and the verdict does not change on it
+        (the moved nested_repo_prune suite's history-dependent test skips
+        there, because the mirror has no git history, and it cannot be
+        edited from this repository). It appends one JSON record per mode to
+        the run's report, each carrying its `mode` ("plain" or "strict") and
+        whether it is the one `replayed`, and REPLAYS the as-given composed
+        run (stdout, stderr and exit code), so the suite sees what the
+        composed adapter says to exactly what it asked. The suite's own pass
+        or fail is printed
         as INFORMATION; the verdict is the records, BOTH modes of every
         invocation, every one identical.
 
@@ -238,6 +245,9 @@ RESOLVED_RE = re.compile(r"^[0-9a-f]{40}(?:[0-9a-f]{24})?$")
 REFUSAL_OUTSIDE_ROOTS = "path-outside-allowed-roots"
 KIND_EXPORT = "openxfactory-export"
 DIFF_LINE_LIMIT = 200
+# pytest's short summary line for skipped tests (`-rs`): `SKIPPED [N] where:
+# why`, N the number of tests that skipped at that place for that reason.
+SKIP_LINE_RE = re.compile(r"^SKIPPED \[(\d+)\] (.*)$")
 OUTPUT_LINE_LIMIT = 40
 RUN_TIMEOUT = 900       # seconds: one validator over one tree
 SUITE_TIMEOUT = 3600    # seconds: one mirrored suite's whole pytest run
@@ -791,6 +801,18 @@ class SuiteResult:
     def differences(self) -> list[dict[str, Any]]:
         return [r for r in self.judged if not r["identical"]]
 
+    @property
+    def skips(self) -> list[str]:
+        """pytest's SKIPPED summary lines: a test that skipped inside the
+        mirror built no tree there, so none of its trees is compared."""
+        return [line for line in self.pytest_output.splitlines()
+                if line.startswith("SKIPPED")]
+
+    @property
+    def skipped_tests(self) -> int:
+        counts = (SKIP_LINE_RE.match(line) for line in self.skips)
+        return sum(int(match.group(1)) if match else 1 for match in counts)
+
 
 def drives_validator(directory: Path) -> bool:
     return any(DRIVES_VALIDATOR.search(path.read_text(encoding="utf-8",
@@ -959,8 +981,10 @@ def run_suites(suites: list[Suite], scratch: Path, baseline: Path,
 
 
 def _pytest_digest(output: str) -> list[str]:
+    """FAILED and ERROR lines, then pytest's last line. SKIPPED lines are
+    printed apart, unclipped, under the suite (`print_suite`)."""
     lines = [line for line in output.splitlines()
-             if line.startswith(("FAILED", "ERROR", "SKIPPED"))]
+             if line.startswith(("FAILED", "ERROR"))]
     tail = [line for line in output.splitlines() if line.strip()][-1:]
     return clipped(lines, OUTPUT_LINE_LIMIT) + tail
 
@@ -982,6 +1006,13 @@ def print_suite(result: SuiteResult) -> None:
           f"modes{help_tally}")
     if result.refusal:
         print(f"    {result.refusal}")
+    if result.skips:
+        first = SKIP_LINE_RE.match(result.skips[0])
+        print(f"{'SKIPPED':<9}  in suite {result.suite.label}: "
+              f"{result.skipped_tests} test(s) skipped inside the mirror and "
+              "built no tree there, so none of their trees is compared; "
+              f"first: {first.group(2) if first else result.skips[0]}")
+        print(indented("\n".join(result.skips), "      "))
     for record in result.differences:
         how = "as given" if record["replayed"] else "--strict toggled"
         print(f"    DIFFERENT  {record['test'] or '(no test id)'}  argv "
@@ -1011,6 +1042,8 @@ def suite_summary(result: SuiteResult) -> dict[str, Any]:
                         for r in result.differences],
         "pytest_rc": result.pytest_rc,
         "pytest_summary": (_pytest_digest(result.pytest_output) or [""])[-1],
+        "skipped_tests": result.skipped_tests,
+        "skip_lines": result.skips,
         "refusal": result.refusal,
     }
 
@@ -1118,6 +1151,13 @@ def verdict(trees: list[TreeResult], suites: list[SuiteResult],
         raise GateRefusal(
             "neutrality-suite-vacuous",
             "; ".join(f"{r.suite.label}: {r.refusal}" for r in refused))
+    skipped = sum(r.skipped_tests for r in suites)
+    evidence["skipped_tests"] = skipped
+    if suites:
+        print(f"note  {skipped} test(s) skipped inside the mirror, in "
+              f"{sum(1 for r in suites if r.skips)} of {len(suites)} "
+              "suite(s): a test that skips there builds no tree, so its "
+              "trees are not compared (each is named under its suite above)")
     runs = sum(len(t.modes) for t in trees)
     invocations = sum(r.invocations for r in suites)
     records = sum(len(r.judged) for r in suites)

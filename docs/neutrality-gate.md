@@ -69,8 +69,18 @@ temporary directory.
    carrying its `mode` (`plain` or `strict`) and whether it is the one
    `replayed`, and then replays the as-given composed run (stdout, stderr
    and exit code). The suite therefore asserts on exactly what the composed
-   adapter says to what it asked, and every fixture tree is still compared in
-   both modes, whichever one its suite asked for. The suite's own pass or
+   adapter says to what it asked, and every fixture tree a test BUILDS inside
+   the mirror is compared in both modes, whichever one its suite asked for. A
+   test that SKIPS inside the mirror builds no tree there, so none of its
+   trees is compared. The gate names each such skip: a `SKIPPED in suite ...`
+   line under the suite with the count and the first reason, then pytest's
+   own `SKIPPED [N] where: why` lines, a `note  N test(s) skipped inside the
+   mirror` line before the verdict, and the same in the report. It does not
+   change the verdict on a skip. The known case is the moved
+   `openWallet/code/tests/nested_repo_prune` suite's history-dependent test:
+   the mirror has no git history (no `.git`, and `GIT_CEILING_DIRECTORIES`
+   stops at the run's temporary root), so it skips there, and it cannot be
+   edited from this repository. The suite's own pass or
    fail is printed as information. The verdict comes from the records, both
    modes of every invocation: every one must be identical, and a suite whose
    records do not pair refuses. Each suite's line reads `N invocation(s) × 2
@@ -141,7 +151,7 @@ python3 scripts/neutrality-gate.py --report run.json    # plus a JSON summary
 | `--openxfactory-export DIR` | target (ii); `DIR` must **contain** `governance/` and resolve below the working directory, the temporary directory or the home directory |
 | `--openxfactory-export-commit SHA` | the openxFactory commit the export was taken at, recorded in `--report` |
 | `--no-suite-trees` | skip target (iii) |
-| `--report PATH` | the report is written **below the invocation's working directory**: `PATH` is joined under it and normalised, an absolute path outside it is refused, and its directory must exist; write a JSON summary: the result, the revision tested (HEAD, uncommitted tracked changes, the `openWallet` and `code` checkouts), the carve commit, the baseline blob, the composed adapter's sha256, every target and mode with both exit codes, the expected and discovered suite sets, every suite's counts and differences, and every skip |
+| `--report PATH` | the report is written **below the invocation's working directory**: `PATH` is joined under it and normalised, an absolute path outside it is refused, and its directory must exist; write a JSON summary: the result, the revision tested (HEAD, uncommitted tracked changes, the `openWallet` and `code` checkouts), the carve commit, the baseline blob, the composed adapter's sha256, every target and mode with both exit codes, the expected and discovered suite sets, every suite's counts and differences, each suite's `skipped_tests` and `skip_lines` (the tests that skipped inside the mirror) with their total `skipped_tests`, and every skip |
 | `--keep` | keep the run's temporary tree and print where it is (every child's `TMPDIR` is inside it) |
 
 | Exit | Meaning |
