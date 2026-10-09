@@ -356,7 +356,7 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
         `e4a7a6a9` with the real lockstep-pins step: `pins ok`. Helper 3 and
         helper 5: 0 refusals; three-way 8/8; control 8/8. Codex did not
         review: its connector was at its limit.
-- [ ] 4.6 `[openWallet-root]` The proof, `docs/byte-identity-<first tag>.md`,
+- [x] 4.6 `[openWallet-root]` The proof, `docs/byte-identity-<first tag>.md`,
       parts zero to five of `design.md` D7 — the DECLARED PATH MAPPING — each
       able to fail. A validator line in no declared hunk, or a path in no
       declared class, REFUSES it. Part three runs from the code leg's own root.
@@ -366,11 +366,12 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
         "Start now, neutrality half later (Recommended)": parts zero, one, two,
         four and five authored now by lane openXwallet-2; part three's
         composed-adapter half is filled when group 5's composed validator
-        exists (lane openXwallet-3). In progress.
+        exists (lane openXwallet-3). Landed; see below.
       - **PENDING**, part three's second half: the neutrality gate over the
-        composed adapter. It is filled in by a follow-up commit once lane
+        composed adapter. It WAS measured, at the head `a02c6c74` of lane
         openXwallet-3's branch `rebuild/adapter-group-5` of opensoft/openXwallet
-        is runnable (it is not yet); nothing here waits for it. The shape,
+        (see the LANDED bullet below); the pinned root cited below, `1c68717f`,
+        was the development pin, and the final root is `52d75736`. The shape,
         as that lane gave it: from an openXwallet checkout at that branch,
         with openWallet pinned at the root merge
         `1c68717f1ae4ae132d6942f8c7f533baf292d0b6` (its `code` gitlink
@@ -384,6 +385,25 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
         output and the same exit code, plain and `--strict`, over the same
         tree, for each of this tree, the openxFactory governance export, and
         every test-suite fixture tree.
+      - **LANDED 2026-10-09** in opensoft/openWallet#3 at merge
+        `52d75736156550b48992e39f7a69fb680c611287` (a merge commit; head
+        `6b25be50`; commits `624e196` the proof, `b86c6a5` root docs status,
+        `c644bf7` the adapter-half fill, `6b25be5` the runbook 3c snippet's
+        exit code). `docs/byte-identity-wallet-v1.6.md`: parts zero, one (a),
+        one (b), two (a), two (b), three (both halves), four and five
+        RUN-GREEN; D5's neutrality gate EMPTY plain and `--strict` over
+        openXwallet's tree at `a02c6c74`, the openxFactory `governance/`
+        export at `c8dde131`, and all 110 suite-built trees; consumer depth 2
+        88/88; consumer depth 3 PENDING group 6; the adapter-half head is
+        re-confirmed when group 5 lands; the from-text re-run finished clean
+        (`runner exit=0`) and is being closed by a follow-up doc commit.
+        Finding 4 (the code leg's checkout scanned in place differs by one
+        `repo scan` summary line because `repo_scan` skips the validator's own
+        packaged registry by resolved path) ruled "Qualify D5's sentence; gate
+        stays GREEN (Recommended)" (design D5 amendment in flight). Landed on
+        the word "land the proof PR when green" and the ruling "Land it now
+        (Recommended)". `validate` completed success with the lockstep-pins
+        step. Codex did not review.
 - [ ] 4.7 **[OPERATOR]** Three rulesets, each EVALUATE → one trivial pull request
       so its checks report → ACTIVE. Each is an org-admin act in `opensoft`.
       - root: `validate`;
@@ -451,6 +471,15 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
       - The tag NAME `wallet-v1.6` was allocated 2026-10-08 on the ruling at
         4.6. The tag itself is cut only after 4.6 is green and 4.7's rulesets
         are ACTIVE.
+      - **RULED** 2026-10-09, labels verbatim "The root commit carrying the
+        completed proof (Recommended)" and "Wait for the full proof
+        (Recommended)": `wallet-v1.6` goes on root `main` `52d75736` (spec
+        `1924500`, code `72313daa`) once 4.7's rulesets are ACTIVE. The
+        root's spec pin was moved by two lockstep pull requests, on the
+        rulings "Re-pin spec to 1506bbdb before the tag (Recommended)"
+        (opensoft/openWallet#4 → `5a444cf2`) and "Re-pin to the archive merge
+        before the tag (Recommended)" (opensoft/openWallet#5 → `bead4bd8`),
+        so the first release carries 4.8 in its archived form.
 
 ## 5. The adapter rebuild — this repository, one pull request
 
@@ -467,8 +496,9 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
       gitlink vs its `contracts/code-pin.yaml` vs `legs.code.commit`, read from
       git objects) and a mutated digest.
       - Group 5 is being authored by lane openXwallet-3 on branch
-        `rebuild/adapter-group-5` (claimed on #25, 2026-10-08). The root to
-        pin is `1c68717f1ae4ae132d6942f8c7f533baf292d0b6`.
+        `rebuild/adapter-group-5` (claimed on #25, 2026-10-08). The FINAL root
+        to pin is `52d75736156550b48992e39f7a69fb680c611287` (re-pinned once
+        before that pull request lands).
 - [ ] 5.2 `scripts/validate-openxwallet.py` recomposed per `design.md` D5:
       - the pinned core loaded in process from
         `openWallet/code/scripts/validate-openxwallet.py`;
