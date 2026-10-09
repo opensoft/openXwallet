@@ -566,7 +566,7 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
 
 ## 5. The adapter rebuild — this repository, one pull request
 
-- [ ] 5.1 The gitlink `openWallet/`, mounting the openWallet ROOT, and
+- [x] 5.1 The gitlink `openWallet/`, mounting the openWallet ROOT, and
       `contracts/openwallet-pin.yaml` in the same commit. The pin holds:
       - the root `commit:`;
       - `legs.code`, as a lockstep mirror;
@@ -578,40 +578,215 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
       gitlink ≠ pin, a checkout ≠ pin, a leg-lockstep mismatch (the root's `code`
       gitlink vs its `contracts/code-pin.yaml` vs `legs.code.commit`, read from
       git objects) and a mutated digest.
-      - Group 5 is opensoft/openXwallet#40, authored by lane openXwallet-3
-        (claimed on #25, 2026-10-08), on branch `rebuild/adapter-group-5-r2`.
-        The review-fixed history took a sibling name because the ruleset
-        forbids force-push (organisation ruleset `8981805` carries
-        `non_fast_forward` on every branch); `rebuild/adapter-group-5`, at
-        `a02c6c7487171c110490b234643a7e586ed47153`, the head the proof
-        measured, stays on origin as that record. The FINAL root to pin is the
-        merge commit of opensoft/openWallet#7,
-        `b0af7c2ce53d63786a08a20aa3602a6f90345606`, the wallet-v1.6 release,
-        per the ruling recorded at 4.9; lane openXwallet-3 re-pins to it in
-        one commit, with `contract_bundle_tag: wallet-v1.6`, before #40 lands.
-- [ ] 5.2 `scripts/validate-openxwallet.py` recomposed per `design.md` D5:
+      - **LANDED 2026-10-09** by lane openXwallet-3 in opensoft/openXwallet#40
+        at merge `815b86cef18c6227f649d2cefedb05720069362b` (a merge commit,
+        an administrator merge pinned to the head; parents `42b8245e`, main
+        after #41, and the head `36c365dab5ca7c9db036cb413963d7cabb804375`),
+        on Brett Heap's word in lane openXwallet-3's window, verbatim: "land
+        40 when the re-pinned head is all green" (that lane's log, RULED
+        2026-10-09T17:41:49Z). Claimed on #25 2026-10-08
+        (https://github.com/opensoft/openXwallet/issues/25#issuecomment-6069697658).
+        One pull request carries 5.1 to 5.7. Gated, all on the exact head:
+        the six named runs `lane-line`, `wallet-validation`, `pytest-suite`,
+        `carve-manifest`, `openspec-cli-pin` and `neutrality-gate` completed
+        success; SonarCloud's quality gate OK (0 bugs, 0 vulnerabilities,
+        security hotspots 100% reviewed, 14 code smells, none blocking); lane
+        openXwallet-1's fresh-clone gate bar ALL GREEN
+        (https://github.com/opensoft/openXwallet/pull/40#issuecomment-6087294367)
+        and its review of the consumer-surface fix CLEAR
+        (https://github.com/opensoft/openXwallet/pull/40#issuecomment-6087335229);
+        lane openXwallet-2's group-6 consumer dry run GREEN
+        (https://github.com/opensoft/openXwallet/pull/40#issuecomment-6087884367).
+        Codex reviewed `df7f82a` and left two P2 findings, fixed by `24fea99`
+        and `923cf09`; it reviewed no later head. Sourcery declined: the pull
+        request is over its review limit of 150,000 diff characters.
+      - The review-fixed history took the sibling branch name
+        `rebuild/adapter-group-5-r2`, because organisation ruleset `8981805`
+        carries `non_fast_forward` on every branch. `rebuild/adapter-group-5`,
+        at `a02c6c7487171c110490b234643a7e586ed47153`, the head the proof
+        measured, stays on origin as that record: the landed proof
+        `docs/byte-identity-wallet-v1.6.md` in opensoft/openWallet cites it.
+        Removing it is Brett Heap's call, and only after a durable ref
+        replaces it.
+      - The pin. `e9f4433` mounted the root at `1c68717f`
+        (opensoft/openWallet#2, task 4.5) for development. The re-pin
+        `176374ac5c5dad671b949a39cb1612546497935e` moved the gitlink and
+        `commit:` to `b0af7c2ce53d63786a08a20aa3602a6f90345606`, the merge of
+        opensoft/openWallet#7, whose annotated tag `wallet-v1.6` (tag object
+        `3acfa611`) peels to it, and set `contract_bundle_tag: wallet-v1.6`.
+        That is the final root as ruled at 4.9, label verbatim "Release
+        commit on b4580d16, tag its merge (Recommended)". The legs (spec
+        `1924500`, code `72313daa`) and the eight digests are unchanged.
+      - Review fixes: `fff58f5` (a path-only member modified in its working
+        tree and a hollowed pin refused; both entrypoints refuse a core that
+        exits while loading); Codex's `24fea99` (`pin-mount-mismatch`, a
+        mount the entrypoints do not execute) and `923cf09` (the eight
+        digested paths a closed, unique set); lane openXwallet-1's Review A,
+        `65bbd64`, `5b30728` and `c15f94a` (`pin-leg-dirty`: the code leg's
+        working tree must be clean, compared by content) and `8c47d96`
+        (`pin-unreadable` for a non-UTF-8 pin).
+      - Both gate bars, verbatim: `OK openwallet-pin verified:
+        openWallet@b0af7c2ce53d63786a08a20aa3602a6f90345606 (tag label
+        wallet-v1.6), gitlink read from HEAD, code leg
+        @72313daab1f229c049cb90998931564c1904dbbc in lockstep (gitlink,
+        contracts/code-pin.yaml, legs.code), 8 digest(s) recomputed, 6
+        path-only member(s) present and unmodified`. Each refusal the task
+        names is OBSERVED in
+        `tests/openwallet_pin/test_verify_openwallet_pin.py`:
+        `test_an_uninitialized_root_refuses_with_its_own_remediation`,
+        `test_an_uninitialized_leg_refuses_with_its_own_remediation`,
+        `test_a_recorded_gitlink_other_than_the_pin_refuses`,
+        `test_a_root_checkout_other_than_the_pin_refuses`,
+        `test_the_roots_code_gitlink_disagreeing_refuses_lockstep`,
+        `test_the_roots_code_pin_disagreeing_refuses_lockstep`,
+        `test_the_pins_leg_mirror_disagreeing_refuses_lockstep` and
+        `test_a_flipped_digest_byte_in_the_pin_refuses`.
+- [x] 5.2 `scripts/validate-openxwallet.py` recomposed per `design.md` D5:
       - the pinned core loaded in process from
         `openWallet/code/scripts/validate-openxwallet.py`;
       - rule (t) and the register reader registered at their present positions;
       - the hermes binding unconditional.
-- [ ] 5.3 `scripts/wallet-yaml-syntax-gate.py` kept as an entrypoint, one
+      - **LANDED 2026-10-09** with 5.1, in opensoft/openXwallet#40: `84c15c8`
+        with 5.3, review fixes `229e884` and `fff58f5`. Rule (t) registers
+        into `GRANT_RULES` and the register reader as the `TREE_CHECKS`
+        entry; `tests/openwallet_pin/test_composed_entrypoints.py` observes
+        the registration before `core.main()` and the refusal at each mount
+        level. The hermes binding is unconditional, per #40's body; over this
+        tree the run prints `note  approval-scope vocabulary read from
+        contracts/schemas/hermes-job-envelope.schema.yaml: […]`. Gate bar,
+        plain and `--strict`:
+        `validate-openxwallet: 0 error(s), 0 warning(s)`; against the carve
+        commit `90111df2`'s validator, "stdout diff EMPTY, exit 0/0, stderr
+        the same, in both modes".
+      - `6ca9acd0097bc255c0c65e1b8c3ffe170b643011`, "5.2 review fix: the
+        entrypoint keeps the two key decoders consumers import from it,
+        re-exported from the core". Lane openXwallet-2's group-6 dry run
+        found that openxFactory's factory-identity and clearing-dispatch
+        loaders read `decode_public_key_multibase` and
+        `fingerprint_of_public_key` off this entrypoint by path, and after the
+        split only the core had them. `decode_public_key_multibase` joined
+        `CORE_CONTRACT`; `tests/openwallet_pin/test_consumer_surface.py` loads
+        the entrypoint by path as openxFactory does. Lane openXwallet-1's
+        review: at openxFactory `93d13d6c`, `tests/clearing` plus
+        `tests/factory_identity` gave 283 passed at the head, against 52
+        failed, 181 passed and 50 errors at `c15f94a`.
+- [x] 5.3 `scripts/wallet-yaml-syntax-gate.py` kept as an entrypoint, one
       implementation.
-- [ ] 5.4 THE NEUTRALITY GATE: the carve-commit validator and the composed
+      - **LANDED 2026-10-09** with 5.1, in opensoft/openXwallet#40: `84c15c8`
+        with 5.2, review fix `229e884`. The entrypoint holds no
+        implementation and returns the pinned gate's `main()`. Gate bar:
+        `scripts/wallet-yaml-syntax-gate.py .` exit 0, no output.
+- [x] 5.4 THE NEUTRALITY GATE: the carve-commit validator and the composed
       adapter over this tree, an export of openxFactory's live `governance/`
       tree, and every test-suite fixture tree — `diff` EMPTY, plain and
       `--strict`, the same exit code. This tree's one new prune note is declared.
-- [ ] 5.5 Shed exactly the carve manifest's `retained_here: shed` rows —
+      - **LANDED 2026-10-09** with 5.1, in opensoft/openXwallet#40. `6409fda`
+        adds `scripts/neutrality-gate.py`, `tests/neutrality_gate/`, the
+        workflow `neutrality-gate` and `docs/neutrality-gate.md`. Review fixes
+        `e01f122`, `360801f`, `5817473` and `15afe1d`; for lane
+        openXwallet-1's Review B, `3cbaa7a` (the seven-suite set pinned),
+        `cfccb21` (every in-mirror skip reported), `2087141` (FR-009's
+        consumer tree compared in both modes), `bd4c684` (the filesystem root
+        never an export root) and `aa50bf1` (the withdrawn any-tree claim
+        corrected in five files). Sonar fixes `db9be5a`, `5dd251a` and
+        `df7f82a`; help text `b2752e8`; lint `64da0e1`; evidence `1cdd262`,
+        then `36c365d`, the row at `176374ac`.
+      - The author's verdict at `176374ac`, with the export:
+        `neutrality-gate: IDENTICAL: 2 tree(s) × 2 modes = 4 target run(s),
+        and 122 suite invocation(s) × 2 modes = 244 suite record(s) over 7
+        suite(s); every stdout byte-identical, every exit code equal`. Lane
+        openXwallet-1's at `36c365da`, targets (i) and (iii):
+        `neutrality-gate: IDENTICAL: 1 tree(s) × 2 modes = 2 target run(s),
+        and 122 suite invocation(s) × 2 modes = 244 suite record(s) over 7
+        suite(s); every stdout byte-identical, every exit code equal`. Both
+        validators print this tree's one declared new line,
+        `note  nested repositories pruned (not adjudicated): openWallet`. One
+        test skips inside the mirror, the expected one:
+        `test_prune_and_register_note.py:351` in
+        `openWallet/code/tests/nested_repo_prune` (history-dependent).
+      - Target (ii) is evidence, not CI, ruled "Evidence, not CI
+        (Recommended)"
+        (https://github.com/opensoft/openXwallet/issues/25#issuecomment-6072312849).
+        Over openxFactory `c8dde1315e3f4cfdbcc75872306493cb88c9cd2d`, its
+        `governance/` tree only, fetched read-only into scratch and never
+        committed (it carries the operator's email and seat keys), both sides
+        print byte-identical stdout, plain and `--strict`, 1240 bytes each,
+        exit 0, with `note  intake register: 9 of 9 per-seat signing key(s)
+        adjudicated and resolved` and `note  repo scan: 9 openxWallet
+        artifact(s) validated, 5 document(s) skipped as another kind`.
+        Recorded in `docs/neutrality-gate.md` § Evidence, the row at
+        `176374ac`.
+      - The verdict is scoped to D5's three kinds of tree: design.md D5's
+        amendment of 2026-10-09 withdrew the any-tree sentence, ruled
+        "Qualify D5's sentence; gate stays GREEN (Recommended)"
+        (https://github.com/opensoft/openXwallet/issues/25#issuecomment-6072537370).
+        `neutrality-gate` is a reporting check outside the repository
+        ruleset's required list; making it required is a console act.
+- [x] 5.5 Shed exactly the carve manifest's `retained_here: shed` rows —
       `add-composition-drift-cascade` among them. Leave the `kept` rows (the three
       adapter negatives at their path, every archive record unedited) and the
       `retired_by_archive` rows (the two promoted specs, which this change's
       archive retires).
-- [ ] 5.6 Manifest (nothing of openWallet's registered as owned), CHANGELOG,
+      - **LANDED 2026-10-09** with 5.1, in opensoft/openXwallet#40: kept
+        tests `dc387a8`, the shed `07e67bd`, review fixes `1efc9db` and
+        `a9e2986`. `07e67bd` removed the 106 `shed` rows with `git rm`, the
+        six files of `openspec/changes/add-composition-drift-cascade/` among
+        them, and flipped the manifest to `phase: post-shed` in the same
+        commit; the 124 `kept` rows (the three adapter negatives
+        byte-identical, no archive record touched) and the 2
+        `retired_by_archive` rows (the two promoted specs) stay. `a9e2986`
+        refuses a missing `kept` row under post-shed (`carve-path-absent`).
+        Gate bar: `OK docs/openwallet-carve-manifest.yaml: phase post-shed,
+        232 row(s) at opensoft/openXwallet@90111df262d6, verified at
+        176374ac5c5d — …; retained_here: kept 124, shed 106,
+        retired_by_archive 2; …; 128 digest(s) recomputed; …; 232 tracked
+        path(s) at the carve commit, each in exactly one row`.
+- [x] 5.6 Manifest (nothing of openWallet's registered as owned), CHANGELOG,
       README (the adapter role, PUBLIC, the Speckit list, the capability count),
       AGENTS.md (the one-paragraph identity and rule 3), CODEOWNERS.
       `wallet-validation` runs in this order: `git submodule update --init
       openWallet`, then `git -C openWallet submodule update --init code`, then
       the two verifiers, then the gates.
-- [ ] 5.7 The full gate bar (AGENTS.md rule 5) and the pinned CLI gate, green.
+      - **LANDED 2026-10-09** with 5.1, in opensoft/openXwallet#40:
+        `480c073` (the manifest, CHANGELOG, README, AGENTS.md, CODEOWNERS and
+        the two workflows), review fix `1456ab2`, docs `b4e3706` (the three
+        rulings on record), `aa50bf1` with 5.4, and `a18331f`, "5.6 docs: the
+        CHANGELOG names the module surface consumers import from the
+        validator by path". `contracts/manifest.yaml` registers nothing of
+        openWallet's; `contracts/openwallet-pin.yaml` is the only record.
+        `.github/workflows/wallet-validation.yml` runs, in this order, the
+        root init, the code-leg init, `verify-contract-pin.py`,
+        `verify-openwallet-pin.py`, the syntax gate, then the validator plain
+        and `--strict`; `wallet-validation` and `pytest-suite` completed
+        success at the head.
+- [x] 5.7 The full gate bar (AGENTS.md rule 5) and the pinned CLI gate, green.
+      - **LANDED 2026-10-09** with 5.1, in opensoft/openXwallet#40. Lane
+        openXwallet-3's gate bar at `176374ac`:
+        `OK contract pin verified: 1 vendored file(s) match contract_pin.yaml
+        at openxFactory@30565e48ffe3`; the pin line in 5.1; the validator in
+        5.2; `84 passed in 26.24s` (`tests/carve_manifest`);
+        `281 passed in 186.91s (0:03:06)` (`tests/`); `60 passed in 44.06s`
+        (`tests/neutrality_gate tests/nested_repo_prune`); the pinned CLI gate
+        `Totals: 5 passed, 0 failed (5 items); OK openspec-cli-pin:
+        @fission-ai/openspec@1.12.0 verified against its content address and
+        every target validated --strict clean`.
+      - Lane openXwallet-1's independent bar, a fresh full-history clone at
+        `36c365da`, ALL GREEN
+        (https://github.com/opensoft/openXwallet/pull/40#issuecomment-6087294367):
+        `281 passed in 348.69s (0:05:48)` with no FAILED, ERROR, SKIPPED,
+        XFAIL or XPASS line; the pinned CLI gate
+        `Totals: 5 passed, 0 failed (5 items)`; the carve manifest
+        `OK … verified at 36c365dab5ca …`; the pin and the neutrality gate as
+        in 5.1 and 5.4.
+      - Known, deferred (#40's body): A2, a crafted cached `.pyc` served
+        instead of the pinned source; A4, `compose()` not idempotent across
+        two in-process `main()` calls; the pre-existing, neutral
+        `s4-selftest-*` directories left in TMPDIR; the entrypoints'
+        remediation naming the mount as this repository sees it; and the
+        wording of `_fingerprint_of` as an "own" name in
+        `contracts/CHANGELOG.md` and in the docstring of
+        `tests/openwallet_pin/test_consumer_surface.py`, lane openXwallet-3's
+        docs follow-up.
 - [ ] 5.8 **[OPERATOR]** The adapter's first release in Q4's series, five
       values, tagged at the merge commit.
 
