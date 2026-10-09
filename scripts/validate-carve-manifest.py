@@ -29,7 +29,8 @@ HOW IT DIFFERS FROM openDox's CHECKER, and why each difference is D7's:
     `not_moved` row is always `kept`; `retired_by_archive` is a promoted spec
     (`openspec/specs/…`) that leaves only by the change's archive; `shed` rows
     are exactly what the adapter rebuild removes (`tasks.md` 5.5), and they are
-    what `phase: post-shed` requires ABSENT.
+    what `phase: post-shed` requires ABSENT, while every `kept` row, moved or
+    not and wherever it lies, it still requires PRESENT.
   * `destination_path` EQUALS `source_path` ON EVERY MOVED ROW (D7: within each
     leg every carved path keeps its repository-relative path). A remapped row
     refuses `carve-path-remapped`.
@@ -61,8 +62,11 @@ SIX ORDERED CHECKS, FIRST FAILURE WINS (openDox's order):
      not carry it, and that refuses: an unreachable referent is unverifiable,
      whatever the reason it is unreachable. So CI runs this checker in
      `.github/workflows/carve-manifest.yml`, at `fetch-depth: 0`, and NOT in
-     `pytest-suite.yml`, which checks out at depth 1 and is itself a carved row
-     (editing it would refuse here); in a depth-1 `pytest-suite` run the
+     `pytest-suite.yml`, which checks out at depth 1. That workflow is itself a
+     carved row, `kept` here: before the shed an edit to it refused as CHANGED
+     SINCE THE CARVE, and under `post-shed` its bytes are no longer compared,
+     only its presence required, so the adapter rebuild rewrote it in place and
+     kept the depth-1 checkout. In a depth-1 `pytest-suite` run the
      real-repository test skips loudly rather than count this refusal as a
      pass.
   3. DIGEST — pass 1 at the carve commit: each moved row's mode and the sha256
@@ -72,8 +76,8 @@ SIX ORDERED CHECKS, FIRST FAILURE WINS (openDox's order):
      phase: under `carve` every moved row is still present and byte-for-byte
      and mode-for-mode the carve's; under `post-shed` a `shed` row is ABSENT
      (`carve-shed-incomplete` if not), a `retired_by_archive` row is absent or
-     unchanged, and a `kept` moved row is not compared — the adapter rewrites
-     those at the same paths.
+     unchanged, and a `kept` moved row's bytes are not compared — the adapter
+     rewrites those at the same paths — while its presence is check 4's.
   4. SURFACE — every `moved_paths:` entry matches a file at the carve commit
      (`carve-surface-vacuous`); no path in two rows and no two rows arriving at
      one real destination path (`carve-file-duplicated`); at the carve commit
@@ -81,7 +85,9 @@ SIX ORDERED CHECKS, FIRST FAILURE WINS (openDox's order):
      `carve-path-absent`); at the revision under test nothing has appeared
      under the surface (`carve-file-undeclared`) and no row under it has
      vanished (`carve-path-absent`), the shed set and an archived spec excepted
-     under `post-shed`.
+     under `post-shed`; and, under `post-shed`, every `kept` row OUTSIDE the
+     surface is present too (`carve-path-absent`), because the shed removes
+     exactly the `shed` rows and a `kept` row stays wherever it lies.
   5. CLOSED VOCABULARIES — `disposition`, `destination`, `edits[].class`,
      `reason`, `retained_here`, `leg_override` and `leg_default.leg`
      (`carve-vocabulary-unknown`).
@@ -866,7 +872,8 @@ def check_digests(repo: Path, doc: dict, referent: dict[str, TreeEntry],
                 # A `kept` moved row: the adapter rebuild rewrites these at the
                 # same path (the validator, the syntax-gate entrypoint, the
                 # manifest, the CHANGELOG, the workflows), so after the shed
-                # they are this repository's again. Presence is check 4's.
+                # they are this repository's again. Presence is check 4's, as
+                # it is for every `kept` row under `post-shed`.
                 continue
         if path not in tested:
             raise CarveRefusal(
@@ -906,7 +913,8 @@ def check_surface(doc: dict, referent: dict[str, TreeEntry],
                   tested: dict[str, TreeEntry], verified_at: str,
                   phase: str) -> int:
     """The rows equal the WHOLE tree at the carve commit; the watched surface
-    has neither grown nor lost a row's file at the revision under test."""
+    has neither grown nor lost a row's file at the revision under test; and,
+    under `post-shed`, no `kept` row's file has gone outside it either."""
     commit = doc["carve_commit"]
     destinations = doc["destinations"]
     moved_paths = doc["moved_paths"]
@@ -990,6 +998,30 @@ def check_surface(doc: dict, referent: dict[str, TreeEntry],
             f"{verified_at[:12]}: {_shown(vanished)}. Check 3 reports a moved "
             "row with its digest; this is what reports a `not_moved` row the "
             "surface holds, and, under `post-shed`, a `kept` moved row")
+
+    if phase == PHASE_POST_SHED:
+        # The shed removes EXACTLY the `shed` rows (tasks.md 5.5), so every
+        # `kept` row is still here, whatever its disposition and wherever it
+        # lies. Under the surface the `vanished` test above already holds one;
+        # this holds the rest, OUTSIDE it: this repository's own `not_moved`
+        # files (its pins, runbooks, front door, kept suites, `.specify/`).
+        # Their bytes may change; their paths may not go. Presence is read as
+        # above: a BLOB at the revision under test, from the one `ls-tree`, so
+        # a path that became a directory or a gitlink is absent too.
+        lost = sorted(row["source_path"] for row in doc["rows"]
+                      if row.get("retained_here") == RETAINED_KEPT
+                      and row["source_path"] not in tested)
+        if lost:
+            raise CarveRefusal(
+                "carve-path-absent",
+                f"{len(lost)} `retained_here: {RETAINED_KEPT}` row(s) outside "
+                "the carve surface name path(s) ABSENT at "
+                f"{verified_at[:12]} under `phase: {PHASE_POST_SHED}`: "
+                f"{_shown(lost)}. The shed removes exactly the "
+                f"`{RETAINED_SHED}` rows; a `{RETAINED_KEPT}` row stays in "
+                "this repository, its bytes free to change and its path "
+                "required present. Restore the file: a kept row that leaves "
+                "is a disposition this manifest does not declare")
     return len(tree)
 
 

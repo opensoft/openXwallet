@@ -20,8 +20,9 @@ missing the seat SKIPS LOUDLY — this repository's own precedent for an
 unreachable baseline (`tests/nested_repo_prune/test_prune_and_register_note.py`,
 `test_this_version_adjudicates_the_previous_corpus_identically`). It never
 reports the checker's refusal as a pass: a refusal is the checker being right
-that it cannot answer, not an answer. `pytest-suite` checks out at depth 1 and
-is itself a carved row, so it is not edited; the full-history run is
+that it cannot answer, not an answer. `pytest-suite` checks out at depth 1 (it
+is a `kept` carved row, which the adapter rebuild rewrote under `phase:
+post-shed` and left at depth 1); the full-history run is
 `.github/workflows/carve-manifest.yml` (job `carve-manifest`, `fetch-depth: 0`),
 which runs the checker and this file with the carve commit present, where the
 seat asserts the full verdict. The refusal codes are pinned by the
@@ -914,6 +915,65 @@ def test_a_kept_moved_row_may_not_go_with_the_shed(scratch: Scratch) -> None:
     scratch.commit("a kept row deleted with the shed")
     combined = refuses(scratch, doc, "carve-path-absent")
     assert "LICENSE" in combined, combined
+
+
+# The scratch tree's `kept` rows OUTSIDE the carve surface: all `not_moved`,
+# as the real manifest's are (its pins, runbooks, front door, kept suites).
+OUTSIDE_KEPT = ("README.md", "docs/outside.md", "scripts/adapter_only.py")
+
+
+def test_the_outside_kept_rows_are_kept_and_outside_the_surface() -> None:
+    for path in OUTSIDE_KEPT:
+        assert FILES[path][1][0] == "stays", path  # `not_moved`, so `kept`
+        assert not MODULE.in_surface(path, MOVED_PATHS), path
+
+
+@pytest.mark.parametrize("path", OUTSIDE_KEPT)
+def test_a_kept_row_outside_the_surface_may_not_go_with_the_shed(
+        scratch: Scratch, path: str) -> None:
+    """The manifest's own claim under `post-shed`: a `kept` row is still
+    required present, OUTSIDE the carve surface as well as under it. The same
+    deletion verifies under `carve` (see
+    `test_a_not_moved_row_outside_the_surface_may_change_or_go`); after the
+    shed, which removes exactly the `shed` rows, it refuses."""
+    doc = clean_manifest(scratch)
+    doc["phase"] = "post-shed"
+    _shed(scratch)
+    verifies(scratch, doc)  # the control: the shed tree itself is good
+    _git(scratch.repo, "rm", "-q", "--", path)
+    scratch.commit("a kept row outside the surface deleted after the shed")
+    combined = refuses(scratch, doc, "carve-path-absent")
+    assert path in combined, combined
+    assert "outside the carve surface" in combined, combined
+
+
+def test_a_kept_file_turned_into_a_directory_post_shed_is_absent(
+        scratch: Scratch) -> None:
+    """Presence is a BLOB at the revision under test, as check 4 reads it
+    under the surface: a directory at the row's path is not the row's file."""
+    doc = clean_manifest(scratch)
+    doc["phase"] = "post-shed"
+    _shed(scratch)
+    _git(scratch.repo, "rm", "-q", "--", "docs/outside.md")
+    _write(scratch.repo, "docs/outside.md/index.md", "# one level down\n")
+    scratch.commit("a kept file replaced by a directory",
+                   "docs/outside.md/index.md")
+    combined = refuses(scratch, doc, "carve-path-absent")
+    assert "docs/outside.md" in combined, combined
+
+
+def test_a_kept_row_outside_the_surface_may_change_after_the_shed(
+        scratch: Scratch) -> None:
+    """The control: `post-shed` requires a kept row PRESENT, not unchanged.
+    This repository's own files move on after the shed."""
+    doc = clean_manifest(scratch)
+    doc["phase"] = "post-shed"
+    _shed(scratch)
+    for path in OUTSIDE_KEPT:
+        _write(scratch.repo, path, f"# {path}, rewritten after the shed\n")
+    scratch.commit("this repository's own files move on", *OUTSIDE_KEPT)
+    out = verifies(scratch, doc)
+    assert "phase post-shed," in out, out
 
 
 def test_the_shed_refuses_under_the_carve_phase(scratch: Scratch) -> None:
