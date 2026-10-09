@@ -367,6 +367,23 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
         four and five authored now by lane openXwallet-2; part three's
         composed-adapter half is filled when group 5's composed validator
         exists (lane openXwallet-3). In progress.
+      - **PENDING**, part three's second half: the neutrality gate over the
+        composed adapter. It is filled in by a follow-up commit once lane
+        openXwallet-3's branch `rebuild/adapter-group-5` of opensoft/openXwallet
+        is runnable (it is not yet); nothing here waits for it. The shape,
+        as that lane gave it: from an openXwallet checkout at that branch,
+        with openWallet pinned at the root merge
+        `1c68717f1ae4ae132d6942f8c7f533baf292d0b6` (its `code` gitlink
+        `72313daab1f229c049cb90998931564c1904dbbc`), run
+        `git submodule update --init openWallet` and
+        `git -C openWallet submodule update --init code`; the composed
+        validator then runs as `python3 scripts/validate-openxwallet.py <tree>
+        [--strict]` (needs pyyaml, jsonschema and rfc3339-validator). The gate:
+        the carve-commit validator (`scripts/validate-openxwallet.py` at
+        openXwallet `90111df`) and the composed adapter print byte-identical
+        output and the same exit code, plain and `--strict`, over the same
+        tree, for each of this tree, the openxFactory governance export, and
+        every test-suite fixture tree.
 - [ ] 4.7 **[OPERATOR]** Three rulesets, each EVALUATE → one trivial pull request
       so its checks report → ACTIVE. Each is an org-admin act in `opensoft`.
       - root: `validate`;
@@ -378,7 +395,8 @@ repository creation, a scaffold into `opensoft`, a ruleset, a tag.
       - Being authored by lane openXwallet-1 as change
         `bind-approval-posture-vocabulary` in opensoft/openWallet-spec
         (branch `birth/bind-approval-posture-vocabulary`, head `1cc53ce0`,
-        claimed on #25 2026-10-08). PR pending.
+        claimed on #25 2026-10-08). PR opensoft/openWallet-spec#3 open at head
+        `1cc53ce0`, awaiting the operator's word.
 - [ ] 4.9 **[OPERATOR]** `[openWallet-root]` First release — five coordinated
       values — on the ROOT:
       - the annotated `wallet-v*` tag on the root commit that pins both legs;
