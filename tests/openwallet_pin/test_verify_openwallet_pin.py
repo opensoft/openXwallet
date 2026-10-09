@@ -2,13 +2,19 @@
 
 `split-openwallet-neutral-core` task 5.1: the verifier is trusted only once it
 has been seen refusing each of design.md D6's seven, a path-only member
-modified in its working tree (`pin-member-modified`), and a HOLLOWED pin (fewer
-than the eight digests, or a path-only list without the two loaded scripts),
-and exiting 2 rather than tracebacking when `git` or a file cannot be read. So
+modified in its working tree (`pin-member-modified`), a HOLLOWED pin (fewer
+than the eight digests, or a path-only list without the two loaded scripts), a
+pin naming a mount the entrypoints do not execute (`pin-mount-mismatch`), and
+exiting 2 rather than tracebacking when `git` or a file cannot be read. So
 each test below is ONE fact away from a world that verifies clean, and the
 clean world is itself a
 test (without it, every refusal below would pass just as well against a
 verifier that refused everything).
+
+Where a guard closes a world that is otherwise CLEAN, the test first verifies
+that world IN PROCESS with that one guard replaced by a no-op, and it must
+verify OK (`_verified_without`). That is the control: the refusal then observed
+is the guard's, and the world is the one the guard exists for.
 
 WHY THROWAWAY REPOSITORIES. Every refusal is a disagreement between the pin and
 a git tree two levels deep, and manufacturing one against this repository would
@@ -62,6 +68,7 @@ RATIFIED_CODES = (
     "pin-member-missing",
     "pin-member-modified",
     "pin-tag-only",
+    "pin-mount-mismatch",
 )
 
 # The ONE fixed trailer: the two-level scoped init, never --recursive.
@@ -128,6 +135,11 @@ REAL = yaml.safe_load(REAL_PIN.read_text(encoding="utf-8"))
 SUB = REAL["submodule_path"]
 LEG = REAL["legs"]["code"]["submodule_path"]
 
+# A second, VALID gitlink at each level: the mount a pin could name instead of
+# the one the entrypoints execute.
+ALT_SUB = "openWallet-alt"
+ALT_LEG = "code-alt"
+
 
 def _leg_relative(member: str) -> str:
     """A pin member is relative to the ROOT checkout and names the leg first."""
@@ -146,6 +158,7 @@ class Upstream:
     root_other: str        # also consistent, but a different root commit
     root_gitlink_off: str  # its `code` gitlink names leg_other
     root_pin_off: str      # its contracts/code-pin.yaml names leg_other
+    root_second_leg: str   # consistent, and ALSO records ALT_LEG = leg_good
     digests: dict[str, str]
 
 
@@ -178,7 +191,8 @@ def _build_upstream(base: Path) -> Upstream:
 
     root = _init(base / "openWallet")
 
-    def root_commit(gitlink: str, pinned: str, label: str) -> str:
+    def root_commit(gitlink: str, pinned: str, label: str,
+                    second_leg: str | None = None) -> str:
         _write(root, "contracts/code-pin.yaml",
                yaml.safe_dump({"kind": "pinned_contract_manifest",
                                "leg_role": "code", "submodule_path": LEG,
@@ -186,13 +200,21 @@ def _build_upstream(base: Path) -> Upstream:
         _write(root, "README.md", f"{label}\n")
         _git(root, "add", "contracts/code-pin.yaml", "README.md")
         _record_gitlink(root, LEG, gitlink)
-        return _commit(root, label)
+        if second_leg is not None:
+            _record_gitlink(root, second_leg, gitlink)
+        oid = _commit(root, label)
+        if second_leg is not None:
+            # Out of the index again, so no later variant records it.
+            _git(root, "update-index", "--force-remove", second_leg)
+        return oid
 
     variants = {
         "root_good": root_commit(leg_good, leg_good, "consistent"),
         "root_other": root_commit(leg_good, leg_good, "consistent, later"),
         "root_gitlink_off": root_commit(leg_other, leg_good, "gitlink off"),
         "root_pin_off": root_commit(leg_good, leg_other, "code-pin off"),
+        "root_second_leg": root_commit(leg_good, leg_good, "a second leg",
+                                       second_leg=ALT_LEG),
     }
     return Upstream(leg=leg, root=root, leg_good=leg_good,
                     leg_other=leg_other, digests=digests, **variants)
@@ -241,6 +263,15 @@ def verify(adapter: Path) -> subprocess.CompletedProcess[str]:
     return subprocess.run([sys.executable, str(VERIFIER), "--root",
                            str(adapter)],
                           capture_output=True, text=True, cwd=adapter.parent)
+
+
+def _verified_without(adapter: Path, guard: str):
+    """The CONTROL for one guard: this world, verified IN PROCESS with the
+    verifier's `guard` replaced by a no-op. It returns the `Verified` of a
+    clean world, or the refusal raised shows which other fact is wrong."""
+    module = _load_verifier()
+    setattr(module, guard, lambda *args, **kwargs: None)
+    return module.verify(adapter.resolve())
 
 
 def assert_refused(done: subprocess.CompletedProcess[str], code: str) -> str:
@@ -444,6 +475,54 @@ def test_untracked_content_in_a_directory_member_refuses(tmp_path, upstream):
     assert f"?? {_leg_relative(member)}/planted.yaml" in err, err
 
 
+# ------------------ a pin naming a mount nothing executes --------------------
+
+EXECUTED = ("scripts/validate-openxwallet.py and "
+            "scripts/wallet-yaml-syntax-gate.py execute the mount")
+LOADED = ("openWallet/code/scripts/validate-openxwallet.py and "
+          "openWallet/code/scripts/wallet-yaml-syntax-gate.py")
+
+
+def test_a_pin_naming_another_valid_root_gitlink_refuses(tmp_path, upstream):
+    """Codex's case at the root. The adapter records a SECOND gitlink, checked
+    out at the pinned root with its leg, and the pin names it. The mount the
+    entrypoints execute, `openWallet/`, sits at a root nothing verifies. Every
+    check but the mount's would pass against the second checkout."""
+    pin = _pin_for(upstream, upstream.root_good)
+    pin["submodule_path"] = ALT_SUB
+    adapter = build(tmp_path, upstream, pin=pin, gitlink=upstream.root_other,
+                    root_checkout=upstream.root_other)
+    _record_gitlink(adapter, ALT_SUB, upstream.root_good)
+    _commit(adapter, "a second, valid openWallet gitlink")
+    _clone_at(upstream.root, adapter / ALT_SUB, upstream.root_good)
+    _clone_at(upstream.leg, adapter / ALT_SUB / LEG, upstream.leg_good)
+    control = _verified_without(adapter, "_require_executed_mount")
+    assert (control.commit, control.digests) == (upstream.root_good, 8)
+
+    err = assert_refused(verify(adapter), "pin-mount-mismatch")
+    assert (f"the pin records submodule_path {ALT_SUB!r}, but {EXECUTED} "
+            f"'openWallet' ({LOADED}); a pin that names another checkout "
+            "authenticates bytes that never run") in err, err
+
+
+def test_a_pin_naming_another_valid_leg_gitlink_refuses(tmp_path, upstream):
+    """Codex's case at the leg. The pinned root records a SECOND leg gitlink,
+    in lockstep, checked out at the pinned leg commit, and the pin's leg names
+    it. The leg the entrypoints execute, `openWallet/code/`, sits at a leg
+    commit nothing verifies."""
+    pin = _pin_for(upstream, upstream.root_second_leg)
+    pin["legs"]["code"]["submodule_path"] = ALT_LEG
+    adapter = build(tmp_path, upstream, pinned_root=upstream.root_second_leg,
+                    pin=pin, leg_checkout=upstream.leg_other)
+    _clone_at(upstream.leg, adapter / SUB / ALT_LEG, upstream.leg_good)
+    control = _verified_without(adapter, "_require_executed_mount")
+    assert (control.leg_commit, control.digests) == (upstream.leg_good, 8)
+
+    err = assert_refused(verify(adapter), "pin-mount-mismatch")
+    assert (f"the pin records legs.code.submodule_path {ALT_LEG!r}, but "
+            f"{EXECUTED} 'code' ({LOADED})") in err, err
+
+
 # ----------------------- a hollowed pin, and the environment -----------------
 
 def test_a_pin_cut_to_one_digest_refuses(tmp_path, upstream):
@@ -548,6 +627,61 @@ def test_the_hollowed_pin_guard_is_design_d6s_eight_and_the_loaded_scripts():
         "code/scripts/validate-openxwallet.py",
         "code/scripts/wallet-yaml-syntax-gate.py"}
     assert set(module.LOADED_BY_ENTRYPOINTS) <= set(REAL["pinned_by_commit_only"])
+
+
+# Each entrypoint, and the constant naming the pinned core it path-loads.
+ENTRYPOINT_CORES = {
+    "scripts/validate-openxwallet.py": "CORE_PATH",
+    "scripts/wallet-yaml-syntax-gate.py": "CORE_GATE_PATH",
+}
+
+
+def _module_assignments(script: Path) -> dict[str, ast.expr]:
+    """The module-level `NAME = value` nodes of an entrypoint, read from its
+    SOURCE. It is not imported: scripts/validate-openxwallet.py loads the
+    pinned core at import time and exits 2 where the mount is not
+    initialized, and this binding must hold on every checkout."""
+    tree = ast.parse(script.read_text(encoding="utf-8"))
+    return {node.targets[0].id: node.value for node in tree.body
+            if isinstance(node, ast.Assign) and len(node.targets) == 1
+            and isinstance(node.targets[0], ast.Name)}
+
+
+def _path_below_root(node: ast.expr) -> PurePosixPath:
+    """`ROOT / "a" / "b"` as `a/b`; any other shape fails the binding loudly
+    rather than being guessed at."""
+    parts: list[str] = []
+    while isinstance(node, ast.BinOp) and isinstance(node.op, ast.Div):
+        assert isinstance(node.right, ast.Constant) \
+            and isinstance(node.right.value, str), ast.dump(node.right)
+        parts.append(node.right.value)
+        node = node.left
+    assert isinstance(node, ast.Name) and node.id == "ROOT", ast.dump(node)
+    return PurePosixPath(*reversed(parts))
+
+
+def test_the_executed_mount_is_bound_to_both_entrypoints():
+    """The verifier's EXECUTED_ROOT_MOUNT / EXECUTED_LEG_MOUNT are what the two
+    entrypoints run: each one's core path sits under `<root>/<leg>/`, its
+    MOUNT_LEVELS name those two levels, and the core paths, relative to the
+    root mount, are LOADED_BY_ENTRYPOINTS, which are exactly the scripts
+    `pinned_by_commit_only` names."""
+    module = _load_verifier()
+    root, leg = module.EXECUTED_ROOT_MOUNT, module.EXECUTED_LEG_MOUNT
+    assert (root, leg) == (SUB, LEG) == ("openWallet", "code")
+    assert module.ENTRYPOINTS == tuple(ENTRYPOINT_CORES)
+    loaded = set()
+    for script, name in ENTRYPOINT_CORES.items():
+        assigned = _module_assignments(REPO_ROOT / script)
+        core = _path_below_root(assigned[name])
+        assert core.parts[:2] == (root, leg), f"{script}: {name} is {core}"
+        levels = tuple(level.elts[0].value
+                       for level in assigned["MOUNT_LEVELS"].elts)
+        assert levels == (root, f"{root}/{leg}"), f"{script}: {levels}"
+        loaded.add(str(core.relative_to(root)))
+    assert loaded == set(module.LOADED_BY_ENTRYPOINTS)
+    assert {member for member in REAL["pinned_by_commit_only"]
+            if PurePosixPath(member).suffix == ".py"} == loaded
 
 
 def test_every_code_the_verifier_can_raise_is_in_the_vocabulary():

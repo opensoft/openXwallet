@@ -23,6 +23,16 @@ own `contracts/code-pin.yaml` at that commit (`git -C openWallet show
 `pin-leg-lockstep-mismatch`. This is the technique openxFactory uses for its
 openDox pin, read one level out.
 
+THE MOUNT IS THE ONE THE ENTRYPOINTS EXECUTE. `submodule_path` and
+`legs.code.submodule_path` are read from the pin, in openxFactory's grammar, and
+then REQUIRED to equal the mount this repository's two entrypoints path-load:
+`openWallet` and `code` (`EXECUTED_ROOT_MOUNT`, `EXECUTED_LEG_MOUNT`).
+scripts/validate-openxwallet.py and scripts/wallet-yaml-syntax-gate.py run
+`openWallet/code/scripts/...` whatever the pin says, so a pin naming another
+valid gitlink would authenticate a checkout nothing executes and report OK over
+bytes it never read. Any other value is refused `pin-mount-mismatch`, before a
+checkout is read.
+
 THE REFUSALS, design.md D6's seven, each under a NAMED code from the fixed
 vocabulary `REFUSAL_CODES`:
 
@@ -50,7 +60,8 @@ as, not what its working tree holds now:
 
 THE ORDER OF EVALUATION follows dependency, not D6's numbering, and the codes do
 not move with it. The shape guards run first, because every later check
-compares AGAINST the values they validate: `pin-tag-only` for the referent, and
+compares AGAINST the values they validate: `pin-tag-only` for the referent,
+`pin-mount-mismatch` for a mount the entrypoints do not execute, and
 `pin-unreadable` for a HOLLOWED pin, one whose `files:` is not exactly the eight
 or whose `pinned_by_commit_only:` omits the two scripts the entrypoints load.
 Then the root, entirely: initialized, recorded, checked out, and the lockstep
@@ -114,6 +125,20 @@ PIN_RELPATH = PurePosixPath("contracts", "openwallet-pin.yaml")
 LEG_ROLE = "code"
 ROOT_LEG_PIN = f"contracts/{LEG_ROLE}-pin.yaml"
 
+# The mount this repository's two ENTRYPOINTS execute, whatever the pin says:
+# scripts/validate-openxwallet.py's CORE_PATH and
+# scripts/wallet-yaml-syntax-gate.py's CORE_GATE_PATH sit under
+# `<root mount>/<leg mount>/`, and the MOUNT_LEVELS of each name the same two
+# levels. The pin's `submodule_path` and `legs.code.submodule_path` must equal
+# these, or `pin-mount-mismatch`. tests/openwallet_pin reads the entrypoints'
+# constants and binds them to these, so neither side can move alone.
+EXECUTED_ROOT_MOUNT = "openWallet"
+EXECUTED_LEG_MOUNT = "code"
+ENTRYPOINTS: tuple[str, ...] = (
+    "scripts/validate-openxwallet.py",
+    "scripts/wallet-yaml-syntax-gate.py",
+)
+
 # The ONE fixed remediation trailer. Scoped, two levels, never the spec leg:
 # a recursive init would also fetch `openWallet/spec`, which nothing here reads.
 REMEDIATION = (
@@ -127,7 +152,8 @@ REMEDIATION = (
 
 # The fixed vocabulary, in design.md D6's order, then `pin-member-modified`
 # (D6's check 7 carried into the working tree; the module docstring's 8), with
-# the referent guard last.
+# the two referent guards last: `pin-tag-only` (which commit) and
+# `pin-mount-mismatch` (which mount).
 #
 # `pin-unreadable` is NOT here, and its absence is the point, as it is in
 # openxFactory's verifier: these codes describe a TREE that disagrees with a
@@ -145,6 +171,7 @@ REFUSAL_CODES: tuple[str, ...] = (
     "pin-member-missing",
     "pin-member-modified",
     "pin-tag-only",
+    "pin-mount-mismatch",
 )
 
 # design.md D6: `files:` holds the per-file sha256 of "the eight digested
@@ -155,9 +182,9 @@ DIGESTED_MEMBER_COUNT = 8
 
 # The bytes this repository's two entrypoints path-load and RUN
 # (scripts/validate-openxwallet.py's CORE_PATH and
-# scripts/wallet-yaml-syntax-gate.py's CORE_GATE_PATH), relative to
-# `submodule_path`. A pin whose `pinned_by_commit_only:` omits either does not
-# cover the code that executes, so it is `pin-unreadable`.
+# scripts/wallet-yaml-syntax-gate.py's CORE_GATE_PATH), relative to the root
+# mount, `EXECUTED_ROOT_MOUNT`. A pin whose `pinned_by_commit_only:` omits
+# either does not cover the code that executes, so it is `pin-unreadable`.
 LOADED_BY_ENTRYPOINTS: tuple[str, ...] = (
     "code/scripts/validate-openxwallet.py",
     "code/scripts/wallet-yaml-syntax-gate.py",
@@ -296,6 +323,25 @@ def _referent(pin: dict) -> tuple[str, str]:
             "movable name would need the network read this tool refuses")
     path = _relative_path(pin.get("submodule_path"), "submodule_path")
     return path, _commit(pin.get("commit"), "commit")
+
+
+def _require_executed_mount(sub_path: str, leg_path: str) -> None:
+    """The mount the pin authenticates is the mount the entrypoints execute. A
+    shape check, run with the referent's before a checkout is read: a pin
+    naming another valid gitlink would pass every later check against THAT
+    checkout while the entrypoints run `openWallet/code/` unverified."""
+    executed = " and ".join(f"{EXECUTED_ROOT_MOUNT}/{member}"
+                            for member in LOADED_BY_ENTRYPOINTS)
+    for field, recorded, mount in (
+            ("submodule_path", sub_path, EXECUTED_ROOT_MOUNT),
+            (f"legs.{LEG_ROLE}.submodule_path", leg_path, EXECUTED_LEG_MOUNT)):
+        if recorded != mount:
+            raise PinRefusal(
+                "pin-mount-mismatch",
+                f"the pin records {field} {recorded!r}, but "
+                f"{' and '.join(ENTRYPOINTS)} execute the mount {mount!r} "
+                f"({executed}); a pin that names another checkout "
+                "authenticates bytes that never run")
 
 
 # --------------------------------------------------------------------------
@@ -486,7 +532,7 @@ def _require_digests(checkout: Path, shown: str, pin: dict) -> int:
 
 def _require_pin_shape(pin: dict) -> None:
     """The HOLLOWED-PIN guard, a shape check run with the referent's, before
-    any tree is read: `files:` digests exactly design.md D6's eight, and
+    a checkout is read: `files:` digests exactly design.md D6's eight, and
     `pinned_by_commit_only:` covers the bytes the entrypoints run. Without it a
     pin cut to one digest, or one that stopped naming the loaded core, would
     verify clean while pinning less than this repository executes."""
@@ -584,6 +630,7 @@ def verify(root: Path = ROOT) -> Verified:
     pin = load_pin(root / PIN_RELPATH)
     sub_path, commit = _referent(pin)
     leg_path, leg_commit = _leg(pin)
+    _require_executed_mount(sub_path, leg_path)
     _require_pin_shape(pin)
     sub_root = root / sub_path
     leg_shown = f"{sub_path}/{leg_path}"
