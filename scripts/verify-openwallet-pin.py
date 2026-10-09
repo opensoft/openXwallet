@@ -67,11 +67,18 @@ as, not what its working tree holds now:
      one dict keyed by bare file name, so an untracked
      `openxwallet-grant.schema.yaml` in `contracts/openxwallet-agent-profile/`
      REPLACES the digested grant schema while all eight digests still
-     recompute. `--ignored` is deliberately absent: the leg's own tracked
-     `.gitignore` lists `__pycache__/` and `*.py[cod]`, which every run
-     writes. The ROOT's working tree is not held to this rule, because
-     nothing the composed run reads lies in it outside `code/`: the core's
-     `ROOT` is `openWallet/code`.
+     recompute. `git status` applies ignore rules (the leg's `.gitignore`,
+     its `info/exclude`, a `core.excludesFile`), so it is not the whole
+     answer: under `contracts/` and `scripts/`, the directories the core
+     reads, `git ls-files --others` is listed with NO ignore rule applied,
+     and every untracked file there refuses except the bytecode an
+     interpreter writes under `scripts/` (inside `__pycache__/`, or ending
+     `.pyc`, `.pyo`, `.pyd`). Whether that cache holds the pinned source's
+     bytecode is not checked here, a known and deferred gap. Elsewhere in the
+     leg, ignored content (a `.venv/`, a `.pytest_cache/`) is not read by the
+     core and does not refuse. The ROOT's working tree is not held to this
+     rule, because nothing the composed run reads lies in it outside `code/`:
+     the core's `ROOT` is `openWallet/code`.
 
 THE ORDER OF EVALUATION follows dependency, not D6's numbering, and the codes do
 not move with it. The shape guards run first, because every later check
@@ -238,6 +245,14 @@ LOADED_BY_ENTRYPOINTS: tuple[str, ...] = (
 # How many offending entries a `pin-leg-dirty` refusal names before it elides
 # the rest with a count.
 LEG_DIRTY_SHOWN = 5
+
+# The leg directories the core READS: its ROOT is the leg, `contracts/` holds
+# the families, the schemas, the corpus and the registry, and `scripts/` holds
+# the core and the gate. Every untracked file under them refuses with NO
+# ignore rule applied, except the bytecode an interpreter writes under
+# `scripts/`.
+LEG_READ_DIRS: tuple[str, ...] = ("contracts", "scripts")
+BYTECODE_SUFFIXES: tuple[str, ...] = (".pyc", ".pyo", ".pyd")
 
 # Exactly 40 / 64 hex; case is normalized to lowercase before any comparison.
 COMMIT_RE = re.compile(r"^[0-9a-fA-F]{40}$")
@@ -683,19 +698,34 @@ def _first(entries: list[str], indent: str) -> str:
     return "\n".join(lines)
 
 
+def _is_written_bytecode(path: str) -> bool:
+    """Bytecode an interpreter writes under `scripts/` when it loads the
+    core: inside a `__pycache__/`, or a `.pyc`, `.pyo` or `.pyd` file."""
+    parts = PurePosixPath(path)
+    return parts.parts[:1] == ("scripts",) and (
+        "__pycache__" in parts.parts or parts.suffix in BYTECODE_SUFFIXES)
+
+
 def _require_leg_clean(leg_checkout: Path, shown: str) -> None:
     """Check 9: the code leg's working tree, AS A WHOLE, is its checked-out
     commit. The checks before it see only the paths the pin names, and the
     core reads its family directories by glob: `load_schemas()` keys every
     `*.schema.yaml` in both by bare file name, so an untracked same-named
-    schema in the profile directory replaces a digested one. `git status`
-    never reports an edit under assume-unchanged or skip-worktree, so
-    `git ls-files -v` is read too. No `--ignored`: the leg's tracked
-    `.gitignore` covers the bytecode every run writes."""
+    schema in the profile directory replaces a digested one. Three reads,
+    because each is blind where another sees: `git status` (no `--ignored`,
+    so bytecode a run writes anywhere in the leg passes); `git ls-files -v`,
+    because `git status` never reports an edit under assume-unchanged or
+    skip-worktree; and `git ls-files --others` under LEG_READ_DIRS with no
+    ignore rule, because an ignored file there is read by the core and seen
+    by neither of the others."""
     status = _git(leg_checkout, "status", "--porcelain",
                   "--untracked-files=all")
     index = _git(leg_checkout, "ls-files", "-v")
-    for done, asked in ((status, "git status"), (index, "git ls-files -v")):
+    # No --exclude* option: ls-files then applies NO ignore rule at all.
+    others = _git(leg_checkout, "ls-files", "-z", "--others", "--",
+                  *LEG_READ_DIRS)
+    for done, asked in ((status, "git status"), (index, "git ls-files -v"),
+                        (others, "git ls-files --others")):
         if done.returncode != 0:
             raise PinRefusal(
                 "pin-leg-dirty",
@@ -708,7 +738,12 @@ def _require_leg_clean(leg_checkout: Path, shown: str) -> None:
     # is skip-worktree (`s`, both, is lowercase too).
     flagged = [line[2:] for line in index.stdout.splitlines()
                if line[:1].islower() or line[:1] == "S"]
-    if not changed and not flagged:
+    # What an ignore rule hides from `git status`; a file it already listed
+    # is not listed twice.
+    hidden = [path for path in others.stdout.split("\0")
+              if path and not _is_written_bytecode(path)
+              and f"?? {path}" not in changed]
+    if not changed and not flagged and not hidden:
         return
     found = []
     if changed:
@@ -718,6 +753,11 @@ def _require_leg_clean(leg_checkout: Path, shown: str) -> None:
         found.append(f"{len(flagged)} index entr(ies) flagged assume-unchanged "
                      "or skip-worktree, whose edits `git status` never "
                      f"reports:\n{_first(flagged, '  ')}")
+    if hidden:
+        read = " and ".join(f"{directory}/" for directory in LEG_READ_DIRS)
+        found.append(f"{len(hidden)} untracked file(s) under {read}, which "
+                     "the core reads, hidden from `git status` by an ignore "
+                     f"rule:\n{_first(hidden, '  ')}")
     raise PinRefusal(
         "pin-leg-dirty",
         f"the working tree of {shown} is not its checked-out commit; "

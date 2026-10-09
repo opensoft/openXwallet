@@ -155,17 +155,18 @@ code leg's checkout ≠ `legs.code`; a drifted digest; a missing
 `pinned_by_commit_only:` member, and one modified, deleted, replaced by a
 directory or holding untracked content in its checkout's working tree
 (`pin-member-modified`); a code leg whose working tree is not its commit AS A
-WHOLE, a change or untracked file anywhere in it (ignored bytecode aside) or an
-entry flagged assume-unchanged or skip-worktree, because the core reads its
-family directories by glob and an untracked schema replaces a digested one of
-the same name (`pin-leg-dirty`); a HOLLOWED pin, whose `files:` does not name
-exactly the eight, each once and no other path, or whose
-`pinned_by_commit_only:` omits the two scripts the entrypoints load; and a pin
-whose `submodule_path` or `legs.code.submodule_path` is not `openWallet` or
-`code`, the mount the two entrypoints execute (`pin-mount-mismatch`). A `git`
-that cannot run or a file that cannot be read is exit 2, never a traceback.
-Each refusal is OBSERVED on a mutated input before the verifier is trusted
-(task 5.1).
+WHOLE (`pin-leg-dirty`): a change or untracked file `git status` lists there,
+an untracked file under `contracts/` or `scripts/` listed with NO ignore rule
+applied (bytecode under `scripts/` aside), or an entry flagged assume-unchanged
+or skip-worktree, because the core reads its family directories by glob and
+an untracked schema replaces a digested one of the same name; a HOLLOWED pin,
+whose `files:` does not name exactly the eight, each once and no other path,
+or whose `pinned_by_commit_only:` omits the two scripts the entrypoints load;
+and a pin whose `submodule_path` or `legs.code.submodule_path` is not
+`openWallet` or `code`, the mount the two entrypoints execute
+(`pin-mount-mismatch`). A `git` that cannot run or a file that cannot be read
+is exit 2, never a traceback. Each refusal is OBSERVED on a mutated input
+before the verifier is trusted (task 5.1).
 
 The pin is the ONLY record here of which openWallet bytes run.
 [`manifest.yaml`](./manifest.yaml) registers none of the eight, as owned or as

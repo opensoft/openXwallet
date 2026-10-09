@@ -569,13 +569,68 @@ def test_an_untracked_schema_shadowing_a_digested_one_refuses(tmp_path,
 
 def test_ignored_bytecode_in_the_leg_does_not_refuse(tmp_path, upstream):
     """What every run writes, and the leg's tracked `.gitignore` ignores, is
-    not a dirty leg: `--ignored` is deliberately not passed."""
+    not a dirty leg: `git status` gets no `--ignored`, and the unfiltered
+    listing under contracts/ and scripts/ exempts bytecode under scripts/.
+    Ignored content the core never reads, outside those two, passes too."""
     adapter = build(tmp_path, upstream)
+    leg = adapter / SUB / LEG
+    _write(leg, ".git/info/exclude", ".venv/\n")
     for rel in ("__pycache__/x.pyc",
-                "scripts/__pycache__/validate-openxwallet.cpython-312.pyc"):
-        _write(adapter / SUB / LEG, rel, "bytecode\n")
+                "scripts/__pycache__/x.cpython-312.pyc",
+                "scripts/__pycache__/validate-openxwallet.cpython-312.pyc",
+                ".venv/bin/python"):
+        _write(leg, rel, "bytecode\n")
     done = verify(adapter)
     assert done.returncode == 0, done.stdout + done.stderr
+
+
+def _hidden_refusal(planted: str) -> str:
+    return ("1 untracked file(s) under contracts/ and scripts/, which the core "
+            "reads, hidden from `git status` by an ignore rule:\n"
+            f"  {planted}\n")
+
+
+def test_an_example_hidden_by_info_exclude_refuses(tmp_path, upstream):
+    """Lane 1's case: `git status` applies the leg's info/exclude, so a
+    planted corpus example it hides passes the member check on its examples
+    directory and the status read alike, and the core counts it."""
+    adapter = build(tmp_path, upstream)
+    leg = adapter / SUB / LEG
+    _write(leg, ".git/info/exclude", "zz-*.yaml\n")
+    planted = "contracts/openxwallet/examples/zz-planted.example.yaml"
+    _write(leg, planted, "kind: planted\n")
+    assert _git(leg, "status", "--porcelain", "--untracked-files=all") == ""
+    assert _verified_without(adapter, "_require_leg_clean").members == 6
+
+    err = assert_refused(verify(adapter), "pin-leg-dirty")
+    assert _hidden_refusal(planted) in err, err
+    assert "`git status` lists" not in err, err
+
+
+def test_a_shadowing_schema_hidden_by_an_excludes_file_refuses(tmp_path,
+                                                               upstream):
+    """The shadowing case again, hidden by a `core.excludesFile`, the route a
+    developer's global ignore takes."""
+    adapter = build(tmp_path, upstream)
+    leg = adapter / SUB / LEG
+    excludes = tmp_path / "excludes"
+    excludes.write_text("*.schema.yaml\n", encoding="utf-8")
+    _git(leg, "config", "core.excludesFile", str(excludes))
+    _write(leg, SHADOW, "type: object\n")
+    assert _git(leg, "status", "--porcelain", "--untracked-files=all") == ""
+
+    err = assert_refused(verify(adapter), "pin-leg-dirty")
+    assert _hidden_refusal(SHADOW) in err, err
+
+
+def test_bytecode_outside_scripts_refuses(tmp_path, upstream):
+    """The bytecode exemption is scoped to scripts/: nothing writes bytecode
+    into the contracts the core reads."""
+    adapter = build(tmp_path, upstream)
+    planted = f"{PROFILE_DIR}/__pycache__/x.cpython-312.pyc"
+    _write(adapter / SUB / LEG, planted, "bytecode\n")
+    err = assert_refused(verify(adapter), "pin-leg-dirty")
+    assert _hidden_refusal(planted) in err, err
 
 
 def test_a_dirty_leg_names_its_first_entries_and_counts_the_rest(tmp_path,

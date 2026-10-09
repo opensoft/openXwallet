@@ -42,14 +42,17 @@ kind: pinned_contract_manifest
 # `legs.code.commit`; on a digest drift in any of the eight; when a
 # `pinned_by_commit_only` member is missing; when one is modified in the
 # working tree of its checkout (`pin-member-modified`); and when the code leg's
-# working tree, AS A WHOLE, is not its commit: any change or untracked file
-# `git status` lists there (ignored bytecode aside), or an entry flagged
-# assume-unchanged or skip-worktree (`pin-leg-dirty`), because the core reads
-# its family directories by glob and an untracked schema replaces a digested
-# one of the same name. It refuses a HOLLOWED pin too: `files:` must name
-# exactly the eight, each once and no other path (a duplicate row standing in
-# for one of them is refused, even at a valid digest), and
-# `pinned_by_commit_only:` must name both scripts the entrypoints load. And it
+# working tree, AS A WHOLE, is not its commit (`pin-leg-dirty`): any change or
+# untracked file `git status` lists there; any untracked file under
+# `contracts/` or `scripts/`, the directories the core reads, listed with NO
+# ignore rule applied, bytecode under `scripts/` aside; or an entry flagged
+# assume-unchanged or skip-worktree. The core reads its family directories by
+# glob, so an untracked schema replaces a digested one of the same name, and
+# an ignore rule hides it from `git status`. It refuses a HOLLOWED pin too:
+# `files:` must name exactly the eight, each once and no other path (a
+# duplicate row standing in for one of them is refused, even at a valid
+# digest), and `pinned_by_commit_only:` must name both scripts the
+# entrypoints load. And it
 # refuses a pin whose `submodule_path` is not `openWallet`, or whose
 # `legs.code.submodule_path` is not `code` (`pin-mount-mismatch`): the two
 # entrypoints execute openWallet/code/scripts/..., so a pin naming another
@@ -142,11 +145,16 @@ files:
 # checked-out root and the checked-out code leg against their pinned commits,
 # and it refuses any of these members that is modified, deleted, replaced by a
 # directory or holding untracked content in its checkout's working tree
-# (`git status --porcelain --untracked-files=all` must be empty), because a
-# right commit under an edited file is not the pinned bytes. The first two are
-# the bytes that RUN: scripts/validate-openxwallet.py and
-# scripts/wallet-yaml-syntax-gate.py in this repository load them in process,
-# so the verifier refuses a pin that omits either.
+# (`git status --porcelain --untracked-files=all -- <member>` must be empty),
+# because a right commit under an edited file is not the pinned bytes. That
+# read applies ignore rules and cannot see an edit under assume-unchanged or
+# skip-worktree, so the leg is also held clean AS A WHOLE (`pin-leg-dirty`,
+# the header's WHAT REFUSES): no index flag, and no untracked file under
+# `contracts/` or `scripts/` with ignore rules NOT applied, bytecode under
+# `scripts/` aside. The first two are the bytes that RUN:
+# scripts/validate-openxwallet.py and scripts/wallet-yaml-syntax-gate.py in
+# this repository load them in process, so the verifier refuses a pin that
+# omits either.
 pinned_by_commit_only:
   - code/scripts/validate-openxwallet.py
   - code/scripts/wallet-yaml-syntax-gate.py
