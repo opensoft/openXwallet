@@ -1,5 +1,6 @@
 """Strict offline workload verification and a bounded reference artifact observer."""
 import base64
+from dataclasses import dataclass
 import hashlib
 import json
 import os
@@ -94,6 +95,13 @@ def valid_digest(value):
     return type(value) is str and DIGEST.fullmatch(value) is not None
 
 
+@dataclass(frozen=True)
+class WorkloadEvidence:
+    """Verified claims plus the independent administrative key-snapshot deadline."""
+    claims: dict
+    valid_until: int
+
+
 class WorkloadVerifier:
     """Trust snapshot loader is administrative, never selected by a token.
 
@@ -112,8 +120,15 @@ class WorkloadVerifier:
         parts = token.split(".")
         require(len(parts) == 3, "invalid-token")
         header, claims = (decode_object(decode64(part)) for part in parts[:2])
-        require(set(header) == {"alg", "kid", "typ"} and header["alg"] == "RS256"
+        require({"alg", "kid", "typ"} <= set(header) <= {"alg", "kid", "typ", "x5t"}
+                and header["alg"] == "RS256"
                 and header["typ"] == "JWT" and reference(header["kid"]), "unsupported-token")
+        if "x5t" in header:
+            # Documented issuer metadata only. Trust still comes exclusively
+            # from the configured key snapshot and signed kid/algorithm.
+            require(type(header["x5t"]) is str and 0 < len(header["x5t"]) <= 128
+                    and re.fullmatch(r"[A-Za-z0-9_-]+", header["x5t"]) is not None,
+                    "unsupported-token")
         try:
             snapshot = self.load_keys()
             require(type(snapshot) is dict and set(snapshot) == {"expires_at", "keys"}
@@ -148,9 +163,9 @@ class WorkloadVerifier:
                 "workload-mismatch")
         require(reference(claims.get("jti")), "invalid-token")
         require(all(integer(claims.get(k)) for k in ("iat", "nbf", "exp"))
-                and claims["iat"] <= claims["nbf"] <= now < claims["exp"]
+                and claims["iat"] <= now < claims["exp"] and claims["nbf"] <= now
                 and 0 < claims["exp"] - claims["iat"] <= 300, "inactive-token")
-        return claims
+        return WorkloadEvidence(claims, min(claims["exp"], snapshot["expires_at"]))
 
 
 def artifact_digest(artifacts, configuration):
@@ -160,7 +175,7 @@ def artifact_digest(artifacts, configuration):
     measured = {}
     for name, path in artifacts.items():
         try:
-            fd = os.open(Path(path), os.O_RDONLY | os.O_NOFOLLOW)
+            fd = os.open(Path(path), os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
             with os.fdopen(fd, "rb") as stream:
                 info = os.fstat(stream.fileno())
                 require(stat.S_ISREG(info.st_mode) and info.st_size <= 1024 * 1024,

@@ -54,6 +54,15 @@ US1 yields bounded authority checks; US2 adds signing only after full evidence;
 US3 qualifies those together. Independent issuer/ledger tests may run in parallel;
 source mutations remain sequential. No second OpenSpec implementation checklist.
 
+## Review correction
+
+- [X] T010 [O] Realize existing conditional lane attribution and correct workflow YAML.
+  files: .github/workflows/lane-line.yml; .github/workflows/pytest-suite.yml; tests/lane_line/test_conditional_lane_line.py
+  verify: 21 inherited behavior/structure cases and all workflow YAML parse; hosted acceptance is tracked on PR #48.
+- [X] T011 [O] Resolve paired expert/Codex findings and reconcile ratification packet.
+  files: scripts/workload_factory_binding/; tests/factory_binding/; feature evidence; factory draft packet
+  verify: focused regressions and offline gates; local expert/Codex findings resolved in candidate source. Exact-head hosted checks/review are tracked on the paired PRs.
+
 ## Acceptance outside this candidate
 
 No checkbox here ratifies the profile, qualifies real GitHub OIDC or a deployed

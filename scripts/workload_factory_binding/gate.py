@@ -3,7 +3,7 @@ from copy import deepcopy
 from datetime import datetime, timezone
 
 from .evidence import (
-    BindingError, CLAIMS, byte_digest, canonical, decode64, digest, integer,
+    BindingError, CLAIMS, WorkloadEvidence, byte_digest, canonical, decode64, digest, integer,
     reference, require, valid_digest, verify_observation,
 )
 
@@ -142,6 +142,10 @@ def _chain(policy, request, now):
                 and set(scope) == {"acts", "objects", "authority_tier", "approval_posture"}
                 and scope.get("authority_tier") == "act", "unsupported-authority")
         acts, objects = _members(scope["acts"]), _members(scope["objects"])
+        # Existing factory rule (t)/(u) additionally governs exact act "review".
+        # This candidate has no review-register composition, so cannot certify
+        # any review-class chain, even when its requested act is narrower.
+        require("review" not in acts, "unsupported-review-authority")
         posture = scope["approval_posture"]
         require(type(posture) is dict and set(posture) == {
             "hermes_approval_required_before_apply", "authority_agents_may_approve",
@@ -161,6 +165,8 @@ def _chain(policy, request, now):
         chain.append(grant_ref)
         child = {"acts": acts, "objects": objects, "issued": issued,
                  "expires": expires, "human": human}
+        if "parent_grant_ref" in grant:
+            require(reference(grant["parent_grant_ref"]), "invalid-grant-chain")
         grant_ref = grant.get("parent_grant_ref")
     return chain
 
@@ -179,8 +185,21 @@ class ProofGate:
         self.registry, self.load_challenge = registry, load_challenge
         self.ledger, self.signer, self.create_proof, self.clock = ledger, signer, create_proof, clock
 
+    def _now(self):
+        try:
+            now = self.clock()
+        except Exception:
+            raise BindingError("clock-unavailable") from None
+        require(integer(now), "clock-unavailable")
+        return now
+
+    def _fresh(self, sampled_at, valid_until):
+        now = self._now()
+        require(sampled_at <= now < valid_until, "evidence-expired")
+        return now
+
     def _validate(self, challenge_id, request, token, observation):
-        now = self.clock()
+        now = self._now()
         require(integer(now) and reference(challenge_id), "invalid-request")
         try:
             # Isolate this use from loader-owned mutable records.
@@ -195,9 +214,12 @@ class ProofGate:
                     and challenge.expires_at <= challenge.issued_at + 120
                     and challenge.request_digest == expected_digest
                     and valid_digest(challenge.digest), "challenge-mismatch")
-            claims = self.workload_verifier.verify(
+            workload = self.workload_verifier.verify(
                 token, {**policy["claims"], **{k: request[k] for k in ("run_id", "run_attempt")}},
                 now=now)
+            require(isinstance(workload, WorkloadEvidence) and integer(workload.valid_until),
+                    "workload-unverified")
+            claims = workload.claims
             binding = self.registry.resolve(policy["binding"]["subject_ref"], now=now)
             require(all(getattr(binding, k) == policy["binding"][k] for k in BINDING_REFS)
                     and type(binding.revision) is int
@@ -215,7 +237,12 @@ class ProofGate:
             chain = _chain(policy, request, now)
             verify_observation(observation, policy=policy, request=request, token=token,
                                challenge=challenge, claims=claims, now=now)
-            return policy, binding, challenge, claims, chain, now
+            valid_until = min(
+                policy["expires_at"], binding.expires_at, challenge.expires_at,
+                claims["exp"], workload.valid_until, observation["payload"]["expires_at"],
+                *(_time(policy["grants"][ref]["expires_at"]) for ref in chain))
+            checked_at = self._fresh(now, valid_until)
+            return policy, binding, challenge, claims, chain, checked_at, valid_until
         except BindingError:
             raise
         except Exception:
@@ -228,17 +255,19 @@ class ProofGate:
             request, observation = deepcopy(request), deepcopy(observation)
         except Exception:
             raise BindingError("invalid-request") from None
-        policy, binding, challenge, claims, chain, now = self._validate(
+        policy, binding, challenge, claims, chain, now, valid_until = self._validate(
             challenge_id, request, token, observation)
         self.ledger.reserve(issuer=self.workload_verifier.issuer, jti=claims["jti"],
                             challenge_issuer=challenge.issuer, challenge_id=challenge.id, now=now)
+        sign_at = self._fresh(now, valid_until)
         try:
-            proof = self.create_proof(challenge.digest, binding, self.signer, now=now)
+            proof = self.create_proof(challenge.digest, binding, self.signer, now=sign_at)
         except Exception:
             raise BindingError("signer-unavailable") from None
         current = self._validate(challenge_id, request, token, observation)
         require(current[1] == binding and current[2] == challenge
                 and digest(current[0]) == digest(policy), "authority-changed")
+        self._fresh(current[5], min(valid_until, current[6]))
         return {
             "proof": proof,
             "authority": {"actor_ref": binding.subject_ref, "wallet_ref": binding.wallet_ref,

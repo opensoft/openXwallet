@@ -1,5 +1,6 @@
 """Test-only subprocess roles. All config paths are selected by the trusted test parent."""
 import argparse
+from copy import deepcopy
 import os
 import subprocess
 from pathlib import Path
@@ -10,6 +11,29 @@ from cryptography.hazmat.primitives import serialization
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
 from workload_factory_binding.evidence import artifact_digest, canonical, decode_object, observe_artifacts
+
+
+def worker_configuration(worker):
+    """Measure actual source selection and public transport/binding configuration."""
+    if set(worker) != {"owner_code", "endpoint", "ca_file", "certificate", "private_key",
+                       "binding", "challenge_digest", "now"}:
+        raise RuntimeError("unsupported worker configuration")
+    source = Path(worker["owner_code"]).resolve(strict=True)
+    revision = subprocess.run(["git", "-C", str(source), "rev-parse", "HEAD"],
+                              check=True, capture_output=True, text=True, timeout=5).stdout.strip()
+    status = subprocess.run(["git", "-C", str(source), "status", "--porcelain", "--untracked-files=all"],
+                            check=True, capture_output=True, text=True, timeout=5).stdout
+    if status:
+        raise RuntimeError("worker source changed")
+    return {
+        "role": "worker", "owner_commit": revision, "tools": [],
+        "transport": {
+            "endpoint": worker["endpoint"],
+            "credentials_digest": artifact_digest(
+                {"ca": worker["ca_file"], "certificate": worker["certificate"]}, {}),
+        },
+        "binding": deepcopy(worker["binding"]),
+    }
 
 
 def main():
@@ -23,7 +47,18 @@ def main():
         # The trusted supervisor selects and launches the exact measured worker,
         # rather than signing a measurement supplied by that worker.
         measured = artifact_digest(config["artifacts"], config["configuration"])
-        worker_file = Path(config["worker_config"])
+        supplied = decode_object(Path(config["worker_config"]).read_bytes())
+        if (supplied["challenge_digest"] != config["challenge"]["digest"]
+                or type(supplied["now"]) is not int or supplied["now"] != config["now"]
+                or worker_configuration(supplied) != config["configuration"]):
+            raise RuntimeError("worker context changed")
+        if measured != config["policy"]["composition_digest"]:
+            raise RuntimeError("approved composition changed")
+        worker_file = Path(config["worker_config"]).with_name("verified-worker.json")
+        frozen = canonical(supplied)
+        fd = os.open(worker_file, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+        with os.fdopen(fd, "wb") as stream:
+            stream.write(frozen)
         worker = subprocess.Popen(
             [sys.executable, str(Path(__file__).resolve()), "worker", str(worker_file)],
             stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
@@ -36,7 +71,9 @@ def main():
             worker_result = decode_object(output)
             if worker_result != {"direct_sign_denied": True}:
                 raise RuntimeError("reference worker authorization changed")
-            if artifact_digest(config["artifacts"], config["configuration"]) != measured:
+            if (worker_file.read_bytes() != frozen
+                    or worker_configuration(supplied) != config["configuration"]
+                    or artifact_digest(config["artifacts"], config["configuration"]) != measured):
                 raise RuntimeError("worker artifact changed")
         finally:
             if worker.poll() is None:

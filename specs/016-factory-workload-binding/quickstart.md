@@ -1,8 +1,13 @@
 # Isolated qualification
 
-Run in the owning bench from this feature's root. No provider credentials are needed.
+Run in the owning bench from a fresh feature checkout. No provider credentials
+are needed. Initialize only the declared neutral root/code mounts before testing;
+the canonical-record compatibility case needs both. Use a fresh virtual environment
+and the complete pinned dependency file.
 
 ```bash
+git submodule update --init openWallet
+git -C openWallet submodule update --init code
 python3 -m pip install --only-binary :all: -r requirements-workload-binding.txt
 python3 -m pytest tests/factory_binding -q
 ```

@@ -18,6 +18,7 @@ from workload_factory_binding.evidence import (
     artifact_digest, byte_digest, canonical, decode_object,
 )
 from .conftest import Harness, multibase
+from .fixture_role import worker_configuration
 
 OWNER_COMMIT = "bb0e9dae89a771b05f6c235d0a77237288b95c85"
 ROLE = Path(__file__).with_name("fixture_role.py")
@@ -106,7 +107,7 @@ def launch(role, config, directory, *, wait=True):
     return process, None
 
 
-def qualify(owner, directory, processes, inject_failure, allow_worker_sign=False):
+def qualify(owner, directory, processes, inject_failure, allow_worker_sign=False, worker_drift=None):
     from openwallet_runtime.custody import RemoteRegistry, RemoteSigner, TLSClient
     from openwallet_runtime.proof import TrustedKeyBinding, create_proof, verify_proof
     from openwallet_runtime.reference_service import provision_key
@@ -166,11 +167,25 @@ def qualify(owner, directory, processes, inject_failure, allow_worker_sign=False
                   serialization.PrivateFormat.PKCS8, serialization.NoEncryption()))
     challenge = {**asdict(h.challenge), "digest": h.challenge.digest}
     worker_config = directory / "worker-observed.json"
-    private_write(worker_config, canonical({
+    worker_record = {
         "owner_code": str(owner), "endpoint": endpoint, "ca_file": str(ca),
         "certificate": str(worker_peer[0]), "private_key": str(worker_peer[1]),
         "binding": binding_record(binding), "challenge_digest": h.challenge.digest, "now": h.now,
-    }))
+    }
+    h.configuration = worker_configuration(worker_record)
+    h.policy["composition_digest"] = artifact_digest(h.artifacts, h.configuration)
+    h.reset_evidence()
+    challenge = {**asdict(h.challenge), "digest": h.challenge.digest}
+    worker_record["challenge_digest"] = h.challenge.digest
+    if worker_drift == "challenge_digest":
+        worker_record["challenge_digest"] = "sha256:" + "f" * 64
+    elif worker_drift == "binding":
+        worker_record["binding"]["key_ref"] = "key:other"
+    elif worker_drift == "endpoint":
+        worker_record["endpoint"] = "https://127.0.0.1:1"
+    elif worker_drift == "owner_code":
+        worker_record["owner_code"] = str(directory)
+    private_write(worker_config, canonical(worker_record))
     observer, observed = launch("observe", {
         "private_key": str(observer_key), "policy": h.policy, "request": h.request,
         "token": h.token, "challenge": challenge, "artifacts": h.artifacts,
@@ -237,6 +252,32 @@ def test_denial_probe_detects_excess_worker_permission(tmp_path):
         try:
             with pytest.raises(AssertionError, match="fixture role failed"):
                 qualify(owner, temporary, processes, False, allow_worker_sign=True)
+        finally:
+            for process in processes:
+                if process.poll() is None:
+                    process.terminate()
+                    try:
+                        process.wait(timeout=5)
+                    except subprocess.TimeoutExpired:
+                        process.kill()
+                        process.wait(timeout=5)
+                if process.stdout:
+                    process.stdout.close()
+                if process.stderr:
+                    process.stderr.close()
+    assert all(process.poll() is not None for process in processes)
+    assert not temporary.exists()
+
+
+@pytest.mark.parametrize("drift", ["challenge_digest", "binding", "endpoint", "owner_code"])
+def test_observer_refuses_changed_worker_configuration(tmp_path, drift):
+    owner = owner_source()
+    processes = []
+    with TemporaryDirectory(prefix="factory-binding-drift-", dir=tmp_path) as folder:
+        temporary = Path(folder)
+        try:
+            with pytest.raises(AssertionError, match="fixture role failed"):
+                qualify(owner, temporary, processes, False, worker_drift=drift)
         finally:
             for process in processes:
                 if process.poll() is None:

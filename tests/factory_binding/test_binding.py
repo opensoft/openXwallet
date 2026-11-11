@@ -308,3 +308,184 @@ def test_operator_records_pass_pinned_canonical_validator(h, tmp_path):
                             capture_output=True, text=True, timeout=30)
     assert result.returncode == 0, result.stdout
     assert "0 error(s), 0 warning(s)" in result.stdout
+
+
+@pytest.mark.parametrize("with_thumbprint,backdate", [(True, 0), (False, 600), (True, 600)])
+def test_documented_github_token_shape(h, with_thumbprint, backdate):
+    h.claims["nbf"] = h.now - backdate
+    h.reset_evidence()
+    if with_thumbprint:
+        h.token = jwt(h.issuer_key, h.claims, {
+            "alg": "RS256", "typ": "JWT", "kid": "fixture-issuer",
+            "x5t": encode64(bytes(range(20)))})
+        h.observation = observe_artifacts(
+            policy=h.policy, request=h.request, token=h.token, challenge=h.challenge,
+            artifacts=h.artifacts, configuration=h.configuration, private_key=h.supervisor,
+            now=h.now, expires_at=h.now + 60)
+    assert h.run()["human_approval"] is False
+    assert h.calls == 1
+
+
+@pytest.mark.parametrize("value", [None, "", 1, [], {}])
+def test_present_malformed_parent_cannot_truncate_chain(h, value):
+    h.policy["grants"]["grant:child"]["parent_grant_ref"] = value
+    h.policy["grants"]["grant:root"]["state"] = "revoked"
+    refused(h)
+
+
+def test_artifact_fifo_refuses_without_blocking(tmp_path):
+    import os
+    from pathlib import Path
+    import subprocess
+    import sys
+
+    fifo = tmp_path / "artifact.fifo"
+    os.mkfifo(fifo)
+    script_root = Path(__file__).resolve().parents[2] / "scripts"
+    probe = (
+        "import sys; sys.path.insert(0,sys.argv[1]); "
+        "from workload_factory_binding.evidence import artifact_digest,BindingError; "
+        "\ntry: artifact_digest({'worker':sys.argv[2]}, {})"
+        "\nexcept BindingError: sys.exit(0)"
+        "\nelse: sys.exit(1)"
+    )
+    try:
+        result = subprocess.run([sys.executable, "-c", probe, str(script_root), str(fifo)],
+                                capture_output=True, timeout=3)
+        assert result.returncode == 0, result.stderr.decode()
+    finally:
+        fifo.unlink(missing_ok=True)
+
+
+def test_truncated_ledger_restart_refuses(h):
+    h.run()
+    h.ledger.path.write_bytes(b"")
+    with pytest.raises(BindingError, match="invalid-state-schema"):
+        ReplayLedger(h.directory / "ledger")
+    assert h.calls == 1
+
+
+@pytest.mark.parametrize("restart", [False, True])
+def test_missing_ledger_constraints_refuse(h, restart):
+    import sqlite3
+    h.run()
+    with sqlite3.connect(h.ledger.path) as db:
+        db.execute("DROP TABLE reservations")
+        db.execute("CREATE TABLE reservations(token TEXT,challenge TEXT,reserved_at INTEGER)")
+    with pytest.raises(BindingError, match="invalid-state-schema"):
+        if restart:
+            ReplayLedger(h.directory / "ledger")
+        else:
+            h.run()
+    assert h.calls == 1
+
+
+def test_corrupted_ledger_refuses(h):
+    h.run()
+    h.ledger.path.write_bytes(b"corrupted state")
+    with pytest.raises(BindingError, match="state-unavailable"):
+        ReplayLedger(h.directory / "ledger")
+    assert h.calls == 1
+
+
+@pytest.mark.parametrize("call,delay", [(1, 61), (2, 61)])
+def test_slow_registry_cannot_return_expired_evidence(h, call, delay):
+    class DelayedRegistry:
+        calls = 0
+        def resolve(self, subject, *, now):
+            self.calls += 1
+            if self.calls == call:
+                h.now += delay
+            return h.binding
+    h.gate = h.make_gate(registry=DelayedRegistry())
+    with pytest.raises(BindingError, match="evidence-expired"):
+        h.run()
+    assert h.calls == (0 if call == 1 else 1)
+
+
+def test_key_snapshot_deadline_survives_slow_registry(h):
+    h.keys["expires_at"] = h.now + 1
+    class DelayedRegistry:
+        def resolve(self, subject, *, now):
+            h.now += 2
+            return h.binding
+    h.gate = h.make_gate(registry=DelayedRegistry())
+    with pytest.raises(BindingError, match="evidence-expired"):
+        h.run()
+    assert h.calls == 0
+
+
+def test_reservation_delay_is_checked_before_signing(h):
+    class DelayedLedger:
+        def reserve(self, **kwargs):
+            h.ledger.reserve(**kwargs)
+            h.now += 61
+    h.gate = h.make_gate(ledger=DelayedLedger())
+    with pytest.raises(BindingError, match="evidence-expired"):
+        h.run()
+    assert h.calls == 0
+
+
+def test_final_return_checks_fresh_clock(h):
+    clock_calls = 0
+    def clock():
+        nonlocal clock_calls
+        clock_calls += 1
+        if clock_calls == 6:
+            h.now += 61
+        return h.now
+    h.gate = h.make_gate(clock=clock)
+    with pytest.raises(BindingError, match="evidence-expired"):
+        h.run()
+    assert h.calls == 1
+
+
+@pytest.mark.parametrize("value", [None, True, -1, "1794400000"])
+def test_invalid_clock_is_fixed_refusal(h, value):
+    h.gate = h.make_gate(clock=lambda: value)
+    with pytest.raises(BindingError, match="clock-unavailable"):
+        h.run()
+    assert h.calls == 0
+
+
+def test_clock_backend_error_is_sanitized(h):
+    def broken_clock():
+        raise OSError("private backend detail")
+    h.gate = h.make_gate(clock=broken_clock)
+    with pytest.raises(BindingError, match="^clock-unavailable$"):
+        h.run()
+    assert h.calls == 0
+
+
+@pytest.mark.parametrize("issuer", ["agent:unanchored", "Brett.Heap@opensoft.one"])
+def test_review_class_grants_refuse_without_register_composition(h, issuer):
+    h.policy["grants"]["grant:root"]["scope"]["acts"].append("review")
+    h.policy["grants"]["grant:root"]["issued_by"] = issuer
+    with pytest.raises(BindingError, match="unsupported-review-authority"):
+        h.run()
+    assert h.calls == 0
+
+
+def test_ledger_restart_refuses_missing_index_contents(h):
+    import sqlite3
+    h.run()
+    with sqlite3.connect(h.ledger.path) as db:
+        page_size = db.execute("PRAGMA page_size").fetchone()[0]
+        pages = [row[0] for row in db.execute(
+            "SELECT rootpage FROM sqlite_master WHERE type='index' "
+            "AND name LIKE 'sqlite_autoindex_reservations_%'")]
+    assert len(pages) == 2
+    raw = bytearray(h.ledger.path.read_bytes())
+    for page in pages:
+        offset = (page - 1) * page_size
+        assert raw[offset] == 0x0A
+        raw[offset:offset + page_size] = bytes(page_size)
+        raw[offset] = 0x0A
+        raw[offset + 5:offset + 7] = (page_size % 65536).to_bytes(2, "big")
+    h.ledger.path.write_bytes(raw)
+    with sqlite3.connect(h.ledger.path) as db:
+        assert db.execute("PRAGMA quick_check(1)").fetchone() == ("ok",)
+        assert db.execute("PRAGMA integrity_check(1)").fetchone() != ("ok",)
+    with pytest.raises(BindingError, match="invalid-state-schema"):
+        ReplayLedger(h.directory / "ledger")
+    assert h.calls == 1

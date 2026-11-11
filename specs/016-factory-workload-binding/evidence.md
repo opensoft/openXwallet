@@ -1,10 +1,18 @@
-# Candidate qualification evidence
+# Qualification record
+
+The initial ab49ea0 snapshot below is retained as historical local evidence.
+PR review found issues that its fixtures did not cover. The reviewed candidate
+and its new regression evidence are recorded in review.md. Current hosted CI
+and exact-head Codex receipts are on openXwallet #48 and openxFactory #1304;
+those external states are not inferred from this frozen local test record.
+
+# Initial candidate qualification evidence (before PR review)
 
 Date: 2026-11-11. Scope: isolated candidate source, not runtime activation.
 Governing factory packet: `opensoft/openxFactory`,
 `openspec/changes/add-workload-factory-binding/` (draft).
 
-## Result
+## Initial result
 
 The final fresh Python environment ran the complete adapter suite:
 **405 passed, 0 failures, 0 errors, 0 skips**, in 190.28 seconds.
@@ -63,7 +71,7 @@ accounts or federation entries were created by this feature.
 
 The audit hashes each Python source/test file in the candidate module/test
 directories plus the dependency file and pytest workflow. It SHA-256 hashes
-the sorted compact JSON map of relative path to file SHA-256. Final tested digest:
+the sorted compact JSON map of relative path to file SHA-256. Initial tested digest:
 
 `ca76249382b2d2b8aa9212c26b1b4efede1e06f069358c1d17acb0864a07d659`
 
@@ -71,7 +79,7 @@ Host-local JUnit and qualification audit reports were retained outside the
 repository. Source/tests are unchanged after that audit; this record and task
 completion are documentation reconciliation.
 
-## Acceptance boundaries
+## Initial acceptance boundaries (historical, before publication)
 
 Hosted CI is wired to the exact accepted owner-code commit but has not been run
 for these local candidates. No PR is opened, merged or reviewed by a GitHub bot.

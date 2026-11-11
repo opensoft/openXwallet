@@ -21,3 +21,17 @@ custody credentials, refresh trust and deploy an independent observer. Errors
 contain fixed codes, never token bodies or private material.
 
 Unsupported grant constraints (including distinct-holder references) and unknown authority fields refuse. The selected wallet public-key material must match the current registry; the observer launches the selected reference worker and hashes its source/configuration independently. No hostile OS-isolation claim is made.
+
+Review reconciliation: WorkloadVerifier returns WorkloadEvidence(claims,
+valid_until), separating signed claims from the administrative issuer-key
+deadline. The gate checks fresh deadlines after blocking work, after durable
+reservation and before output. Existing malformed replay state refuses; it is
+never silently initialized. Null parent references and review-class chains
+refuse. Reference observation checks and freezes actual invocation context and
+measures selected owner source plus public transport/binding configuration.
+
+Full database integrity is checked at startup, including index/table consistency;
+schema/version/uniqueness constraints are checked within each reservation
+transaction. Storage must remain private and trusted. Live hostile byte changes,
+deletion/recreation and restoration of an older valid backup are outside this
+candidate's anti-replay guarantee and require separate operational controls.

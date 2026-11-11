@@ -65,3 +65,11 @@ specs/016-factory-workload-binding/
 SQLite is necessary for restart/concurrency replay refusal; an in-memory set
 cannot meet FR-007. No refresh daemon, provider client, executor, grant issuance,
 domain marker or human broker is introduced.
+
+Review reconciliation: WorkloadVerifier returns WorkloadEvidence(claims,
+valid_until), separating signed claims from the administrative issuer-key
+deadline. The gate checks fresh deadlines after blocking work, after durable
+reservation and before output. Existing malformed replay state refuses; it is
+never silently initialized. Null parent references and review-class chains
+refuse. Reference observation checks and freezes actual invocation context and
+measures selected owner source plus public transport/binding configuration.

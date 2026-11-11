@@ -71,7 +71,7 @@ jobs:
         run: git -C openWallet submodule update --init code
 
       - name: Install pinned candidate binding dependencies
-        run: pip install --only-binary :all: -r requirements-workload-binding.txt
+        run: "pip install --only-binary :all: -r requirements-workload-binding.txt"
 
       - name: Select exact accepted owning wallet source for isolated integration
         shell: bash
