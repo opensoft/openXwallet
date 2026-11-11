@@ -85,7 +85,7 @@ def decode_object(raw):
 
     try:
         result = json.loads(raw.decode("utf-8"), object_pairs_hook=unique, parse_constant=constant)
-    except (ValueError, UnicodeError, RecursionError):
+    except (ValueError, RecursionError):
         raise BindingError("invalid-data") from None
     require(type(result) is dict, "invalid-data")
     return result

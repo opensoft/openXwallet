@@ -199,7 +199,8 @@ def qualify(owner, directory, processes, inject_failure, allow_worker_sign=False
     verified = verify_proof(result["proof"], expected_digest=h.challenge.digest,
                             binding=registry_client.resolve(binding.subject_ref, now=h.now), now=h.now)
     assert verified.subject_ref == "agent:qa"
-    assert result["human_approval"] is False and signer.calls == 1
+    assert result["human_approval"] is False
+    assert signer.calls == 1
 
     # Binding changes are observed from the actual remote registry.
     registry.revoke(binding.binding_ref)
@@ -241,7 +242,8 @@ def test_owning_custody_and_cleanup(tmp_path, inject_failure):
                         process.stderr.close()
     finally:
         assert all(process.poll() is not None for process in processes)
-        assert temporary is not None and not temporary.exists(), "ephemeral keys/state remain"
+        assert temporary is not None
+        assert not temporary.exists(), "ephemeral keys/state remain"
 
 
 def test_denial_probe_detects_excess_worker_permission(tmp_path):

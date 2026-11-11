@@ -62,16 +62,14 @@ jobs:
           python-version: "3.12"
 
       # Quoted: `:all: ` would otherwise read as a YAML mapping key.
-      - run: "pip install --only-binary :all: pyyaml==6.0.3 jsonschema==4.26.0 rfc3339-validator==0.1.4 pytest==9.1.1"
+      - name: Install complete reviewed wheel closure
+        run: "pip install --only-binary :all: --require-hashes -r requirements-workload-binding.lock"
 
       - name: Initialize the openWallet root (scoped, never --recursive)
         run: git submodule update --init openWallet
 
       - name: Initialize the openWallet code leg (never the spec leg)
         run: git -C openWallet submodule update --init code
-
-      - name: Install pinned candidate binding dependencies
-        run: "pip install --only-binary :all: -r requirements-workload-binding.txt"
 
       - name: Select exact accepted owning wallet source for isolated integration
         shell: bash
@@ -84,4 +82,4 @@ jobs:
       - name: Run offline suite including explicit owning-source qualification
         env:
           WALLET_BINDING_OWNER_CODE: ${{ runner.temp }}/wallet-binding-owner
-        run: python3 -m pytest tests/ -q
+        run: python3 -m pytest tests/ -q -rs

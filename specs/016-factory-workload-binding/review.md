@@ -42,7 +42,7 @@ its receipt and hosted CI status belong to the PRs, not this local test record.
 
 Fresh environment installed only the documented complete dependency file.
 The complete adapter suite passed **456 tests, zero failures/errors/skips**, in
-136.14 seconds: **154 binding cases**, **21 conditional-lane cases**, plus the
+118.66 seconds: **154 binding cases**, **21 conditional-lane cases**, plus the
 existing adapter suites. The affected factory suites passed **538 tests**.
 
 Pin, syntax, plain/strict canonical validation and pinned adapter OpenSpec gates
@@ -57,7 +57,7 @@ reports are retained outside the repositories under case paired-pr-review-final.
 The source/test/workflow/dependency map uses relative paths and SHA-256 per file,
 then SHA-256 of sorted compact JSON. Corrected tested digest:
 
-`28898d615c509e430c8c9be598ffe09fe7ac63d6494ff9bbb3da8d026e383029`
+`661b31055e9f601acf7a6c7174144f2c5783a155d88a7ebbe50c84990c8f021c`
 
 This snapshot additionally includes the conditional-lane workflow and its tests.
 The initial 405-test snapshot remains historical evidence in evidence.md.
@@ -74,3 +74,22 @@ Replay storage assumes a trusted host: full integrity validation at startup and
 transactional schema checking do not resist live hostile byte changes, deletion
 or valid-backup rollback. Such operational controls are a separate gate.
 Feedback stays deferred; neither historically denied write is replayed.
+
+## Hosted compatibility and supply-chain reconciliation
+
+The first corrected hosted run exercised all new binding cases; a legacy
+SQLite-version assumption in the corruption test failed before its required
+refusal assertion. The regression now checks the portable contract (full
+integrity detects missing index contents and restart refuses), without requiring
+a particular version-specific quick_check result.
+
+Sonar S8544 is addressed with a complete 18-wheel SHA-256 lock and a single
+--require-hashes / --only-binary CI install. The previous unlocked Python step is
+removed. A fresh environment installed the complete closure with --no-index from
+the reviewed wheels. A separate actual-pip tampered-wheel probe refused the
+changed bytes before installation. No package, rule or threshold was exempted.
+
+Reported redundant exception and composite/ambiguous assertions were corrected.
+The final hash above includes the full lock, both workflows and their tests.
+Hosted historical-history skips are reported with -rs for explicit attribution;
+the exact owning-source integration is mandatory in CI and may not skip.

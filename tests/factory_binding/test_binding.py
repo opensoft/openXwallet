@@ -372,11 +372,9 @@ def test_missing_ledger_constraints_refuse(h, restart):
     with sqlite3.connect(h.ledger.path) as db:
         db.execute("DROP TABLE reservations")
         db.execute("CREATE TABLE reservations(token TEXT,challenge TEXT,reserved_at INTEGER)")
+    operation = (lambda: ReplayLedger(h.directory / "ledger")) if restart else h.run
     with pytest.raises(BindingError, match="invalid-state-schema"):
-        if restart:
-            ReplayLedger(h.directory / "ledger")
-        else:
-            h.run()
+        operation()
     assert h.calls == 1
 
 
@@ -484,7 +482,8 @@ def test_ledger_restart_refuses_missing_index_contents(h):
         raw[offset + 5:offset + 7] = (page_size % 65536).to_bytes(2, "big")
     h.ledger.path.write_bytes(raw)
     with sqlite3.connect(h.ledger.path) as db:
-        assert db.execute("PRAGMA quick_check(1)").fetchone() == ("ok",)
+        # quick_check coverage differs across SQLite versions; the contract
+        # is that full integrity validation and restart both refuse corruption.
         assert db.execute("PRAGMA integrity_check(1)").fetchone() != ("ok",)
     with pytest.raises(BindingError, match="invalid-state-schema"):
         ReplayLedger(h.directory / "ledger")

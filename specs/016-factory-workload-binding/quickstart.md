@@ -8,7 +8,7 @@ and the complete pinned dependency file.
 ```bash
 git submodule update --init openWallet
 git -C openWallet submodule update --init code
-python3 -m pip install --only-binary :all: -r requirements-workload-binding.txt
+python3 -m pip install --only-binary :all: --require-hashes -r requirements-workload-binding.lock
 python3 -m pytest tests/factory_binding -q
 ```
 
@@ -34,3 +34,8 @@ Run the existing adapter gates in AGENTS.md's order before publication. Current
 neutral submodules are initialized only through the two declared scoped lines.
 Do not alter those pins to make this candidate pass. Evidence records source,
 tests and cleanup separately; no live deployment or approval is performed.
+
+The complete lock targets the declared Python 3.12 Linux x86_64 bench/hosted
+runner. It binds all 18 resolved wheels, including transitive dependencies.
+The .txt file remains the primary input for an explicit reviewed regeneration;
+CI does not resolve floating transitive versions before the locked install.
