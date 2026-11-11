@@ -29,12 +29,25 @@ Consumed by pin, never by copy.
 This is the three-layer split of `split-openwallet-neutral-core`, ratified
 2026-10-08 by Brett Heap: [`openspec/changes/split-openwallet-neutral-core/`](openspec/changes/split-openwallet-neutral-core/).
 
+## Candidate factory/workload binding
+
+The opt-in [feature 016](specs/016-factory-workload-binding/spec.md) adds an
+offline library under [scripts/workload_factory_binding](scripts/workload_factory_binding/)
+and isolated tests. Its source-accepted composition belongs to openxFactory change
+add-workload-factory-binding, on branch change/add-workload-factory-binding.
+The library verifies exact workload identity, bounded current grants and a
+separately signed observation before using an injected wallet proof API.
+It grants no human approval. [Exact source acceptance](specs/016-factory-workload-binding/source-acceptance.md)
+records Brett's ratification. [Qualification instructions](specs/016-factory-workload-binding/quickstart.md)
+separate synthetic conformance from live issuer/supervisor/custody acceptance.
+The existing canonical validator and neutral source pin are unchanged.
+
 ## What is here
 
 | | |
 | --- | --- |
 | `openWallet/` | A gitlink to the openWallet ASSEMBLY ROOT. Its `code/` leg is initialized one level deeper; its `spec/` leg is never initialized here, because nothing here reads it. Never edited in place. |
-| `contracts/openwallet-pin.yaml` | The openWallet pin, changed in the same commit as the gitlink: the root `commit:`, `legs.code` (the code-leg commit that root pins, held in LOCKSTEP), the eight per-file sha256 at `code/contracts/…`, and `pinned_by_commit_only:` for the rest. The ONLY record here of which openWallet bytes run. |
+| `contracts/openwallet-pin.yaml` | The openWallet pin, changed in the same commit as the gitlink: the root `commit:`, `legs.code` (the code-leg commit that root pins, held in LOCKSTEP), the eight per-file sha256 at `code/contracts/…`, and `pinned_by_commit_only:` for the rest. The record of which openWallet bytes the canonical validator executes. Candidate isolated tests explicitly select their separate accepted reference source; that selection does not advance this pin. |
 | `scripts/verify-openwallet-pin.py` | The openWallet pin verifier: each checkout level present, gitlink and checkout equal to the pin, the code leg's lockstep read from git objects, the eight digests recomputed, every path-only member present and unmodified in its working tree, the code leg's working tree clean as a whole, a hollowed pin refused, and a pin naming a mount the entrypoints do not execute refused. **Fails closed.** |
 | `scripts/validate-openxwallet.py` | The conformance validator ENTRYPOINT. It loads the pinned core in process from `openWallet/code/scripts/validate-openxwallet.py` and registers the adapter's rules at the core's declared extension points: rule (t), the register reader, and the hermes binding. Over this repository's own tree, an export of openxFactory's live `governance/` tree and every fixture tree the suites build, its output is byte-identical to the pre-split validator's (`design.md` D5, as amended 2026-10-09). |
 | `scripts/wallet-yaml-syntax-gate.py` | The syntax-gate entrypoint, delegating to the pinned core's: one implementation. |
