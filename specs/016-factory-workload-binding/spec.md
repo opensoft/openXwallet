@@ -2,7 +2,7 @@
 
 **Feature Branch**: `016-factory-workload-binding`
 **Created**: 2026-11-11
-**Status**: Candidate source; not ratified or activated
+**Status**: Source acceptance ratified by Brett Heap on 2026-11-11; live activation remains unqualified
 **Input**: Brett: "Go ahead with the narrow factory/workload binding feature, including the OpenSpec proposal, Speckit plan, implementation and isolated tests. Keep feedback deferred and don't replay either blocked write."
 
 Governing proposal: `opensoft/openxFactory`,
