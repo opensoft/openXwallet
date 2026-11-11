@@ -17,8 +17,7 @@ ownership, validation, versioning, and release constraints.
 - Candidate composition owner: opensoft/openxFactory,
   openspec/changes/add-workload-factory-binding/ (draft; not ratified).
   Its sole executable task list is this feature's tasks.md.
-- Existing adapter governing baseline:
-- Governing change: THIS repository's
+- Existing adapter governing baseline: THIS repository's
   `openspec/changes/split-openwallet-neutral-core/`, RATIFIED 2026-10-08
   (Brett Heap, operator authority, "ratify 26 and merge"). Its §5 is the
   adapter rebuild.

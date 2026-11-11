@@ -15,7 +15,7 @@ from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import ec
 
 from workload_factory_binding.evidence import (
-    artifact_digest, byte_digest, canonical, decode_object, digest,
+    artifact_digest, byte_digest, canonical, decode_object,
 )
 from .conftest import Harness, multibase
 

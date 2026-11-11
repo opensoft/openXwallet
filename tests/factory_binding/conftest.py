@@ -1,6 +1,6 @@
 """Synthetic issuer/operator fixtures. They are never live GitHub evidence."""
 from copy import deepcopy
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 import sys

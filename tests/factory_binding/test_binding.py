@@ -1,7 +1,6 @@
 from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
 from dataclasses import replace
-import os
 
 import pytest
 from cryptography.hazmat.primitives.asymmetric import ed25519, rsa
@@ -10,7 +9,7 @@ from workload_factory_binding import BindingError, ReplayLedger
 from workload_factory_binding.evidence import (
     CLAIMS, OBS_CONTEXT, canonical, encode64, observe_artifacts,
 )
-from .conftest import jwt, timestamp
+from .conftest import jwt
 
 
 def refused(h):

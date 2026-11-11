@@ -16,34 +16,34 @@ workflow compatibility; Codex executes these tasks directly.
 
 ## Phase 2: Foundation
 
-- [ ] T003 [S] Add bounded strict JSON/crypto helpers and fresh exact OIDC verification.
+- [X] T003 [S] Add bounded strict JSON/crypto helpers and fresh exact OIDC verification.
   files: scripts/workload_factory_binding/evidence.py; tests/factory_binding/test_binding.py
   verify: issuer/algorithm/claim/key/time refusal matrix.
-- [ ] T004 [S] Add private durable atomic replay ledger.
+- [X] T004 [S] Add private durable atomic replay ledger.
   files: scripts/workload_factory_binding/ledger.py; tests/factory_binding/test_binding.py
   verify: restart, token/challenge reuse, concurrent reservation and unsafe-state tests.
 
 ## Phase 3: US1 - Current bounded factory authority
 
-- [ ] T005 [O] Add current policy, wallet and complete ancestor checks.
+- [X] T005 [O] Add current policy, wallet and complete ancestor checks.
   files: scripts/workload_factory_binding/gate.py; tests/factory_binding/test_binding.py
   verify: every scope/audience/expiry/posture/revocation mutation refuses with zero sign calls.
 
 ## Phase 4: US2 - Independent evidence before signing
 
-- [ ] T006 [O] Add artifact observer and challenge/request-bound proof gate.
+- [X] T006 [O] Add artifact observer and challenge/request-bound proof gate.
   files: scripts/workload_factory_binding/evidence.py; scripts/workload_factory_binding/gate.py
   verify: real signature checks, changed composition/run/source/request, post-sign state change and consumed outage.
-- [ ] T007 [S] Add exact-source owning primitive/custody integration.
+- [X] T007 [S] Add exact-source owning primitive/custody integration.
   files: tests/factory_binding/test_owner_integration.py; tests/factory_binding/fixture_role.py
   verify: mTLS sign success, direct worker sign denial, own verifier proof acceptance, separate observer.
 
 ## Phase 5: US3 - Isolation and verification
 
-- [ ] T008 [S] Qualify success/failure cleanup and wire offline candidate tests into CI.
+- [X] T008 [S] Qualify success/failure cleanup and wire offline candidate tests into CI.
   files: tests/factory_binding/; requirements-workload-binding.txt; .github/workflows/pytest-suite.yml
   verify: fixture processes stopped and ephemeral key/state directory removed; offline suite executes in CI.
-- [ ] T009 [O] Reconcile design/evidence and run affected/full offline gates.
+- [X] T009 [O] Reconcile design/evidence and run affected/full offline gates.
   files: analysis.md; evidence.md; quickstart.md; AGENTS.md managed feature block
   verify: full adapter gates; factory packet strict validation; git diff --check; no protected pins/artifacts changed.
 
