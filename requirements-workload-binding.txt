@@ -1,0 +1,4 @@
+# Candidate verifier/observer test dependencies; offline gates never install them.
+cryptography==50.0.1
+rfc8785==0.1.4
+pytest==9.1.1

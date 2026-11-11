@@ -29,6 +29,18 @@ Consumed by pin, never by copy.
 This is the three-layer split of `split-openwallet-neutral-core`, ratified
 2026-10-08 by Brett Heap: [`openspec/changes/split-openwallet-neutral-core/`](openspec/changes/split-openwallet-neutral-core/).
 
+## Candidate factory/workload binding
+
+The opt-in [feature 016](specs/016-factory-workload-binding/spec.md) adds an
+offline library under [scripts/workload_factory_binding](scripts/workload_factory_binding/)
+and isolated tests. Its draft composition belongs to openxFactory change
+add-workload-factory-binding, on branch change/add-workload-factory-binding.
+The library verifies exact workload identity, bounded current grants and a
+separately signed observation before using an injected wallet proof API.
+It grants no human approval. [Qualification instructions](specs/016-factory-workload-binding/quickstart.md)
+separate synthetic conformance from live issuer/supervisor/custody acceptance.
+The existing canonical validator and neutral source pin are unchanged.
+
 ## What is here
 
 | | |

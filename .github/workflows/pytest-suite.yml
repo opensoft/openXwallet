@@ -70,4 +70,18 @@ jobs:
       - name: Initialize the openWallet code leg (never the spec leg)
         run: git -C openWallet submodule update --init code
 
-      - run: python3 -m pytest tests/ -q
+      - name: Install pinned candidate binding dependencies
+        run: pip install --only-binary :all: -r requirements-workload-binding.txt
+
+      - name: Select exact accepted owning wallet source for isolated integration
+        shell: bash
+        run: |
+          git init "$RUNNER_TEMP/wallet-binding-owner"
+          git -C "$RUNNER_TEMP/wallet-binding-owner" remote add origin https://github.com/opensoft/openWallet-code.git
+          git -C "$RUNNER_TEMP/wallet-binding-owner" fetch --depth 1 origin bb0e9dae89a771b05f6c235d0a77237288b95c85
+          git -C "$RUNNER_TEMP/wallet-binding-owner" checkout --detach FETCH_HEAD
+
+      - name: Run offline suite including explicit owning-source qualification
+        env:
+          WALLET_BINDING_OWNER_CODE: ${{ runner.temp }}/wallet-binding-owner
+        run: python3 -m pytest tests/ -q
