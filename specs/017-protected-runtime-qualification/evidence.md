@@ -167,3 +167,16 @@ exclusion, finding status or protection was weakened or waived.
 The revised focused suite passes **113 tests**. The standalone Sonar analyzer
 reports zero issues in both revised production files; that is not a hosted
 quality-gate receipt. Full repository and fresh hosted results follow separately.
+
+The complete local sequence passed at `5cef834e5adfb15a8cb85f0b9a9ffbad9daa099c`:
+**569 tests**, including **113 issuer tests**, zero failures/errors/skips, both
+pin verifiers, syntax, plain/strict validators and all five canonical OpenSpec
+items. Security/static follow-up review found no new issue or semantic regression.
+Final JUnit SHA-256:
+`c41d8ce636295e347ef12eb14fe19dc0030dff1a3d4ab521164352c0640a4f6d`.
+
+Independent readback found no attributable helper/fixture PID; the remaining
+focused/full temporary roots and their synthetic keys/state were removed and
+absence verified. The receipt-only follow-up preserves the tested source/tests.
+Fresh hosted acceptance is assessed at that published head, separately from
+these local results. All live/deployed/human gates remain unperformed.
