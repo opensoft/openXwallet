@@ -2,7 +2,7 @@
 
 **Branch**: `017-protected-runtime-qualification` | **Date**: 2026-11-12
 **Spec**: [spec.md](spec.md)
-**State**: profile ratified; issuer-only source commissioned; remaining runtime pending
+**State**: profile ratified; issuer source landed; T002 source realization commissioned
 **Factory governance**: `opensoft/openXfactory`, `openspec/changes/prepare-protected-runtime-qualification/`.
 
 ## Summary
@@ -15,10 +15,11 @@ qualification needs separately selected/authorized services and launch protectio
 The first useful slice is issuer acquisition and verification without a signer.
 
 The 2026-11-12 owner act and preparation landings are recorded in [evidence](evidence.md).
-The current implementation is T003 and its necessary issuer-only constructor
-configuration. T002's complete operational grammar, source/protection bindings
-and service preflight remain pending. There is no trusted runtime composition,
-consumer execution lock or protected dispatch in this slice.
+T003 landed in adapter #50. Brett subsequently commissioned T002's internal
+operational grammar and source/protection preflight. Its factory-owned grammar
+is `supporting-docs/operational-grammar.md` under the governing change; the
+adapter implements `config.py` and refusal tests. There is no trusted runtime
+composition, consumer execution lock or protected dispatch in these two slices.
 
 ## Technical Context
 

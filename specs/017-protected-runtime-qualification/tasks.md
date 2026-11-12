@@ -1,8 +1,8 @@
 # Tasks: Protected Machine Runtime Qualification
 
-Status: sole executable implementation list; bounded issuer source candidate complete
-Commission: 2026-11-12 owner ratification and issuer-only source commissioning;
-remaining implementation and operation stay separate. See [evidence](evidence.md).
+Status: sole executable implementation list; issuer landed; T002 source candidate complete
+Commission: 2026-11-12 owner ratification, issuer commissioning, then explicit
+T002 implementation commissioning after #50. Operation stays separate. See [evidence](evidence.md).
 
 ## Owner Gate
 
@@ -10,13 +10,15 @@ remaining implementation and operation stay separate. See [evidence](evidence.md
 
 ## US1 — Bounded Issuer Acquisition
 
-- [ ] T002 [O] Realize the factory-owned internal operational grammar, runtime validator and protection/source binding; files: scripts/workload_factory_binding_runtime/config.py, tests/runtime_binding/test_config.py; verify: missing/pending/floating/worker-selected trust or service input refuses; no consumer executable lock is published.
+- [x] T002 [O] Realize the factory-owned internal operational grammar, runtime validator and protection/source binding; files: scripts/workload_factory_binding_runtime/config.py, tests/runtime_binding/test_config.py; verify: missing/pending/floating/worker-selected trust or service input refuses; no consumer executable lock is published. Source candidate only; grammar/source review precedes runtime use, authenticated live readback acquisition and deployed acceptance remain later hosting gates.
 
-Only fixed issuer endpoints, selected audience and trusted source/transport/clock
-constructor inputs are realized for the independent T003 slice. They are not the
-full T002 grammar or deployed source/protection validation. T001's actual human
-act is recorded; its owner checkbox remains unmarked by the agent.
-- [x] T003 [O] Add opt-in bounded issuer fetch, freshness/coalesced refresh and accepted verifier adapter; files: scripts/workload_factory_binding_runtime/issuer.py, scripts/workload_factory_binding_runtime/transport.py, scripts/workload_factory_binding_runtime/_https_worker.py, tests/runtime_binding/**; verify: I01-I03/I05 and signed-claim I04 vectors pass, with no unapproved endpoint, stale fallback or network in existing offline gates. Full T002/P01 source/protection/service acceptance remains pending.
+T002 now supplies a closed bounded internal grammar, independent approval digest
+and fresh exact readback binding under the trusted embedding boundary. Factory
+governance owns its concrete grammar; it is not a canonical neutral contract.
+No real service/protection selection, authenticated provider client or deployed
+qualification is supplied by its synthetic tests. T001's actual human act remains
+recorded; its owner checkbox stays unmarked by the agent.
+- [x] T003 [O] Add opt-in bounded issuer fetch, freshness/coalesced refresh and accepted verifier adapter; files: scripts/workload_factory_binding_runtime/issuer.py, scripts/workload_factory_binding_runtime/transport.py, scripts/workload_factory_binding_runtime/_https_worker.py, tests/runtime_binding/**; verify: I01-I03/I05 and signed-claim I04 vectors pass, with no unapproved endpoint, stale fallback or network in existing offline gates. Landed #50; P01 deployed source/protection/service acceptance remains pending.
 
 Independent acceptance: issuer evidence verifies through the unchanged core; failure precedes any signer.
 

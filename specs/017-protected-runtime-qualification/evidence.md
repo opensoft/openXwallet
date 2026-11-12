@@ -180,3 +180,80 @@ focused/full temporary roots and their synthetic keys/state were removed and
 absence verified. The receipt-only follow-up preserves the tested source/tests.
 Fresh hosted acceptance is assessed at that published head, separately from
 these local results. All live/deployed/human gates remain unperformed.
+
+## T002 commissioning and source realization — 2026-11-12
+
+Brett directed: “Go ahead and land openXwallet #50 through the governed process
+when green, then implement and test the remaining T002 operational/source/
+protection binding. Keep feedback deferred and don’t replay either blocked write.”
+
+PR #50 landed at `75b88eaad84d4e302d27700bb50b761b95167f2e`, carrying reviewed
+head `7c6c113ae98d1aad383acdd72f0d60db374096d2`. Actual merged tree equals the
+tested candidate. All runnable hosted checks passed, including Sonar with zero
+open issues. The general hosted suite passed 566 with three shallow-history
+skips; full-history carve and neutrality/pruning suites passed 84 and 60.
+The neutrality comparator's informational mirrored-child failure was already
+present at #49; its comparison verdict remained IDENTICAL. GitHub Codex review
+was quota-refused, not an approval. Local expert findings had been closed.
+No main-triggered workflow exists for that merge, so none is claimed.
+
+The T002 candidate adds only `config.py`, its focused tests and feature context.
+Factory governance carries the concrete internal grammar in
+`supporting-docs/operational-grammar.md`. Closed bounded input, external approval
+digest, source/dependency/composition pins, exact launch/run and effective
+protection/service/state/lifecycle selection are compared against fresh trusted
+readback. The result is deeply immutable and expires at the earliest deadline.
+No service is constructed or credential issued by preflight. Tests cover each
+signed launch claim through the existing real-RSA issuer verifier.
+
+The focused suite passes **157 tests**. The local expert panel's architecture,
+performance, security, QA, static-analysis, API, data-integrity, reliability and
+simplicity reviews found no actionable issue. The initial full invocation
+passed 724 and failed two legacy sandbox tests because its explicit pytest
+temporary root was outside the configured TMPDIR. Corrected invocation results
+are recorded separately; no sandbox rule or production code was weakened.
+
+These are source/isolated results. Actual authenticated provider readback,
+complete effective-provider-rule projection, service source measurement,
+administrative isolation and runtime enforcement of the returned deadline are
+later trusted-hosting/composition obligations. Actual selections, protected
+setup/dispatch, deployed qualification and human/domain acceptance remain
+unperformed. The consumer's source-only lock and runtime gate remain unchanged.
+Feedback stays deferred and neither historical blocked write was replayed.
+
+Corrected full verification at `e24ffa45b132dd814f110641a380135147985709` passed
+**726 tests**, including **157 new T002 cases**, zero failures/errors/skips and
+the seven selected owning-source integrations. Both pin verifiers, syntax,
+plain/strict validation and all five canonical pinned OpenSpec items passed.
+JUnit SHA-256:
+`bede283928bebbae1dc24f19b16a88cbaefa05d340f1a39f0fa90d43eaf7f6f6`.
+No attributable test/helper process remained; owned failed/corrected full-suite
+temporary roots and synthetic key/state material were removed, absence verified.
+Logs and XML remain outside source. This receipt follow-up changes no source/tests.
+
+The paired factory grammar at `7d99face8934f39fcccc4d9e4d0cf4b068d67ab6` passes
+strict scoped OpenSpec validation; its 247-row corpus ledger remains consistent.
+Broad factory OpenSpec validation passes 122 items and fails the pre-existing
+`add-chain-attestation` missing-MODIFIED-scenario check. Both that packet and its
+canonical signed-execution-chain spec are unchanged from factory main. This
+limitation is retained explicitly; no unrelated packet, gate or rule was changed.
+
+### T002 quality follow-up
+
+The first hosted candidate passed its quality gate but retained five maintainability
+issues: duplicated ref prefixes, concise decimal syntax and two exception tests
+with argument preparation inside the assertion. Shared immutable prefixes,
+`re.ASCII`-restricted concise digits and precomputed test inputs address them.
+The additional mixed-Unicode digit refusal guards the unchanged ASCII-only rule.
+Security/static reviewers found no semantic regression. No rule, exclusion or
+issue status was waived or weakened.
+
+The complete sequence at `d8c166acc2961f349680e779311543eec0258d43` passes
+**727 tests**, including **158 T002 cases**, zero failures/errors/skips, both
+pin verifiers, syntax, plain/strict validation and all five canonical pinned
+OpenSpec items. JUnit SHA-256:
+`66f443784ad97fd8d3a527e2162a55347763310952ebbb23aee10ce3940c248e`.
+No attributable helper/test process remained; the follow-up temporary root and
+synthetic key/state files were removed, with absence verified. The receipt-only
+follow-up changes no source/tests. Fresh hosted acceptance remains a separate
+readback at the published head, not an inference from these local results.
