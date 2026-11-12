@@ -63,7 +63,7 @@ runtime/operational task remain pending. No neutral schema, gitlink, dependency
 lock, default entrypoint, consumer lock, source pin or protected workflow changes.
 
 The new opt-in source delegates real RS256 signature/claims checking to the unchanged
-core. Its internal helper carries only public metadata URLs/CA references, never
+core. Its internal helper carries only fixed endpoint selectors/CA references, never
 a workload token. Tests exercise synthetic issuer responses and real loopback TLS,
 bounded body/connect/overall deadlines, cache age/expiry/non-reuse, coalescing,
 rotation/removal, exact signed context, post-I/O and post-crypto clocks, and helper
@@ -148,3 +148,22 @@ and XML remain. Existing verifier/gate source, contracts, dependency locks,
 workflows, neutral gitlink and relative feature pointer remain unchanged.
 No public issuer/provider call, protected dispatch, human acceptance, executable
 domain lock or source pin advancement was performed.
+
+### Hosted static-analysis follow-up
+
+The first published implementation head, `aa0d6c1`, failed Sonar's new-code
+security rating. The analyzer traced a command-line URL through the existing
+allowlist into the request path. The helper now accepts only opaque
+`discovery`/`jwks` selections and constructs both HTTP requests with literal paths;
+no command-line/provider text reaches the request path. New helper-boundary tests
+reject a URL or unknown selector before connection construction.
+
+The two complex functions were split into focused parsing, framing and exchange
+helpers. ASCII delta-seconds validation preserves the accepted digit set without
+the flagged regex form. Exception-test inputs are sampled before entering the
+raises context, and composite assertions were separated. No quality rule,
+exclusion, finding status or protection was weakened or waived.
+
+The revised focused suite passes **113 tests**. The standalone Sonar analyzer
+reports zero issues in both revised production files; that is not a hosted
+quality-gate receipt. Full repository and fresh hosted results follow separately.

@@ -208,8 +208,10 @@ def test_expiry_during_fetch_is_checked_before_signer(r):
 def test_existing_proof_gate_accepts_adapter_without_core_changes(r):
     r.h.gate = r.h.make_gate(workload_verifier=r.verifier)
     result = r.h.run()
-    assert result["assurance"] == "possession" and result["human_approval"] is False
-    assert r.h.calls == 1 and len(r.transport.calls) == 2
+    assert result["assurance"] == "possession"
+    assert result["human_approval"] is False
+    assert r.h.calls == 1
+    assert len(r.transport.calls) == 2
 
 
 @pytest.mark.parametrize("bad", [None, True, -1, "1794400000", float("nan"), float("inf")])

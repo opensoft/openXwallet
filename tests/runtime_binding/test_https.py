@@ -3,6 +3,7 @@ from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import ipaddress
+import io
 import json
 import os
 from pathlib import Path
@@ -150,16 +151,18 @@ def test_actual_tls_requires_chain_and_hostname(r, tmp_path, monkeypatch, kind):
         if kind == "untrusted-ca":
             monkeypatch.setenv("SSL_CERT_FILE", str(ca))
             client = HttpsTransport()  # Ambient test CA must not become trusted.
+        deadline = time.monotonic() + 10
         with pytest.raises(BindingError, match="^issuer-fetch-unavailable$"):
-            client.fetch(DISCOVERY_URL, deadline=time.monotonic() + 10)
+            client.fetch(DISCOVERY_URL, deadline=deadline)
         assert not requests
 
 
 @pytest.mark.parametrize("mode", ["oversized", "compressed", "truncated"])
 def test_actual_transport_rejects_malformed_or_oversized_response(r, tmp_path, monkeypatch, mode):
     with server(r, tmp_path, monkeypatch, mode=mode) as (client, requests, _ca):
+        deadline = time.monotonic() + 10
         with pytest.raises(BindingError, match="^issuer-fetch-unavailable$"):
-            client.fetch(DISCOVERY_URL, deadline=time.monotonic() + 10)
+            client.fetch(DISCOVERY_URL, deadline=deadline)
         assert len(requests) == 1
 
 
@@ -167,8 +170,9 @@ def test_actual_transport_does_not_follow_redirect(r, tmp_path, monkeypatch):
     with server(r, tmp_path, monkeypatch, mode="redirect") as (client, requests, _ca):
         source = IssuerKeySource(transport=client)
         verifier = IssuerWorkloadVerifier(audience="factory:qa", source=source)
+        now = int(time.time())
         with pytest.raises(BindingError, match="^invalid-issuer-response$"):
-            verifier.verify(r.h.token, r.expected, now=int(time.time()))
+            verifier.verify(r.h.token, r.expected, now=now)
         assert len(requests) == 1
 
 
@@ -178,8 +182,10 @@ def test_unapproved_endpoint_fails_before_spawn(monkeypatch, url):
     def forbidden(*_args, **_kwargs):
         raise AssertionError("unapproved endpoint reached subprocess")
     monkeypatch.setattr(transport.subprocess, "Popen", forbidden)
+    deadline = time.monotonic() + 10
+    client = HttpsTransport()
     with pytest.raises(BindingError, match="^invalid-issuer-endpoint$"):
-        HttpsTransport().fetch(url, deadline=time.monotonic() + 10)
+        client.fetch(url, deadline=deadline)
 
 
 def test_slow_body_is_bounded_and_worker_is_reaped(r, tmp_path, monkeypatch):
@@ -191,10 +197,14 @@ def test_slow_body_is_bounded_and_worker_is_reaped(r, tmp_path, monkeypatch):
         return process
     monkeypatch.setattr(transport.subprocess, "Popen", capture)
     with server(r, tmp_path, monkeypatch, mode="slow") as (client, requests, _ca):
+        deadline = time.monotonic() + 1
         with pytest.raises(BindingError, match="^issuer-fetch-unavailable$"):
-            client.fetch(DISCOVERY_URL, deadline=time.monotonic() + 1)
+            client.fetch(DISCOVERY_URL, deadline=deadline)
         assert len(requests) == 1
-    assert processes and all(p.poll() is not None and p.stdout.closed for p in processes)
+    assert processes
+    for process in processes:
+        assert process.poll() is not None
+        assert process.stdout.closed
 
 
 def test_connect_phase_is_bounded_and_worker_is_reaped(tmp_path, monkeypatch):
@@ -210,10 +220,12 @@ def test_connect_phase_is_bounded_and_worker_is_reaped(tmp_path, monkeypatch):
         return process
     monkeypatch.setattr(transport.subprocess, "Popen", capture)
     started = time.monotonic()
+    client = HttpsTransport()
     with pytest.raises(BindingError, match="^issuer-fetch-unavailable$"):
-        HttpsTransport().fetch(DISCOVERY_URL, deadline=started + 10)
+        client.fetch(DISCOVERY_URL, deadline=started + 10)
     assert time.monotonic() - started < 2
-    assert processes and all(p.poll() is not None for p in processes)
+    assert processes
+    assert all(p.poll() is not None for p in processes)
 
 
 def test_interrupt_reaps_connected_worker(tmp_path, monkeypatch):
@@ -230,6 +242,21 @@ def test_interrupt_reaps_connected_worker(tmp_path, monkeypatch):
         process.communicate = interrupt
         return process
     monkeypatch.setattr(transport.subprocess, "Popen", capture)
+    deadline = time.monotonic() + 10
+    client = HttpsTransport()
     with pytest.raises(KeyboardInterrupt):
-        HttpsTransport().fetch(DISCOVERY_URL, deadline=time.monotonic() + 10)
-    assert processes and all(p.poll() is not None and p.stdout.closed for p in processes)
+        client.fetch(DISCOVERY_URL, deadline=deadline)
+    assert processes
+    for process in processes:
+        assert process.poll() is not None
+        assert process.stdout.closed
+
+
+@pytest.mark.parametrize("endpoint", [DISCOVERY_URL, "worker-selected-target"])
+def test_helper_accepts_only_opaque_fixed_endpoint_selectors(monkeypatch, endpoint):
+    def forbidden(*_args, **_kwargs):
+        raise AssertionError("unapproved selector reached connection construction")
+    monkeypatch.setattr(wire.http.client, "HTTPSConnection", forbidden)
+    output = io.BytesIO()
+    with pytest.raises(ValueError, match="^invalid-fetch$"):
+        wire.exchange(endpoint, None, 10, output)

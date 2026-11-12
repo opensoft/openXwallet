@@ -60,7 +60,7 @@ def _headers(pairs):
     return result
 
 
-def _directives(values):
+def _directive_parts(values):
     parts, current, quoted, escaped = [], [], False, False
     for character in ",".join(values) + ",":
         if character == "," and not quoted:
@@ -75,8 +75,12 @@ def _directives(values):
         elif character == '"':
             quoted = not quoted
     require(not quoted and not escaped, "invalid-issuer-response")
+    return parts
+
+
+def _directives(values):
     result = {}
-    for part in parts:
+    for part in _directive_parts(values):
         if not part:
             continue
         name, separator, value = part.partition("=")
@@ -91,7 +95,7 @@ def _directives(values):
 
 
 def _delta(value):
-    require(type(value) is str and re.fullmatch(r"[0-9]+", value), "invalid-issuer-response")
+    require(type(value) is str and value.isascii() and value.isdigit(), "invalid-issuer-response")
     # Saturate rather than overflow an HTTP delta-seconds value (RFC 9111).
     value = value.lstrip("0") or "0"
     return min(int(value), 2**31) if len(value) <= 10 else 2**31

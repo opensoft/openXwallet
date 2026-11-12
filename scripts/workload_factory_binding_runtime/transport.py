@@ -46,8 +46,9 @@ class HttpsTransport:
         require(end > started, "issuer-fetch-unavailable")
         process = None
         try:
+            endpoint = "discovery" if url == wire.DISCOVERY_URL else "jwks"
             process = subprocess.Popen(
-                [sys.executable, "-I", str(_WORKER), url, self.ca_file or "", str(end - started)],
+                [sys.executable, "-I", str(_WORKER), endpoint, self.ca_file or "", str(end - started)],
                 stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
                 env={"PATH": os.defpath, "LANG": "C.UTF-8"}, bufsize=0,
             )
