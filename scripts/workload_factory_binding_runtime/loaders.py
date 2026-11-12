@@ -57,8 +57,7 @@ class CurrentLoaders:
         self.request, self._policy = request, None
 
     def _read(self, role, service, operation, selected_ref):
-        raw = self.use.service_call(role, service, "read", operation, selected_ref,
-                                    deadline=self.use.valid_until)
+        raw = self.use.service_call(role, service, "read", operation, selected_ref)
         try:
             return decode_object(raw)
         except Exception:

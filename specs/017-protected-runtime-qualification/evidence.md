@@ -304,3 +304,20 @@ initialized-state/recovery or lifecycle qualification. Trusted connectors and
 hosting must authenticate/bound their real transports outside worker control;
 Python types or matching metadata are not isolation. T006–T015, live protected
 qualification and the consumer's independent runtime/human gates remain pending.
+
+### Local review and connector-deadline correction
+
+The initial complete sequence at `89a241efc9c7237addddba814218bf8c357457e9`
+passed **820 tests**, zero failures/errors/skips, both pin verifiers, syntax,
+plain/strict validation and all five canonical pinned OpenSpec items. The
+pre-PR expert panel then found one P2 reliability issue: `_read()` captured a
+connector deadline before guarded preflight could shorten it. Post-call refusal
+prevented proof acceptance, but the connector received a stale I/O budget.
+
+The red regression observed initial deadline `1794400030`, refreshed deadline
+`1794400010`, and connector-received deadline `1794400030`. The invocation is
+now deferred until after fresh preflight and supplies `1794400010`. The reviewer
+independently reproduced closure. The focused suite passes **94 cases**. The
+architecture, performance, security, QA, static-analysis, API, data-integrity and
+simplicity reviewers found no additional actionable issue. No rule, check,
+neutral contract or original verification core was changed.

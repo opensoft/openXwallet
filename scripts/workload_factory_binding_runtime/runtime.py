@@ -120,7 +120,12 @@ class _Use:
 
     def service_call(self, role, service, method, *args, **kwargs):
         check_service(service, self.selection["services"][role], method)
-        return self.guarded(getattr(service.target, method), *args, **kwargs)
+        def invoke():
+            # Fresh preflight may shorten the deadline. Sample only after it.
+            if method == "read":
+                return service.target.read(*args, deadline=self.valid_until, **kwargs)
+            return getattr(service.target, method)(*args, **kwargs)
+        return self.guarded(invoke)
 
 
 class _Verifier:

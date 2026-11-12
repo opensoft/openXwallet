@@ -58,6 +58,11 @@ connectors must bound their I/O; post-call checks are not a way to preempt an
 arbitrary hung Python callback. No generic provider client or public server API
 is standardized by this internal composition.
 
+The read deadline is supplied inside the guarded connector invocation, after its
+fresh preflight. Capturing an earlier deadline before that preflight would allow
+I/O beyond a newly shortened protection/channel lease; the regression checks
+that the connector receives the current earliest deadline.
+
 The hosting callback independently authenticates/bounds its current worker channel
 and returns a `WorkerContext` bound to the exact selected service identity,
 configuration digest, case, run/attempt and at most 60-second validity. Worker

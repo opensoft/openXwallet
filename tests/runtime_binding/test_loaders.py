@@ -4,6 +4,8 @@ from dataclasses import replace
 import pytest
 
 from workload_factory_binding.evidence import BindingError
+from workload_factory_binding_runtime.loaders import CurrentLoaders
+from workload_factory_binding_runtime.runtime import _Use
 from .composition_fixture import c, configuration
 
 
@@ -75,3 +77,13 @@ def test_service_outage_exposes_only_fixed_error(c):
         c.run()
     assert "private-token" not in str(caught.value)
     assert c.h.calls == 0
+
+
+def test_connector_receives_deadline_after_guarded_preflight_shortens_it(c):
+    use = _Use(c.bridge)
+    loaders = CurrentLoaders(use=use, records=c.services["records"], challenge=c.services["challenge"],
+                             request=c.h.request)
+    c.readback["expires_at"] = c.h.now + 10
+    loaders.load_policy()
+    assert use.valid_until == c.h.now + 10
+    assert c.records.calls[0][2] == use.valid_until
