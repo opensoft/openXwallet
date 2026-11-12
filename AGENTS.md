@@ -18,9 +18,10 @@ ownership, validation, versioning, and release constraints.
   openspec/changes/prepare-protected-runtime-qualification/.
   Feature 017 tasks.md is the sole implementation list. Brett Heap ratified
   #1307 at 04fad0559 with openXwallet #49 at 0a2dda9. The issuer slice
-  landed in #50; Brett subsequently commissioned T002's internal operational,
-  source/protection binding. Full trusted runtime composition and operation
-  stay separately gated. The factory owns the grammar's governance.
+  landed in #50. Brett ratified factory #1308 at 7d99face8934 with adapter
+  #51 at 864a2d19fda1 for source acceptance only, then commissioned isolated
+  T004/T005 loaders/runtime composition. Deployed supervisor, custody, state,
+  lifecycle and operation stay separately gated. The factory owns the grammar.
   Existing offline entrypoints stay unchanged.
 - Accepted baseline: 016-factory-workload-binding; source decision:
   specs/016-factory-workload-binding/source-acceptance.md and plan.md.

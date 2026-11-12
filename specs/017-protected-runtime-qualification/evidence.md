@@ -257,3 +257,50 @@ No attributable helper/test process remained; the follow-up temporary root and
 synthetic key/state files were removed, with absence verified. The receipt-only
 follow-up changes no source/tests. Fresh hosted acceptance remains a separate
 readback at the published head, not an inference from these local results.
+
+## T004/T005 source commissioning — 2026-11-12
+
+Brett ratified factory #1308 at `7d99face8934` with adapter #51 at
+`864a2d19fda1` for source acceptance only, directed both landings when green,
+and commissioned implementation/testing of T004/T005 in isolation. Feedback
+remains deferred and neither historical blocked write is authorized for replay.
+
+Factory #1308 landed first as `469526935630d92f870a31b19d626725b55793e6`,
+tree `309fc342a8ce60bcfb8b65d9a4f3b2988597e219`. All required checks passed;
+there were no unresolved review threads. The standing global self-authored
+approval override applied because both author and authenticated actor were
+`brettheap`; only missing approval was bypassed. Adapter #51 then landed normally
+as `b2beb54e42b620242dd6e774de8655cea98ca831`, tree
+`5f95417b219705f330b0f0fc098918098dd13c47`. Both actual merge trees equal
+their reviewed/ratified candidate trees. GitHub Codex review was quota-refused,
+not approval; prior local panel and hosted evidence remain separately identified.
+
+The new opt-in `loaders.py`/`runtime.py` connect trusted authenticated connector
+capabilities, current canonical policy/challenge data and hosting channel context
+to the unchanged proof gate. Worker inputs retain the four accepted arguments.
+Service/credential/trust and state references must match the selected configuration.
+The token is verified before current-record/challenge access. Preflight repeats
+around blocking work; no accepted per-use deadline can be extended by fresh data.
+
+Coordinator review reproduced two timing gaps in the initial composition: a token
+could expire in post-crypto preflight before record access, and an observation
+could expire in added post-reservation preflight before custody. Both red tests
+were retained and corrected by carrying the earliest known token/key, observation,
+policy/grant, challenge, registry, channel and protection deadline through every
+added blocking checkpoint. Registry/grant/key-expiry variants also refuse before
+actual custody use; reservations remain consumed on failure.
+
+The focused matrix has **93 cases**, including exact selected service identities,
+each signed launch claim, canonical current records/challenge binding, actual
+loopback mTLS, selected worker-certificate hosting context, impostor/unknown-trust
+refusal, owning proof acceptance, concurrency and the timing regressions. It uses
+the existing explicitly selected owning source and synthetic keys/data only.
+The full gate sequence and expert review are recorded at their candidate heads,
+separately from this focused source record.
+
+These sources do not implement actual deployment measurement, a production
+provider client, supervisor administrative isolation, custody confinement,
+initialized-state/recovery or lifecycle qualification. Trusted connectors and
+hosting must authenticate/bound their real transports outside worker control;
+Python types or matching metadata are not isolation. T006–T015, live protected
+qualification and the consumer's independent runtime/human gates remain pending.

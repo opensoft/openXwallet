@@ -37,3 +37,51 @@ is valid only until the earlier configuration/readback deadline (readback at mos
 It does not construct services or prove deployed isolation. No executable live
 configuration, consumer lock or protected dispatch is supplied. Neutral custody/
 proof/receipt contracts stay unchanged; new assertions need the owning API decision.
+
+## Isolated T004/T005 realization
+
+`RuntimeBridge` is constructed only by trusted hosting with `load_config`, accepted
+`RuntimeTrust`, `load_worker_context`, selected `services`, `StateBinding`, one
+shared `IssuerKeySource`, and the owning `create_proof` primitive. Its worker-facing
+method retains `sign(challenge_id, request, token, observation)`; there is no worker
+parameter for credentials, service URLs, loaders, expected claims or authentication.
+
+Each `BoundService` pairs a connector's intrinsic `ServiceIdentity` (service,
+principal, credential and trust references) with its opaque target. Hosting must
+derive those identities from authenticated protected connector configuration,
+not copy them from candidate/worker data. Records/challenge targets implement
+`read(operation, reference, *, deadline)` with a UTC epoch deadline and current
+UTF-8 JSON bytes bounded to 16 KiB. The fixed operations are `policy` and
+`challenge`; the reference is a lookup key, never a URL/path/resolver. Registry
+and custody targets retain the owning `resolve` and `sign` interfaces. All blocking
+connectors must bound their I/O; post-call checks are not a way to preempt an
+arbitrary hung Python callback. No generic provider client or public server API
+is standardized by this internal composition.
+
+The hosting callback independently authenticates/bounds its current worker channel
+and returns a `WorkerContext` bound to the exact selected service identity,
+configuration digest, case, run/attempt and at most 60-second validity. Worker
+booleans/dictionaries cannot supply this context. Python classes and matching
+metadata still do not establish actual transport authentication or administrative
+isolation: the selected connectors/hosting must enforce those boundaries. The
+loopback tests exercise real mTLS and certificate refusal within isolated fixtures.
+
+Current policy bytes must match the approved canonical policy digest, revision,
+claims, binding, grant and composition. The loader reuses existing policy/grant
+validation. Current challenge bytes use the existing factory projection, with its
+digest recomputed, selected authenticated service as issuer, and exact subject,
+request/run and deadline binding. Worker-supplied full records are not accepted.
+
+Each proof use is independent. Preflight and channel checks repeat around trusted
+I/O, before reservation and custody, and after signing. The earliest observed
+token/key, signed-observation, policy/grant, challenge, registry, configuration,
+readback and channel deadline can only shorten that use. A worker-provided
+observation expiry may initially only shorten it; the unchanged gate still verifies
+the entire observation before reservation. Failures after reservation leave it
+consumed and emit no result. Post-sign refusal cannot undo a signature already made.
+
+`StateBinding` identifies the selected existing ledger; it does not provision,
+initialize, recover or qualify storage. Actual source measurement, supervisor
+independence, custody confinement, initialized-state/recovery and lifecycle gates
+remain T006–T009 and deployed acceptance work. The isolated composition yields
+only the existing possession result with `human_approval` false.

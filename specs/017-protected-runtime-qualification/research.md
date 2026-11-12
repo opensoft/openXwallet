@@ -1,6 +1,6 @@
 # Research and Proposed Decisions
 
-Status: profile ratified 2026-11-12; issuer-only implementation commissioned
+Status: profile and T002 source ratified 2026-11-12; isolated T004/T005 commissioned
 
 The decision text below records the preparation baseline accepted with factory
 #1307 / adapter #49. The implemented source scope and limits are in [evidence](evidence.md).

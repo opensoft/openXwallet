@@ -2,7 +2,7 @@
 
 **Branch**: `017-protected-runtime-qualification` | **Date**: 2026-11-12
 **Spec**: [spec.md](spec.md)
-**State**: profile ratified; issuer source landed; T002 source realization commissioned
+**State**: T002/T003 source landed; isolated T004/T005 source candidate
 **Factory governance**: `opensoft/openXfactory`, `openspec/changes/prepare-protected-runtime-qualification/`.
 
 ## Summary
@@ -18,8 +18,11 @@ The 2026-11-12 owner act and preparation landings are recorded in [evidence](evi
 T003 landed in adapter #50. Brett subsequently commissioned T002's internal
 operational grammar and source/protection preflight. Its factory-owned grammar
 is `supporting-docs/operational-grammar.md` under the governing change; the
-adapter implements `config.py` and refusal tests. There is no trusted runtime
-composition, consumer execution lock or protected dispatch in these two slices.
+adapter implements `config.py` and refusal tests. Those sources landed at
+factory #1308 / adapter #51 after source-only ratification. Brett subsequently
+commissioned T004/T005 in isolation. `loaders.py` and `runtime.py` now compose
+trusted connector capabilities and the unchanged proof gate. There is no deployed
+runtime, consumer execution lock or protected dispatch in these slices.
 
 ## Technical Context
 
@@ -28,6 +31,8 @@ composition, consumer execution lock or protected dispatch in these two slices.
 - Proposed opt-in package `scripts/workload_factory_binding_runtime/`; tests `tests/runtime_binding/`. Existing offline entrypoints do not import or start live transport.
 - Use injected bounded HTTPS transport; default gates use deterministic doubles and isolated loopback fixtures. Live requests occur only in the separately authorized runtime path.
 - Runtime configuration is the factory-owned internal operational projection. Credentials are opaque trusted deployment handles; the worker supplies no expected values or trusted loaders.
+- Current-record connectors implement bounded authenticated `read(operation, reference, deadline=epoch)` and return at most 16 KiB of JSON. Intrinsic service identities and worker-channel context come only from trusted hosting. No public service protocol or production endpoint resolver is supplied.
+- Every use repeats preflight around blocking operations and preserves the earliest known token/key, observation, policy/grant, challenge, registry, channel and protection deadline. Extra preflight I/O must not extend an accepted proof-gate checkpoint.
 - Storage remains private initialized persistent state under the accepted trusted-host boundary; no throughput, hostile-host or backup-rollback guarantee is claimed.
 - Fetch budgets, cache/rotation and administrative deadlines are proposed factory policy, not issuer service guarantees.
 

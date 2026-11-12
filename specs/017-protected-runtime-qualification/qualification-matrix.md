@@ -1,6 +1,6 @@
 # Required Qualification Matrix
 
-Status: draft; cases specified, new runtime unimplemented
+Status: isolated T002–T005 source cases implemented; deployed cases pending
 
 | Cases | Required observation | Requirements |
 | --- | --- | --- |

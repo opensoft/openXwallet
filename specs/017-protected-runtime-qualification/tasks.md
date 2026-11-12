@@ -1,8 +1,8 @@
 # Tasks: Protected Machine Runtime Qualification
 
-Status: sole executable implementation list; issuer landed; T002 source candidate complete
-Commission: 2026-11-12 owner ratification, issuer commissioning, then explicit
-T002 implementation commissioning after #50. Operation stays separate. See [evidence](evidence.md).
+Status: sole executable implementation list; T002/T003 landed; isolated T004/T005 candidate
+Commission: 2026-11-12 source ratification of #1308/#51 and explicit isolated
+T004/T005 commissioning. Operation stays separate. See [evidence](evidence.md).
 
 ## Owner Gate
 
@@ -10,7 +10,7 @@ T002 implementation commissioning after #50. Operation stays separate. See [evid
 
 ## US1 — Bounded Issuer Acquisition
 
-- [x] T002 [O] Realize the factory-owned internal operational grammar, runtime validator and protection/source binding; files: scripts/workload_factory_binding_runtime/config.py, tests/runtime_binding/test_config.py; verify: missing/pending/floating/worker-selected trust or service input refuses; no consumer executable lock is published. Source candidate only; grammar/source review precedes runtime use, authenticated live readback acquisition and deployed acceptance remain later hosting gates.
+- [x] T002 [O] Realize the factory-owned internal operational grammar, runtime validator and protection/source binding; files: scripts/workload_factory_binding_runtime/config.py, tests/runtime_binding/test_config.py; verify: missing/pending/floating/worker-selected trust or service input refuses; no consumer executable lock is published. Source accepted at #1308/#51; authenticated live readback acquisition and deployed acceptance remain later hosting gates.
 
 T002 now supplies a closed bounded internal grammar, independent approval digest
 and fresh exact readback binding under the trusted embedding boundary. Factory
@@ -24,8 +24,8 @@ Independent acceptance: issuer evidence verifies through the unchanged core; fai
 
 ## US2 — Trusted Runtime Composition
 
-- [ ] T004 [O] Connect authenticated current-record/challenge loaders and trusted hosting context; files: scripts/workload_factory_binding_runtime/loaders.py, tests/runtime_binding/test_loaders.py; verify: G01, service/source identity and canonical request binding; no worker-selected data/URL/loader.
-- [ ] T005 [O] Compose exact launch/protection/source preflight with existing ProofGate; files: scripts/workload_factory_binding_runtime/runtime.py, tests/runtime_binding/test_runtime.py; verify: each I04/P01 binding independently refuses when wrong/absent; worker booleans confer no authentication.
+- [x] T004 [O] Connect authenticated current-record/challenge loaders and trusted hosting context; files: scripts/workload_factory_binding_runtime/loaders.py, tests/runtime_binding/test_loaders.py, tests/runtime_binding/test_authenticated_loaders.py; verify: G01, service/source identity and canonical request binding; no worker-selected data/URL/loader. Isolated connector/hosting composition candidate; real deployment authentication remains unqualified.
+- [x] T005 [O] Compose exact launch/protection/source preflight with existing ProofGate; files: scripts/workload_factory_binding_runtime/runtime.py, tests/runtime_binding/test_runtime.py; verify: each I04/P01 binding independently refuses when wrong/absent; worker booleans confer no authentication. Isolated source/refusal behavior only; real P01 and deployed supervisor/custody/state/lifecycle gates remain pending.
 - [ ] T006 [O] Integrate independent supervisor observation and actual launch measurement; files: scripts/workload_factory_binding_runtime/supervisor.py, tests/runtime_binding/test_supervisor.py; verify: G02 and worker control-plane/key/policy denial; fixtures retain fixture-only scope.
 - [ ] T007 [O] Bind confined gate deployment/credential to the owning signer; files: scripts/workload_factory_binding_runtime/custody.py, tests/runtime_binding/test_custody.py; verify: G03 owning proof plus direct valid-preimage denial; new custody assertions refuse for upstream owner decision.
 - [ ] T008 [O] Add expected-initialized state preflight and restart/recovery enforcement; files: scripts/workload_factory_binding_runtime/state.py, tests/runtime_binding/test_state.py; verify: S01, no silent reset, ambiguity stays consumed and no hostile-host/backup rollback claim.
