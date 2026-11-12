@@ -14,7 +14,8 @@ rate limiter. There is no daemon or persistent key cache.
 The embedding selects the exact audience and expected claims outside worker
 control. The verifier preserves `verify(token, expected, *, now)` and returns the
 existing `WorkloadEvidence`; it creates no gate, signer, approval or effect.
-The full operational grammar/source/protection binding is still pending at T002.
+The internal operational/source/protection preflight is now a T002 source candidate;
+actual deployed composition and protection qualification remain pending.
 
 The helper fetches only the two fixed GitHub metadata URLs, with verified TLS,
 identity encoding, no redirects/credentials/cookies/ambient proxy or CA overrides.
@@ -53,6 +54,29 @@ checks, strict pinned validation of the owning factory packet, and cross-artifac
 requirement/task/matrix and local-link checks. The issuer package is opt-in;
 no protected workflow, provider secret or executable domain lock is supplied. Optional git hooks
 are disabled by the repository's auto_commit settings.
+
+## Internal T002 Preflight
+
+Import `RuntimeTrust` and `validate_config` from
+`workload_factory_binding_runtime.config` only in the trusted embedding. Supply
+bounded JSON bytes plus a separately selected approval digest, independent
+readback principal/callback and trusted epoch clock. The callback must authenticate
+its source and obtain actual measurements/protection context; it must not echo the
+candidate or discard unsupported provider rules. There is no provider client here.
+
+The factory-owned `supporting-docs/operational-grammar.md` in the governing change
+specifies the closed internal fields. Missing/extra/duplicate/pending input refuses.
+All source/dependency/composition, exact launch/run, service/state/lifecycle and
+environment restriction/reviewer/bypass selections match independent readback.
+Readback lives at most 60 seconds; config expiry may shorten that. Time is checked
+again after readback. The result is deeply immutable, supplies no signing authority,
+and must not be reused after its deadline or in place of fresh runtime preflight.
+
+The initial narrow protection profile requires explicit User/Team reviewers,
+prevented self-review, disabled admin bypass and exact allowed deployment refs.
+Source review must accept this grammar before runtime use. The tests use synthetic
+readback and isolated real-RSA tokens; they do not demonstrate actual provider
+protection, service authentication, administrative isolation or deployment.
 
 ## Rehearse the Accepted Baseline
 

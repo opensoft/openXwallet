@@ -1,6 +1,6 @@
 # Cross-Artifact Consistency Analysis
 
-Status: profile ratified; issuer-only source candidate
+Status: profile ratified; issuer landed; T002 source candidate
 
 | Requirements | Tasks | Matrix |
 | --- | --- | --- |
@@ -19,10 +19,20 @@ No requirement lacks a task or acceptance case. Feature 016 and its source-accep
 factory profile remain unchanged. Factory owns governance and operational meaning;
 the adapter owns the single implementation list. Deployment inputs/operator acts
 are blocked gates, not invented configuration or unresolved ownership/algorithm choices.
-The current owner act ratifies the profile and commissions only issuer/JWKS source.
+The original owner act ratified the profile and commissioned issuer/JWKS source.
+The subsequent owner act lands #50 and commissions the remaining T002 preflight.
 
 The issuer slice supplies I01-I03/I05 and the signed-claim portion of I04. It does
 not establish P01, actual protected-environment readback or complete any other
 runtime task. No broader usage-control proposal, neutral
 schema fork, consumer lock, domain marker, human approval, provider write,
 protected dispatch or release is introduced.
+
+T002 adds closed internal configuration parsing and canonical approval, fresh
+source/dependency/composition, exact launch/run, service/state/lifecycle and
+protection readback comparison. The concrete grammar remains factory-owned.
+Signed-claim integration through the unchanged verifier covers every launch
+claim independently. Synthetic readback does not establish actual provider
+acquisition, source measurement, complete provider-rule projection or deployed
+isolation. Those hosting obligations and deadline enforcement in later trusted
+composition remain explicit. T004–T015 and the consumer's own T002 stay pending.

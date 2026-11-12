@@ -180,3 +180,43 @@ focused/full temporary roots and their synthetic keys/state were removed and
 absence verified. The receipt-only follow-up preserves the tested source/tests.
 Fresh hosted acceptance is assessed at that published head, separately from
 these local results. All live/deployed/human gates remain unperformed.
+
+## T002 commissioning and source realization — 2026-11-12
+
+Brett directed: “Go ahead and land openXwallet #50 through the governed process
+when green, then implement and test the remaining T002 operational/source/
+protection binding. Keep feedback deferred and don’t replay either blocked write.”
+
+PR #50 landed at `75b88eaad84d4e302d27700bb50b761b95167f2e`, carrying reviewed
+head `7c6c113ae98d1aad383acdd72f0d60db374096d2`. Actual merged tree equals the
+tested candidate. All runnable hosted checks passed, including Sonar with zero
+open issues. The general hosted suite passed 566 with three shallow-history
+skips; full-history carve and neutrality/pruning suites passed 84 and 60.
+The neutrality comparator's informational mirrored-child failure was already
+present at #49; its comparison verdict remained IDENTICAL. GitHub Codex review
+was quota-refused, not an approval. Local expert findings had been closed.
+No main-triggered workflow exists for that merge, so none is claimed.
+
+The T002 candidate adds only `config.py`, its focused tests and feature context.
+Factory governance carries the concrete internal grammar in
+`supporting-docs/operational-grammar.md`. Closed bounded input, external approval
+digest, source/dependency/composition pins, exact launch/run and effective
+protection/service/state/lifecycle selection are compared against fresh trusted
+readback. The result is deeply immutable and expires at the earliest deadline.
+No service is constructed or credential issued by preflight. Tests cover each
+signed launch claim through the existing real-RSA issuer verifier.
+
+The focused suite passes **157 tests**. The local expert panel's architecture,
+performance, security, QA, static-analysis, API, data-integrity, reliability and
+simplicity reviews found no actionable issue. The initial full invocation
+passed 724 and failed two legacy sandbox tests because its explicit pytest
+temporary root was outside the configured TMPDIR. Corrected invocation results
+are recorded separately; no sandbox rule or production code was weakened.
+
+These are source/isolated results. Actual authenticated provider readback,
+complete effective-provider-rule projection, service source measurement,
+administrative isolation and runtime enforcement of the returned deadline are
+later trusted-hosting/composition obligations. Actual selections, protected
+setup/dispatch, deployed qualification and human/domain acceptance remain
+unperformed. The consumer's source-only lock and runtime gate remain unchanged.
+Feedback stays deferred and neither historical blocked write was replayed.

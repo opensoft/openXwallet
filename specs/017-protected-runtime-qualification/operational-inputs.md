@@ -4,7 +4,7 @@ Status: draft; not operational authorization
 
 | Input | Required evidence | Current state |
 | --- | --- | --- |
-| Profile/source | New profile accepted, exact implemented source/dependencies and protection binding | Profile ratified; issuer-only source commissioned; full source/protection acceptance pending |
+| Profile/source | New profile accepted, exact implemented source/dependencies and protection binding | Profile ratified; issuer #50 landed; T002 internal grammar/preflight source candidate; runtime source/protection acceptance pending |
 | Repository | Immutable IDs, configured subject and exact caller/reusable/source claims | Domain-owned identity readback; no approved launch selection here |
 | Environment/workflows | Protection/restrictions/bypass readback, caller/reusable refs/SHAs and allowed run policy | Not selected/provisioned |
 | Issuer | Fixed endpoints, approved audience/subject and trusted transport settings | Endpoints/bounds ratified and issuer slice implemented; live audience/subject not selected |
