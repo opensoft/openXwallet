@@ -237,3 +237,23 @@ Broad factory OpenSpec validation passes 122 items and fails the pre-existing
 `add-chain-attestation` missing-MODIFIED-scenario check. Both that packet and its
 canonical signed-execution-chain spec are unchanged from factory main. This
 limitation is retained explicitly; no unrelated packet, gate or rule was changed.
+
+### T002 quality follow-up
+
+The first hosted candidate passed its quality gate but retained five maintainability
+issues: duplicated ref prefixes, concise decimal syntax and two exception tests
+with argument preparation inside the assertion. Shared immutable prefixes,
+`re.ASCII`-restricted concise digits and precomputed test inputs address them.
+The additional mixed-Unicode digit refusal guards the unchanged ASCII-only rule.
+Security/static reviewers found no semantic regression. No rule, exclusion or
+issue status was waived or weakened.
+
+The complete sequence at `d8c166acc2961f349680e779311543eec0258d43` passes
+**727 tests**, including **158 T002 cases**, zero failures/errors/skips, both
+pin verifiers, syntax, plain/strict validation and all five canonical pinned
+OpenSpec items. JUnit SHA-256:
+`66f443784ad97fd8d3a527e2162a55347763310952ebbb23aee10ce3940c248e`.
+No attributable helper/test process remained; the follow-up temporary root and
+synthetic key/state files were removed, with absence verified. The receipt-only
+follow-up changes no source/tests. Fresh hosted acceptance remains a separate
+readback at the published head, not an inference from these local results.
