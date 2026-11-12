@@ -1,7 +1,8 @@
 # Tasks: Protected Machine Runtime Qualification
 
-Status: draft; sole executable implementation list
-Commission: preparation only; runtime implementation and operation have not started.
+Status: sole executable implementation list; bounded issuer source candidate complete
+Commission: 2026-11-12 owner ratification and issuer-only source commissioning;
+remaining implementation and operation stay separate. See [evidence](evidence.md).
 
 ## Owner Gate
 
@@ -10,7 +11,12 @@ Commission: preparation only; runtime implementation and operation have not star
 ## US1 — Bounded Issuer Acquisition
 
 - [ ] T002 [O] Realize the factory-owned internal operational grammar, runtime validator and protection/source binding; files: scripts/workload_factory_binding_runtime/config.py, tests/runtime_binding/test_config.py; verify: missing/pending/floating/worker-selected trust or service input refuses; no consumer executable lock is published.
-- [ ] T003 [O] Add opt-in bounded issuer fetch, freshness/coalesced refresh and accepted verifier adapter; files: scripts/workload_factory_binding_runtime/issuer.py, tests/runtime_binding/test_issuer.py; verify: I01-I05, no unapproved endpoint, stale fallback or network in existing offline gates.
+
+Only fixed issuer endpoints, selected audience and trusted source/transport/clock
+constructor inputs are realized for the independent T003 slice. They are not the
+full T002 grammar or deployed source/protection validation. T001's actual human
+act is recorded; its owner checkbox remains unmarked by the agent.
+- [x] T003 [O] Add opt-in bounded issuer fetch, freshness/coalesced refresh and accepted verifier adapter; files: scripts/workload_factory_binding_runtime/issuer.py, scripts/workload_factory_binding_runtime/transport.py, scripts/workload_factory_binding_runtime/_https_worker.py, tests/runtime_binding/**; verify: I01-I03/I05 and signed-claim I04 vectors pass, with no unapproved endpoint, stale fallback or network in existing offline gates. Full T002/P01 source/protection/service acceptance remains pending.
 
 Independent acceptance: issuer evidence verifies through the unchanged core; failure precedes any signer.
 

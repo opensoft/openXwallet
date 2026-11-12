@@ -1,13 +1,57 @@
-# Preparation Checks and Future Execution
+# Issuer Slice Checks and Future Execution
 
-Status: draft; no live command or runtime implementation supplied
+Status: bounded issuer source candidate; no protected execution command supplied
+
+## Issuer-Only Library Boundary
+
+The opt-in `workload_factory_binding_runtime` package supplies `IssuerKeySource`,
+`IssuerWorkloadVerifier` and the bounded `HttpsTransport`. Existing offline
+entrypoints stay unchanged. One trusted embedding owns one issuer source and
+shares it across its audience-specific verifiers; it must not reconstruct a source
+per request. Its in-memory initiation limit is not a distributed or restart-proof
+rate limiter. There is no daemon or persistent key cache.
+
+The embedding selects the exact audience and expected claims outside worker
+control. The verifier preserves `verify(token, expected, *, now)` and returns the
+existing `WorkloadEvidence`; it creates no gate, signer, approval or effect.
+The full operational grammar/source/protection binding is still pending at T002.
+
+The helper fetches only the two fixed GitHub metadata URLs, with verified TLS,
+identity encoding, no redirects/credentials/cookies/ambient proxy or CA overrides.
+The refresh shares a ten-second deadline across discovery and JWKS, with a
+five-second connection/DNS/TLS phase and 256 KiB body limit. Every helper is
+reaped on completion, timeout or interruption. The OS scheduler/process-creation
+boundary is not a hard realtime guarantee.
+
+Freshness uses the earlier discovery/key deadline, a 300-second administrative
+cap, HTTP max-age or Expires, Date/Age and request duration. No-store/no-cache or
+Vary-star material is not retained for reuse; zero or expired freshness refuses.
+Such non-reusable responses can cause subsequent calls to refuse until the
+30-second refresh limit permits a new request. There is no stale fallback.
+An external set may have up to 64 entries; after validation only the selected
+eligible RSA key is projected into the unchanged core's <=16-key snapshot API.
+
+## Run Self-Contained Issuer Tests
+
+In the declared Linux bench with the reviewed locked environment and scoped
+submodules initialized, run:
+
+```sh
+python3 -m pytest tests/runtime_binding -q -rs
+```
+
+These tests inject clocks/transport or use isolated loopback TLS and synthetic
+issuer keys. They do not contact the public issuer or request provider credentials.
+Use normal test umask 022 inside a private evidence root. The complete repository
+gate sequence remains required before publication. No live JWT, environment,
+supervisor, custody deployment or human assurance is supplied by this command.
 
 ## Check This Preparation
 
 Select feature 017 explicitly in the declared Linux bench. Run Spec Kit prerequisite
 checks, strict pinned validation of the owning factory packet, and cross-artifact
-requirement/task/matrix and local-link checks. No new runtime package, protected
-workflow, provider secret or executable domain lock exists. Optional git hooks
+requirement/task/matrix and local-link checks. The issuer package is opt-in;
+no protected workflow, provider secret or executable domain lock is supplied. Optional git hooks
 are disabled by the repository's auto_commit settings.
 
 ## Rehearse the Accepted Baseline
