@@ -75,7 +75,7 @@ subject name. The deadline check was added and the fixture chain corrected;
 certificate validation was not weakened. The corrected expanded run passed 92
 tests. Final gate results and cleanup follow.
 
-### Final local source verification
+### Pre-review local source verification
 
 The complete gate sequence ran in py-bench as UID 1000, normal test umask 022,
 inside a private evidence parent. Both scoped init steps, both pin verifiers,
@@ -102,3 +102,29 @@ confined custody deployment, persistent runtime state, janitor or human approval
 The consumer source-only lock is unchanged, `runtime_bindings` remains null and
 attended qualification remains not-performed. T002 and all later runtime tasks
 remain pending. Feedback stays deferred; neither historical blocked write was replayed.
+
+### Source expert review and corrected candidate
+
+The pre-PR panel covered architecture, performance, security, QA, static/Sonar,
+API/integration, data integrity, reliability/concurrency and simplicity, plus
+CI/release, with independent coordinator review. It reviewed source commit
+`ccc99aadd8c71dadd78599486b109ffce643918f` and the focused corrections below.
+The committed candidate also passed the complete 561-test gate sequence before
+the review corrections, proving the export-based checks saw the tracked files.
+
+Two actionable P2 findings were reproduced and corrected:
+
+1. `HTTPResponse.read1()` can return EOF before a declared Content-Length is
+   satisfied. The helper now checks completed fixed-length body size before
+   returning a frame. A loopback response with valid JSON but ten missing
+   advertised bytes failed before the fix and is refused afterward.
+2. HTTP delta-seconds with many leading zeros were incorrectly saturated as
+   overflow, extending padded max-age zero/one to 300 seconds. Leading zeros
+   are now normalized before bounded conversion. Three padding regressions
+   failed before the fix; padded zero/one, padded max-age/Age and genuine
+   overflow cases pass afterward.
+
+The finding owners independently confirmed both closures. No unresolved local
+panel finding remains. The corrected focused suite passes **111 tests**, with
+zero failures/errors/skips. This review is distinct from hosted CI, a completed
+GitHub Codex review, source acceptance or live qualification.

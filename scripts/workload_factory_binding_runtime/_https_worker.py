@@ -84,6 +84,8 @@ def exchange(url, ca_file, budget, output):
                     raise ValueError("oversized-body")
                 if not chunk:
                     break
+            if lengths and len(body) != int(lengths[0]):
+                raise ValueError("incomplete-body")
             frame = json.dumps({"status": response.status, "headers": headers,
                                 "body": base64.b64encode(body).decode("ascii")},
                                separators=(",", ":")).encode("ascii")

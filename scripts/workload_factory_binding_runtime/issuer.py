@@ -93,6 +93,7 @@ def _directives(values):
 def _delta(value):
     require(type(value) is str and re.fullmatch(r"[0-9]+", value), "invalid-issuer-response")
     # Saturate rather than overflow an HTTP delta-seconds value (RFC 9111).
+    value = value.lstrip("0") or "0"
     return min(int(value), 2**31) if len(value) <= 10 else 2**31
 
 

@@ -173,3 +173,24 @@ def test_expected_policy_is_rejected_before_fetch(r):
     with pytest.raises(BindingError, match="^invalid-workload-policy$"):
         check(r)
     assert not r.transport.calls
+
+
+@pytest.mark.parametrize("max_age,age,ttl", [
+    ("00000000000000000000", None, 0),
+    ("00000000000000000001", None, 1),
+    ("00000000000000000100", "00000000000000000095", 5),
+    ("999999999999999999999999999999999999", None, 300),
+    ("300", "999999999999999999999999999999999999", 0),
+])
+def test_http_delta_padding_and_actual_overflow(r, max_age, age, ttl):
+    r.h.claims["exp"] = r.h.now + 300
+    r.h.reset_evidence()
+    headers = [("Cache-Control", "max-age=" + max_age)]
+    if age is not None:
+        headers.append(("Age", age))
+    r.transport.headers[JWKS_URL] = tuple(headers)
+    if ttl == 0:
+        with pytest.raises(BindingError, match="^issuer-keys-expired$"):
+            check(r)
+    else:
+        assert check(r).valid_until == r.h.now + ttl

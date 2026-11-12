@@ -85,7 +85,7 @@ def server(r, tmp_path, monkeypatch, *, mode="normal", wrong_host=False):
                 body = b"x" * (wire.MAX_BODY + 1)
             self.send_header("Content-Type", "application/json")
             self.send_header("Cache-Control", "max-age=300")
-            self.send_header("Content-Length", str(len(body)))
+            self.send_header("Content-Length", str(len(body) + (10 if mode == "truncated" else 0)))
             if mode == "compressed":
                 self.send_header("Content-Encoding", "gzip")
             self.end_headers()
@@ -155,8 +155,8 @@ def test_actual_tls_requires_chain_and_hostname(r, tmp_path, monkeypatch, kind):
         assert not requests
 
 
-@pytest.mark.parametrize("mode", ["oversized", "compressed"])
-def test_actual_transport_rejects_oversize_and_compression(r, tmp_path, monkeypatch, mode):
+@pytest.mark.parametrize("mode", ["oversized", "compressed", "truncated"])
+def test_actual_transport_rejects_malformed_or_oversized_response(r, tmp_path, monkeypatch, mode):
     with server(r, tmp_path, monkeypatch, mode=mode) as (client, requests, _ca):
         with pytest.raises(BindingError, match="^issuer-fetch-unavailable$"):
             client.fetch(DISCOVERY_URL, deadline=time.monotonic() + 10)
