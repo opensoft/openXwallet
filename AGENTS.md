@@ -12,12 +12,15 @@ ownership, validation, versioning, and release constraints.
 <!-- SPECKIT START -->
 ## Active Speckit Feature
 
-- Feature: 016-factory-workload-binding, source accepted; plan:
-  specs/016-factory-workload-binding/plan.md.
-- Candidate composition owner: opensoft/openxFactory,
-  openspec/changes/add-workload-factory-binding/ (source acceptance ratified).
-  Exact owner decision: specs/016-factory-workload-binding/source-acceptance.md.
-  Its sole executable task list is this feature's tasks.md.
+- Preparation: 017-protected-runtime-qualification; plan:
+  specs/017-protected-runtime-qualification/plan.md.
+- Proposed factory composition: opensoft/openXfactory,
+  openspec/changes/prepare-protected-runtime-qualification/.
+  Feature 017 tasks.md is the sole future implementation list. Preparation
+  is commissioned; new-profile acceptance, implementation and operation
+  remain separate gates. Existing offline entrypoints stay unchanged.
+- Accepted baseline: 016-factory-workload-binding; source decision:
+  specs/016-factory-workload-binding/source-acceptance.md and plan.md.
 - Existing adapter governing baseline: THIS repository's
   `openspec/changes/split-openwallet-neutral-core/`, RATIFIED 2026-10-08
   (Brett Heap, operator authority, "ratify 26 and merge"). Its §5 is the
