@@ -128,3 +128,23 @@ The finding owners independently confirmed both closures. No unresolved local
 panel finding remains. The corrected focused suite passes **111 tests**, with
 zero failures/errors/skips. This review is distinct from hosted CI, a completed
 GitHub Codex review, source acceptance or live qualification.
+
+### Final corrected-commit verification and cleanup
+
+The full repository sequence passed again at corrected source commit
+`3972d4b57cf866a51cea22a7726291a0936b5994`: **567 tests**, including **111 issuer
+tests**, zero failures/errors/skips, both pin verifiers, syntax, plain/strict
+validators and all five canonical verified OpenSpec items. Selected owning code
+remained `bb0e9dae89a771b05f6c235d0a77237288b95c85`. The receipt-only follow-up
+changes this evidence file; the tested source, tests and tracked path set remain unchanged.
+
+Final full JUnit SHA-256:
+`3b41da319c3a9f95fc6eda19711e6fed18411b01876f7381df2fa72399535b08`.
+
+Independent process readback again found no attributable helper/fixture PID.
+Tracked/full/focused temporary roots were removed and absence verified after
+the corrected run; their synthetic key/state files are absent. Diagnostic logs
+and XML remain. Existing verifier/gate source, contracts, dependency locks,
+workflows, neutral gitlink and relative feature pointer remain unchanged.
+No public issuer/provider call, protected dispatch, human acceptance, executable
+domain lock or source pin advancement was performed.
