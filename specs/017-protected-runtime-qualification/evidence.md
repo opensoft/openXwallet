@@ -321,3 +321,27 @@ independently reproduced closure. The focused suite passes **94 cases**. The
 architecture, performance, security, QA, static-analysis, API, data-integrity and
 simplicity reviewers found no additional actionable issue. No rule, check,
 neutral contract or original verification core was changed.
+
+### Corrected full verification
+
+The complete local sequence at `10b75f3eb43eb8050b7adf10225a84c657c2123b`
+passes **821 tests**, including **94 new composition cases**, zero failures,
+errors or skips, both pin verifiers, syntax, plain/strict validation and all five
+canonical pinned OpenSpec items. The selected owning-source proof/transport
+integrations are included. JUnit SHA-256:
+`453a23fe937475775d7acfb6d5a7462006f3d397496fe8cc3863d0d0e27b9538`.
+The standalone analyzer reports zero issues in both new production files and
+the mTLS fixture file. That is separate from fresh hosted Sonar acceptance.
+
+Independent process readback found no attributable test/helper PID. Owned
+focused, initial full and corrected full temporary roots were removed after
+completion, including identified default pytest roots, with absence verified.
+Synthetic key/state files are absent; logs/XML remain outside source. This
+receipt-only follow-up changes no source/tests. No provider credential, public
+issuer call, protected setup/dispatch, release or consumer pin change occurred.
+
+All five factory #1308 actual-main-triggered workflows passed at merge
+`469526935630d92f870a31b19d626725b55793e6`. Its main pytest result was
+10,391 passed, six skipped, 338 deselected and 741 subtests passed. Adapter #51
+has no main-triggered workflows, so none is inferred. These post-merge results
+do not establish runtime deployment or human acceptance.
