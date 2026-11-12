@@ -12,13 +12,15 @@ ownership, validation, versioning, and release constraints.
 <!-- SPECKIT START -->
 ## Active Speckit Feature
 
-- Preparation: 017-protected-runtime-qualification; plan:
+- Active feature: 017-protected-runtime-qualification; plan:
   specs/017-protected-runtime-qualification/plan.md.
-- Proposed factory composition: opensoft/openXfactory,
+- Ratified factory composition: opensoft/openXfactory,
   openspec/changes/prepare-protected-runtime-qualification/.
-  Feature 017 tasks.md is the sole future implementation list. Preparation
-  is commissioned; new-profile acceptance, implementation and operation
-  remain separate gates. Existing offline entrypoints stay unchanged.
+  Feature 017 tasks.md is the sole implementation list. Brett Heap ratified
+  #1307 at 04fad0559 with openXwallet #49 at 0a2dda9 and commissioned only
+  the bounded issuer/JWKS slice after the three preparation landings.
+  Remaining runtime implementation and operation stay separately gated.
+  Existing offline entrypoints stay unchanged.
 - Accepted baseline: 016-factory-workload-binding; source decision:
   specs/016-factory-workload-binding/source-acceptance.md and plan.md.
 - Existing adapter governing baseline: THIS repository's

@@ -4,10 +4,10 @@ Status: draft; not operational authorization
 
 | Input | Required evidence | Current state |
 | --- | --- | --- |
-| Profile/source | New profile accepted, exact implemented source/dependencies and protection binding | Proposed; implementation not commissioned |
+| Profile/source | New profile accepted, exact implemented source/dependencies and protection binding | Profile ratified; issuer-only source commissioned; full source/protection acceptance pending |
 | Repository | Immutable IDs, configured subject and exact caller/reusable/source claims | Domain-owned identity readback; no approved launch selection here |
 | Environment/workflows | Protection/restrictions/bypass readback, caller/reusable refs/SHAs and allowed run policy | Not selected/provisioned |
-| Issuer | Fixed endpoints, approved audience/subject and trusted transport settings | Endpoints proposed; audience/subject not selected |
+| Issuer | Fixed endpoints, approved audience/subject and trusted transport settings | Endpoints/bounds ratified and issuer slice implemented; live audience/subject not selected |
 | Hosting embedding | Authenticated bounded worker channel, current-service loaders and actual source/config measurement | Not deployed/accepted |
 | Supervisor | Separate admin principal/key/policy and worker-denial evidence | Not deployed/qualified |
 | Custody/registry/challenge | Owning APIs, authenticated service/credential references, narrow gate deployment policy and valid worker signing denial | Reference behavior only; no workload-bound deployment |

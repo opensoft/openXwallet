@@ -1,6 +1,6 @@
 # Cross-Artifact Consistency Analysis
 
-Status: draft
+Status: profile ratified; issuer-only source candidate
 
 | Requirements | Tasks | Matrix |
 | --- | --- | --- |
@@ -19,8 +19,10 @@ No requirement lacks a task or acceptance case. Feature 016 and its source-accep
 factory profile remain unchanged. Factory owns governance and operational meaning;
 the adapter owns the single implementation list. Deployment inputs/operator acts
 are blocked gates, not invented configuration or unresolved ownership/algorithm choices.
-Preparation does not ratify the new profile or commission implementation.
+The current owner act ratifies the profile and commissions only issuer/JWKS source.
 
-The plan is ready for owner review. No broader usage-control proposal, neutral
+The issuer slice supplies I01-I03/I05 and the signed-claim portion of I04. It does
+not establish P01, actual protected-environment readback or complete any other
+runtime task. No broader usage-control proposal, neutral
 schema fork, consumer lock, domain marker, human approval, provider write,
 protected dispatch or release is introduced.

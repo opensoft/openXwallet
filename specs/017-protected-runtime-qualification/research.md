@@ -1,6 +1,17 @@
 # Research and Proposed Decisions
 
-Status: draft; proposed for owner acceptance
+Status: profile ratified 2026-11-12; issuer-only implementation commissioned
+
+The decision text below records the preparation baseline accepted with factory
+#1307 / adapter #49. The implemented source scope and limits are in [evidence](evidence.md).
+
+For the standard-library transport, also see [Python 3.12 TLS contexts](https://docs.python.org/3.12/library/ssl.html#ssl.SSLContext),
+[subprocess lifetime and timeout semantics](https://docs.python.org/3.12/library/subprocess.html#subprocess.Popen.communicate)
+and [HTTP age/freshness](https://www.rfc-editor.org/rfc/rfc9111.html#section-4.2.3).
+The short HTTPS helper bounds OS resolver/TLS work; explicit CA loading and a
+minimal environment prevent ambient proxy, trust and keylog configuration from
+changing the selected transport. Process creation/scheduling remains trusted-host
+behavior, not a hard realtime guarantee.
 
 ## R1 — Preserve the accepted verification core
 

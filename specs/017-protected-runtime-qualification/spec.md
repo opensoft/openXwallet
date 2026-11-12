@@ -2,9 +2,14 @@
 
 **Feature Branch**: `017-protected-runtime-qualification`
 **Created**: 2026-11-12
-**Status**: Draft; preparation only
+**Status**: Profile ratified; bounded issuer/JWKS source candidate; remaining runtime unimplemented
 **Input**: Prepare the next runtime qualification step for the first codeXfactory pilot after #581 post-merge verification.
 **Governance owner**: `opensoft/openXfactory`, `openspec/changes/prepare-protected-runtime-qualification/`.
+
+2026-11-12: Brett Heap ratified factory #1307 at `04fad0559` with adapter #49
+at `0a2dda9` and commissioned only the bounded issuer/JWKS slice after the
+preparation landings. See [evidence](evidence.md). The original input and full
+feature requirements remain the baseline; this slice does not complete the feature.
 
 ## User Scenarios & Testing
 
