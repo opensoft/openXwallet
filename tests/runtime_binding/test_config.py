@@ -121,6 +121,7 @@ def test_each_service_required(configuration, role):
     (("issuer", "issuer"), "https://worker.invalid"), (("issuer", "audience"), "pending"),
     (("launch", "sub"), "pending"), (("launch", "run_id"), "0001"),
     (("launch", "run_attempt"), True), (("launch", "repository_id"), "0"),
+    (("launch", "repository_id"), "1\u0662\u0663"),
     (("launch", "sha"), "c" * 40), (("launch", "workflow_sha"), "c" * 40),
     (("launch", "job_workflow_sha"), "c" * 40),
     (("launch", "workflow_ref"), "fixture/pilot/.github/workflows/caller.yml@main"),
@@ -220,8 +221,9 @@ def test_readback_is_not_the_worker_principal(configuration):
 @pytest.mark.parametrize("raw", [b'{"profile":1,"profile":2}', b"[]", b"null", b"{\"x\":NaN}",
     b"\xff", b"{" + b" " * 16384 + b"}", b"[" * 1000, "{}"])
 def test_malformed_duplicate_oversized_config_has_fixed_error(configuration, raw):
+    trust, _ = trust_for(configuration)
     with pytest.raises(BindingError, match="^invalid-runtime-config$"):
-        validate_config(raw, trust=trust_for(configuration)[0])
+        validate_config(raw, trust=trust)
 
 
 def test_sensitive_readback_exception_is_redacted(configuration):
@@ -243,8 +245,9 @@ def test_invalid_readback_refuses(configuration, raw):
 
 
 def test_worker_dictionary_cannot_construct_trust(configuration):
+    raw = encoded(configuration)
     with pytest.raises(BindingError, match="^invalid-runtime-trust$"):
-        validate_config(encoded(configuration), trust={"approved": True})
+        validate_config(raw, trust={"approved": True})
 
 
 def test_readback_repeated_for_each_preflight(configuration):

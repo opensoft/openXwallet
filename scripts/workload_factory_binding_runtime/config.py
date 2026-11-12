@@ -23,6 +23,7 @@ _SHA = re.compile(r"[0-9a-f]{40}\Z")
 _REPO = re.compile(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+\Z")
 _HANDLE = re.compile(r"[a-z][a-z0-9_-]{0,31}:[A-Za-z0-9][A-Za-z0-9._:-]{0,127}\Z")
 _PENDING = frozenset(("pending", "unselected", "latest", "head", "todo", "tbd", "unknown"))
+_REF_PREFIXES = ("refs/heads/", "refs/tags/")
 
 
 def _object(value, fields):
@@ -39,7 +40,7 @@ def _selected(value):
 
 
 def _positive(value):
-    require(type(value) is str and re.fullmatch(r"[1-9][0-9]{0,19}", value),
+    require(type(value) is str and re.fullmatch(r"[1-9]\d{0,19}", value, flags=re.ASCII),
             "invalid-runtime-config")
 
 
@@ -72,7 +73,7 @@ def _launch(value, sources):
             "invalid-runtime-config")
     for claim in ("sha", "workflow_sha", "job_workflow_sha"):
         _sha(value[claim])
-    require(value["ref"].startswith(("refs/heads/", "refs/tags/")), "invalid-runtime-config")
+    require(value["ref"].startswith(_REF_PREFIXES), "invalid-runtime-config")
     for role, name, sha in (("caller_workflow", "workflow_ref", "workflow_sha"),
                             ("reusable_workflow", "job_workflow_ref", "job_workflow_sha")):
         source = sources[role]
@@ -81,7 +82,7 @@ def _launch(value, sources):
                 and source["path"].endswith((".yml", ".yaml"))
                 and separator and workflow == source["repository"] + "/" + source["path"]
                 and (selected_ref == source["commit"]
-                     or selected_ref.startswith(("refs/heads/", "refs/tags/")))
+                     or selected_ref.startswith(_REF_PREFIXES))
                 and value[sha] == source["commit"], "invalid-runtime-config")
     require(sources["worker"]["repository"] == value["repository"]
             and sources["worker"]["commit"] == value["sha"]
@@ -105,7 +106,7 @@ def _protection(value, claims):
     require(len({(x["type"], x["id"]) for x in reviewers}) == len(reviewers), "invalid-runtime-config")
     refs = value["deployment_refs"]
     require(type(refs) is list and 0 < len(refs) <= 32
-            and all(reference(v) and v.startswith(("refs/heads/", "refs/tags/")) for v in refs)
+            and all(reference(v) and v.startswith(_REF_PREFIXES) for v in refs)
             and len(set(refs)) == len(refs) and claims["ref"] in refs, "invalid-runtime-config")
 
 
