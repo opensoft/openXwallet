@@ -220,3 +220,20 @@ later trusted-hosting/composition obligations. Actual selections, protected
 setup/dispatch, deployed qualification and human/domain acceptance remain
 unperformed. The consumer's source-only lock and runtime gate remain unchanged.
 Feedback stays deferred and neither historical blocked write was replayed.
+
+Corrected full verification at `e24ffa45b132dd814f110641a380135147985709` passed
+**726 tests**, including **157 new T002 cases**, zero failures/errors/skips and
+the seven selected owning-source integrations. Both pin verifiers, syntax,
+plain/strict validation and all five canonical pinned OpenSpec items passed.
+JUnit SHA-256:
+`bede283928bebbae1dc24f19b16a88cbaefa05d340f1a39f0fa90d43eaf7f6f6`.
+No attributable test/helper process remained; owned failed/corrected full-suite
+temporary roots and synthetic key/state material were removed, absence verified.
+Logs and XML remain outside source. This receipt follow-up changes no source/tests.
+
+The paired factory grammar at `7d99face8934f39fcccc4d9e4d0cf4b068d67ab6` passes
+strict scoped OpenSpec validation; its 247-row corpus ledger remains consistent.
+Broad factory OpenSpec validation passes 122 items and fails the pre-existing
+`add-chain-attestation` missing-MODIFIED-scenario check. Both that packet and its
+canonical signed-execution-chain spec are unchanged from factory main. This
+limitation is retained explicitly; no unrelated packet, gate or rule was changed.
