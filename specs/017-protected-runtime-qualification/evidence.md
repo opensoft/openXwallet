@@ -616,3 +616,82 @@ own reproduction roots. Logs/XML remain outside source. This receipt follow-up
 changes no production code or tests. Deployed storage/recovery, lifecycle,
 protected operation and human acceptance remain pending. Feedback stays deferred;
 neither historical blocked write was replayed.
+
+## T009 source commissioning — 2026-11-13
+
+Brett ratified adapter #55 at `caef11d92906` for source acceptance only,
+directed landing when green and commissioned isolated T009 implementation/tests.
+The exact head passed all runnable checks with no unresolved review threads and
+merged normally as `46c83b1bd10a742ddd9b7d68459d8ea2ba13c949`, tree
+`9f417f60768ced57fd829e1502b06083458f69de`, equal to the ratified tree.
+No administrative approval override was needed. The adapter has no main-triggered
+workflows; no separate post-merge CI result is inferred.
+
+`RunLifecycle` binds the fixed run scope, lease and resource manifest and exchanges
+deadline/clock checkpoints with the trusted bridge. The one-shot runner finalizes
+success, failure and cancellation and returns an operation value only after fresh
+independent cleanup verification. `RunJanitor` closes leases and conditionally
+cleans only exact run-owned generations, with retained replay/shared assets excluded.
+Its separately scheduled expiry sweep needs no runner finally or live proof config.
+
+The initial focused isolated matrix passed **46 tests**. Separate janitor/readback
+processes use bounded JSON over host-selected pipe capabilities, with peer identity
+outside the request. Actual worker processes are stopped/reaped, fixture credentials
+revoked and run files removed; replay state and shared sentinels remain. An owning
+proof verifies, including success/failure/cancellation after signing. Hard runner
+death, expiry cleanup, forged peer denial, missing reader, acknowledgement-without-
+removal and replacement generation are exercised. Cleanup readback includes a fresh
+random attempt reference so a prior positive observation cannot satisfy a new attempt.
+
+The fixture registrations, controlled clock and same-user processes establish only
+isolated behavior. Provider registration durability/conditional operations, actual
+independent scheduling/admin/readback, retention, OS isolation and deployed L01/P01
+remain unqualified. No provider setup, protected dispatch, release, consumer pin or
+human approval is supplied. Feedback stays deferred; neither historical blocked
+write is replayed.
+
+### T009 expert review and timing corrections
+
+All nine local expert roles completed. Three P2 timing findings were reproduced
+with focused regressions before correction: registration lookup could consume
+the janitor budget before a fresh budget began; cleanup could outlive an earlier
+proof-use deadline before the runner returned its value; and a final bridge-only
+clock sample was not retained by the outer active run.
+
+The janitor now holds the approved fixed plan, rejects another plan before I/O,
+caps the whole attempt before lookup and verifies the current registration digest.
+The runner carries cleanup verification's latest time and rechecks the retained
+proof-use deadline after cleanup without revalidating the intentionally closed lease.
+The bridge publishes its final checkpoint without another clock sample or I/O.
+Performance, QA and API reviewers independently confirmed their respective closures.
+
+Cleanup catches ordinary provider exceptions while allowing control cancellation
+to propagate; an independent sweep remains responsible after interruption. Fixture
+audit denials are explicit rather than assertions hidden by generic error handling.
+No rule, issue status or gate threshold is waived. The focused matrix now passes
+**54 tests**, including the post-cleanup and bridge-return regressions, retained
+reservations after refusal, interruption during finalization and revoked leases.
+
+### Final T009 source verification and cleanup
+
+The complete ordered sequence ran with source/tests and HEAD fixed at
+`8bb41cd33782f140878caefdabe3e7b94d818e92`: **1,044 tests passed**, including
+**54 T009 cases**, zero failures/errors/skips, both pin verifiers, syntax,
+plain/strict validation and all five canonical pinned OpenSpec items. Explicit
+owning-source integrations use clean `openWallet-code` at
+`bb0e9dae89a771b05f6c235d0a77237288b95c85`. JUnit SHA-256:
+`a6cb25f72474aa6d2fe4af0a921f8561e1141b0a3324ec71286885a5d24ccbe6`.
+
+All nine expert roles completed and the three P2 findings have independent closure.
+Standalone Sonar reports zero issues in both production files and all three test
+files. Fresh hosted CI, Sonar and Codex response are assessed at the published
+candidate head separately.
+
+Independent readback checked **16 recorded worker generations**, with none still
+present, and found no attributable fixture/worker/test PID. All owned focused,
+red and full temporary roots, including synthetic credential/key/state material,
+were removed and absence verified. Reviewers removed their own reproduction roots.
+Logs/XML remain outside source. This receipt follow-up changes no production code
+or tests. Actual provider lifecycle/admin isolation and protected-machine/human
+acceptance remain separate gates. Feedback stays deferred; neither historical
+blocked write was replayed.

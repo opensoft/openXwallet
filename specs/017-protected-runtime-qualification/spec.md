@@ -2,7 +2,7 @@
 
 **Feature Branch**: `017-protected-runtime-qualification`
 **Created**: 2026-11-12
-**Status**: T002–T007 source accepted and landed; isolated T008 source candidate
+**Status**: T002–T008 source accepted and landed; isolated T009 source candidate
 **Input**: Prepare the next runtime qualification step for the first codeXfactory pilot after #581 post-merge verification.
 **Governance owner**: `opensoft/openXfactory`, `openspec/changes/prepare-protected-runtime-qualification/`.
 
@@ -28,6 +28,12 @@ unchanged observation format. It does not establish independent deployment
 administration or worker OS access denial from same-user fixtures.
 
 ## User Scenarios & Testing
+
+Brett ratified #55 at `caef11d92906` for source acceptance only and commissioned
+T009 in isolation. Run-scoped lease checks, one-shot finalization, independent
+attempt-bound cleanup readback and an independently scheduled janitor now have
+an isolated source realization. Same-user processes and synthetic registrations
+do not establish deployed administrative isolation or provider lifecycle acceptance.
 
 Brett ratified #54 at `8de227dadd53` for source acceptance only and commissioned
 T008 in isolation. Runtime state preflight now binds the recorded initialization,

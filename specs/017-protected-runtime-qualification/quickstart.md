@@ -90,6 +90,16 @@ owned temporary tree. Current observations are in [evidence.md](evidence.md).
 
 ## Future Protected Machine Sequence
 
+T009's isolated tests are `test_lifecycle.py` and `test_lifecycle_process.py`.
+Trusted hosting supplies a fixed registered `RunPlan`, janitor and independent
+readback connectors, then binds `RunLifecycle` through the bridge's optional
+`lifecycle` constructor argument and calls `run(bridge-operation)`. Success is
+returned only after fresh attempt-bound cleanup verification; failure and
+cancellation finalize too. A separate janitor schedule handles runner death and
+expiry. The tests exercise real fixture processes/files, scoped credential
+revocation, preserved replay/shared resources and an acknowledgement-without-removal
+mutation. They supply no deployed scheduler, provider registration or dispatch.
+
 T008's isolated source tests are in `test_state.py`. Provision a disposable store
 as an explicit fixture/operator act, retain its initialization receipt outside
 worker control, then construct `InitializedLedger` and supply it through

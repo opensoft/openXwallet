@@ -240,3 +240,71 @@ between observations. Hosting must protect parent paths, database files and
 initialization/recovery administration and prohibit active-scope restore. Actual
 authenticated storage readback, retention enforcement and OS/admin isolation
 remain deployed acceptance inputs. Same-user isolated tests do not qualify them.
+
+## Isolated T009 realization
+
+Trusted hosting creates `RunLifecycle` from an operator-selected `RunPlan`, current
+runtime trust, a selected janitor `BoundService`, an independent readback capability
+and a separate cleanup clock. The plan binds exact configuration/case/run/attempt,
+lease/cleanup/receipt-retention references, fixed lease interval and bounded cleanup
+budget (1–60 seconds). Its bounded manifest names each resource's immutable provider
+generation, kind and run/retained/shared retention. References and generations are
+unique. The selected replay store is mandatory retained state in both the client
+and janitor plan validation. No worker supplies a plan, callback, path or peer.
+
+The trusted bridge's optional `lifecycle` constructor argument uses this capability
+before/after guarded proof I/O and through the final check. Earliest expiry and
+latest clock checkpoints pass both ways; an active one-shot run retains the same
+checkpoints across bridge calls. Existing neutral proof and worker-facing methods
+stay unchanged. A bridge without lifecycle is a compatibility seam, not L01 evidence.
+Hosting invokes `run(bridge-operation)`; the operation callback is trusted code,
+never deserialized from a worker. This is a synchronous embedding, not an async
+server or a generic provider-execution API.
+
+`RunJanitor` holds the approved fixed plan and authenticates transport-derived
+`JanitorPeer` before protected I/O. It rejects other plan references, caps the whole
+attempt budget before lookup and compares current registration to the fixed digest.
+It loads protected lease records, closes the lease, and attempts
+each run resource's cleanup. Current provider ownership and generation must match
+the registered scope. The cleanup callback must conditionally revoke/remove that
+exact generation/owner; it cannot use a worker path or perform an unscoped sweep.
+Retained/shared resources never enter deletion callbacks. Partial failure still
+attempts remaining scoped resources. Registrations and ownership must be durable
+before credentials are issued; the provider implements those atomic ownership and
+conditional-operation guarantees, not these Python types.
+
+Success, ordinary failure and cancellation each invoke finalization. Cleanup uses
+its own clock/authority and the accepted fixed plan, so expired/lost proof
+configuration does not disable resource cleanup. The cleanup actor's acknowledgement
+is never sufficient. A distinct principal/credential supplies independent readback
+bound to the exact plan, scope, fresh timestamp and a new random cleanup-attempt
+reference. Missing/stale/duplicate/mismatched readback refuses. Every run resource
+must be absent; credentials must also be revoked. Every retained/shared resource
+must remain present at its selected generation. Internal `CleanupVerification` is
+a checkpoint; full redacted receipt construction remains T011.
+
+The bridge publishes its final clock/deadline checkpoint into the active run without
+another clock sample or I/O. After cleanup verification, the runner retains its latest
+time and rechecks the proof-use deadline before returning the operation value; it
+does not revalidate the intentionally closed lease.
+Ordinary operation failures produce a fixed error; operation cancellation finalizes
+before propagation. Control cancellation during finalization may interrupt it and
+requires independent sweep/retry. Cleanup uncertainty fails qualification even if the operation itself
+succeeded. Post-sign failure cannot undo a signature; consumed replay state remains.
+No callback can preempt arbitrary hung provider code: all connectors/provider
+callbacks must enforce the supplied deadline and their own I/O budget.
+
+Runner finally cannot execute after hard death. An independently hosted scheduler
+must invoke the janitor's local `sweep` capability when the fixed lease expires or
+is revoked/cancelled/closed. It refuses an active unexpired run and can retry cleanup
+without live proof configuration. Scheduler availability, durable registrations,
+actual provider revocation/absence, retention and independent readback/administration
+are mandatory deployed inputs; this library supplies no provider setup or daemon.
+
+Isolated tests use separate janitor and readback processes with host-selected OS
+pipe capabilities and bounded JSON frames. They stop/reap actual owned processes,
+revoke a scoped fixture credential and remove run files while preserving the actual
+replay database and shared sentinel. Owning proofs verify. Success/failure/cancel,
+hard-runner-exit expiry cleanup, forged worker peer denial, missing reader,
+acknowledgement-without-removal and replacement-generation refusal are exercised.
+Same-user fixtures do not prove deployed OS/admin isolation or hostile-host safety.

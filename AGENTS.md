@@ -25,6 +25,8 @@ ownership, validation, versioning, and release constraints.
   isolation. Brett ratified #53 at aff5b1e14979 for source acceptance only
   and commissioned T007 in isolation. Brett ratified #54 at 8de227dadd53 for
   source acceptance only and commissioned T008 in isolation.
+  Brett ratified #55 at caef11d92906 for source acceptance only and commissioned
+  T009 in isolation.
   Deployed supervisor, custody, state, lifecycle and operation stay
   separately gated. The factory owns the grammar.
   Existing offline entrypoints stay unchanged.

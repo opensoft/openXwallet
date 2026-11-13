@@ -16,6 +16,7 @@ from .config import RuntimeTrust, validate_config
 from .custody import ConfinedCustody
 from .issuer import IssuerKeySource, IssuerWorkloadVerifier
 from .loaders import BoundService, CurrentLoaders, ServiceIdentity, check_service
+from .lifecycle import RunLifecycle, LifecycleUse
 from .state import InitializedLedger, StateUse
 
 _METHODS = {"records": "read", "challenge": "read", "registry": "resolve", "custody": "sign"}
@@ -101,6 +102,14 @@ class _Use:
         for role, method in _METHODS.items():
             check_service(self.bridge.services[role], self.selection["services"][role], method)
         self.check_state()
+        lifecycle = self.bridge.lifecycle
+        if lifecycle is not None:
+            checkpoint = lifecycle.check_for_use(deadline=self.valid_until, checked_at=self._last)
+            require(type(checkpoint) is LifecycleUse and integer(checkpoint.valid_until)
+                    and integer(checkpoint.checked_at) and checkpoint.checked_at >= self._last,
+                    "runtime-clock-unavailable")
+            self._last = checkpoint.checked_at
+            self.limit(checkpoint.valid_until)
 
     def check_state(self):
         state = self.bridge.state
@@ -217,14 +226,16 @@ class RuntimeBridge:
     One issuer source is shared across uses; selection preflight is never cached.
     """
     def __init__(self, *, load_config, trust, load_worker_context, services, state,
-                 issuer_source, create_proof):
+                 issuer_source, create_proof, lifecycle=None):
         require(type(trust) is RuntimeTrust and type(services) is dict and set(services) == set(_METHODS)
                 and isinstance(issuer_source, IssuerKeySource)
-                and all(callable(value) for value in (load_config, load_worker_context, create_proof)),
+                and all(callable(value) for value in (load_config, load_worker_context, create_proof))
+                and (lifecycle is None or type(lifecycle) is RunLifecycle),
                 "invalid-runtime-embedding")
         self.load_config, self.trust, self.load_worker_context = load_config, trust, load_worker_context
         self.services, self.state = MappingProxyType(dict(services)), state
         self.issuer_source, self.create_proof = issuer_source, create_proof
+        self.lifecycle = lifecycle
 
     def sign(self, challenge_id, request, token, observation):
         request, observation = _worker_inputs(challenge_id, request, token, observation)
@@ -248,4 +259,6 @@ class RuntimeBridge:
         result = gate.sign(challenge_id, request, token, observation)
         use.check()
         use.check_dependencies()
+        if self.lifecycle is not None:
+            self.lifecycle.retain_use(LifecycleUse(use.valid_until, use._last))
         return result
