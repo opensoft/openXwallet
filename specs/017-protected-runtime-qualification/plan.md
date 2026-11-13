@@ -2,7 +2,7 @@
 
 **Branch**: `017-protected-runtime-qualification` | **Date**: 2026-11-12
 **Spec**: [spec.md](spec.md)
-**State**: T002–T008 source landed; isolated T009 source candidate
+**State**: T002–T009 source landed; isolated T010 source candidate
 **Factory governance**: `opensoft/openXfactory`, `openspec/changes/prepare-protected-runtime-qualification/`.
 
 ## Summary
@@ -53,6 +53,14 @@ cleanup verification. `RunJanitor` operates over protected registrations and exa
 provider ownership/generation, preserving retained/shared resources. A separately
 scheduled expiry sweep works without runner finally. Actual provider registration,
 independent scheduler/admin/readback hosting and live acceptance remain later gates.
+
+Brett ratified adapter #56 at `508cb51f3407` for source acceptance only and
+commissioned T010 in isolation. The required offline conformance runner now
+checks a reviewed collection/count/anchor contract and every pytest phase, with
+explicit clean owning-source integration. Linux loopback-only networking, a clean
+environment/private home and irreversible privilege removal apply to helper execs
+as well as pytest. This is source conformance; full R01 receipt construction remains
+T011 and deployed P01/G02/G03/L01 remain separate.
 
 ## Technical Context
 

@@ -2,7 +2,7 @@
 
 **Feature Branch**: `017-protected-runtime-qualification`
 **Created**: 2026-11-12
-**Status**: T002–T008 source accepted and landed; isolated T009 source candidate
+**Status**: T002–T009 source accepted and landed; isolated T010 source candidate
 **Input**: Prepare the next runtime qualification step for the first codeXfactory pilot after #581 post-merge verification.
 **Governance owner**: `opensoft/openXfactory`, `openspec/changes/prepare-protected-runtime-qualification/`.
 
@@ -26,6 +26,14 @@ commissioned T006 in isolation. The observer measures controller-selected live
 process identity, launch/files/configuration and key/transport refs, signing the
 unchanged observation format. It does not establish independent deployment
 administration or worker OS access denial from same-user fixtures.
+
+Brett ratified adapter #56 at `508cb51f3407` for source acceptance only and
+commissioned T010 in isolation. The required offline conformance runner now
+checks a reviewed collection/count/anchor contract and every pytest phase, with
+explicit clean owning-source integration. Linux loopback-only networking, a clean
+environment/private home and irreversible privilege removal apply to helper execs
+as well as pytest. This is source conformance; full R01 receipt construction remains
+T011 and deployed P01/G02/G03/L01 remain separate.
 
 ## User Scenarios & Testing
 

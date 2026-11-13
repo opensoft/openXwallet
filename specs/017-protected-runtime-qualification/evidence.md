@@ -695,3 +695,30 @@ Logs/XML remain outside source. This receipt follow-up changes no production cod
 or tests. Actual provider lifecycle/admin isolation and protected-machine/human
 acceptance remain separate gates. Feedback stays deferred; neither historical
 blocked write was replayed.
+
+## T010 source commissioning — 2026-11-13
+
+Brett ratified adapter #56 at `508cb51f34074bfa87d65880c8ebdd69f8634076`
+for source acceptance only and commissioned isolated T010 implementation/tests.
+All runnable checks passed with no unresolved review threads. The exact head
+merged normally as `1b313bac487956a3cb74eddf581197e7dc486358`, tree
+`1eebadea83a328063c282e4f16088bbe2bd1d5ed`, equal to the ratified tree.
+No administrative bypass was needed. No main-triggered CI result is inferred.
+
+The new explicit conformance entrypoint binds the substantive offline matrix to
+an exact per-module collection contract plus required case anchors. Every test
+requires passing setup/call/teardown; deselection, skips, expected failures,
+unexpected passes and collection drift fail. Owner integration requires the
+explicit clean accepted owning code before and after execution. The existing
+neutral pin and ordinary entrypoints remain unchanged. The workflow disables
+persisted checkout credentials and performs source/dependency acquisition before
+the loopback-only namespace gate. Namespace/privilege checks survive isolated
+Python exec; provider environment and ambient pytest options are removed.
+
+The first native network-none disposable-container trial passed **781 tests**
+with zero failures/errors/skips. Eleven subsequent actual-pytest mutation tests
+strengthen the harness. Final frozen-source gate and review evidence follows
+separately. This source candidate supplies no deployed OS/admin isolation,
+provider setup, protected dispatch, consumer pin or human approval. Full scoped
+redacted receipts remain T011. Feedback stays deferred; neither historical blocked
+write was replayed.

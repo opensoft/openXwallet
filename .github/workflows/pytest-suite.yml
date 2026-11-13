@@ -56,6 +56,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: false
+          persist-credentials: false
 
       - uses: actions/setup-python@v5
         with:
@@ -83,3 +84,18 @@ jobs:
         env:
           WALLET_BINDING_OWNER_CODE: ${{ runner.temp }}/wallet-binding-owner
         run: python3 -m pytest tests/ -q -rs
+
+      # Source checkout/install above may use the network. The required matrix
+      # itself has loopback only, including fork/exec and isolated Python helpers.
+      # Root only prepares this new namespace and drops every privilege before
+      # pytest. This is ordinary source conformance, not protected pilot dispatch.
+      - name: Required offline runtime conformance (zero missing or skipped cases)
+        env:
+          WALLET_BINDING_OWNER_CODE: ${{ runner.temp }}/wallet-binding-owner
+        shell: bash
+        run: |
+          matrix_root="$(mktemp -d "$RUNNER_TEMP/runtime-conformance.XXXXXX")"
+          chmod 700 "$matrix_root"
+          sudo unshare --net -- /usr/bin/python3 -I -S tests/runtime_binding/isolation.py \
+            --uid "$(id -u)" --python "$(command -v python3)" \
+            --temp-root "$matrix_root" --owner-code "$WALLET_BINDING_OWNER_CODE"
