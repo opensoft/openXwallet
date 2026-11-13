@@ -257,3 +257,91 @@ No attributable helper/test process remained; the follow-up temporary root and
 synthetic key/state files were removed, with absence verified. The receipt-only
 follow-up changes no source/tests. Fresh hosted acceptance remains a separate
 readback at the published head, not an inference from these local results.
+
+## T004/T005 source commissioning — 2026-11-12
+
+Brett ratified factory #1308 at `7d99face8934` with adapter #51 at
+`864a2d19fda1` for source acceptance only, directed both landings when green,
+and commissioned implementation/testing of T004/T005 in isolation. Feedback
+remains deferred and neither historical blocked write is authorized for replay.
+
+Factory #1308 landed first as `469526935630d92f870a31b19d626725b55793e6`,
+tree `309fc342a8ce60bcfb8b65d9a4f3b2988597e219`. All required checks passed;
+there were no unresolved review threads. The standing global self-authored
+approval override applied because both author and authenticated actor were
+`brettheap`; only missing approval was bypassed. Adapter #51 then landed normally
+as `b2beb54e42b620242dd6e774de8655cea98ca831`, tree
+`5f95417b219705f330b0f0fc098918098dd13c47`. Both actual merge trees equal
+their reviewed/ratified candidate trees. GitHub Codex review was quota-refused,
+not approval; prior local panel and hosted evidence remain separately identified.
+
+The new opt-in `loaders.py`/`runtime.py` connect trusted authenticated connector
+capabilities, current canonical policy/challenge data and hosting channel context
+to the unchanged proof gate. Worker inputs retain the four accepted arguments.
+Service/credential/trust and state references must match the selected configuration.
+The token is verified before current-record/challenge access. Preflight repeats
+around blocking work; no accepted per-use deadline can be extended by fresh data.
+
+Coordinator review reproduced two timing gaps in the initial composition: a token
+could expire in post-crypto preflight before record access, and an observation
+could expire in added post-reservation preflight before custody. Both red tests
+were retained and corrected by carrying the earliest known token/key, observation,
+policy/grant, challenge, registry, channel and protection deadline through every
+added blocking checkpoint. Registry/grant/key-expiry variants also refuse before
+actual custody use; reservations remain consumed on failure.
+
+The focused matrix has **93 cases**, including exact selected service identities,
+each signed launch claim, canonical current records/challenge binding, actual
+loopback mTLS, selected worker-certificate hosting context, impostor/unknown-trust
+refusal, owning proof acceptance, concurrency and the timing regressions. It uses
+the existing explicitly selected owning source and synthetic keys/data only.
+The full gate sequence and expert review are recorded at their candidate heads,
+separately from this focused source record.
+
+These sources do not implement actual deployment measurement, a production
+provider client, supervisor administrative isolation, custody confinement,
+initialized-state/recovery or lifecycle qualification. Trusted connectors and
+hosting must authenticate/bound their real transports outside worker control;
+Python types or matching metadata are not isolation. T006–T015, live protected
+qualification and the consumer's independent runtime/human gates remain pending.
+
+### Local review and connector-deadline correction
+
+The initial complete sequence at `89a241efc9c7237addddba814218bf8c357457e9`
+passed **820 tests**, zero failures/errors/skips, both pin verifiers, syntax,
+plain/strict validation and all five canonical pinned OpenSpec items. The
+pre-PR expert panel then found one P2 reliability issue: `_read()` captured a
+connector deadline before guarded preflight could shorten it. Post-call refusal
+prevented proof acceptance, but the connector received a stale I/O budget.
+
+The red regression observed initial deadline `1794400030`, refreshed deadline
+`1794400010`, and connector-received deadline `1794400030`. The invocation is
+now deferred until after fresh preflight and supplies `1794400010`. The reviewer
+independently reproduced closure. The focused suite passes **94 cases**. The
+architecture, performance, security, QA, static-analysis, API, data-integrity and
+simplicity reviewers found no additional actionable issue. No rule, check,
+neutral contract or original verification core was changed.
+
+### Corrected full verification
+
+The complete local sequence at `10b75f3eb43eb8050b7adf10225a84c657c2123b`
+passes **821 tests**, including **94 new composition cases**, zero failures,
+errors or skips, both pin verifiers, syntax, plain/strict validation and all five
+canonical pinned OpenSpec items. The selected owning-source proof/transport
+integrations are included. JUnit SHA-256:
+`453a23fe937475775d7acfb6d5a7462006f3d397496fe8cc3863d0d0e27b9538`.
+The standalone analyzer reports zero issues in both new production files and
+the mTLS fixture file. That is separate from fresh hosted Sonar acceptance.
+
+Independent process readback found no attributable test/helper PID. Owned
+focused, initial full and corrected full temporary roots were removed after
+completion, including identified default pytest roots, with absence verified.
+Synthetic key/state files are absent; logs/XML remain outside source. This
+receipt-only follow-up changes no source/tests. No provider credential, public
+issuer call, protected setup/dispatch, release or consumer pin change occurred.
+
+All five factory #1308 actual-main-triggered workflows passed at merge
+`469526935630d92f870a31b19d626725b55793e6`. Its main pytest result was
+10,391 passed, six skipped, 338 deselected and 741 subtests passed. Adapter #51
+has no main-triggered workflows, so none is inferred. These post-merge results
+do not establish runtime deployment or human acceptance.

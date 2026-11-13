@@ -2,7 +2,7 @@
 
 **Feature Branch**: `017-protected-runtime-qualification`
 **Created**: 2026-11-12
-**Status**: Profile ratified; issuer landed; T002 operational binding source candidate
+**Status**: T002/T003 source accepted and landed; isolated T004/T005 source candidate
 **Input**: Prepare the next runtime qualification step for the first codeXfactory pilot after #581 post-merge verification.
 **Governance owner**: `opensoft/openXfactory`, `openspec/changes/prepare-protected-runtime-qualification/`.
 
@@ -14,6 +14,12 @@ feature requirements remain the baseline; this slice does not complete the featu
 Subsequently Brett commissioned landing #50 and implementing/testing the remaining
 T002 operational/source/protection binding. The source realization is internal
 preflight under factory governance, not live qualification or a consumer lock.
+
+Brett then ratified factory #1308 at `7d99face8934` with adapter #51 at
+`864a2d19fda1` for source acceptance only, and commissioned T004/T005 in
+isolation. The opt-in bridge connects selected authenticated connector/hosting
+capabilities and preserves the unchanged proof semantics; no deployed machine
+or human acceptance follows from those isolated tests.
 
 ## User Scenarios & Testing
 

@@ -90,6 +90,22 @@ owned temporary tree. Current observations are in [evidence.md](evidence.md).
 
 ## Future Protected Machine Sequence
 
+T004/T005 now have an isolated source implementation. Import `RuntimeBridge`
+and its constructor bindings from the opt-in runtime modules, following the
+[internal embedding interface](contracts/runtime-embedding.md). Only trusted
+hosting constructs them. Tests in `test_loaders.py`, `test_runtime.py` and
+`test_authenticated_loaders.py` exercise current data, each signed launch binding,
+actual loopback mTLS, worker-channel certificate selection, owning proof reuse,
+one-use concurrency and expiry during added preflight I/O. They authorize no live
+command. Selected-source tests require the existing explicit owning-code input;
+missing source remains a named skip outside the required qualification matrix.
+
+Run the required matrix with that source explicitly selected and no skips. Use
+one private temporary parent with matching TMPDIR/pytest basetemp, then verify
+fixture processes and synthetic key/state cleanup. Hosting must supply actual
+authenticated bounded connector/readback implementations; a class instance or
+same-user TLS fixture is not deployed qualification.
+
 1. Obtain T001 owner acceptance/commissioning, implement/review source and qualify the required offline matrix at exact accepted identities.
 2. Complete [operational inputs](operational-inputs.md), including independent configuration/protection readback. Missing selections refuse.
 3. Obtain scoped setup/dispatch authorization; provision only approved disposable resources and initialized private state.

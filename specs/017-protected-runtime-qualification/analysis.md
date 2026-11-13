@@ -1,6 +1,6 @@
 # Cross-Artifact Consistency Analysis
 
-Status: profile ratified; issuer landed; T002 source candidate
+Status: T002/T003 landed; isolated T004/T005 source candidate
 
 | Requirements | Tasks | Matrix |
 | --- | --- | --- |
@@ -35,4 +35,15 @@ Signed-claim integration through the unchanged verifier covers every launch
 claim independently. Synthetic readback does not establish actual provider
 acquisition, source measurement, complete provider-rule projection or deployed
 isolation. Those hosting obligations and deadline enforcement in later trusted
-composition remain explicit. T004–T015 and the consumer's own T002 stay pending.
+composition remained explicit at the T002 source stage. T004–T015 and the
+consumer's own T002 were still pending at that stage.
+
+Subsequent source acceptance of factory #1308 / adapter #51 commissioned isolated
+T004/T005. Their source now connects selected authenticated connector/hosting
+capabilities, current canonical records/challenges and the unchanged `ProofGate`.
+The bridge independently reuses source/protection preflight per use and carries
+every earliest deadline through its additional I/O. The two initial timing gaps
+were reproduced and regression-tested before being corrected. Actual deployed
+authentication/source measurement, supervisor/custody confinement, initialized
+state and cleanup qualification remain pending. The consumer's own T002 and human
+gate remain incomplete; no source acceptance is promoted into live assurance.
