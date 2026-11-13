@@ -84,17 +84,19 @@ No service reference is an executable resolver or worker-selected URL.
 
 ## Blocking source prerequisite and decision order
 
-The current immutable dispatch digest includes the not-yet-known run ID/attempt.
-[The bootstrap proposal](workflow-bootstrap.md) records the verified circularity
-and a proposed governed amendment. Current operational bindings deliberately
+The accepted #59 dispatch digest includes the not-yet-known run ID/attempt.
+[The bootstrap amendment](workflow-bootstrap.md) records the verified circularity
+and its isolated source candidate under factory PR #1311. The candidate migrates
+to a distinct static selection plus independently bound actual-run full digest;
+paired exact-head source acceptance remains pending. Operational bindings still
 refuse `workflow-operational-host-unselected`; qualify/cleanup clients and
 protected-machine receipt support are not supplied by #59. Filling selection
 rows cannot make this workflow executable.
 
-First select the actual nonproduction host, responsible administrators and
-distinct dispatcher/reviewer roles. In parallel, commission source-only factory
-governance and adapter preparation for the bootstrap/hosting integration. Review
-the resulting exact sources before operational setup authority. Then complete
+Select the actual nonproduction host, responsible administrators and distinct
+dispatcher/reviewer roles. Review/accept the paired bootstrap source candidates;
+actual hosting/authentication clients still require separate source integration
+and acceptance before operational setup authority. Then complete
 the [staged authorization record](scoped-authorization.md), obtain setup readback,
 and obtain a separate bounded dispatch/run decision. No task is duplicated here;
 feature 017 remains the sole implementation list.

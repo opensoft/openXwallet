@@ -75,8 +75,9 @@ allowlist. This draft supplies no runnable setup/dispatch commands.
    namespace or deletion scope requires a new decision. Missing readback leaves
    the run unqualified and escalated to the named cleanup owner.
 
-Stages 2–3 describe a proposed source amendment, not a capability of the current
-workflow. Do not dispatch #59 to discover a run ID, edit immutable dispatch inputs,
+Stages 2–3 require the paired bootstrap source candidate's acceptance and actual
+authenticated hosting clients; the current candidate still has no operational
+bindings. Do not dispatch #59 to discover a run ID, edit immutable dispatch inputs,
 predict an ID, reuse a prior grant or bypass the current admission guards.
 
 ## Exclusions and acceptance boundary

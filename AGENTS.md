@@ -42,8 +42,8 @@ ownership, validation, versioning, and release constraints.
   T013 operational selection/authorization preparation. It landed normally as
   9e1d75d46dfd with the ratified tree. The selection packet and staged authority
   draft are in feature 017 operational-inputs.md and scoped-authorization.md.
-  workflow-bootstrap.md records a verified dispatch/run-digest circularity and
-  a proposed factory-governed amendment; no runtime interface is changed here.
+  The initial workflow-bootstrap.md packet recorded a verified dispatch/run-digest
+  circularity and proposed its factory-governed amendment without changing code.
   The subsequent instruction commissions isolated T012B implementation under
   factory change fix-protected-runtime-dispatch-bootstrap. Static dispatch
   selection and independently authenticated actual-run bootstrap preserve full

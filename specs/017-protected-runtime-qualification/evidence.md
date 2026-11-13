@@ -1108,3 +1108,41 @@ native JUnit: `102d2f306ffaa8ec11781af40c4951972f248515d7825283dff902af8c77ae47`
 No deployed cleanup, live bootstrap authentication, setup, protected dispatch,
 OIDC mint, human approval or consumer acceptance is claimed. Feedback stays
 deferred; neither historical blocked write was replayed.
+
+### Corrected bootstrap final qualification
+
+Source/tests and HEAD stayed fixed at
+`38d205c0b6b175afff2b38f2968730a307b74ed9` for the fresh complete ordered
+sequence: **1,348 passed**, zero failures/errors/skips, both pin verifiers,
+syntax, plain/strict validation and five pinned OpenSpec items passed. Full
+JUnit SHA-256: `5b2ab4d7a16f0bce345680337f07e2d305c0e306c48e42e192e949679103f92e`.
+The fresh native network-none unprivileged matrix passed **1,046**, zero
+failures/errors/skips, with all 38 I04 and 35 R01 anchors. JUnit SHA-256:
+`fdb61b702685c1403343b690701e8caaaaaa01a2d558d9a74dc222920f1b83fd`.
+The owning source remained clean at
+`bb0e9dae89a771b05f6c235d0a77237288b95c85`; neutral pins are unchanged.
+
+Standalone reanalysis of the corrected test reports zero issues, completing
+zero-issue results for all six touched runtime/CLI/test Python files. All nine
+expert roles completed; no actionable finding remains. Security, reliability
+and QA independently passed the full 161 bootstrap/workflow corpus. Test-only
+assertion setup changed no expectation or collected identity. No rule, threshold
+or required case was waived. Both workflows pass actionlint.
+
+Independent cleanup readback accounted for another 22 worker generations
+(11 ordinary identities absent, 11 inside the removed private namespace), with
+no attributable helpers. Both new owned full/native fixture roots and the
+second owned qualification container were removed and absence verified. Across
+initial/corrected qualification, 44 generations, two containers and all five
+owned focused/full/native roots are accounted for. Reviewer-owned roots were
+separately removed and verified; redacted logs/XML/audits remain outside source.
+
+T012B is complete as isolated candidate implementation. Paired factory #1311
+and adapter exact-head source acceptance remain pending. Default production
+bindings still refuse before outputs/OIDC; actual authenticated bootstrap and
+atomic authority consumption, hosting integrations and live receipt promotion
+remain separate. T001/T013/T014/T015 owner/operational checkboxes stay unmarked.
+No setup, protected dispatch, credential issuance, signing operation, consumer
+pin promotion or human/domain acceptance occurred. Feedback stays deferred;
+neither historical blocked write was replayed. This receipt-only follow-up
+changes no tested runtime, test, workflow, dependency or pin bytes.
