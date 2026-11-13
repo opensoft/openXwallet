@@ -805,3 +805,37 @@ A tracked rotation regression covers the actual record-return path. The focused
 receipt matrix now passes **89 tests**. QA independently ran the original 88.
 Standalone Sonar's one conventional dictionary construction and two exception-
 test setup findings were corrected without waivers; final analysis follows.
+
+### Final T011 source verification and cleanup
+
+Source/tests and HEAD stayed fixed at `2b809c0ebe132fad56dc565b3d895667cf218b79`
+through the complete ordered sequence: **1,185 tests passed**, including **89 T011
+cases**, zero failures/errors/skips. Both pin verifiers, syntax, plain/strict
+validation and all five canonical pinned OpenSpec items passed. Full JUnit SHA-256:
+`d5ec271061eb7778bdf6cbef41f9277fb2d15f897390192c596073b1a80cd2fd`.
+
+The native network-none, unprivileged disposable-container matrix passed **883
+tests**, zero failures/errors/skips, including **18 R01 anchors**. Selected owning
+code was clean at `bb0e9dae89a771b05f6c235d0a77237288b95c85`; neutral pins
+remain unchanged. Matrix JUnit SHA-256:
+`7b24c0ce4dc6079f6814208082a72fd5341fd9d60f8d83ec86afe6a9cae21408`.
+The source/projects bind stayed read-only, only the owned evidence tree was
+writable, and no provider/profile/SSH/Docker-socket mounts were supplied.
+
+All nine expert roles completed. Reliability independently closed its provenance
+race with three focused tests. Standalone Sonar reports zero issues in final
+config, lifecycle, evidence, receipt tests and matrix contract. No rule, threshold
+or issue status was waived. Hosted CI/review are checked separately at publication.
+
+Independent cleanup readback accounted for **31 recorded worker generations**:
+20 ordinary-bench PID/start-time identities were absent; the private namespace
+holding the other 11 was gone with the owned disposable container. No attributable
+helper remained. All three owned focused/full/native fixture roots were removed
+and absence verified. QA/reliability reviewers removed and verified their own
+roots. Reports/logs remain outside source. This receipt-only follow-up changes
+no tested source, tests or workflow.
+
+Only structural source/fixture report scopes are supplied. Protected-machine
+promotion, selected operational services, provider setup/dispatch, consumer-lock
+acceptance and human/domain assurance remain separate. Feedback stays deferred;
+neither historical blocked write was replayed.
