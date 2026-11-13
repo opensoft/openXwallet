@@ -2,7 +2,7 @@
 
 **Feature Branch**: `017-protected-runtime-qualification`
 **Created**: 2026-11-12
-**Status**: T002–T009 source accepted and landed; isolated T010 source candidate
+**Status**: T002–T010 source accepted and landed; isolated T011 source candidate
 **Input**: Prepare the next runtime qualification step for the first codeXfactory pilot after #581 post-merge verification.
 **Governance owner**: `opensoft/openXfactory`, `openspec/changes/prepare-protected-runtime-qualification/`.
 
@@ -34,6 +34,15 @@ explicit clean owning-source integration. Linux loopback-only networking, a clea
 environment/private home and irreversible privilege removal apply to helper execs
 as well as pytest. This is source conformance; full R01 receipt construction remains
 T011 and deployed P01/G02/G03/L01 remain separate.
+
+Brett ratified adapter #57 at `2c36b07622fc` for source acceptance only and
+commissioned T011 in isolation. `evidence.py` now builds bounded canonical internal
+source/fixture reports from trusted selected configuration, observed case counts
+and verified cleanup checkpoints. Exact sources, case/run, protection/readback and
+cleanup are bound through closed fields/digests; raw credentials, tokens, proofs,
+provider payloads and exception text are omitted. This report is not an openMFA
+possession receipt or an acceptance grant. Protected-machine scope refuses in this
+slice; later protected hosting/acceptance must review any promotion separately.
 
 ## User Scenarios & Testing
 

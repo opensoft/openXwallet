@@ -30,7 +30,11 @@ ownership, validation, versioning, and release constraints.
   only and commissioned T010 in isolation. The required offline matrix is
   tests/runtime_binding/conformance.py, bootstrapped by isolation.py inside a
   loopback-only Linux namespace; its reviewed matrix_contract.py rejects missing,
-  deselected, skipped or non-passing cases. Full receipts remain T011.
+  deselected, skipped or non-passing cases. Brett ratified #57 at 2c36b07622fc
+  for source acceptance only and commissioned T011 in isolation. Internal
+  evidence.py emits bounded canonical source/fixture reports with fixed errors,
+  exact source/case/readback/cleanup digests and no raw sensitive payload.
+  Protected-machine receipt scope remains unsupported in this slice.
   Deployed supervisor, custody, state, lifecycle and operation stay
   separately gated. The factory owns the grammar.
   Existing offline entrypoints stay unchanged.

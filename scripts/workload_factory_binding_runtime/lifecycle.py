@@ -93,11 +93,16 @@ class LifecycleUse:
 
 @dataclass(frozen=True, repr=False)
 class CleanupVerification:
-    """Internal checkpoint only; full redacted receipt work remains T011."""
+    """Verified cleanup checkpoint; raw provider/readback material is not retained."""
     plan_digest: str
     scope: RunScope
     outcome: str
     checked_at: int
+    observed_at: int
+    valid_until: int
+    readback_digest: str
+    readback_identity_digest: str
+    attempt_digest: str
 
 
 @dataclass(frozen=True, repr=False)
@@ -219,7 +224,19 @@ class RunLifecycle:
         self.plan, self.load_config, self.runtime_trust = plan, load_config, runtime_trust
         self.janitor, self.readback, self.cleanup_clock = janitor, readback, cleanup_clock
         self._lock, self._used, self._active_use = Lock(), False, None
+        self._cleanup_verification = None
+        self._cleanup_generation = 0
         _Use(self)
+
+    @property
+    def cleanup_verification(self):
+        """Latest-started cleanup attempt, not operation success or attestation.
+
+        Trusted synchronous hosting reads this after run/finalize completes. A
+        new attempt clears it first, so failed retries cannot expose old success.
+        """
+        with self._lock:
+            return self._cleanup_verification
 
     def check_for_use(self, *, deadline, checked_at):
         require(integer(deadline) and integer(checked_at), "invalid-lifecycle-checkpoint")
@@ -246,6 +263,10 @@ class RunLifecycle:
 
     def finalize(self, outcome):
         require(outcome in ("success", "failure", "cancel"), "invalid-lifecycle-outcome")
+        with self._lock:
+            self._cleanup_verification = None
+            self._cleanup_generation += 1
+            generation = self._cleanup_generation
         clock = _Clock(self.cleanup_clock)
         started = clock.now()
         attempt = "cleanup-attempt:" + token_hex(16)
@@ -265,7 +286,13 @@ class RunLifecycle:
         except Exception:
             raise BindingError("lifecycle-cleanup-unverified") from None
         require(not failed, "lifecycle-cleanup-unverified")
-        return CleanupVerification(self.plan.digest, self.plan.scope, outcome, now)
+        verification = CleanupVerification(self.plan.digest, self.plan.scope, outcome, now,
+                                           record.observed_at, record.valid_until, digest(asdict(record)),
+                                           digest(asdict(self.readback.identity)), digest(attempt))
+        with self._lock:
+            if generation == self._cleanup_generation:
+                self._cleanup_verification = verification
+        return verification
 
     def _verify_cleanup(self, record, started, now, attempt):
         require(type(record) is CleanupReadback and type(record.scope) is RunScope

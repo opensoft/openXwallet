@@ -22,3 +22,12 @@ Receipt scope is source-conformance, isolated-fixture or protected-machine. It g
 no human approval, domain effect or runtime dependency lock. Retain no raw token,
 private key, credential, factor material or browser state. Source-only assembly
 evidence in codeXfactory remains separate.
+
+T011 realizes a closed canonical internal report for source/fixture scope only.
+The approved selection snapshot retains configuration readback digest/principal
+hash and times; cleanup checkpoints retain independent record/identity/attempt
+digests and times. Case aggregates use closed IDs, bounded integer counts,
+observation time and artifact digest. Missing cases/cleanup remain explicit and
+prevent pass. Reports are historical structural observations, not signed neutral
+possession receipts or authority. They omit raw sensitive material by construction
+and cannot self-promote to protected-machine scope.

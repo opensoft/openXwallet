@@ -767,3 +767,30 @@ This receipt-only follow-up changes no tested code, tests or workflow. Deployed
 qualification, full T011 receipts, protected setup/dispatch and human approval
 remain separate. Feedback stays deferred; neither historical blocked write was
 replayed.
+
+## T011 source commissioning — 2026-11-13
+
+Brett ratified adapter #57 at `2c36b07622fc81202d5a8167aade7c4a5ff20700`
+for source acceptance only and commissioned isolated T011 implementation/tests.
+All runnable checks passed with no unresolved review threads. The exact head
+merged normally as `cc4e7fb2932116d6fd42b0cadb35233b2d9adeaf`; merged tree
+matches the ratified tree. No administrative bypass was used. No main-triggered
+CI result is inferred.
+
+The internal receipt builder projects only closed fields/digests from a trusted
+validated selection, actual harness case observations and verified lifecycle
+cleanup. It binds exact sources/dependencies, case/run/attempt, protection/readback,
+results and fresh cleanup attempt/identity/record, without raw token/proof/provider
+or credential/factor/browser payloads. Fixed errors do not stringify exceptions.
+Reports are historical source/fixture observations, not signed neutral possession
+receipts or authentication of supplied Python objects. Missing cases/cleanup
+cannot pass; protected-machine scope refuses. Neutral APIs/pins remain unchanged.
+
+The focused isolated matrix passed **88 tests**, including actual owning proof
+verification with separate janitor/readback processes on success/failure/cancel.
+Only the exercised receipt case is recorded in those runs; unexecuted matrix cases
+stay not-performed. Complete synthetic report tests verify schema only. Cases cover
+canary redaction, malformed scope/count/time/source/readback/cleanup, missing cases,
+failed retry clearing and out-of-order cleanup checkpoint publication. No live
+provider setup, protected dispatch, consumer lock or human approval is supplied.
+Feedback stays deferred; neither historical blocked write was replayed.
