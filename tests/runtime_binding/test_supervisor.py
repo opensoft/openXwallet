@@ -232,3 +232,13 @@ def test_owning_proof_verifier_accepts_measured_supervised_result(s):
     checked = verify_proof(result["proof"], expected_digest=s.h.challenge.digest, binding=s.h.binding, now=s.h.now)
     assert checked.subject_ref == s.h.binding.subject_ref
     assert result["human_approval"] is False
+
+
+def test_observer_rejects_clock_regression_across_config_preflight(s):
+    now = s.h.now
+    samples = iter([now, now, now + 10] + [now + 5] * 10)
+    trust = replace(s.trust, clock=lambda: next(samples))
+    observer = s.make_observer(trust=trust)
+    peer, deadline = s.peer, now + 30
+    with pytest.raises(BindingError, match="^supervisor-clock-unavailable$"):
+        module._ObservationUse(observer, peer, deadline)

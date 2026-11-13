@@ -385,3 +385,20 @@ actual image/dependency selection, continuous liveness or memory/model behavior.
 Observable snapshots can miss changes restored between reads. Real G02/P01 and
 T007–T015 remain separately gated. No protected setup/dispatch, live issuer,
 provider write, human approval, consumer lock/pin or release is supplied.
+
+### T006 expert review and clock checkpoint correction
+
+The full sequence at `8cd7876a4b2aa9d9a153d1a91360b7e3ab0e2178` passed
+**877 tests**, zero failures/errors/skips, both pin verifiers, syntax, plain/
+strict validators and all five canonical pinned OpenSpec items. The pre-PR
+expert panel found one P2: the observer did not retain the newest clock sample
+from configuration preflight. A clock progressing from `N` to `N+10` during
+preflight, then falling to `N+5`, could be accepted against the earlier sample.
+
+The focused red regression reproduced that behavior. The observer now records
+`current.checked_at` before its next clock sample. The reviewer independently
+confirmed refusal with `supervisor-clock-unavailable`; the focused suite passes
+**57 cases**. Architecture, performance, security, QA, static-analysis, API,
+data-integrity and simplicity reviews found no additional actionable issue.
+Standalone analysis reports zero issues in both production modules and the
+RPC fixture with its test scope; hosted acceptance remains a separate readback.

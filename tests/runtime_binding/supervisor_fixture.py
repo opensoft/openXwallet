@@ -1,6 +1,5 @@
 """Controller-owned launch fixture; same-user scope is deliberately explicit."""
 from copy import deepcopy
-from dataclasses import asdict, replace
 import hashlib
 from pathlib import Path
 import select
@@ -9,7 +8,7 @@ import sys
 
 import pytest
 
-from workload_factory_binding.evidence import artifact_digest, byte_digest, canonical, digest
+from workload_factory_binding.evidence import artifact_digest, byte_digest, canonical
 from workload_factory_binding_runtime import supervisor as module
 from workload_factory_binding_runtime.loaders import BoundService, ServiceIdentity
 from workload_factory_binding_runtime.supervisor import (

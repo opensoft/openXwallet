@@ -71,6 +71,7 @@ class _ObservationUse:
                 and (self._config_digest is None or current.config_digest == self._config_digest),
                 "supervisor-config-changed")
         self._config_digest, self.selection = current.config_digest, current.selection
+        self._last = current.checked_at
         self.limit(current.valid_until)
         peer, now = self.peer, self.clock()
         selected = self.selection["services"]["supervisor"]
