@@ -839,3 +839,14 @@ Only structural source/fixture report scopes are supplied. Protected-machine
 promotion, selected operational services, provider setup/dispatch, consumer-lock
 acceptance and human/domain assurance remain separate. Feedback stays deferred;
 neither historical blocked write was replayed.
+
+### Hosted T011 assertion-quality correction
+
+The first published candidate's Sonar quality gate passed, but an explicit issue
+query found ten test-only `python:S9073` findings that standalone analysis did not
+report. Each composite assertion is now split into its equivalent individual
+assertions; no condition, expectation, rule or threshold is removed or waived.
+Collected node identities and runtime source are unchanged. A fresh complete
+ordered sequence and native matrix qualify the corrected test source below.
+GitHub Codex review was explicitly requested but refused by the account's review
+usage limit; no completed bot review is claimed.

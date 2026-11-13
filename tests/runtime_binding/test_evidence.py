@@ -33,8 +33,10 @@ def receipt(selected, **changes):
 def test_source_report_is_canonical_bound_and_never_machine_or_human_authority(selected):
     raw = receipt(selected)
     report = json.loads(raw)
-    assert raw == canonical(report) and len(raw) <= 16384
-    assert report["scope"] == "source-conformance" and report["status"] == "passed"
+    assert raw == canonical(report)
+    assert len(raw) <= 16384
+    assert report['scope'] == 'source-conformance'
+    assert report['status'] == 'passed'
     assert set(report["results"]) == set(CASES)
     assert all(result["status"] == "passed" for result in report["results"].values())
     assert report["context"]["config_digest"] == selected.config_digest
@@ -151,7 +153,8 @@ def test_redaction_uses_closed_projection_even_for_secret_shaped_metadata(config
     raw = receipt(selected, error=error)
     assert canary.encode() not in raw
     report = json.loads(raw)
-    assert report["error_code"] == "qualification-failed" and report["status"] == "failed"
+    assert report['error_code'] == 'qualification-failed'
+    assert report['status'] == 'failed'
     assert report["context"]["sources"]["adapter"]["repository_digest"] == digest("fixture/" + canary)
 
 
@@ -171,13 +174,15 @@ def test_fixed_errors_never_interpolate_exception_payload_or_traceback(selected,
     error.__cause__ = RuntimeError("private-cause")
     assert safe_error(error) == code
     raw = receipt(selected, error=error)
-    assert b"private" not in raw and b"secret" not in raw
+    assert b'private' not in raw
+    assert b'secret' not in raw
     assert json.loads(raw)["error_code"] == code
 
 
 def test_missing_fixture_cleanup_never_passes(selected):
     report = json.loads(receipt(selected, scope="isolated-fixture"))
-    assert report["status"] == "incomplete" and report["cleanup"] == {"status": "missing"}
+    assert report['status'] == 'incomplete'
+    assert report['cleanup'] == {'status': 'missing'}
 
 
 def test_all_exact_sources_and_dependency_protection_digests_are_bound(selected):
@@ -210,7 +215,8 @@ def test_verified_cleanup_receipt_binds_plan_attempt_and_independent_readback(l)
     verification = l.life.finalize("success")
     assert l.life.cleanup_verification == verification
     report = fixture_report(l, cleanup=verification)
-    assert report["status"] == "passed" and report["cleanup"]["status"] == "verified"
+    assert report['status'] == 'passed'
+    assert report['cleanup']['status'] == 'verified'
     assert report["cleanup"]["plan_digest"] == l.plan.digest
     assert report["cleanup"]["readback_identity_digest"] == digest(asdict(l.readback_service.identity))
     assert l.plan.scope.case_ref not in json.dumps(report)
@@ -315,7 +321,8 @@ def test_actual_owning_proof_and_independent_cleanup_export_only_safe_receipt(p,
     def operation():
         result = c.run()
         checked = verify_proof(result["proof"], expected_digest=c.h.challenge.digest, binding=c.h.binding, now=c.h.now)
-        assert checked.subject_ref == c.h.binding.subject_ref and result["human_approval"] is False
+        assert checked.subject_ref == c.h.binding.subject_ref
+        assert result['human_approval'] is False
         proof.update(result["proof"])
         if outcome == "failure":raise RuntimeError("sensitive-provider-canary")
         if outcome == "cancel":raise KeyboardInterrupt("sensitive-factor-canary")
@@ -324,7 +331,8 @@ def test_actual_owning_proof_and_independent_cleanup_export_only_safe_receipt(p,
         p.life.run(operation)
     except (BindingError, KeyboardInterrupt) as caught:
         error = caught
-    assert proof and p.life.cleanup_verification is not None
+    assert proof
+    assert p.life.cleanup_verification is not None
     cases = (CaseResult("R01", 1, 1, 0, 0, 0, c.h.now, digest(proof)),)
     raw = build_receipt(scope="isolated-fixture", selected=selected, cases=cases, started_at=started,
                         now=c.h.now, plan=p.plan, cleanup=p.life.cleanup_verification, error=error)
@@ -334,5 +342,7 @@ def test_actual_owning_proof_and_independent_cleanup_export_only_safe_receipt(p,
     assert report["results"]["G03"] == {"status": "not-performed"}  # this test alone is not the entire G03 matrix
     for sensitive in (c.h.token.encode(), canonical(proof), b"sensitive-provider-canary", b"sensitive-factor-canary"):
         assert sensitive not in raw
-    assert not (p.root / "credential.key").exists() and not (p.root / "temporary").exists()
-    assert (p.root / "shared").exists() and c.h.ledger.path.exists()
+    assert not (p.root / 'credential.key').exists()
+    assert not (p.root / 'temporary').exists()
+    assert (p.root / 'shared').exists()
+    assert c.h.ledger.path.exists()
