@@ -44,6 +44,11 @@ ownership, validation, versioning, and release constraints.
   draft are in feature 017 operational-inputs.md and scoped-authorization.md.
   workflow-bootstrap.md records a verified dispatch/run-digest circularity and
   a proposed factory-governed amendment; no runtime interface is changed here.
+  The subsequent instruction commissions isolated T012B implementation under
+  factory change fix-protected-runtime-dispatch-bootstrap. Static dispatch
+  selection and independently authenticated actual-run bootstrap preserve full
+  runtime config/grant admission. New candidate acceptance remains separate;
+  default operational bindings continue to refuse before outputs/OIDC.
   Production hosting stays unselected; no setup/dispatch is authorized.
   Deployed supervisor, custody, state, lifecycle and operation stay
   separately gated. The factory owns the grammar.

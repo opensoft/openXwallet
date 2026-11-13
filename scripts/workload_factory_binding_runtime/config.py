@@ -63,10 +63,11 @@ def _sources(value):
         require(valid_digest(source["digest"]), "invalid-runtime-config")
 
 
-def _launch(value, sources):
-    require(type(value) is dict and set(value) == CLAIMS | RUN_CLAIMS
+def _launch(value, sources, *, run_bound=True):
+    run_claims = RUN_CLAIMS if run_bound else frozenset()
+    require(type(value) is dict and set(value) == CLAIMS | run_claims
             and all(_selected(v) for v in value.values()), "invalid-runtime-config")
-    for name in ("repository_id", "repository_owner_id", "run_id", "run_attempt"):
+    for name in ("repository_id", "repository_owner_id", *sorted(run_claims)):
         _positive(value[name])
     require(_REPO.fullmatch(value["repository"])
             and value["repository"].split("/")[0] == value["repository_owner"],
@@ -125,7 +126,9 @@ def _references(value, fields):
         _handle(item)
 
 
-def _configuration(value):
+def _configuration(value, *, run_bound=True):
+    # False is exclusively the distinct static selection grammar. Runtime
+    # validate_config always uses the default and requires both actual run fields.
     _object(value, "profile revision not_before expires_at case_ref sources dependency_digest composition_digest issuer launch protection authority services state lifecycle")
     require(value["profile"] == PROFILE and integer(value["revision"]) and value["revision"] > 0
             and integer(value["not_before"]) and integer(value["expires_at"])
@@ -138,7 +141,7 @@ def _configuration(value):
     _object(issuer, "issuer discovery jwks audience")
     require(issuer["issuer"] == ISSUER and issuer["discovery"] == DISCOVERY_URL
             and issuer["jwks"] == JWKS_URL and _selected(issuer["audience"]), "invalid-runtime-config")
-    _launch(value["launch"], value["sources"])
+    _launch(value["launch"], value["sources"], run_bound=run_bound)
     _protection(value["protection"], value["launch"])
     authority = value["authority"]
     _object(authority, "policy_ref policy_revision policy_digest subject_ref wallet_ref key_ref custody_ref grant_ref")

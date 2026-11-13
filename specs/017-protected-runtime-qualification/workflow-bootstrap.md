@@ -1,8 +1,39 @@
 # T013 Dispatch Bootstrap Source Prerequisite
 
-Status: proposed amendment for factory governance; not implemented or ratified
+Status: isolated source candidate commissioned; paired source acceptance pending
 Prepared: 2026-11-13
 Scope: source preparation; no protected dispatch or operational authority
+
+## Commissioned candidate implementation
+
+Brett subsequently commissioned this fix through the factory/adapter process,
+with setup and dispatch still unauthorized. The new factory change is
+`opensoft/openXfactory`, `openspec/changes/fix-protected-runtime-dispatch-bootstrap/`.
+It preserves the accepted baseline/origin and hands off to feature 017 T012B.
+
+The candidate implements `bootstrap.py`: closed static selection document with
+profile `openxfactory-dispatch-selection-internal-v1`, exactly `profile` and
+`configuration`, with only launch run ID/attempt omitted. All other runtime
+fields remain committed. Full runtime validation still requires both run fields.
+Actual-run bootstrap uses an independently selected approved digest/principal
+and authenticated reader, corroborates static/full config, then calls existing
+grant/protection/scheduler/lease admission with the earliest deadline. Readback
+includes preauthorization, selection/source/repository/case/run and attempt,
+full config digest and operation grant. Production authentication and atomic
+authority consumption remain unselected hosting obligations, not fixture claims.
+
+Manual and same-commit reusable inputs migrate explicitly from `config_digest`
+and `operation_grant_ref` to `selection_digest` and `preauthorization_ref`.
+Environment variable names migrate to `OPENXWALLET_SELECTION_DIGEST` and
+`OPENXWALLET_PREAUTHORIZATION_REF`. Old variables are refused, not reinterpreted.
+Internal `WorkflowContext.config_digest` and operation grants keep their full
+run-bound meaning. Each preflight, including after environment approval, repeats
+independent bootstrap/admission. No approval is passed through a job output.
+
+The candidate resolves the circular input contract; it supplies no operational
+clients, authorization or protected receipt promotion. The historical finding
+and proposed reasoning below remain provenance. Source review and exact-head
+isolated evidence are recorded in [evidence](evidence.md).
 
 ## Verified mismatch at accepted #59
 

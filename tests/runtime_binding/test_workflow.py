@@ -190,7 +190,8 @@ def test_production_host_is_unselected_and_has_no_environment_activation_switch(
 
 
 @pytest.mark.parametrize("phase", ["preflight", "qualify", "cleanup"])
-def test_actual_cli_blocks_before_outputs_oidc_or_live_operations(tmp_path, phase):
+@pytest.mark.parametrize("input_mode", ["static", "legacy"])
+def test_actual_cli_blocks_before_outputs_oidc_or_live_operations(tmp_path, phase, input_mode):
     head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, check=True,
                           capture_output=True, text=True).stdout.strip()
     output = tmp_path / "github-output"
@@ -198,14 +199,20 @@ def test_actual_cli_blocks_before_outputs_oidc_or_live_operations(tmp_path, phas
         GITHUB_EVENT_NAME="workflow_dispatch", GITHUB_REF=REF, GITHUB_SHA=head,
         GITHUB_WORKFLOW_REF=REPOSITORY + "/" + CALLER + "@" + REF, GITHUB_WORKFLOW_SHA=head,
         GITHUB_RUN_ID="789", GITHUB_RUN_ATTEMPT="1", OPENXWALLET_ACCEPTED_COMMIT=head,
-        OPENXWALLET_CONFIG_DIGEST="sha256:" + "a" * 64, OPENXWALLET_OPERATION_GRANT_REF="grant:secret-canary",
+        OPENXWALLET_SELECTION_DIGEST="sha256:" + "a" * 64, OPENXWALLET_PREAUTHORIZATION_REF="grant:secret-canary",
         GITHUB_OUTPUT=str(output), ACTIONS_ID_TOKEN_REQUEST_TOKEN="private-token-canary",
         ACTIONS_ID_TOKEN_REQUEST_URL="https://invalid.example/private-canary")
+    if input_mode == "legacy":
+        environment.pop("OPENXWALLET_SELECTION_DIGEST")
+        environment.pop("OPENXWALLET_PREAUTHORIZATION_REF")
+        environment.update(OPENXWALLET_CONFIG_DIGEST="sha256:" + "a" * 64,
+                           OPENXWALLET_OPERATION_GRANT_REF="grant:secret-canary")
     result = subprocess.run([sys.executable, "-I", "-B", str(ROOT / "scripts/prepare-protected-runtime.py"),
                              "--phase", phase], cwd=tmp_path, env=environment, capture_output=True, text=True, timeout=15)
     assert result.returncode == 2
     assert result.stdout == ""
-    assert result.stderr.strip() == "workflow-operational-host-unselected"
+    expected = "workflow-operational-host-unselected" if input_mode == "static" else "workflow-context-mismatch"
+    assert result.stderr.strip() == expected
     assert not output.exists()
 
 
@@ -224,6 +231,14 @@ def test_workflow_has_manual_caller_and_same_commit_local_reusable_claim_binding
     assert invoke["permissions"] == {"contents": "read", "id-token": "write"}
     assert "secrets" not in invoke
     assert caller["concurrency"]["cancel-in-progress"] == "false"
+    names = {"accepted_commit", "selection_digest", "preauthorization_ref"}
+    assert set(caller["on"]["workflow_dispatch"]["inputs"]) == names
+    assert set(reusable["on"]["workflow_call"]["inputs"]) == names
+    assert invoke["with"] == {name: "${{ inputs." + name + " }}" for name in names}
+    assert reusable["env"] == {
+        "OPENXWALLET_ACCEPTED_COMMIT": "${{ inputs.accepted_commit }}",
+        "OPENXWALLET_SELECTION_DIGEST": "${{ inputs.selection_digest }}",
+        "OPENXWALLET_PREAUTHORIZATION_REF": "${{ inputs.preauthorization_ref }}"}
 
 
 def test_environment_and_oidc_exist_only_after_read_only_admission():

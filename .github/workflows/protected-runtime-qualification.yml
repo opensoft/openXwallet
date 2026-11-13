@@ -7,12 +7,12 @@ on:
         description: Exact source-accepted adapter/workflow commit (40 lowercase hex)
         required: true
         type: string
-      config_digest:
-        description: Independently approved runtime selection digest (sha256)
+      selection_digest:
+        description: Independently approved static selection digest (sha256)
         required: true
         type: string
-      operation_grant_ref:
-        description: Independent current authorization for this case/run/attempt
+      preauthorization_ref:
+        description: Independent preauthorization; actual run is bound after dispatch
         required: true
         type: string
 
@@ -32,5 +32,5 @@ jobs:
       id-token: write
     with:
       accepted_commit: ${{ inputs.accepted_commit }}
-      config_digest: ${{ inputs.config_digest }}
-      operation_grant_ref: ${{ inputs.operation_grant_ref }}
+      selection_digest: ${{ inputs.selection_digest }}
+      preauthorization_ref: ${{ inputs.preauthorization_ref }}
