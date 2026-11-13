@@ -7,7 +7,7 @@ import sys
 
 import pytest
 
-from .conformance import ConformancePlugin, MatrixAudit, selected_owner
+from .conformance import ConformancePlugin, MatrixAudit, node_digest, selected_owner
 from .isolation import ENVIRONMENT, bootstrap, private_root, validate_boundary
 
 NODES = ("module.py::test_required[a]", "module.py::test_required[b]")
@@ -40,6 +40,17 @@ def test_missing_empty_extra_duplicate_or_wrong_module_cannot_pass(nodes):
 
 def test_renamed_anchor_cannot_hide_behind_same_count():
     assert not finish(audit(("module.py::test_other[a]", "module.py::test_other[b]")))
+
+
+def test_compensated_parameter_loss_cannot_preserve_collection():
+    contract = {"module.py": node_digest(NODES)}
+    result = MatrixAudit({"module.py": 2}, {"I04": ("module.py::test_required",)}, digests=contract)
+    result.collected(reversed(NODES))
+    assert finish(result)  # collection order is immaterial
+    result = MatrixAudit({"module.py": 2}, {"I04": ("module.py::test_required",)}, digests=contract)
+    result.collected((NODES[0], "module.py::test_unrelated"))
+    assert not finish(result)
+    assert "collection-identity-drift" in result.violations
 
 
 @pytest.mark.parametrize("phase", ["setup", "call", "teardown"])
@@ -166,7 +177,7 @@ def test_owner_selection_must_be_explicit_and_match_environment(tmp_path, monkey
 
 
 @pytest.mark.parametrize("mutation", ["none", "skip", "setup-skip", "teardown-skip", "xfail", "xpass",
-                                      "deselect", "empty", "renamed", "parameter-loss", "failure"])
+                                      "deselect", "empty", "renamed", "parameter-loss", "failure", "parameter-substitution"])
 def test_real_pytest_reports_cannot_hide_nonconformance(tmp_path, mutation):
     source = "import pytest\n\ndef test_one():\n    assert True\n"
     if mutation == "skip":
@@ -184,17 +195,22 @@ def test_real_pytest_reports_cannot_hide_nonconformance(tmp_path, mutation):
         source = source.replace("test_one", "test_other")
     elif mutation == "failure":
         source = source.replace("assert True", "assert False")
+    elif mutation == "parameter-substitution":
+        source = ("import pytest\n@pytest.mark.parametrize('value', ['a'])\n"
+                  "def test_one(value):\n    pass\n\ndef test_unrelated():\n    pass\n")
     (tmp_path / "test_sample.py").write_text(source)
     root = Path(__file__).resolve().parents[2]
     # Only this harness overrides the audit contract, in a tiny synthetic corpus.
     # The production CLI has no selection or contract override.
+    expected_count = 2 if mutation in {"parameter-loss", "parameter-substitution"} else 1
+    digests = {"test_sample.py": node_digest(["test_sample.py::test_one[a]", "test_sample.py::test_one[b]"])} if mutation == "parameter-substitution" else None
     program = "\n".join([
         "import os, sys, pytest",
         "sys.path.insert(0, " + repr(str(root / "tests")) + ")",
         "from runtime_binding.conformance import ConformancePlugin, MatrixAudit",
         "plugin = ConformancePlugin()",
-        "plugin.audit = MatrixAudit({'test_sample.py': " + str(2 if mutation == "parameter-loss" else 1)
-        + "}, {'I01': ('test_sample.py::test_one',)})",
+        "plugin.audit = MatrixAudit({'test_sample.py': " + str(expected_count)
+        + "}, {'I01': ('test_sample.py::test_one',)}, digests=" + repr(digests) + ")",
         "raise SystemExit(pytest.main(" + repr([str(tmp_path / "test_sample.py"), "-q", "-c", os.devnull,
                                                "--rootdir=" + str(tmp_path), "-p", "no:cacheprovider"]
                                               + (["-k", "absent"] if mutation == "deselect" else []))

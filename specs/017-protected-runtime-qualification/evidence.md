@@ -722,3 +722,14 @@ separately. This source candidate supplies no deployed OS/admin isolation,
 provider setup, protected dispatch, consumer pin or human approval. Full scoped
 redacted receipts remain T011. Feedback stays deferred; neither historical blocked
 write was replayed.
+
+### T010 expert review and collection-identity correction
+
+All nine expert roles completed. QA reproduced a P2 false-green case: dropping
+one required parameter and adding an unrelated test could preserve module counts
+and function anchors. The audit now also compares committed per-module SHA-256
+fingerprints of compact JSON containing sorted full node IDs, including parameter
+IDs. A compensated-substitution unit test and actual pytest subprocess mutation
+require refusal while preserving order independence. Expected fingerprints are
+never generated during CI. The preceding frozen commit passed all **1,094 tests**
+and a native **792-test** offline matrix; a fresh corrected sequence follows.

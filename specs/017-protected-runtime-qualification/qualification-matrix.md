@@ -32,11 +32,11 @@ are cleared and the home/temp tree starts empty and private. Source checkout and
 reviewed hash-locked wheel installation happen before this offline boundary.
 No public issuer request, provider credential or protected dispatch is used.
 
-`matrix_contract.py` records the exact parametrized collection count per module
+`matrix_contract.py` records the exact parametrized collection count and full-node-ID fingerprint per module
 and substantive I01–I05/G01–G03/S01/L01/current-R01 anchors. Every collected test
 must report passing setup, call and teardown. Missing/extra/duplicate nodes,
 missing anchors, deselection, skips, xfail/XPASS, failures or pytest errors refuse.
-Intentional test corpus changes must update the reviewed contract; there is no
+Intentional test corpus changes must update counts, full-node-ID fingerprints and anchors in the reviewed contract; there is no
 CLI selector or manifest override. The explicitly selected owning code must be
 clean at the accepted `bb0e9dae89a771b05f6c235d0a77237288b95c85` before and after
 execution, and imports must resolve under that source. The neutral adapter pin

@@ -1,6 +1,8 @@
 """Fail-closed offline matrix runner. Source conformance only; no live receipt."""
 import argparse
 from collections import Counter, defaultdict
+import hashlib
+import json
 import os
 from pathlib import Path
 import subprocess
@@ -10,13 +12,18 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path[:0] = [str(ROOT / "tests"), str(ROOT / "scripts")]
 
 from runtime_binding.isolation import assert_isolated, private_root
-from runtime_binding.matrix_contract import CASES, MODULE_COUNTS, ROOTS
+from runtime_binding.matrix_contract import CASES, MODULE_COUNTS, MODULE_DIGESTS, ROOTS
+
+
+def node_digest(nodes):
+    return hashlib.sha256(json.dumps(sorted(nodes), separators=(",", ":")).encode()).hexdigest()
 
 
 class MatrixAudit:
-    def __init__(self, counts=None, cases=None):
+    def __init__(self, counts=None, cases=None, *, digests=None):
         self.expected = dict(MODULE_COUNTS if counts is None else counts)
         self.cases = dict(CASES if cases is None else cases)
+        self.digests = MODULE_DIGESTS if counts is None and digests is None else digests
         self.nodes, self.phases = set(), defaultdict(dict)
         self.violations, self.case_counts = set(), {}
 
@@ -27,6 +34,11 @@ class MatrixAudit:
         anchors = Counter(node.split("[", 1)[0] for node in values)
         if counts != self.expected or len(values) != len(self.nodes):
             self.violations.add("collection-drift")
+        if self.digests is not None:
+            actual = {module: node_digest(node for node in values if node.split("::", 1)[0] == module)
+                      for module in counts}
+            if actual != self.digests:
+                self.violations.add("collection-identity-drift")
         for case, required in self.cases.items():
             if not required or any(not anchors[anchor] for anchor in required):
                 self.violations.add("missing-case-" + case)
