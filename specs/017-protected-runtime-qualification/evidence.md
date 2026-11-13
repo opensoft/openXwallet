@@ -345,3 +345,95 @@ All five factory #1308 actual-main-triggered workflows passed at merge
 10,391 passed, six skipped, 338 deselected and 741 subtests passed. Adapter #51
 has no main-triggered workflows, so none is inferred. These post-merge results
 do not establish runtime deployment or human acceptance.
+
+## T006 source commissioning — 2026-11-12
+
+Brett ratified adapter #52 at `3833bc8629e6` for source acceptance only,
+directed its landing when green, and commissioned T006 implementation/testing
+in isolation. Feedback stays deferred; neither historical blocked write is
+authorized for replay.
+
+The PR landed normally as `b86b92512a17019c9fd1b5ac171f116949bffe4e`, tree
+`9e64a50e62e5cd5740e693cd5c16bf7287ead19f`, equal to the ratified candidate
+tree. Required checks and all runnable hosted checks passed; there were no
+unresolved review threads. No approval override was needed. The adapter has no
+main-triggered workflows, so no separate post-merge run is inferred. GitHub
+Codex review remained quota-refused; prior local review and hosted results are
+separate evidence, not bot approval.
+
+`SupervisorObserver` and `SupervisedBridge` obtain actual controller-selected
+Linux process/file/configuration measurements and use the unchanged observation
+and owning proof APIs. `ProcessLaunch` captures a process generation, requires
+explicit expected executable bytes and checks actual argv/cwd/liveness/source
+and bounded regular-file configuration. PID/start time and execution/configuration
+metadata enter the existing composition digest. No worker PID, file paths,
+measurement, policy or key are accepted in the observation request.
+
+The initial focused matrix passes **56 cases**, including actual loopback mTLS,
+separate gate/worker/admin credentials, valid observation/control requests,
+policy revocation/key rotation, an excess-worker-permission mutation and outage
+refusal. The owning proof verifier accepts a measured supervised result. Two
+coordinator regressions were reproduced before correction: denied peers initially
+reached protected configuration I/O, and an independently configured gate
+allowlist was not yet joined to the approved service principal/credential pair.
+Both now refuse with focused coverage. Distinct fixture CA names fixed an admin
+chain ambiguity without weakening certificate/hostname validation.
+
+These fixtures prove isolated behavior only. They do not establish worker OS
+key/policy secrecy, separate deployment administration, read-only launch mounts,
+actual image/dependency selection, continuous liveness or memory/model behavior.
+Observable snapshots can miss changes restored between reads. Real G02/P01 and
+T007–T015 remain separately gated. No protected setup/dispatch, live issuer,
+provider write, human approval, consumer lock/pin or release is supplied.
+
+### T006 expert review and clock checkpoint correction
+
+The full sequence at `8cd7876a4b2aa9d9a153d1a91360b7e3ab0e2178` passed
+**877 tests**, zero failures/errors/skips, both pin verifiers, syntax, plain/
+strict validators and all five canonical pinned OpenSpec items. The pre-PR
+expert panel found one P2: the observer did not retain the newest clock sample
+from configuration preflight. A clock progressing from `N` to `N+10` during
+preflight, then falling to `N+5`, could be accepted against the earlier sample.
+
+The focused red regression reproduced that behavior. The observer now records
+`current.checked_at` before its next clock sample. The reviewer independently
+confirmed refusal with `supervisor-clock-unavailable`; the focused suite passes
+**57 cases**. Architecture, performance, security, QA, static-analysis, API,
+data-integrity and simplicity reviews found no additional actionable issue.
+Standalone analysis reports zero issues in both production modules and the
+RPC fixture with its test scope; hosted acceptance remains a separate readback.
+
+### Corrected T006 full verification and cleanup
+
+The complete sequence at `4ee4b97f94ed96fdfc0ee9c972a0824d76dfbabe` passes
+**878 tests**, including **57 new supervisor cases**, zero failures/errors/skips,
+both pin verifiers, syntax, plain/strict validators and all five canonical pinned
+OpenSpec items. Selected owning-source proof and transport integration are included.
+JUnit SHA-256:
+`2c643775534077c5b5a9c9281b4fec127c9f8612e20c0e09471138818c8ef777`.
+
+Independent process readback found no attributable worker/test/helper PID. All
+owned focused/red/full temporary roots, including PKI and state files, were
+removed after completion and absence verified. Logs/XML remain outside source.
+The receipt follow-up changes no production code or tests. Fresh hosted CI,
+Sonar and Codex review are assessed at the published candidate head separately.
+Same-user fixture success still grants no deployed OS/admin isolation, provider
+activation, human approval or domain effect. Feedback remains deferred; neither
+historical blocked write was replayed.
+
+### T006 hosted test-structure follow-up
+
+The first hosted T006 head passed its quality gate but retained one S5778
+test-structure finding: request preparation occurred inside an exception assertion.
+That preparation now occurs before the assertion. Static review confirmed the
+intended call alone can satisfy the assertion, with production code unchanged.
+No rule, exclusion or issue status was waived or weakened.
+
+The complete sequence at `0385b8b62734583ad9fb44ead9176afc99b4f4a7` again
+passes **878 tests**, including **57 T006 cases**, zero failures/errors/skips,
+both pin verifiers, syntax, plain/strict validation and all five canonical pinned
+OpenSpec items. JUnit SHA-256:
+`1943ec8d8e21ac272d1392af38b4d65dd4b3a2f6260cc96697c80c2121c3eb8a`.
+No attributable process remained, and the follow-up key/state/temp root was
+removed with absence verified. The receipt-only update preserves these tested
+source/tests. Fresh hosted acceptance remains separate from the local receipt.

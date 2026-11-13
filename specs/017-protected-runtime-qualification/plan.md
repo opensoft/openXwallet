@@ -2,7 +2,7 @@
 
 **Branch**: `017-protected-runtime-qualification` | **Date**: 2026-11-12
 **Spec**: [spec.md](spec.md)
-**State**: T002/T003 source landed; isolated T004/T005 source candidate
+**State**: T002–T005 source landed; isolated T006 source candidate
 **Factory governance**: `opensoft/openXfactory`, `openspec/changes/prepare-protected-runtime-qualification/`.
 
 ## Summary
@@ -24,6 +24,13 @@ commissioned T004/T005 in isolation. `loaders.py` and `runtime.py` now compose
 trusted connector capabilities and the unchanged proof gate. There is no deployed
 runtime, consumer execution lock or protected dispatch in these slices.
 
+Brett ratified adapter #52 at `3833bc8629e6` for source acceptance and
+commissioned T006 in isolation. `supervisor.py` composes an admin-owned observation
+key/current-source boundary; `launch.py` measures one controller-selected Linux
+Python process generation. `SupervisedBridge` obtains and checks the existing
+observation before using the unchanged four-argument bridge. Production service
+hosting and separately administered deployment remain unqualified.
+
 ## Technical Context
 
 - Python 3.12 / Linux x86_64; `requirements-workload-binding.lock` is the reviewed dependency baseline. Additional transport dependencies require a complete reviewed hash lock.
@@ -33,6 +40,7 @@ runtime, consumer execution lock or protected dispatch in these slices.
 - Runtime configuration is the factory-owned internal operational projection. Credentials are opaque trusted deployment handles; the worker supplies no expected values or trusted loaders.
 - Current-record connectors implement bounded authenticated `read(operation, reference, deadline=epoch)` and return at most 16 KiB of JSON. Intrinsic service identities and worker-channel context come only from trusted hosting. No public service protocol or production endpoint resolver is supplied.
 - Every use repeats preflight around blocking operations and preserves the earliest known token/key, observation, policy/grant, challenge, registry, channel and protection deadline. Extra preflight I/O must not extend an accepted proof-gate checkpoint.
+- T006 supports the narrow controlled command `executable -I -B worker configuration`, with explicit expected executable digest and controller-captured process generation. Actual proc metadata, bounded regular files and the worker's configuration enter the existing composition digest. This is not general memory, container-image or hostile-host attestation.
 - Storage remains private initialized persistent state under the accepted trusted-host boundary; no throughput, hostile-host or backup-rollback guarantee is claimed.
 - Fetch budgets, cache/rotation and administrative deadlines are proposed factory policy, not issuer service guarantees.
 

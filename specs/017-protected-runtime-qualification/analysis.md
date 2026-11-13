@@ -1,6 +1,6 @@
 # Cross-Artifact Consistency Analysis
 
-Status: T002/T003 landed; isolated T004/T005 source candidate
+Status: T002–T005 landed; isolated T006 source candidate
 
 | Requirements | Tasks | Matrix |
 | --- | --- | --- |
@@ -47,3 +47,12 @@ were reproduced and regression-tested before being corrected. Actual deployed
 authentication/source measurement, supervisor/custody confinement, initialized
 state and cleanup qualification remain pending. The consumer's own T002 and human
 gate remain incomplete; no source acceptance is promoted into live assurance.
+
+T004/T005 subsequently landed under source acceptance of #52. T006's isolated
+observer binds actual controller-selected process generation and launch files/
+configuration into the accepted observation. Peer/policy/key and deadline checks
+precede response acceptance; RPC role-denial and owning proof integration are
+exercised. The Linux script launch profile and snapshot limitations are explicit.
+Same-user fixtures do not establish deployed supervisor independence, OS key/
+policy denial, immutable launch mounts or actual image/dependency assurance.
+T007–T015 and the consumer's independent runtime/human gates remain pending.
