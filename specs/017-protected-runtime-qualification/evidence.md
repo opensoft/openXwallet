@@ -420,3 +420,20 @@ Sonar and Codex review are assessed at the published candidate head separately.
 Same-user fixture success still grants no deployed OS/admin isolation, provider
 activation, human approval or domain effect. Feedback remains deferred; neither
 historical blocked write was replayed.
+
+### T006 hosted test-structure follow-up
+
+The first hosted T006 head passed its quality gate but retained one S5778
+test-structure finding: request preparation occurred inside an exception assertion.
+That preparation now occurs before the assertion. Static review confirmed the
+intended call alone can satisfy the assertion, with production code unchanged.
+No rule, exclusion or issue status was waived or weakened.
+
+The complete sequence at `0385b8b62734583ad9fb44ead9176afc99b4f4a7` again
+passes **878 tests**, including **57 T006 cases**, zero failures/errors/skips,
+both pin verifiers, syntax, plain/strict validation and all five canonical pinned
+OpenSpec items. JUnit SHA-256:
+`1943ec8d8e21ac272d1392af38b4d65dd4b3a2f6260cc96697c80c2121c3eb8a`.
+No attributable process remained, and the follow-up key/state/temp root was
+removed with absence verified. The receipt-only update preserves these tested
+source/tests. Fresh hosted acceptance remains separate from the local receipt.
