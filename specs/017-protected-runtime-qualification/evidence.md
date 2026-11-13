@@ -695,3 +695,75 @@ Logs/XML remain outside source. This receipt follow-up changes no production cod
 or tests. Actual provider lifecycle/admin isolation and protected-machine/human
 acceptance remain separate gates. Feedback stays deferred; neither historical
 blocked write was replayed.
+
+## T010 source commissioning — 2026-11-13
+
+Brett ratified adapter #56 at `508cb51f34074bfa87d65880c8ebdd69f8634076`
+for source acceptance only and commissioned isolated T010 implementation/tests.
+All runnable checks passed with no unresolved review threads. The exact head
+merged normally as `1b313bac487956a3cb74eddf581197e7dc486358`, tree
+`1eebadea83a328063c282e4f16088bbe2bd1d5ed`, equal to the ratified tree.
+No administrative bypass was needed. No main-triggered CI result is inferred.
+
+The new explicit conformance entrypoint binds the substantive offline matrix to
+an exact per-module collection contract plus required case anchors. Every test
+requires passing setup/call/teardown; deselection, skips, expected failures,
+unexpected passes and collection drift fail. Owner integration requires the
+explicit clean accepted owning code before and after execution. The existing
+neutral pin and ordinary entrypoints remain unchanged. The workflow disables
+persisted checkout credentials and performs source/dependency acquisition before
+the loopback-only namespace gate. Namespace/privilege checks survive isolated
+Python exec; provider environment and ambient pytest options are removed.
+
+The first native network-none disposable-container trial passed **781 tests**
+with zero failures/errors/skips. Eleven subsequent actual-pytest mutation tests
+strengthen the harness. Final frozen-source gate and review evidence follows
+separately. This source candidate supplies no deployed OS/admin isolation,
+provider setup, protected dispatch, consumer pin or human approval. Full scoped
+redacted receipts remain T011. Feedback stays deferred; neither historical blocked
+write was replayed.
+
+### T010 expert review and collection-identity correction
+
+All nine expert roles completed. QA reproduced a P2 false-green case: dropping
+one required parameter and adding an unrelated test could preserve module counts
+and function anchors. The audit now also compares committed per-module SHA-256
+fingerprints of compact JSON containing sorted full node IDs, including parameter
+IDs. A compensated-substitution unit test and actual pytest subprocess mutation
+require refusal while preserving order independence. Expected fingerprints are
+never generated during CI. The preceding frozen commit passed all **1,094 tests**
+and a native **792-test** offline matrix; a fresh corrected sequence follows.
+
+### Final T010 source verification and cleanup
+
+Source/tests and HEAD stayed fixed at `959e80061b1041a373498a9aaf0bd548ed26b5dd`
+through the complete ordered sequence: **1,096 tests passed**, zero failures,
+errors or skips; both pin verifiers, syntax, plain/strict validation and all five
+canonical pinned OpenSpec items passed. Full JUnit SHA-256:
+`5ef345273e638ade0e7d6b07446909c5812ba4be6f5b597817bdb612f1edca56`.
+
+The final native network-none disposable-container matrix passed **794 tests**,
+including **52 harness cases**, with zero failures/errors/skips and all required
+I/G/S/L/current-R01 anchors. Both the parent and an isolated Python exec verified
+loopback-only networking, no capabilities/groups or privilege regain, a cleared
+environment and fresh private home/temp. JUnit SHA-256:
+`e6f793088e6d6bedfa3e88991e6423f4b5099f813009a853b6c1acda3d482220`.
+The projects/source bind was read-only, only the owned evidence tree was writable,
+and no provider/profile/SSH/Docker-socket mounts were supplied. Actual owning
+source was clean at `bb0e9dae89a771b05f6c235d0a77237288b95c85`; the adapter's
+neutral pin remains unchanged. Hosted sudo/unshare execution is checked separately.
+
+All nine local expert roles completed. QA independently verified the collection-
+identity correction with three focused tests; standalone Sonar reported zero
+issues in the final four Python files. No rule, threshold or issue was waived.
+
+Independent cleanup readback covered **40 recorded worker generations**: 16
+ordinary-bench generations were absent by PID/start-time identity, and the private
+PID/network namespaces containing the other 24 were gone with all three owned
+disposable containers. No attributable helper process remained. All six owned
+initial, focused and final fixture roots were removed and absence verified;
+reviewer temporary roots were also removed. Reports/logs remain outside source.
+This receipt-only follow-up changes no tested code, tests or workflow. Deployed
+qualification, full T011 receipts, protected setup/dispatch and human approval
+remain separate. Feedback stays deferred; neither historical blocked write was
+replayed.

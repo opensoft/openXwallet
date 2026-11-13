@@ -26,7 +26,11 @@ ownership, validation, versioning, and release constraints.
   and commissioned T007 in isolation. Brett ratified #54 at 8de227dadd53 for
   source acceptance only and commissioned T008 in isolation.
   Brett ratified #55 at caef11d92906 for source acceptance only and commissioned
-  T009 in isolation.
+  T009 in isolation. Brett ratified #56 at 508cb51f3407 for source acceptance
+  only and commissioned T010 in isolation. The required offline matrix is
+  tests/runtime_binding/conformance.py, bootstrapped by isolation.py inside a
+  loopback-only Linux namespace; its reviewed matrix_contract.py rejects missing,
+  deselected, skipped or non-passing cases. Full receipts remain T011.
   Deployed supervisor, custody, state, lifecycle and operation stay
   separately gated. The factory owns the grammar.
   Existing offline entrypoints stay unchanged.

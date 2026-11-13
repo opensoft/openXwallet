@@ -1,6 +1,6 @@
 # Required Qualification Matrix
 
-Status: isolated T002–T009 source cases implemented; deployed cases pending
+Status: isolated T002–T009 source cases landed; T010 conformance candidate; deployed cases pending
 
 | Cases | Required observation | Requirements |
 | --- | --- | --- |
@@ -21,3 +21,28 @@ Required isolated cases must collect and pass without skips. Live P01 and deploy
 G02/G03/L01 require approved services, real observations and operational authorization.
 Local keys, loopback, virtual authenticators or same-user processes cannot substitute.
 Even a complete machine receipt does not finish codeXfactory T002 or attended acceptance.
+
+## Required offline conformance entrypoint (T010)
+
+The ordinary full suite remains required. In addition, `pytest-suite` runs
+`tests/runtime_binding/conformance.py` through `isolation.py` inside a fresh
+Linux network namespace. Only loopback exists; the process has no capabilities,
+supplementary groups or privilege escalation on exec. Environment/plugin options
+are cleared and the home/temp tree starts empty and private. Source checkout and
+reviewed hash-locked wheel installation happen before this offline boundary.
+No public issuer request, provider credential or protected dispatch is used.
+
+`matrix_contract.py` records the exact parametrized collection count and full-node-ID fingerprint per module
+and substantive I01–I05/G01–G03/S01/L01/current-R01 anchors. Every collected test
+must report passing setup, call and teardown. Missing/extra/duplicate nodes,
+missing anchors, deselection, skips, xfail/XPASS, failures or pytest errors refuse.
+Intentional test corpus changes must update counts, full-node-ID fingerprints and anchors in the reviewed contract; there is no
+CLI selector or manifest override. The explicitly selected owning code must be
+clean at the accepted `bb0e9dae89a771b05f6c235d0a77237288b95c85` before and after
+execution, and imports must resolve under that source. The neutral adapter pin
+remains unchanged. The harness tests include actual subprocess pytest mutations.
+
+R01 anchors currently cover fixed error/scope privacy only. They do not claim
+the scoped redacted receipt required by T011. No offline row qualifies deployed
+independence, provider administration, real OIDC or human approval. Gate success
+is a source result, not a protected machine receipt.
