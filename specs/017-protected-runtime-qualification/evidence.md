@@ -527,3 +527,92 @@ Fresh hosted acceptance is checked at the updated PR head separately.
 GitHub Codex refused the initial manual request because the account review limit
 was reached. No bot approval is inferred; the nine-role local panel and independent
 deadline-fix checks are separate evidence. Machine/human acceptance remains pending.
+
+## T008 source commissioning — 2026-11-13
+
+Brett ratified adapter #54 at `8de227dadd53` for source acceptance only,
+directed landing when green and commissioned T008 in isolation. The exact head
+passed all runnable checks with no unresolved review threads and merged normally
+as `3f4a358cf27d79027ec370ef89c5df676b4642c1`, tree
+`8c7f7bbd5bab9e37e1a2552e82d350d3063ba5cc`, equal to its ratified tree.
+No administrative approval override was needed. Source acceptance supplies no
+deployed storage or human acceptance.
+
+`InitializedLedger` requires an independently recorded existing-store identity,
+private files, the existing exact schema/integrity and fresh authenticated active
+scope/recovery readback. Runtime connections use `mode=rw` and cannot create a
+missing file. The opt-in bridge exchanges earliest deadlines with state preflight
+and reservation and checks state through final proof acceptance. The original
+offline initializer, schema, proof/signing interfaces and pins remain unchanged.
+
+The focused isolated matrix passes **49 tests**, including owning proof
+verification, restart and replay refusal, four concurrent reservation attempts
+with one winner, actual process exit after commit, ambiguous custody failure,
+post-commit revocation, missing/corrupt/replaced/unsafe state, expiry during I/O
+or lock acquisition and separately approved new-scope initialization. The initial
+test collection failed before the runtime state module existed; these cases now
+pass with the implementation present.
+
+The initialization receipt and administrative readback are trusted fixtures.
+Device/inode and integrity checks do not establish hostile-host or valid-backup
+rollback resistance. Active-scope restore is prohibited; recovery requires
+revocation and a new approved initialization/workload scope. Real provider readback,
+retention/recovery enforcement, OS/admin isolation, lifecycle and live machine
+qualification remain pending. No protected setup/dispatch, consumer pin movement,
+release or human approval occurs. Feedback stays deferred and neither historical
+blocked write is replayed.
+
+### T008 review and bounded-integrity correction
+
+An initial diagnostic sequence started at `818d7fe358922e13402eb97fd8511911048967ed`
+reported **986 tests**, zero failures/errors/skips, both pin verifiers, syntax,
+plain/strict validation and all five canonical pinned OpenSpec items. Local expert
+review found one P2: SQLite's progress handler retained a new three-second budget
+even when its caller supplied an earlier deadline. Post-I/O refusal prevented a
+proof after expiry, but integrity work could exceed the forwarded short budget.
+
+The focused regression reproduced continuation at 1.5 seconds with a one-second
+budget. The progress deadline now uses the earlier requested budget and is set
+before connection. The regression and complete **50-case** T008 matrix pass.
+Standalone static findings were corrected with a filename constant, explicit
+preflight transaction checks and exception-test setup outside assertions. No
+rule, issue status or gate threshold was waived.
+
+Reliability review also identified a P2 composed-clock gap: the state wrapper
+returned expiry without its newest clock checkpoint, so a later parent sample
+could regress relative to the child's observation. Both connected regressions
+failed before correction. `StateUse` now carries earliest expiry and latest
+checked time; the bridge forwards its clock floor inward and retains the child's
+newest sample on return. The focused T008 matrix now passes **52 cases**.
+
+Both reviewers independently verified their corrections. Reliability also
+verified a connected post-reservation case: a newer child timestamp followed by
+an older parent timestamp refuses before signing, retains the durable reservation
+and refuses reuse after restart. That case is now tracked; the focused matrix
+passes **53 tests**. The preceding complete run reported **989 passed**, zero
+failures/errors/skips, with all ordered gates passing. Final qualification includes
+the added regression in a fresh complete sequence at the recorded source head.
+
+### Final T008 source verification and cleanup
+
+The complete ordered sequence ran with source/tests and HEAD fixed at
+`d92f683b63338c0df74ddbb72c2f677e2d878ae0`: **990 tests passed**, including
+**53 T008 cases**, zero failures/errors/skips, both pin verifiers, syntax,
+plain/strict validation and all five canonical pinned OpenSpec items. Explicit
+owning-source integrations use clean `openWallet-code` at
+`bb0e9dae89a771b05f6c235d0a77237288b95c85`. JUnit SHA-256:
+`a12014ccc1c3bc5c45d9f893333e1883011b911fe41cda6a0ce3309c0e76e4c3`.
+
+All nine expert roles completed. The performance and reliability findings have
+independent closure checks; the post-commit clock case is included in the tracked
+suite. Standalone Sonar reports zero issues in the new state source, runtime glue
+and final tests. Hosted acceptance and Codex response are checked separately at
+the published candidate head.
+
+Independent process readback found no attributable fixture/worker/test PID.
+Owned initial, focused, red, corrected and final temporary roots, including
+synthetic keys/state, were removed and absence verified. Reviewers removed their
+own reproduction roots. Logs/XML remain outside source. This receipt follow-up
+changes no production code or tests. Deployed storage/recovery, lifecycle,
+protected operation and human acceptance remain pending. Feedback stays deferred;
+neither historical blocked write was replayed.

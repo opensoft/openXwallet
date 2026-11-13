@@ -1,8 +1,8 @@
 # Tasks: Protected Machine Runtime Qualification
 
-Status: sole executable implementation list; T002–T005 landed; isolated T006 candidate
-Commission: 2026-11-12 source ratification of #52 at 3833bc8629e6 and explicit
-isolated T006 commissioning. Operation stays separate. See [evidence](evidence.md).
+Status: sole executable implementation list; T002–T007 landed; isolated T008 candidate
+Commission: 2026-11-13 source ratification of #54 at 8de227dadd53 and explicit
+isolated T008 commissioning. Operation stays separate. See [evidence](evidence.md).
 
 ## Owner Gate
 
@@ -28,7 +28,7 @@ Independent acceptance: issuer evidence verifies through the unchanged core; fai
 - [x] T005 [O] Compose exact launch/protection/source preflight with existing ProofGate; files: scripts/workload_factory_binding_runtime/runtime.py, tests/runtime_binding/test_runtime.py; verify: each I04/P01 binding independently refuses when wrong/absent; worker booleans confer no authentication. Source accepted and landed #52; real P01 and deployed supervisor/custody/state/lifecycle gates remain pending.
 - [x] T006 [O] Integrate independent supervisor observation and actual launch measurement; files: scripts/workload_factory_binding_runtime/supervisor.py, scripts/workload_factory_binding_runtime/launch.py, tests/runtime_binding/test_supervisor.py, tests/runtime_binding/test_supervisor_access.py; verify: G02 and worker control-plane/key/policy denial; fixtures retain fixture-only scope. Isolated controlled-Python launch/source and RPC-denial candidate; deployed independent administration, OS key/policy access denial and immutable launch filesystem remain unqualified.
 - [x] T007 [O] Bind confined gate deployment/credential to the owning signer; files: scripts/workload_factory_binding_runtime/custody.py, tests/runtime_binding/test_custody.py; verify: G03 owning proof plus direct valid-preimage denial; new custody assertions refuse for upstream owner decision. Isolated source candidate with actual owning mTLS and mutation-sensitive separate-process worker probe; deployed issuance/readback administration and OS/network credential confinement remain unqualified.
-- [ ] T008 [O] Add expected-initialized state preflight and restart/recovery enforcement; files: scripts/workload_factory_binding_runtime/state.py, tests/runtime_binding/test_state.py; verify: S01, no silent reset, ambiguity stays consumed and no hostile-host/backup rollback claim.
+- [x] T008 [O] Add expected-initialized state preflight and restart/recovery enforcement; files: scripts/workload_factory_binding_runtime/state.py, tests/runtime_binding/test_state.py; verify: S01, no silent reset, ambiguity stays consumed and no hostile-host/backup rollback claim. Isolated source candidate requires an independent initialization receipt, existing private DELETE-journal SQLite state and fresh active-scope readback; startup never provisions or restores. Deployed storage administration and recovery-policy qualification remain separate.
 
 Independent acceptance: one bounded owning proof; no approval/apply operation.
 

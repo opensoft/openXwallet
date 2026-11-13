@@ -192,3 +192,51 @@ excess-sign-permission mutation and an outage both make the probe fail. Fixture
 PKI/state/process cleanup is checked on success and injected failure. Same-user
 fixtures do not qualify deployed issuance administration, OS/network confinement,
 worker key-file secrecy, source/image immutability or live G03/P01.
+
+## Isolated T008 realization
+
+Trusted hosting supplies `InitializedLedger` in the existing `StateBinding`.
+Its constructor requires a selected private directory, runtime trust and
+`StateTrust`: exact state references, independently recorded initialization
+identity, authenticated readback principal and bounded `load_access(deadline=epoch)`.
+The readback joins those references and initialization to the exact approved
+configuration, case/run/attempt and current active recovery/retention scope.
+Worker flags or a missing initialization receipt cannot establish readiness.
+The existing generic `StateBinding` is a compatibility seam, not evidence of T008;
+this provided runtime path uses `InitializedLedger` and its fresh checks.
+
+The operator explicitly provisions the store before runtime using the existing
+initializer and independently records `inspect_initialized_state()` metadata.
+Runtime never calls the initializer or implicitly captures a new expected identity.
+Restart reuses the original receipt. Directory/database device and inode metadata
+must match; private owner/mode/link checks, the existing exact schema/version,
+full SQLite integrity and DELETE-journal mode are checked. Missing, blank,
+corrupt, replaced or unsafe state refuses without initialization/repair. Existing
+hot-journal recovery is normal transaction recovery, not backup restoration.
+WAL/SHM and unsupported modes refuse in this narrow existing-store profile.
+
+SQLite connections explicitly use `mode=rw`, so loss between metadata check and
+connect cannot create a file. Integrity work and lock timeout are capped by three
+seconds and the remaining use budget; progress deadline is set before connecting. Epoch
+time is rechecked after blocking I/O and lock acquisition, before insert/commit
+and after reservation. State preflight and `reserve_for_use` exchange the earliest
+deadline and latest checked time with the bridge. Internal `StateUse` carries
+those two checkpoints; the child retains the parent's clock floor before I/O,
+and the parent retains the child's newest sample before sampling again. State
+preflight repeats through the final proof check. Ordinary
+reservation, uniqueness and reserve-before-sign semantics are unchanged.
+
+Durably committed reservations survive restart, process exit without a response,
+ambiguous custody failure and later readback refusal. No failure path deletes or
+prunes them. Failures before durable reservation return no proof; this is not a
+claim that an uncommitted transaction has reserved an identity. Readback expiry,
+revocation or recovery-required status fails closed. Recovery requires operator
+revocation and a new approved store/initialization and workload scope; it is not
+an automatic same-scope reset or restoration command.
+
+Private file metadata and integrity checks cannot detect hostile in-place edits,
+an otherwise valid backup restored into the same inode, or changes restored
+between observations. Hosting must protect parent paths, database files and
+initialization/recovery administration and prohibit active-scope restore. Actual
+authenticated storage readback, retention enforcement and OS/admin isolation
+remain deployed acceptance inputs. Same-user isolated tests do not qualify them.
