@@ -564,8 +564,8 @@ blocked write is replayed.
 
 ### T008 review and bounded-integrity correction
 
-The complete initial ordered sequence at `818d7fe358922e13402eb97fd8511911048967ed`
-passes **986 tests**, zero failures/errors/skips, both pin verifiers, syntax,
+An initial diagnostic sequence started at `818d7fe358922e13402eb97fd8511911048967ed`
+reported **986 tests**, zero failures/errors/skips, both pin verifiers, syntax,
 plain/strict validation and all five canonical pinned OpenSpec items. Local expert
 review found one P2: SQLite's progress handler retained a new three-second budget
 even when its caller supplied an earlier deadline. Post-I/O refusal prevented a
@@ -592,3 +592,27 @@ and refuses reuse after restart. That case is now tracked; the focused matrix
 passes **53 tests**. The preceding complete run reported **989 passed**, zero
 failures/errors/skips, with all ordered gates passing. Final qualification includes
 the added regression in a fresh complete sequence at the recorded source head.
+
+### Final T008 source verification and cleanup
+
+The complete ordered sequence ran with source/tests and HEAD fixed at
+`d92f683b63338c0df74ddbb72c2f677e2d878ae0`: **990 tests passed**, including
+**53 T008 cases**, zero failures/errors/skips, both pin verifiers, syntax,
+plain/strict validation and all five canonical pinned OpenSpec items. Explicit
+owning-source integrations use clean `openWallet-code` at
+`bb0e9dae89a771b05f6c235d0a77237288b95c85`. JUnit SHA-256:
+`a12014ccc1c3bc5c45d9f893333e1883011b911fe41cda6a0ce3309c0e76e4c3`.
+
+All nine expert roles completed. The performance and reliability findings have
+independent closure checks; the post-commit clock case is included in the tracked
+suite. Standalone Sonar reports zero issues in the new state source, runtime glue
+and final tests. Hosted acceptance and Codex response are checked separately at
+the published candidate head.
+
+Independent process readback found no attributable fixture/worker/test PID.
+Owned initial, focused, red, corrected and final temporary roots, including
+synthetic keys/state, were removed and absence verified. Reviewers removed their
+own reproduction roots. Logs/XML remain outside source. This receipt follow-up
+changes no production code or tests. Deployed storage/recovery, lifecycle,
+protected operation and human acceptance remain pending. Feedback stays deferred;
+neither historical blocked write was replayed.
