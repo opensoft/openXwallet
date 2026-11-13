@@ -1146,3 +1146,56 @@ No setup, protected dispatch, credential issuance, signing operation, consumer
 pin promotion or human/domain acceptance occurred. Feedback stays deferred;
 neither historical blocked write was replayed. This receipt-only follow-up
 changes no tested runtime, test, workflow, dependency or pin bytes.
+
+## T013 refresh after accepted bootstrap landing — 2026-11-13
+
+Brett ratified factory #1311 at `6dadf188a0afa22e3c205561299f6045a9c95359`
+with adapter #60 at `78e7bbeabca250073d5896154ccc99bb163116cc` for source
+acceptance only, explicitly retaining the setup/dispatch prohibition. Factory
+landed first as `f2fb60f04c8229f4343e25a0155418f2f737d73a` under the standing
+self-authored-PR approval exception; adapter landed normally as
+`61fbe41f7e08e831e0b15c2c97ea6ff386f587f3`. Both merged trees exactly match
+the ratified trees. The current instruction commissions post-merge CI verification
+and this refresh, with no new operation.
+
+Factory post-merge CI is verified at the exact merge above: all 5 observed main-triggered Actions runs passed, including [pytest-suite 43526439944](https://github.com/opensoft/openXfactory/actions/runs/43526439944). Its pytest result was **10391 passed, 6 skipped, 338 deselected, 9 warnings, 745 subtests passed**. The JUnit guard recorded `selected=11142`, `passed=11136`, `skipped=6`, `failures=0`, `errors=0`; its named freshness check passed. This is independently observed main CI, not a reuse of the PR run. Main Sonar reported `neutral` / `Quality Gate not computed`; the source PR quality gate is a separate result.
+
+Fresh non-secret GitHub readback still reports only the existing unprotected
+`copilot` environment, with admin bypass enabled; preserve it. Qualification
+workflow runs remain zero. Repository/owner IDs and default workflow permissions
+are unchanged. OIDC configuration reports `use_default: true`,
+`use_immutable_subject: true`, prefix
+`repo:opensoft@638385/openXwallet@1347887821`. This is configuration readback,
+not a minted token or approval of a complete subject/audience.
+
+The selection packet now records accepted source/merge/tree identities, current
+workflow/CLI/bootstrap content hashes and the explicit static-dispatch/full-run
+interface. Source bootstrap acceptance is resolved. The open decisions are the
+actual host, bootstrap authority/principal/authentication/atomic consumption,
+other trusted clients and administrative separation, reviewer/dispatcher, state,
+lifecycle and budget/window/resource/authority scope. Per-run plan/lease and
+grant binding occur after assigned run identity and before admission; pre-dispatch
+setup readiness does not require predicting that identity.
+
+The authorization draft separates accepted source from four NOT GRANTED stages:
+setup, one dispatch, actual run/attempt authority and exact-generation cleanup.
+Only selected creation names/parents can be approved before created IDs exist;
+fresh effective readback is required before dispatch/use. No executable config,
+grant, service endpoint, credential or approved actor is invented. Human/domain
+acceptance and live protected receipt promotion remain separate.
+
+This refresh changes documentation only. Runtime, tests, workflows, dependency
+locks, neutral pins and frozen factory origin fields are unchanged. The existing
+source/fixture qualification receipts remain evidence within their stated scope;
+no new runtime suite or deployed qualification is inferred. T001/T013/T014/T015
+owner/operational checkboxes remain unmarked. Feedback stays deferred; neither
+historical blocked write was replayed. Document/source-reference checks follow.
+
+Refresh validation passed in py-bench as UID 1000: both pin verifiers, YAML
+syntax, plain/strict adapter validation (zero errors/warnings), and all five
+pinned OpenSpec items. Local links, portable paths and every listed immutable
+source hash match accepted Git objects. Exact diff scope is seven documentation
+files; runtime/tests/workflows/locks/pins are unchanged. T001/T013/T014/T015 remain
+unmarked. No new runtime suite was rerun for documentation-only changes and no
+fixture process/key/state tree was created. Final readback still has zero
+protected workflow runs and no adapter merge-triggered Actions run.

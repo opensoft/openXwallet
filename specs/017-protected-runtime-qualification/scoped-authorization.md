@@ -1,101 +1,120 @@
 # T013 Scoped Authorization Draft
 
-Status: prepared for owner/operator decision; NOT GRANTED; not runtime input
-Prepared: 2026-11-13
+Status: refreshed for owner/operator decision; setup/dispatch NOT GRANTED
+Updated: 2026-11-13
 Selections: [operational inputs](operational-inputs.md)
-Source prerequisite: [dispatch bootstrap proposal](workflow-bootstrap.md)
+Accepted bootstrap source: [bootstrap record](workflow-bootstrap.md)
 
-This draft records the scope of a future decision. Brett's ratification of #59
-at `948ea81d7cdce35f5d006c747680a6b9fde37a29` accepts source only. It does not
-approve this draft, select a host, create resources or authorize a dispatch.
-The earlier portable reference-service decision remains the service route;
-isolated qualification does not authorize deploying those services.
+The source-only ratification of factory #1311 at
+`6dadf188a0afa22e3c205561299f6045a9c95359` with adapter #60 at
+`78e7bbeabca250073d5896154ccc99bb163116cc` is recorded. Their accepted merge
+baselines are factory `f2fb60f04c8229f4343e25a0155418f2f737d73a` and adapter
+`61fbe41f7e08e831e0b15c2c97ea6ff386f587f3`, each with its ratified tree.
+Factory post-merge source CI is verified in the [selection packet](operational-inputs.md).
+This resolves the earlier source-input circularity; it grants no operation.
 
-## Decision record and post-setup readback
+The current instruction authorizes verification and this documentation refresh.
+It explicitly keeps setup and dispatch unauthorized. All operative stages below
+are **NOT GRANTED**. Portable reference services remain the prior source/isolated
+route, with actual hosting/authentication integrations and administration unselected.
+The current CLI still refuses before environment outputs/OIDC.
 
-Complete the following record with non-secret references. Before setup, select
-the intended target, source, administrators, names, actions, limits and policies.
-IDs/receipts that can only exist after authorized creation are post-setup
-readback requirements; they block dispatch, not that narrowly enumerated setup.
-Unselected scope blocks the corresponding decision. Copying this document or
-saying "approved" cannot fill a missing selection or readback.
+## Decision record to complete
 
-| Decision | Proposed bound | Required owner/operator selection |
+Before setup, select intended target, final accepted source, administrators,
+names/actions, resource limits, budget/window and policies. Record only non-secret
+references. Resource IDs/receipts that can exist only after authorized creation
+are post-setup readback obligations; they block dispatch, not an exact scoped
+create decision. Unselected scope blocks the corresponding decision.
+
+| Decision | Prepared bound | Required owner/operator selection |
 | --- | --- | --- |
-| Purpose | First codeXfactory pilot, machine possession qualification only | Exact case identifier and accountable operational owner |
-| Source | Accepted immutable factory/adapter/owning service revisions and dependencies | Final reviewed source manifest and digest, including bootstrap/hosting integrations |
-| Target | Dedicated disposable nonproduction Linux deployment of portable services | Provider/account or tenant/subscription, host/cluster, region, namespace/resource group and immutable target IDs |
-| Administrative separation | Worker cannot administer supervisor, custody, grant, readback or cleanup | Named principals, administrative owners, trust roots and effective access readback |
-| Environment | Proposed new `wallet-mfa-pilot-qa` in `opensoft/openXwallet` | Before setup: approved name, exact repository ID, eligible reviewer IDs, independent dispatcher and protection policy; after setup: actual created ID and measured protection |
-| Setup budget | Smallest bounded pilot; no production or shared-resource mutation | Exact create/update allowlist, resource limits, spend ceiling, UTC start/end, expiration and teardown owner |
-| State | Existing explicitly initialized private store; no silent reset | Provisioning owner, initialization receipt, storage identity, retention/recovery policy and preservation list |
-| Services | Records, challenge, registry, custody, supervisor, worker channel and janitor | Exact service/principal/credential references and trust digests, plus authenticated readback clients |
-| Issuer/workload | Fixed GitHub endpoints, exact repo/ref/workflow/source bindings | Audience, configured subject policy, claim readback and selected measurement policy |
-| Lifecycle | Independently registered bounded lease and exact-generation cleanup | Janitor/scheduler/readback principals, registration, cleanup plan digest, deadlines and receipt retention |
-| Approval | Separate setup, bootstrap dispatch and actual run authority | Decision identity, decision time/expiry, immutable decision reference and revocation path |
+| Purpose/case | First codeXfactory pilot; machine possession qualification | Exact case ID and accountable owner |
+| Final source | Accepted factory/adapter bootstrap baselines above | Eight source roles, immutable commits/relative paths/content digests, dependencies/composition, owning service sources and accepted hosting/qualify/cleanup/receipt integrations |
+| Target | Dedicated disposable nonproduction Linux deployment | Exact provider/account or tenant/subscription, existing parent IDs, host/cluster, region and namespace/resource-group scope |
+| Administrators | Worker cannot administer supervisor, custody, bootstrap/operation grants, readback or cleanup | Named independent principals, control-plane owners, credential/trust refs and effective access evidence |
+| Environment | Proposed new `wallet-mfa-pilot-qa` in repo ID `1347887821` | Before setup: approved name and create scope, 1–6 reviewer IDs, distinct dispatcher, prevent self-review, no admin bypass, exact `refs/heads/main` deployment restriction; after setup: actual ID and complete effective protection readback |
+| Bootstrap authority | Static approval precedes actual-run binding; no pre-admission OIDC dependency | Source-accepted authentication/client design, authority administrator/principal/credential/trust refs, authenticated actual GitHub context, atomic one-preauthorization/one-run-attempt consumption and revocation/readback |
+| Selection/authorization | Separate independent static approval and actual-run full approval | Decision issuer, case/time window, static digest, preauthorization ref and revocation path; then actual-run config digest and operation grant |
+| Services | Exactly seven runtime roles; independently authenticated current records/challenge | Per-service principal/credential/trust refs; separate bootstrap, environment, authorization, scheduler and cleanup readback clients |
+| Issuer/subject | Fixed GitHub endpoints; observed immutable-ID subject settings/prefix in selection packet | Explicit audience and complete configured subject/claims; fresh independent corroboration, no guessed name-only subject |
+| State | Explicitly initialized private retained replay store | Store/initialization/retention/recovery refs, provisioning owner, initialization receipt and preservation/access policy |
+| Lifecycle | Bounded lease and independent registered janitor/scheduler/readback | Exact plan/scope, principals, generation/ownership allowlist, deadlines and receipt retention; runner death/expiry readback |
+| Setup limit | Smallest bounded pilot; preserve unrelated/shared resources | Exact create/update actions and parent/name allowlist, resource limits, spend ceiling, UTC start/end/expiry and setup rollback owner |
+| Dispatch limit | One manual caller/local-reusable invocation at exact accepted `main` source | Named dispatcher, case, final accepted workflow SHA, static digest and independent preauthorization; no automatic retry |
+| Evidence/acceptance | Source conformance precedes real protected qualification | Source-accepted live qualification/cleanup clients and protected receipt promotion, actual P01/deployed G02/G03/L01, and separate consumer/human/domain acceptance |
 
-Credential references identify where authorized clients obtain credentials;
-credentials, tokens, factor seeds and private keys never belong in this record.
-No new App, grant, credential or permission is implicitly authorized by naming a
-role. Provider setup commands must be separately reviewed against the completed
-allowlist. This draft supplies no runnable setup/dispatch commands.
+No new App, federation, credential, grant or provider permission is authorized
+by naming its future role. Credential references never contain credentials,
+tokens, private keys or factor seeds. The read-only subject settings inspection
+did not mint a workload token and does not approve a subject/audience. Preserve
+the existing `copilot` environment and current provider configuration.
 
-## Staged scope to authorize after source and selections are complete
+## Staged future authorization
 
-1. **Setup only.** Authorize the named operator to create/configure only the
-   enumerated nonproduction resources during the selected window/budget. For a
-   new resource, bind its create action to exact parent identity and name, refuse
-   an unexpected existing resource, then record the assigned immutable ID. Require
-   authenticated readback of actual identities, protections, administrative
-   separation, initialized state and registered cleanup. Setup authority grants
-   neither a protected run nor signing use. Stop on drift, unknown resources or
-   an inability to enforce the approved separation. Preserve the old `copilot`
-   environment and other shared resources.
-2. **One bootstrap dispatch.** After separately accepted bootstrap/hosting
-   source exists, authorize one manual `main` dispatch at its exact accepted
-   workflow commit, for the selected case, static selection digest and independent
-   preauthorization reference. No pull-request/fork trigger, auto retry, floating
-   source or second dispatch is covered. If `main` has moved, reconcile and obtain
-   exact source acceptance before proceeding. The proposed bootstrap carries no
-   signing authority and cannot select an environment or request OIDC before
-   independent admission.
-3. **Actual run/attempt authorization.** Once GitHub assigns the run identity,
-   independently authenticate it and bind the final canonical runtime config,
-   current grant, environment, sources and registered lease/cleanup to that exact
-   run/attempt. Approve only `qualify-existing-resources`, one bounded owning
-   proof, the accepted P01/G02/G03/L01 cases and scoped cancellation/cleanup
-   exercises. Enumerate separate run/case authority if those exercises need more
-   than one run. Each rerun/attempt requires fresh authority; none is inherited.
-   Environment review and this operation grant remain distinct gates.
-4. **Cleanup and evidence.** Authorize only the approved generation/ownership
-   allowlist. The independent janitor must remain able to expire/reconcile and
-   independently read back cleanup after runner death or proof expiry. Remove
-   run-owned ephemeral credentials/resources only; preserve replay state, retained
-   receipts and every explicitly shared resource. A new target, generation,
-   namespace or deletion scope requires a new decision. Missing readback leaves
-   the run unqualified and escalated to the named cleanup owner.
+1. **Setup only — NOT GRANTED.** After the source/client and target decisions
+   above are complete, authorize a named operator to create/configure only the
+   enumerated nonproduction resources during the approved window/budget. Bind
+   new creates to exact parent identity/name; refuse an unexpected existing
+   resource and record assigned immutable IDs. Scope setup rollback/cleanup and
+   its independent owner before setup begins. Read back actual protection,
+   source/administration, initialized state and independent scheduler/janitor/
+   readback service readiness. The actual run-bound plan/lease is registered
+   after run assignment and before admission; setup readiness does not invent
+   that run identity. Setup grants neither workflow dispatch nor signing use.
+2. **One bootstrap dispatch — NOT GRANTED.** After authorized setup readback
+   and accepted actual hosting/authentication clients, independently approve the
+   complete static selection under `openxfactory-dispatch-selection-internal-v1`
+   and one preauthorization. Use only manual inputs `accepted_commit`,
+   `selection_digest`, `preauthorization_ref` at the exact accepted workflow
+   source. No PR/fork trigger, floating source, second dispatch, automatic retry
+   or token-for-discovery is covered. Reconcile exact source if `main` has moved.
+   Bootstrap authentication must work before environment selection/OIDC; an
+   unverified worker context or prior job output cannot authorize this stage.
+3. **Actual run/attempt authority — NOT GRANTED.** After GitHub assigns the
+   run, the independent authority authenticates it, atomically consumes/binds
+   preauthorization and approves the final full runtime config/grant for the
+   exact selection/source/repository/case/run/attempt. Independently register and
+   read back that full-config-bound run plan, active lease and cleanup generation
+   scope before admission can return readiness. Static commitment omits
+   only launch run ID/attempt; no other selection or time-window change is
+   implied. Approve only `qualify-existing-resources` and one bounded owning
+   proof, with the accepted qualification/cancellation cases expressly named.
+   If more runs are needed, enumerate their separate scope and decisions. A
+   rerun/changed attempt never inherits authority. Full fresh environment,
+   protection, grant, scheduler and active lease checks retain the earliest
+   deadline, and bootstrap/admission repeat after environment approval.
+4. **Cleanup/readback — NOT GRANTED.** Bind deletion/revocation to the approved
+   exact ownership/generation allowlist. An independently administered janitor
+   remains able to expire/reconcile and read back cleanup after hard runner
+   death or proof/config expiry. Remove only approved run-owned ephemeral
+   resources; preserve replay state, retained evidence and shared resources.
+   A changed target, generation or cleanup scope requires a new decision.
+   Missing readback leaves qualification incomplete and escalates to the named
+   cleanup owner. A runner `always()` step alone cannot establish this result.
 
-Stages 2–3 require the paired bootstrap source candidate's acceptance and actual
-authenticated hosting clients; the current candidate still has no operational
-bindings. Do not dispatch #59 to discover a run ID, edit immutable dispatch inputs,
-predict an ID, reuse a prior grant or bypass the current admission guards.
+None of these stages is approved by copying the draft, approving source or
+saying "go ahead" without the exact selected scope. This document supplies no
+executable config, grant or runnable setup/dispatch commands. Do not dispatch
+the historical #59 interface, predict IDs, mutate immutable inputs, reuse prior
+grants or bypass admission to obtain missing runtime facts.
 
-## Exclusions and acceptance boundary
+## Exclusions and remaining owner act
 
 No production deployment, tenant-wide policy change, standing broad credential,
-wildcard deletion, bench restart/rebuild, consumer lock/pin promotion, domain
-read/apply/marker operation, human factor enrollment, human approval simulation or
-release acceptance is covered. Feedback/support remains deferred. Neither
-historical blocked write may be replayed under this scope.
+wildcard deletion, bench restart/rebuild, consumer pin/lock promotion, domain
+read/apply/marker action, human factor enrollment/approval simulation or release
+acceptance is covered. Feedback/support stays deferred; neither historical
+blocked write may be replayed.
 
-T013 stays unchecked until every required operational category has an explicit
-approved reference and independent readback, and setup/dispatch authority is
-actually recorded. The draft does not require an uncreated resource's ID before
-authorizing its exact scoped creation. T014 execution and protected receipt
-promotion require their reviewed integrations and operational gates; T015 requires the separate consumer
-acceptance. Environment approval alone supplies none of those acceptances.
+T013 stays unchecked until every operational category has approved non-secret
+references and independent readback, and actual scoped setup/dispatch authority
+is recorded. T014 execution/protected receipt promotion and T015 consumer
+acceptance remain separate. Environment review does not establish independent
+domain human approval.
 
-The next decision can select a host and the distinct dispatcher/reviewer roles
-while commissioning the source-only bootstrap amendment. It cannot yet be a
-fully bound operational grant: target, clients, resource allowlist, independent
-administration, budget/time window and actual run identity remain unselected.
+The next owner decisions are the actual nonproduction target, administrative
+owners, distinct dispatcher/reviewer, bootstrap authentication/authority design
+and resource/budget/window limits. They can commission the required source
+integrations without authorizing setup or dispatch. Source bootstrap acceptance
+is complete; live hosting/authentication and operational decisions remain open.
