@@ -263,6 +263,7 @@ class RunLifecycle:
 
     def finalize(self, outcome):
         require(outcome in ("success", "failure", "cancel"), "invalid-lifecycle-outcome")
+        readback = self.readback  # one capability supplies both record and provenance
         with self._lock:
             self._cleanup_verification = None
             self._cleanup_generation += 1
@@ -280,7 +281,7 @@ class RunLifecycle:
             failed = True
         # Never substitute the cleanup actor's acknowledgement for independent readback.
         try:
-            record = self.readback.target.read_cleanup(self.plan.ref, attempt_ref=attempt, deadline=clock.deadline)
+            record = readback.target.read_cleanup(self.plan.ref, attempt_ref=attempt, deadline=clock.deadline)
             now = clock.now()
             self._verify_cleanup(record, floor, now, attempt)
         except Exception:
@@ -288,7 +289,7 @@ class RunLifecycle:
         require(not failed, "lifecycle-cleanup-unverified")
         verification = CleanupVerification(self.plan.digest, self.plan.scope, outcome, now,
                                            record.observed_at, record.valid_until, digest(asdict(record)),
-                                           digest(asdict(self.readback.identity)), digest(attempt))
+                                           digest(asdict(readback.identity)), digest(attempt))
         with self._lock:
             if generation == self._cleanup_generation:
                 self._cleanup_verification = verification

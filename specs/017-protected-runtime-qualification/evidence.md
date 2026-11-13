@@ -794,3 +794,14 @@ canary redaction, malformed scope/count/time/source/readback/cleanup, missing ca
 failed retry clearing and out-of-order cleanup checkpoint publication. No live
 provider setup, protected dispatch, consumer lock or human approval is supplied.
 Feedback stays deferred; neither historical blocked write was replayed.
+
+### T011 expert review and provenance correction
+
+All nine local expert roles completed. Reliability reproduced a P2 attribution
+race: readback capability rotation during a callback could verify the old
+service's record but label it with the replacement identity. Finalization now
+captures one capability per attempt and uses its target and identity consistently.
+A tracked rotation regression covers the actual record-return path. The focused
+receipt matrix now passes **89 tests**. QA independently ran the original 88.
+Standalone Sonar's one conventional dictionary construction and two exception-
+test setup findings were corrected without waivers; final analysis follows.

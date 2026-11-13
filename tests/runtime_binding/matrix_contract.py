@@ -8,7 +8,7 @@ ROOTS = ("tests/runtime_binding", "tests/factory_binding/test_binding.py",
          "tests/factory_binding/test_owner_integration.py")
 
 MODULE_COUNTS = {
-    "tests/runtime_binding/test_evidence.py": 88,
+    "tests/runtime_binding/test_evidence.py": 89,
     "tests/runtime_binding/test_conformance.py": 52,
     "tests/runtime_binding/test_authenticated_loaders.py": 5,
     "tests/runtime_binding/test_config.py": 158,
@@ -36,7 +36,7 @@ MODULE_DIGESTS = {
     "tests/runtime_binding/test_config.py": "d52b813f04a9136ec1a552024ce2472a8f1588c3d5775129b1f1bd5f0e539664",
     "tests/runtime_binding/test_conformance.py": "6be10aed156b24c48c5768ec65e8d83d5eff1084b296487370f2647e66bd82ad",
     "tests/runtime_binding/test_custody.py": "72ecf5b699264a2a04e0ce92cb9b5ec90704eb5b547b5d53abb83e159e2f7984",
-    "tests/runtime_binding/test_evidence.py": "ff97ab49e72ad8cc158a6a52138d43231028279bb542a8b7a52c0c725eb8e75d",
+    "tests/runtime_binding/test_evidence.py": "35e3356dfcd2e14639ba303db63f4c7aea5bcebc52af15d83be6fbc28581abae",
     "tests/runtime_binding/test_https.py": "eda9d445ef7dbb03646859c3b24730d4a3e73fdd6147dfc309cdeb642194eecc",
     "tests/runtime_binding/test_issuer.py": "2594640b2c901ea179056e56c12f80c18e3ed24349eebdc3335b46e5d020b47c",
     "tests/runtime_binding/test_issuer_edges.py": "cfa722eae2b0522d657fcbf0f218fd90dc12e20e346499c7e5e6d5673da2cc30",

@@ -78,8 +78,9 @@ def test_zero_collection_missing_reports_failures_errors_and_skips_never_pass(se
 @pytest.mark.parametrize("field", ["collected", "passed", "failures", "errors", "skipped"])
 @pytest.mark.parametrize("value", [-1, True, 1000001])
 def test_counts_are_bounded_integers(selected, field, value):
+    cases = (replace(observations()[0], **{field: value}),)
     with pytest.raises(BindingError, match="^invalid-qualification-evidence$"):
-        receipt(selected, cases=(replace(observations()[0], **{field: value}),))
+        receipt(selected, cases=cases)
 
 
 @pytest.mark.parametrize("kind", ["duplicate", "unknown", "dictionary", "extra", "overcount", "future", "old", "digest"])
@@ -262,8 +263,9 @@ def test_verified_cleanup_never_masks_operation_error(l):
 
 def test_cleanup_before_latest_case_observation_cannot_qualify(l):
     verification = l.life.finalize("success")
+    cases = observations(l.c.h.now + 1)
     with pytest.raises(BindingError, match="^invalid-qualification-evidence$"):
-        fixture_report(l, cleanup=verification, cases=observations(l.c.h.now + 1), now=l.c.h.now + 1)
+        fixture_report(l, cleanup=verification, cases=cases, now=l.c.h.now + 1)
 
 
 def test_older_cleanup_completion_cannot_overwrite_newer_attempt(l):
@@ -281,6 +283,21 @@ def test_older_cleanup_completion_cannot_overwrite_newer_attempt(l):
     assert older.outcome == "success"
     assert l.life.cleanup_verification == newer[0]
     assert l.life.cleanup_verification.outcome == "failure"
+
+
+def test_cleanup_provenance_uses_actual_readback_capability_during_rotation(l):
+    original = l.life.readback
+    replacement = BoundService(replace(original.identity, principal_ref="principal:rotated-audit",
+                                       credential_ref="credential:rotated-audit"), original.target)
+    class Reader:
+        def read_cleanup(self, *args, **kwargs):
+            record = original.target.read_cleanup(*args, **kwargs)
+            l.life.readback = replacement
+            return record
+    l.life.readback = BoundService(original.identity, Reader())
+    verification = l.life.finalize("success")
+    assert verification.readback_identity_digest == digest(asdict(original.identity))
+    assert verification.readback_identity_digest != digest(asdict(replacement.identity))
 
 
 @pytest.mark.parametrize("outcome", ["success", "failure", "cancel"])

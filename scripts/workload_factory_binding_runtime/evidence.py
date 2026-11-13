@@ -164,7 +164,7 @@ def build_receipt(*, scope, selected, cases, started_at, now, plan=None, cleanup
                   "issued_at": now, "context": context, "results": results, "cleanup": cleaned,
                   "error_code": code, "protected_machine_qualified": False, "human_approval": False,
                   "domain_effect": False, "consumer_dependency_lock": False,
-                  "live_gates": {case: "not-performed" for case in ("P01", "deployed-G02", "deployed-G03", "deployed-L01")}}
+                  "live_gates": dict.fromkeys(("P01", "deployed-G02", "deployed-G03", "deployed-L01"), "not-performed")}
         raw = canonical(report)
         require(len(raw) <= 16384, "invalid-qualification-evidence")
         return raw
