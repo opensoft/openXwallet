@@ -1,8 +1,10 @@
 # Tasks: Protected Machine Runtime Qualification
 
-Status: sole executable implementation list; T002–T011 landed; isolated T012 workflow preparation candidate
-Commission: 2026-11-13 source ratification of #58 at 4916476364f7 and explicit
-isolated T012 commissioning. Operation stays separate. See [evidence](evidence.md).
+Status: sole executable implementation list; T002–T012 landed; T013 preparation
+Commission: 2026-11-13 source ratification of #59 at 948ea81d7cdc and explicit
+T013 operational selection/authorization preparation. Operation stays separate.
+See [evidence](evidence.md), [selections](operational-inputs.md),
+[authority draft](scoped-authorization.md) and [source prerequisite](workflow-bootstrap.md).
 
 ## Owner Gate
 

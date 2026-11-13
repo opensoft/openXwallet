@@ -38,6 +38,12 @@ ownership, validation, versioning, and release constraints.
   #58 at 4916476364f7 for source acceptance only and commissioned T012 in
   isolation. Manual protected workflow preparation uses an exact caller/local
   reusable commit, independent pre-environment admission and narrow OIDC.
+  Brett ratified #59 at 948ea81d7cdc for source acceptance only and commissioned
+  T013 operational selection/authorization preparation. It landed normally as
+  9e1d75d46dfd with the ratified tree. The selection packet and staged authority
+  draft are in feature 017 operational-inputs.md and scoped-authorization.md.
+  workflow-bootstrap.md records a verified dispatch/run-digest circularity and
+  a proposed factory-governed amendment; no runtime interface is changed here.
   Production hosting stays unselected; no setup/dispatch is authorized.
   Deployed supervisor, custody, state, lifecycle and operation stay
   separately gated. The factory owns the grammar.

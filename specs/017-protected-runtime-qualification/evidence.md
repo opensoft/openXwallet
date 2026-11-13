@@ -1013,3 +1013,57 @@ their own roots too. This receipt-only follow-up changes no tested code/tests/YA
 The source-preparation boundary and later T013/T014 operational/human gates stay
 unchanged; no protected dispatch or setup occurred. Feedback stays deferred;
 neither historical blocked write was replayed.
+
+## T012 source acceptance and T013 preparation — 2026-11-13
+
+Brett ratified #59 at `948ea81d7cdce35f5d006c747680a6b9fde37a29` for source
+acceptance only and commissioned operational selection/scoped authorization
+preparation. Fresh preflight verified the exact head, all runnable checks green,
+clean/mergeable state and no unresolved review threads. Normal merge completed
+at 22:10:25 UTC as `9e1d75d46dfd6f170e27cbe7701f34288428ee6f`, tree
+`43ac0bd082850da53c54d392c44de069aeeab0b2`, exactly the ratified tree. No
+administrative bypass was used. No merge-commit Actions run was returned during
+preparation; PR CI is not represented as post-merge CI. This acceptance adds no
+new completed GitHub Codex review to the T012 review evidence above.
+
+The [selection packet](operational-inputs.md) replaces stale early-slice status
+with verified source/repository identities and workflow content digests, the
+existing environment's ineligibility, the portable-service route, a proposed new
+nonproduction environment and each missing service/host/admin/state/lifecycle
+selection. Read-only GitHub inspection found only `copilot`, with no protection
+rules and administrative bypass enabled. It is preserved, not selected or changed.
+The authenticated account is `brettheap`, ID `1513478`; dispatcher/reviewer roles
+remain unselected. No target-provider deployment is inferred from these facts.
+
+The [authorization draft](scoped-authorization.md) separates exact-target setup,
+one future bootstrap dispatch, actual run/attempt authority and independently
+bounded generation cleanup. It requires named administrators, a resource
+allowlist, budget/window, source acceptance, authenticated readback and explicit
+decision/revocation records before any operative approval. Missing values remain
+documented, not serialized as runtime handles or self-approval flags. T013 stays
+unchecked; no operational grant or executable config is emitted.
+
+A newly verified [bootstrap source prerequisite](workflow-bootstrap.md) blocks
+an operative first dispatch: the dispatch config digest covers the run ID/attempt
+that must match the actual run. An unprivileged offline probe of the existing
+synthetic configuration with the real canonical digest and validator passed the
+base and refused stale independent approval after either run ID or attempt alone
+changed (`runtime-config-unapproved`). It used no endpoint or fixture service.
+The proposal preserves exact run binding through a future independently
+authenticated static-selection/bootstrap stage. It is a factory-governed source
+proposal, not a change to the accepted grammar or runtime code. Hosting clients,
+qualify/cleanup integration and protected receipt promotion still require review.
+
+This preparation edits documentation only. No environment/provider setup,
+protected dispatch, token request, credential issuance, pin/consumer update,
+signing use, human assurance or domain action was performed. Feedback stays
+deferred; neither historical blocked write was replayed.
+
+Preparation checks passed in py-bench as UID 1000: both pin verifiers, YAML
+syntax, plain/strict adapter validation (zero errors/warnings), and the pinned
+OpenSpec CLI's five canonical items. Local links/portable paths and preservation
+of the T001/T013–T015 owner checkboxes were checked. Workflow, runtime and pin
+bytes still match the accepted merge. No full runtime suite was rerun for this
+documentation-only packet; the retained T012 suite evidence is unchanged.
+The digest probe used no fixture services, so it created no fixture processes,
+keys or state requiring cleanup. No T014 or deployed cleanup result is claimed.
