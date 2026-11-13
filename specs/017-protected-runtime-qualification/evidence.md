@@ -939,3 +939,42 @@ denial, readiness deadlines and cleanup assertions remain unchanged. No retry,
 relaxed timeout, neutral API or production behavior is introduced. Standalone
 analysis of both touched test files reports zero issues. Fresh complete/native
 qualification follows at the amended source.
+
+### Final T012 source verification and cleanup
+
+Source/tests and HEAD stayed fixed at `90a4f90d89b3760e542176b9dc3d492f69063be6`
+through the final complete ordered sequence: **1,267 tests passed**, zero failures,
+errors or skips, including **80 T012 workflow tests** and both fixture publication
+regressions. Both pin verifiers, syntax, plain/strict validation and all five
+canonical pinned OpenSpec items passed. Full JUnit SHA-256:
+`9a049f67dd52dc2c641569c9ab9b60d66b16010127b583843fd7ad7b47f13ca2`.
+
+The fresh native network-none unprivileged matrix passed **965 tests**, zero
+failures/errors/skips, including 22 R01 and 8 G03 anchored cases. JUnit SHA-256:
+`ad143b9f5f5e19cd3d327e112eea1288947fa71d4c0761ef1b3d213fcb49c6c7`.
+The explicitly selected owning source stayed clean at
+`bb0e9dae89a771b05f6c235d0a77237288b95c85`; neutral pins are unchanged.
+Source/projects were read-only in the private container; only the owned evidence
+tree was writable, with no provider/profile/SSH/Docker-socket mounts supplied.
+Both prepared workflow files pass actionlint. Standalone analysis reports zero
+issues in all changed Python files. No rule, threshold or expectation was waived.
+
+All nine expert roles completed. QA verified all 80 workflow cases; security and
+reliability independently exercised their boundary cases. Both QA and reliability
+independently verified the fixture publication correction, including deterministic
+red/green and the original owning-proof case. The original failed complete run,
+focused repetitions and pre-amendment passing complete/native runs remain retained.
+
+Independent readback accounted for **55 recorded worker generations**: 33 ordinary
+PID/start-time identities were absent; private namespaces holding the other 22
+were gone with both owned disposable containers. No attributable helper remained.
+All eight owned focused/reproduction/full/native roots were removed and absence
+verified. Reviewers removed and verified their own roots. Logs/XML remain outside
+source. This receipt-only follow-up changes no tested code/tests/workflow.
+
+Only workflow preparation is supplied. Production hosting remains unselected;
+actual CLI phases block before outputs/OIDC, and live qualify/cleanup integration
+and protected receipt promotion remain T013/T014 source/operational gates. No
+protected workflow dispatch, environment/credential setup, consumer lock, human
+approval or domain effect is performed. Feedback stays deferred; neither historical
+blocked write was replayed. Hosted CI/review is checked at the published head.
