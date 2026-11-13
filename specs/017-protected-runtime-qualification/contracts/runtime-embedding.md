@@ -261,8 +261,10 @@ Hosting invokes `run(bridge-operation)`; the operation callback is trusted code,
 never deserialized from a worker. This is a synchronous embedding, not an async
 server or a generic provider-execution API.
 
-`RunJanitor` authenticates transport-derived `JanitorPeer` before protected I/O.
-It loads protected registrations and lease records, closes the lease, and attempts
+`RunJanitor` holds the approved fixed plan and authenticates transport-derived
+`JanitorPeer` before protected I/O. It rejects other plan references, caps the whole
+attempt budget before lookup and compares current registration to the fixed digest.
+It loads protected lease records, closes the lease, and attempts
 each run resource's cleanup. Current provider ownership and generation must match
 the registered scope. The cleanup callback must conditionally revoke/remove that
 exact generation/owner; it cannot use a worker path or perform an unscoped sweep.
@@ -281,9 +283,13 @@ must be absent; credentials must also be revoked. Every retained/shared resource
 must remain present at its selected generation. Internal `CleanupVerification` is
 a checkpoint; full redacted receipt construction remains T011.
 
-The one-shot runner returns a successful operation value only after this verification.
-Ordinary operation failures produce a fixed error; control cancellation propagates
-after cleanup. Cleanup uncertainty fails qualification even if the operation itself
+The bridge publishes its final clock/deadline checkpoint into the active run without
+another clock sample or I/O. After cleanup verification, the runner retains its latest
+time and rechecks the proof-use deadline before returning the operation value; it
+does not revalidate the intentionally closed lease.
+Ordinary operation failures produce a fixed error; operation cancellation finalizes
+before propagation. Control cancellation during finalization may interrupt it and
+requires independent sweep/retry. Cleanup uncertainty fails qualification even if the operation itself
 succeeded. Post-sign failure cannot undo a signature; consumed replay state remains.
 No callback can preempt arbitrary hung provider code: all connectors/provider
 callbacks must enforce the supplied deadline and their own I/O budget.

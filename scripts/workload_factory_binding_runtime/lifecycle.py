@@ -229,12 +229,20 @@ class RunLifecycle:
                 deadline = min(deadline, active.clock.deadline)
                 checked_at = max(checked_at, active.clock.last)
         use = _Use(self, deadline=deadline, checked_at=checked_at)
+        checkpoint = LifecycleUse(use.clock.deadline, use.clock.last)
+        self.retain_use(checkpoint)
+        return checkpoint
+
+    def retain_use(self, checkpoint):
+        """Trusted return checkpoint handoff with no extra clock sample or I/O."""
+        require(type(checkpoint) is LifecycleUse and integer(checkpoint.valid_until)
+                and integer(checkpoint.checked_at), "invalid-lifecycle-checkpoint")
         with self._lock:
+            active = self._active_use
             if active is not None:
-                require(use.clock.last >= active.clock.last, "lifecycle-clock-unavailable")
-                active.clock.last = use.clock.last
-                active.clock.deadline = min(active.clock.deadline, use.clock.deadline)
-        return LifecycleUse(use.clock.deadline, use.clock.last)
+                require(checkpoint.checked_at >= active.clock.last, "lifecycle-clock-unavailable")
+                active.clock.last = checkpoint.checked_at
+                active.clock.deadline = min(active.clock.deadline, checkpoint.valid_until)
 
     def finalize(self, outcome):
         require(outcome in ("success", "failure", "cancel"), "invalid-lifecycle-outcome")
@@ -247,14 +255,14 @@ class RunLifecycle:
         failed = False
         try:
             self.janitor.target.finalize(self.plan.ref, deadline=clock.deadline)
-        except BaseException:
+        except Exception:
             failed = True
         # Never substitute the cleanup actor's acknowledgement for independent readback.
         try:
             record = self.readback.target.read_cleanup(self.plan.ref, attempt_ref=attempt, deadline=clock.deadline)
             now = clock.now()
             self._verify_cleanup(record, floor, now, attempt)
-        except BaseException:
+        except Exception:
             raise BindingError("lifecycle-cleanup-unverified") from None
         require(not failed, "lifecycle-cleanup-unverified")
         return CleanupVerification(self.plan.digest, self.plan.scope, outcome, now)
@@ -300,7 +308,10 @@ class RunLifecycle:
             if isinstance(error, Exception):
                 raise BindingError("lifecycle-operation-failed") from None
             raise
-        self.finalize(outcome)
+        verification = self.finalize(outcome)
+        require(verification.checked_at >= use.clock.last, "lifecycle-clock-unavailable")
+        use.clock.last = verification.checked_at
+        use.clock.now()
         return result
 
 
@@ -312,28 +323,33 @@ class RunJanitor:
     read_lease/finalize peers come from authenticated transport. sweep is a local
     scheduler capability, never exposed on the worker/gate request plane.
     """
-    def __init__(self, *, allowed_gate, load_plan, load_lease, load_resource, close_lease, cleanup, clock):
+    def __init__(self, *, plan, allowed_gate, load_plan, load_lease, load_resource, close_lease, cleanup, clock):
+        _plan(plan)
         require(type(allowed_gate) is JanitorPeer and reference(allowed_gate.principal_ref)
                 and reference(allowed_gate.credential_ref) and all(callable(c) for c in
                     (load_plan, load_lease, load_resource, close_lease, cleanup, clock)), "invalid-janitor-embedding")
         self.allowed_gate, self.load_plan, self.load_lease = allowed_gate, load_plan, load_lease
         self.load_resource, self.close_lease, self.cleanup, self.clock = load_resource, close_lease, cleanup, clock
+        self.plan = plan
 
     def _peer(self, peer):
         require(type(peer) is JanitorPeer and peer == self.allowed_gate, "janitor-peer-denied")
 
     def _selected(self, ref, deadline):
         require(reference(ref) and integer(deadline), "invalid-janitor-request")
+        require(ref == self.plan.ref, "janitor-plan-mismatch")
         clock = _Clock(self.clock, deadline=deadline)
+        clock.deadline = min(deadline, clock.now() + self.plan.cleanup_timeout)
         clock.now()
         try:
-            plan = self.load_plan(ref, deadline=deadline)
+            plan = self.load_plan(ref, deadline=clock.deadline)
         except Exception:
             raise BindingError("janitor-plan-unavailable") from None
         _plan(plan)
-        require(plan.ref == ref and plan.janitor.principal_ref == self.allowed_gate.principal_ref
+        require(plan.digest == self.plan.digest and plan.ref == ref
+                and plan.janitor.principal_ref == self.allowed_gate.principal_ref
                 and plan.janitor.credential_ref == self.allowed_gate.credential_ref, "janitor-plan-mismatch")
-        clock.deadline = min(deadline, clock.now() + plan.cleanup_timeout)
+        clock.now()
         return plan, clock
 
     def read_lease(self, ref, *, peer, deadline):
@@ -364,7 +380,7 @@ class RunJanitor:
         try:
             self.close_lease(plan.ref, deadline=clock.deadline)
             clock.now()
-        except BaseException:
+        except Exception:
             failed = True
         for resource in plan.resources:
             if resource.retention != "run":
@@ -378,6 +394,6 @@ class RunJanitor:
                         "janitor-resource-not-owned")
                 self.cleanup(actual, deadline=clock.deadline)
                 clock.now()
-            except BaseException:
+            except Exception:
                 failed = True
         require(not failed, "janitor-cleanup-failed")

@@ -60,7 +60,7 @@ def l(c):
         assert b.managed[expected.resource.ref] == expected  # provider compare-and-remove seam
         b.present[expected.resource.ref] = False
         b.revoked[expected.resource.ref] = expected.resource.kind == "credential"
-    b.janitor = RunJanitor(allowed_gate=gate, load_plan=load_plan, load_lease=load_lease,
+    b.janitor = RunJanitor(plan=plan, allowed_gate=gate, load_plan=load_plan, load_lease=load_lease,
                           load_resource=load_resource, close_lease=close, cleanup=cleanup, clock=lambda: c.h.now)
     class Gate:
         def read_lease(self, ref, *, deadline):
@@ -142,6 +142,31 @@ def test_sweeper_cannot_remove_an_active_unexpired_run(l):
     with pytest.raises(BindingError, match="^janitor-lease-still-active$"):
         l.janitor.sweep(l.plan.ref, deadline=l.c.h.now + 10)
     assert not any(op == "cleanup" for op, _, _ in l.calls)
+
+
+def test_janitor_attempt_budget_includes_registration_lookup(l):
+    original, started = l.janitor.load_plan, l.c.h.now
+    def delayed(ref, *, deadline):
+        l.c.h.now += l.plan.cleanup_timeout + 1
+        return original(ref, deadline=deadline)
+    l.janitor.load_plan = delayed
+    with pytest.raises(BindingError, match="^lifecycle-expired$"):
+        l.janitor.finalize(l.plan.ref, peer=l.janitor.allowed_gate, deadline=started + 100)
+    assert not any(op == "close" for op, _, _ in l.calls)
+
+
+def test_other_plan_is_rejected_before_registration_lookup(l):
+    with pytest.raises(BindingError, match="^janitor-plan-mismatch$"):
+        l.janitor.finalize("plan:other", peer=l.janitor.allowed_gate, deadline=l.c.h.now + 10)
+    assert l.calls == []
+
+
+def test_changed_registration_cannot_widen_the_frozen_manifest(l):
+    l.plan = replace(l.plan, resources=l.plan.resources +
+                     (RunResource("resource:other", "instance:other", "file", "run"),))
+    with pytest.raises(BindingError, match="^janitor-plan-mismatch$"):
+        l.janitor.finalize(l.plan.ref, peer=l.janitor.allowed_gate, deadline=l.c.h.now + 10)
+    assert not any(op == "close" for op, _, _ in l.calls)
 
 
 @pytest.mark.parametrize("peer", [JanitorPeer("principal:worker_channel", "credential:worker_channel"),
@@ -269,3 +294,71 @@ def test_child_and_active_run_share_latest_clock_floor(l):
     with pytest.raises(BindingError):
         l.life.run(regress)
     assert l.present["resource:temporary"] is False  # best effort cleanup despite bad qualification time
+
+
+def test_proof_expiry_during_cleanup_refuses_after_retaining_reservation(l):
+    l.c.context = replace(l.c.context, expires_at=l.c.h.now + 2)
+    def delayed_cleanup(resource):
+        if resource.resource.kind == "process":
+            l.c.h.now += 3
+    l.cleanup_hook = delayed_cleanup
+    with pytest.raises(BindingError):
+        l.life.run(l.c.run)
+    assert l.c.h.calls == 1
+    assert_clean(l)
+    import sqlite3
+    with sqlite3.connect(l.c.h.ledger.path) as db:
+        assert db.execute("SELECT count(*) FROM reservations").fetchone() == (1,)
+
+
+def test_cleanup_verification_latest_clock_is_retained_before_return(l):
+    now = l.c.h.now
+    samples = iter([now, now + 2])
+    l.life.cleanup_clock = lambda: next(samples)
+    with pytest.raises(BindingError):
+        l.life.run(l.c.run)
+    assert l.c.h.calls == 1
+    assert_clean(l)
+
+
+def test_final_bridge_only_clock_sample_reaches_the_active_run(l):
+    original = l.life.check_for_use
+    def later_bridge_sample(**kwargs):
+        checkpoint = original(**kwargs)
+        if l.c.h.calls:
+            l.c.h.now += 1  # the bridge samples this after receiving its child checkpoint
+        return checkpoint
+    l.life.check_for_use = later_bridge_sample
+    def operation():
+        result = l.c.run()
+        l.c.h.now -= 1  # older than the bridge's final sample, equal to its last child sample
+        return result
+    with pytest.raises(BindingError):
+        l.life.run(operation)
+    assert l.c.h.calls == 1
+    assert l.present["resource:temporary"] is False
+
+
+def test_control_interruption_during_cleanup_leaves_work_for_independent_sweep(l):
+    def interrupt(resource):
+        raise KeyboardInterrupt()
+    l.cleanup_hook = interrupt
+    with pytest.raises(KeyboardInterrupt):
+        l.life.run(lambda: "must-not-return")
+    assert l.status == "closed"
+    assert l.present["resource:temporary"] is True
+    l.cleanup_hook = None
+    l.c.h.now = l.plan.expires_at
+    l.janitor.sweep(l.plan.ref, deadline=l.c.h.now + 10)
+    verification = l.life.finalize("cancel")
+    assert verification.outcome == "cancel"
+    assert l.present["resource:temporary"] is False
+    assert l.present["resource:shared"] is True
+
+
+def test_revoked_lease_prevents_signing_and_still_cleans(l):
+    l.status = "revoked"
+    with pytest.raises(BindingError):
+        l.life.run(l.c.run)
+    assert l.c.h.calls == 0
+    assert_clean(l)

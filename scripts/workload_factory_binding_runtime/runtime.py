@@ -259,4 +259,6 @@ class RuntimeBridge:
         result = gate.sign(challenge_id, request, token, observation)
         use.check()
         use.check_dependencies()
+        if self.lifecycle is not None:
+            self.lifecycle.retain_use(LifecycleUse(use.valid_until, use._last))
         return result

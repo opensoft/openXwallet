@@ -149,9 +149,7 @@ class _Provider:
 def _controller(root, state_path, scope, identity, clock, admin, gate, worker):
     provider = _Provider(root, state_path, scope, clock)
     peer = JanitorPeer(identity.principal_ref, identity.credential_ref)
-    janitor = RunJanitor(allowed_gate=peer, load_plan=provider.plan, load_lease=provider.lease,
-                         load_resource=provider.resource, close_lease=provider.close,
-                         cleanup=provider.cleanup, clock=lambda: clock.value)
+    janitor = None
     channels = {admin: "admin", gate: "gate", worker: "worker"}
     try:
         running = True
@@ -164,7 +162,12 @@ def _controller(root, state_path, scope, identity, clock, admin, gate, worker):
                         if method == "inventory":
                             value = [asdict(r) for r in provider.inventory]
                         elif method == "register":
-                            provider.register(_plan(body["plan"]))
+                            selected = _plan(body["plan"])
+                            provider.register(selected)
+                            janitor = RunJanitor(plan=selected, allowed_gate=peer, load_plan=provider.plan,
+                                                 load_lease=provider.lease, load_resource=provider.resource,
+                                                 close_lease=provider.close, cleanup=provider.cleanup,
+                                                 clock=lambda: clock.value)
                             value = True
                         elif method == "mode":
                             provider.mode, value = body["mode"], True
@@ -218,9 +221,11 @@ def _audit(root, clock, connection):
             if body["method"] == "stop":
                 connection.send_bytes(encoded({"value": True}))
                 return
-            assert body["method"] == "read_cleanup"
+            if body["method"] != "read_cleanup":
+                raise BindingError("fixture-readback-denied")
             plan, ownership = _plan(_read(root / "plan.json")), _read(root / "ownership.json")
-            assert body["ref"] == plan.ref
+            if body["ref"] != plan.ref:
+                raise BindingError("fixture-readback-denied")
             lease, resources = _read(root / "lease.json"), []
             for value in ownership["resources"]:
                 resource = RunResource(**value)
@@ -242,11 +247,12 @@ def _audit(root, clock, connection):
 
 
 class RPC:
-    def __init__(self, connection):
-        self.connection = connection
+    def __init__(self, connection, clock):
+        self.connection, self.clock = connection, clock
     def request(self, method, **body):
         self.connection.send_bytes(encoded({"method": method, **body}))
-        if not self.connection.poll(4):
+        timeout = min(4, max(0, body.get("deadline", self.clock() + 4) - self.clock()))
+        if not self.connection.poll(timeout):
             raise BindingError("fixture-rpc-unavailable")
         reply = decode_object(self.connection.recv_bytes(MAX_FRAME))
         if "error" in reply:
@@ -272,7 +278,7 @@ def p(c, tmp_path):
     root.mkdir(mode=0o700)
     clock = context.Value("q", c.h.now)
     pairs = [context.Pipe() for _ in range(4)]
-    admin, gate, worker, audit = [RPC(pair[0]) for pair in pairs]
+    admin, gate, worker, audit = [RPC(pair[0], lambda: clock.value) for pair in pairs]
     scope = RunScope(digest(c.config), c.config["case_ref"], c.config["launch"]["run_id"],
                      c.config["launch"]["run_attempt"], **c.config["lifecycle"])
     identity = ServiceIdentity(**c.config["services"]["janitor"])
