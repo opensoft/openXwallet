@@ -142,3 +142,53 @@ excess-permission mutation makes the denial probe fail; an outage does not pass
 as denial. Fixture admin routes are test-only, not a production API. Same-user
 processes cannot establish worker OS key secrecy or deployed administrative
 isolation. Those G02/P01 facts remain pending live gates.
+
+## Isolated T007 realization
+
+Trusted hosting constructs `ConfinedCustody` with the selected owning `TLSClient`
+and `RemoteSigner` constructors, intrinsic `ServiceIdentity`, protected
+`CustodyMaterial`, approved runtime trust and `CustodyTrust`. Its `service` is
+the custody `BoundService` supplied to `RuntimeBridge`; `sign(message)` and the
+neutral service protocol remain unchanged. The worker receives none of these
+constructor capabilities, material paths or owning primitive.
+
+This narrow TLS embedding binds the selected custody trust digest to the actual
+CA file bytes and the issued certificate digest to the actual DER certificate.
+Endpoint, certificate, CA and private-key material are fixed at construction;
+bounded no-follow regular-file reads check owner, link count and private-key
+permissions before/after construction and each signing call. Key bytes/digests
+stay internal. Hosting must enforce immutable protected paths/parents: snapshots
+cannot detect a change restored between reads or defend against a hostile host.
+
+`CustodyTrust` independently selects deployment, boundary, issuance and gate
+principal references. Its authenticated `load_access(deadline=epoch)` derives
+`CustodyAccess` from actual protected issuance/deployment state, not a candidate
+echo. This internal capability record binds those approvals to the canonical
+approved configuration/source digest, case/run/attempt, exact service identity,
+actual certificate/endpoint and sign-only subject/key/custody scope. Gate principal
+must differ from worker, supervisor and runtime-readback principals. Readback is
+valid at most 60 seconds. The per-use earliest runtime/readback/issuance deadline
+never extends; time/configuration/material/issuance checks repeat after signing.
+Post-sign refusal cannot undo an already-created signature.
+
+The bridge invokes the internal `sign_for_use(message, *, deadline)` seam after
+fresh guarded preflight. It passes the outer proof-use deadline inward, before
+added custody readback, and retains the returned earliest custody deadline through
+all later proof checks. The neutral owning signer still receives only `sign(message)`.
+Standalone `ConfinedCustody.sign(message)` is a trusted compatibility seam; it
+cannot know an enclosing proof deadline and is not the runtime bridge path.
+
+There is no new custody-side per-use assertion: unsupported trust models refuse
+with `custody-owner-decision-required`. Hosting callbacks must authenticate and
+bound I/O, independently measure the approved source/configuration selection,
+and deny worker access to issuance/control planes and credential files. Matching
+Python records or separate certificate labels do not establish these facts.
+
+The G03 fixture uses the selected clean owning source, real mTLS custody and an
+owning-verifier-accepted gated proof. A separate worker process first resolves the
+current binding, then submits that proof's exact valid canonical signing preimage
+with its resolve-only credential. Only explicit service refusal passes. A disposable
+excess-sign-permission mutation and an outage both make the probe fail. Fixture
+PKI/state/process cleanup is checked on success and injected failure. Same-user
+fixtures do not qualify deployed issuance administration, OS/network confinement,
+worker key-file secrecy, source/image immutability or live G03/P01.

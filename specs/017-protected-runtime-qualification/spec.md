@@ -2,7 +2,7 @@
 
 **Feature Branch**: `017-protected-runtime-qualification`
 **Created**: 2026-11-12
-**Status**: T002–T005 source accepted and landed; isolated T006 source candidate
+**Status**: T002–T006 source accepted and landed; isolated T007 source candidate
 **Input**: Prepare the next runtime qualification step for the first codeXfactory pilot after #581 post-merge verification.
 **Governance owner**: `opensoft/openXfactory`, `openspec/changes/prepare-protected-runtime-qualification/`.
 
@@ -28,6 +28,13 @@ unchanged observation format. It does not establish independent deployment
 administration or worker OS access denial from same-user fixtures.
 
 ## User Scenarios & Testing
+
+Brett ratified #53 at `aff5b1e14979` for source acceptance only and commissioned
+T007 in isolation. Fresh protected issuance/deployment readback is joined to
+actual owning TLS material and the exact approved configuration, sources, case,
+run and subject/key/custody scope. The owning verifier accepts a gated proof;
+a separate worker process is denied its exact valid canonical signing preimage.
+This does not establish deployed credential/OS/network/administrative isolation.
 
 ### User Story 1 — Verify a configured issuer at the trusted boundary (P1)
 

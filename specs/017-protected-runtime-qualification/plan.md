@@ -2,7 +2,7 @@
 
 **Branch**: `017-protected-runtime-qualification` | **Date**: 2026-11-12
 **Spec**: [spec.md](spec.md)
-**State**: T002–T005 source landed; isolated T006 source candidate
+**State**: T002–T006 source landed; isolated T007 source candidate
 **Factory governance**: `opensoft/openXfactory`, `openspec/changes/prepare-protected-runtime-qualification/`.
 
 ## Summary
@@ -30,6 +30,13 @@ key/current-source boundary; `launch.py` measures one controller-selected Linux
 Python process generation. `SupervisedBridge` obtains and checks the existing
 observation before using the unchanged four-argument bridge. Production service
 hosting and separately administered deployment remain unqualified.
+
+Brett ratified adapter #53 at `aff5b1e14979` for source acceptance only and
+commissioned T007 in isolation. `ConfinedCustody` constructs the owning TLS
+client/signer using actual protected material and joins fresh authenticated
+issuance/deployment readback to the approved configuration. This is the accepted
+confined-gate model, not a new neutral custody assertion. Deployment isolation,
+initialized-state/recovery and lifecycle acceptance remain separate.
 
 ## Technical Context
 

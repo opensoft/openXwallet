@@ -437,3 +437,93 @@ OpenSpec items. JUnit SHA-256:
 No attributable process remained, and the follow-up key/state/temp root was
 removed with absence verified. The receipt-only update preserves these tested
 source/tests. Fresh hosted acceptance remains separate from the local receipt.
+
+## T007 source commissioning — 2026-11-13
+
+Brett ratified adapter #53 at `aff5b1e14979` for source acceptance only,
+directed landing when green and commissioned isolated T007 implementation/tests.
+The exact ratified head passed all runnable checks with no unresolved review
+threads, then merged normally as `9fbff0266b31a7845499b6fdbd7f350009325e70`,
+tree `41422c76c3cd8caac6997f87cf831a9cea2a45a6`, equal to its ratified tree.
+No administrative approval override was needed. The adapter has no main-triggered
+workflows; a separate post-merge CI result is not inferred.
+
+`ConfinedCustody` joins protected actual TLS material and the selected owning
+client/signer to fresh authenticated deployment/issuance capability readback.
+It enforces exact approved configuration/sources/case/run, service, certificate,
+endpoint and sign-only subject/key/custody scope with monotonic per-use deadlines.
+The existing neutral API, offline entrypoints, proof semantics and pins remain.
+New custody-side assertions refuse for an upstream owner decision.
+
+The focused isolated matrix passes **59 tests**. A real owning mTLS service
+accepts one gated proof verified by its owning verifier. A separate worker process
+using a resolve-only credential is explicitly denied the exact valid canonical
+preimage captured from that proof. An excess-worker-sign-permission mutation
+breaks the probe, and an outage cannot count as denial. Success/injected-failure
+paths reap processes and remove their disposable custody key/state directory.
+
+These are isolated source results. The deployment/issuance readback is a trusted
+fixture, not a real provider control-plane integration. Same-user fixtures cannot
+prove OS key secrecy, independently administered deployment, immutable sources,
+actual image/dependency selection or network confinement. Live G03/P01, T008–T015
+and consumer runtime/human acceptance remain pending. Feedback stays deferred;
+neither historical blocked write is replayed. No protected setup/dispatch occurs.
+
+### T007 local review and composed deadline correction
+
+The initial complete sequence at `2762c8a66273afb4cc2f9e33c52982cee45eacde`
+passed **935 tests**, zero failures/errors/skips, both pin verifiers, syntax,
+plain/strict validation and all five canonical pinned OpenSpec items. The expert
+panel found one P2 composition issue independently reproduced in both directions:
+custody readback could cross an earlier outer proof deadline before invoking the
+signer; a shorter custody lease was not retained through later outer proof I/O.
+
+Both connected regressions failed before correction. The internal per-use seam
+now accepts the outer deadline before any custody preflight and returns its
+retained earliest deadline to `RuntimeBridge` before later checks. The unchanged
+neutral signing API receives only the canonical message. Both regressions and
+the complete **59-case** T007 matrix now pass. No deadline, check or rule is waived.
+
+### Corrected T007 full verification and cleanup
+
+The complete ordered sequence at `ce1824c56f2a8445f1323a238b9307a01e948200`
+passes **937 tests**, including **59 T007 cases**, zero failures/errors/skips,
+both pin verifiers, syntax, plain/strict validation and all five canonical pinned
+OpenSpec items. Owning-source proof/transport integrations use the explicitly
+selected clean `openWallet-code` at `bb0e9dae89a771b05f6c235d0a77237288b95c85`.
+JUnit SHA-256:
+`377db69ce85552a810a294db60c473648ba837eb4ba5eec6ba9eb8ab2688267f`.
+
+The API and reliability reviewers independently confirmed closure in both
+deadline directions, including zero actual signer calls after the outer deadline.
+All nine local expert roles completed with no other actionable finding.
+Standalone Sonar reports zero issues across the new source/tests and runtime glue.
+
+Independent process readback found no attributable fixture/worker/test PID. The
+owned focused, red, initial-full and corrected-full temporary roots, including
+synthetic PKI/key/state files, were removed and absence verified. Reviewers also
+removed their own reproduction roots. Logs/XML remain outside source. This
+receipt follow-up changes no production code or tests. Fresh hosted CI, Sonar
+and Codex response are separate checks at the published candidate head.
+Deployed machine/human acceptance stays pending; feedback remains deferred and
+neither historical blocked write was replayed.
+
+### T007 hosted assertion follow-up
+
+The first published T007 head passed all runnable hosted checks and its Sonar
+quality gate. Hosted Sonar retained one S9073 test-clarity finding for a composite
+assertion. It is split into two assertions; production code is unchanged. No
+issue, rule or quality threshold is waived.
+
+The complete local sequence at `2a974736dd122a57e5a48cedea4c693ecd6b114d`
+again passes **937 tests**, zero failures/errors/skips, both pin verifiers,
+syntax, plain/strict validation and all five canonical pinned OpenSpec items.
+JUnit SHA-256:
+`f05f7b599f8836b4c5f8d1748daafad965c85c50acad53248eca0e283546ea84`.
+No attributable fixture process remained; the follow-up PKI/key/state temporary
+root was removed and absence verified. This receipt follow-up changes no code/tests.
+Fresh hosted acceptance is checked at the updated PR head separately.
+
+GitHub Codex refused the initial manual request because the account review limit
+was reached. No bot approval is inferred; the nine-role local panel and independent
+deadline-fix checks are separate evidence. Machine/human acceptance remains pending.
