@@ -199,7 +199,8 @@ def test_wrong_ca_approval_and_subject_refuse_before_client_construction(k):
 def test_invalid_signing_input_refuses_before_readback_or_signer(k, value):
     with pytest.raises(BindingError, match="^invalid-custody-message$"):
         k.signer.sign(value)
-    assert k.calls == [] and k.deadlines == []
+    assert k.calls == []
+    assert k.deadlines == []
 
 
 def test_signer_failure_and_bad_signature_are_safe(k):
