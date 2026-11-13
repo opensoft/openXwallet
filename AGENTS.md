@@ -23,7 +23,9 @@ ownership, validation, versioning, and release constraints.
   T004/T005 loaders/runtime composition. Brett subsequently ratified adapter
   #52 at 3833bc8629e6 for source acceptance only and commissioned T006 in
   isolation. Brett ratified #53 at aff5b1e14979 for source acceptance only
-  and commissioned T007 in isolation. Deployed supervisor, custody, state, lifecycle and operation stay
+  and commissioned T007 in isolation. Brett ratified #54 at 8de227dadd53 for
+  source acceptance only and commissioned T008 in isolation.
+  Deployed supervisor, custody, state, lifecycle and operation stay
   separately gated. The factory owns the grammar.
   Existing offline entrypoints stay unchanged.
 - Accepted baseline: 016-factory-workload-binding; source decision:

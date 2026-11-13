@@ -527,3 +527,37 @@ Fresh hosted acceptance is checked at the updated PR head separately.
 GitHub Codex refused the initial manual request because the account review limit
 was reached. No bot approval is inferred; the nine-role local panel and independent
 deadline-fix checks are separate evidence. Machine/human acceptance remains pending.
+
+## T008 source commissioning — 2026-11-13
+
+Brett ratified adapter #54 at `8de227dadd53` for source acceptance only,
+directed landing when green and commissioned T008 in isolation. The exact head
+passed all runnable checks with no unresolved review threads and merged normally
+as `3f4a358cf27d79027ec370ef89c5df676b4642c1`, tree
+`8c7f7bbd5bab9e37e1a2552e82d350d3063ba5cc`, equal to its ratified tree.
+No administrative approval override was needed. Source acceptance supplies no
+deployed storage or human acceptance.
+
+`InitializedLedger` requires an independently recorded existing-store identity,
+private files, the existing exact schema/integrity and fresh authenticated active
+scope/recovery readback. Runtime connections use `mode=rw` and cannot create a
+missing file. The opt-in bridge exchanges earliest deadlines with state preflight
+and reservation and checks state through final proof acceptance. The original
+offline initializer, schema, proof/signing interfaces and pins remain unchanged.
+
+The focused isolated matrix passes **49 tests**, including owning proof
+verification, restart and replay refusal, four concurrent reservation attempts
+with one winner, actual process exit after commit, ambiguous custody failure,
+post-commit revocation, missing/corrupt/replaced/unsafe state, expiry during I/O
+or lock acquisition and separately approved new-scope initialization. The initial
+test collection failed before the runtime state module existed; these cases now
+pass with the implementation present.
+
+The initialization receipt and administrative readback are trusted fixtures.
+Device/inode and integrity checks do not establish hostile-host or valid-backup
+rollback resistance. Active-scope restore is prohibited; recovery requires
+revocation and a new approved initialization/workload scope. Real provider readback,
+retention/recovery enforcement, OS/admin isolation, lifecycle and live machine
+qualification remain pending. No protected setup/dispatch, consumer pin movement,
+release or human approval occurs. Feedback stays deferred and neither historical
+blocked write is replayed.

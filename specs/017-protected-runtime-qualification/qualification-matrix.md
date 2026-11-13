@@ -1,6 +1,6 @@
 # Required Qualification Matrix
 
-Status: isolated T002–T007 source cases implemented; deployed cases pending
+Status: isolated T002–T008 source cases implemented; deployed cases pending
 
 | Cases | Required observation | Requirements |
 | --- | --- | --- |

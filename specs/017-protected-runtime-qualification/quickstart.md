@@ -90,6 +90,16 @@ owned temporary tree. Current observations are in [evidence.md](evidence.md).
 
 ## Future Protected Machine Sequence
 
+T008's isolated source tests are in `test_state.py`. Provision a disposable store
+as an explicit fixture/operator act, retain its initialization receipt outside
+worker control, then construct `InitializedLedger` and supply it through
+`StateBinding`. Runtime does not initialize, replace, reset, restore or prune.
+The tests include missing/corrupt/replaced state, actual owning proof acceptance,
+restart, concurrent reservations, process exit after commit, ambiguous custody
+failure and new-scope recovery. The [embedding interface](contracts/runtime-embedding.md)
+records the trusted-host and backup-rollback limits. No production storage setup
+or recovery authorization is supplied by these source tests.
+
 T007's isolated source tests are in `test_custody.py`. Trusted hosting binds
 `ConfinedCustody.service` into `RuntimeBridge` with actual protected owning TLS
 material and independent issuance/deployment readback, as described in the

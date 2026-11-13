@@ -16,6 +16,7 @@ from .config import RuntimeTrust, validate_config
 from .custody import ConfinedCustody
 from .issuer import IssuerKeySource, IssuerWorkloadVerifier
 from .loaders import BoundService, CurrentLoaders, ServiceIdentity, check_service
+from .state import InitializedLedger
 
 _METHODS = {"records": "read", "challenge": "read", "registry": "resolve", "custody": "sign"}
 _STATE_FIELDS = ("store_ref", "initialization_ref", "retention_ref", "recovery_ref")
@@ -107,6 +108,8 @@ class _Use:
                 and all(type(getattr(state, name)) is str
                         and getattr(state, name) == self.selection["state"][name] for name in _STATE_FIELDS)
                 and callable(getattr(state.ledger, "reserve", None)), "runtime-state-binding-mismatch")
+        if type(state.ledger) is InitializedLedger:
+            self.limit(state.ledger.check_for_use(deadline=self.valid_until))
 
     def guarded(self, operation, *args, **kwargs):
         self.check()
@@ -171,7 +174,13 @@ class _Ledger:
         self.use = use
 
     def reserve(self, **kwargs):
-        return self.use.guarded(self.use.bridge.state.ledger.reserve, **kwargs)
+        def invoke():
+            ledger = self.use.bridge.state.ledger
+            if type(ledger) is InitializedLedger:
+                self.use.limit(ledger.reserve_for_use(deadline=self.use.valid_until, **kwargs))
+                return None
+            return ledger.reserve(**kwargs)
+        return self.use.guarded(invoke)
 
 
 def _worker_inputs(challenge_id, request, token, observation):
@@ -230,4 +239,5 @@ class RuntimeBridge:
                          create_proof=create_proof, clock=use.clock)
         result = gate.sign(challenge_id, request, token, observation)
         use.check()
+        use.check_dependencies()
         return result

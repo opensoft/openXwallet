@@ -2,7 +2,7 @@
 
 **Branch**: `017-protected-runtime-qualification` | **Date**: 2026-11-12
 **Spec**: [spec.md](spec.md)
-**State**: T002–T006 source landed; isolated T007 source candidate
+**State**: T002–T007 source landed; isolated T008 source candidate
 **Factory governance**: `opensoft/openXfactory`, `openspec/changes/prepare-protected-runtime-qualification/`.
 
 ## Summary
@@ -37,6 +37,14 @@ client/signer using actual protected material and joins fresh authenticated
 issuance/deployment readback to the approved configuration. This is the accepted
 confined-gate model, not a new neutral custody assertion. Deployment isolation,
 initialized-state/recovery and lifecycle acceptance remain separate.
+
+Brett ratified adapter #54 at `8de227dadd53` for source acceptance only and
+commissioned T008 in isolation. `InitializedLedger` opens only existing private
+state and requires an independently retained initialization identity plus fresh
+authenticated scope/recovery readback. Runtime uses SQLite `mode=rw`, the existing
+schema and reservation-before-signing semantics. It neither creates nor restores
+state. Deployed storage protection, retention/recovery administration and lifecycle
+qualification remain separate.
 
 ## Technical Context
 

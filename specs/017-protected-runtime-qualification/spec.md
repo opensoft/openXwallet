@@ -2,7 +2,7 @@
 
 **Feature Branch**: `017-protected-runtime-qualification`
 **Created**: 2026-11-12
-**Status**: T002–T006 source accepted and landed; isolated T007 source candidate
+**Status**: T002–T007 source accepted and landed; isolated T008 source candidate
 **Input**: Prepare the next runtime qualification step for the first codeXfactory pilot after #581 post-merge verification.
 **Governance owner**: `opensoft/openXfactory`, `openspec/changes/prepare-protected-runtime-qualification/`.
 
@@ -28,6 +28,12 @@ unchanged observation format. It does not establish independent deployment
 administration or worker OS access denial from same-user fixtures.
 
 ## User Scenarios & Testing
+
+Brett ratified #54 at `8de227dadd53` for source acceptance only and commissioned
+T008 in isolation. Runtime state preflight now binds the recorded initialization,
+private existing database and current active scope before reservation and through
+proof acceptance. Restart retains consumed identities. Recovery refuses the active
+scope; a separately approved new initialization/scope is a trusted operator act.
 
 Brett ratified #53 at `aff5b1e14979` for source acceptance only and commissioned
 T007 in isolation. Fresh protected issuance/deployment readback is joined to
