@@ -5,10 +5,10 @@ on:
       accepted_commit:
         required: true
         type: string
-      config_digest:
+      selection_digest:
         required: true
         type: string
-      operation_grant_ref:
+      preauthorization_ref:
         required: true
         type: string
 
@@ -16,8 +16,8 @@ permissions: {}
 
 env:
   OPENXWALLET_ACCEPTED_COMMIT: ${{ inputs.accepted_commit }}
-  OPENXWALLET_CONFIG_DIGEST: ${{ inputs.config_digest }}
-  OPENXWALLET_OPERATION_GRANT_REF: ${{ inputs.operation_grant_ref }}
+  OPENXWALLET_SELECTION_DIGEST: ${{ inputs.selection_digest }}
+  OPENXWALLET_PREAUTHORIZATION_REF: ${{ inputs.preauthorization_ref }}
 
 jobs:
   admission:

@@ -1,8 +1,10 @@
 # Tasks: Protected Machine Runtime Qualification
 
-Status: sole executable implementation list; T002–T011 landed; isolated T012 workflow preparation candidate
-Commission: 2026-11-13 source ratification of #58 at 4916476364f7 and explicit
-isolated T012 commissioning. Operation stays separate. See [evidence](evidence.md).
+Status: sole executable implementation list; T002–T012 landed; T013 preparation
+Commission: 2026-11-13 source ratification of #59 at 948ea81d7cdc and explicit
+T013 operational selection/authorization preparation. Operation stays separate.
+See [evidence](evidence.md), [selections](operational-inputs.md),
+[authority draft](scoped-authorization.md) and [source prerequisite](workflow-bootstrap.md).
 
 ## Owner Gate
 
@@ -38,6 +40,7 @@ Independent acceptance: one bounded owning proof; no approval/apply operation.
 - [x] T010 [S] Wire substantive offline matrix and selected owning-source integration into conformance; files: tests/runtime_binding/**, .github/workflows/pytest-suite.yml; verify: required I/G/S/L and current R01 scope/error-privacy cases collect with zero failures/errors/skips and no public issuer/provider credential use. The dedicated fixed-collection gate verifies the clean exact selected owner before/after pytest, requires all three phases to pass, and runs unprivileged with loopback only across exec. Full redacted receipts remain T011; deployed qualification stays separate.
 - [x] T011 [O] Add safe errors, redacted scoped receipts and operator runbook; files: scripts/workload_factory_binding_runtime/evidence.py, specs/017-protected-runtime-qualification/quickstart.md, tests/runtime_binding/test_evidence.py; verify: R01 exact sources/case/results/cleanup with no raw sensitive material. The internal canonical source/fixture report uses closed projection and digest bindings, immutable config/readback metadata and actual lifecycle cleanup checkpoints; missing cases/cleanup cannot pass. Protected-machine scope refuses until later separately reviewed operational qualification; no neutral receipt API is changed.
 - [x] T012 [O] Prepare protected qualification workflow after source acceptance; files: .github/workflows/protected-runtime-qualification.yml, .github/workflows/protected-runtime-qualification-run.yml, scripts/prepare-protected-runtime.py, scripts/workload_factory_binding_runtime/workflow.py, tests/runtime_binding/test_workflow.py; verify: manual caller/local reusable same-commit wiring, accepted immutable sources, existing protected environment, job-scoped OIDC, trusted current configuration/operation grant and registered independent cleanup readiness. Production hosting is unselected; the entrypoint blocks before outputs/OIDC and qualify/cleanup remain not-performed handoffs until separately reviewed T013/T014 hosting. Workflow preparation authorizes no setup or dispatch.
+- [x] T012B [O] Resolve dispatch bootstrap through factory change fix-protected-runtime-dispatch-bootstrap; files: scripts/workload_factory_binding_runtime/bootstrap.py, config.py, workflow.py, scripts/prepare-protected-runtime.py, .github/workflows/protected-runtime-qualification*.yml, tests/runtime_binding/test_bootstrap.py; verify: independently accepted static selection before run assignment, full run-bound config/grant admission preserved, replay/substitution/expiry/concurrency/CLI refusal tested in isolation. Current user instruction commissions implementation, not source acceptance or setup/dispatch.
 - [ ] T013 [O] Obtain operational selections and scoped setup/dispatch authorization; files: specs/017-protected-runtime-qualification/evidence.md; verify: all operational-input categories have approved non-secret references and independent readback. This is an owner/operator act.
 - [ ] T014 [O] Execute real protected machine qualification at accepted sources; files: specs/017-protected-runtime-qualification/evidence.md; verify: P01/deployed G02/G03/L01, real issuer/independence/confinement and fresh cancellation/cleanup; missing facts stay blocked/not-performed.
 - [ ] T015 [O] Deliver accepted machine-only receipt to codeXfactory 058 T002; files: specs/017-protected-runtime-qualification/evidence.md; verify: owner acceptance names evidence/pins; human/domain gates remain separate.

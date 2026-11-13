@@ -1013,3 +1013,136 @@ their own roots too. This receipt-only follow-up changes no tested code/tests/YA
 The source-preparation boundary and later T013/T014 operational/human gates stay
 unchanged; no protected dispatch or setup occurred. Feedback stays deferred;
 neither historical blocked write was replayed.
+
+## T012 source acceptance and T013 preparation — 2026-11-13
+
+Brett ratified #59 at `948ea81d7cdce35f5d006c747680a6b9fde37a29` for source
+acceptance only and commissioned operational selection/scoped authorization
+preparation. Fresh preflight verified the exact head, all runnable checks green,
+clean/mergeable state and no unresolved review threads. Normal merge completed
+at 22:10:25 UTC as `9e1d75d46dfd6f170e27cbe7701f34288428ee6f`, tree
+`43ac0bd082850da53c54d392c44de069aeeab0b2`, exactly the ratified tree. No
+administrative bypass was used. No merge-commit Actions run was returned during
+preparation; PR CI is not represented as post-merge CI. This acceptance adds no
+new completed GitHub Codex review to the T012 review evidence above.
+
+The [selection packet](operational-inputs.md) replaces stale early-slice status
+with verified source/repository identities and workflow content digests, the
+existing environment's ineligibility, the portable-service route, a proposed new
+nonproduction environment and each missing service/host/admin/state/lifecycle
+selection. Read-only GitHub inspection found only `copilot`, with no protection
+rules and administrative bypass enabled. It is preserved, not selected or changed.
+The authenticated account is `brettheap`, ID `1513478`; dispatcher/reviewer roles
+remain unselected. No target-provider deployment is inferred from these facts.
+
+The [authorization draft](scoped-authorization.md) separates exact-target setup,
+one future bootstrap dispatch, actual run/attempt authority and independently
+bounded generation cleanup. It requires named administrators, a resource
+allowlist, budget/window, source acceptance, authenticated readback and explicit
+decision/revocation records before any operative approval. Missing values remain
+documented, not serialized as runtime handles or self-approval flags. T013 stays
+unchecked; no operational grant or executable config is emitted.
+
+A newly verified [bootstrap source prerequisite](workflow-bootstrap.md) blocks
+an operative first dispatch: the dispatch config digest covers the run ID/attempt
+that must match the actual run. An unprivileged offline probe of the existing
+synthetic configuration with the real canonical digest and validator passed the
+base and refused stale independent approval after either run ID or attempt alone
+changed (`runtime-config-unapproved`). It used no endpoint or fixture service.
+The proposal preserves exact run binding through a future independently
+authenticated static-selection/bootstrap stage. It is a factory-governed source
+proposal, not a change to the accepted grammar or runtime code. Hosting clients,
+qualify/cleanup integration and protected receipt promotion still require review.
+
+This preparation edits documentation only. No environment/provider setup,
+protected dispatch, token request, credential issuance, pin/consumer update,
+signing use, human assurance or domain action was performed. Feedback stays
+deferred; neither historical blocked write was replayed.
+
+Preparation checks passed in py-bench as UID 1000: both pin verifiers, YAML
+syntax, plain/strict adapter validation (zero errors/warnings), and the pinned
+OpenSpec CLI's five canonical items. Local links/portable paths and preservation
+of the T001/T013–T015 owner checkboxes were checked. Workflow, runtime and pin
+bytes still match the accepted merge. No full runtime suite was rerun for this
+documentation-only packet; the retained T012 suite evidence is unchanged.
+The digest probe used no fixture services, so it created no fixture processes,
+keys or state requiring cleanup. No T014 or deployed cleanup result is claimed.
+
+## Dispatch bootstrap amendment commissioning and initial qualification
+
+Brett commissioned the bootstrap fix through factory/adapter governance with
+setup and dispatch still unauthorized. New factory change
+`fix-protected-runtime-dispatch-bootstrap` preserves all accepted baseline/origin
+fields and hands off to this feature's T012B. The separate static selection
+profile commits all runtime fields except assigned run ID/attempt. Independent
+bootstrap readback then binds the final full digest/grant to actual source, repo,
+case and run/attempt before existing admission. No operational client, provider
+authentication or atomic authority service is supplied by this candidate.
+
+Initial adapter source `ce8687baa1f6fc703e33be1d41a2e79e3cd4772f` passed the
+complete ordered pin/syntax/plain+strict/pytest/pinned-OpenSpec sequence: **1,348
+passed**, zero failures/errors/skips. The native unprivileged network-none
+read-only-source matrix passed **1,046**, zero failures/errors/skips, with 38 I04
+and 35 R01 anchored nodes. Runtime/neutral pins remain unchanged. Both workflows
+pass actionlint. The first native attempt stopped at harness preflight because
+the operator had not created its required private root; the corrected fresh
+preflight and full matrix passed without product/harness changes. That refusal
+is retained and is not counted as a passing run.
+
+All nine expert roles completed source inspection. Security, reliability and QA
+independently passed all 161 bootstrap/workflow cases and removed their owned
+temporary fixtures. Standalone analysis found zero issues in the four runtime/CLI
+files and workflow test file, and one S5778 assertion-scope issue in the bootstrap
+test. The correction prepares encoded input/trust before pytest.raises so only
+the intended validator can satisfy that assertion. It changes no runtime code,
+assertion expectation, collected identity, rule or threshold. Final qualification
+at this corrected test source follows.
+
+Independent cleanup readback accounted for 22 recorded worker generations:
+11 ordinary identities absent and 11 inside the removed disposable namespace.
+No attributable helper remained; the owned container and all three focused/full/
+native fixture roots were removed and absence verified. Logs/XML and redacted
+audit remain outside Git. Initial full JUnit SHA-256:
+`3a2d0dc536ee99e0fca0755a377e82ae2e5e80a36404e27d26abf76a36f7ca8e`;
+native JUnit: `102d2f306ffaa8ec11781af40c4951972f248515d7825283dff902af8c77ae47`.
+No deployed cleanup, live bootstrap authentication, setup, protected dispatch,
+OIDC mint, human approval or consumer acceptance is claimed. Feedback stays
+deferred; neither historical blocked write was replayed.
+
+### Corrected bootstrap final qualification
+
+Source/tests and HEAD stayed fixed at
+`38d205c0b6b175afff2b38f2968730a307b74ed9` for the fresh complete ordered
+sequence: **1,348 passed**, zero failures/errors/skips, both pin verifiers,
+syntax, plain/strict validation and five pinned OpenSpec items passed. Full
+JUnit SHA-256: `5b2ab4d7a16f0bce345680337f07e2d305c0e306c48e42e192e949679103f92e`.
+The fresh native network-none unprivileged matrix passed **1,046**, zero
+failures/errors/skips, with all 38 I04 and 35 R01 anchors. JUnit SHA-256:
+`fdb61b702685c1403343b690701e8caaaaaa01a2d558d9a74dc222920f1b83fd`.
+The owning source remained clean at
+`bb0e9dae89a771b05f6c235d0a77237288b95c85`; neutral pins are unchanged.
+
+Standalone reanalysis of the corrected test reports zero issues, completing
+zero-issue results for all six touched runtime/CLI/test Python files. All nine
+expert roles completed; no actionable finding remains. Security, reliability
+and QA independently passed the full 161 bootstrap/workflow corpus. Test-only
+assertion setup changed no expectation or collected identity. No rule, threshold
+or required case was waived. Both workflows pass actionlint.
+
+Independent cleanup readback accounted for another 22 worker generations
+(11 ordinary identities absent, 11 inside the removed private namespace), with
+no attributable helpers. Both new owned full/native fixture roots and the
+second owned qualification container were removed and absence verified. Across
+initial/corrected qualification, 44 generations, two containers and all five
+owned focused/full/native roots are accounted for. Reviewer-owned roots were
+separately removed and verified; redacted logs/XML/audits remain outside source.
+
+T012B is complete as isolated candidate implementation. Paired factory #1311
+and adapter exact-head source acceptance remain pending. Default production
+bindings still refuse before outputs/OIDC; actual authenticated bootstrap and
+atomic authority consumption, hosting integrations and live receipt promotion
+remain separate. T001/T013/T014/T015 owner/operational checkboxes stay unmarked.
+No setup, protected dispatch, credential issuance, signing operation, consumer
+pin promotion or human/domain acceptance occurred. Feedback stays deferred;
+neither historical blocked write was replayed. This receipt-only follow-up
+changes no tested runtime, test, workflow, dependency or pin bytes.

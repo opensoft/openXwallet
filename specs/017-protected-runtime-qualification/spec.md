@@ -145,3 +145,15 @@ state; ambiguous custody outcome; revocation during signing; missing cleanup.
 - **SC-002** No default gate reaches a public issuer or requires provider credentials; optional live execution cannot run with missing approved inputs.
 - **SC-003** A successful live receipt identifies exact sources, protection/readback, real run/attempt, bounded machine proof, refusal cases and independent cleanup without sensitive payloads.
 - **SC-004** No result claims human assurance, domain effect, consumer pin movement or T002 completion; unavailable live facts remain explicitly blocked.
+
+## Commissioned dispatch bootstrap amendment
+
+Current user authority commissions isolated source implementation under factory
+change `fix-protected-runtime-dispatch-bootstrap`, realized in T012B. A distinct
+closed static selection commits all runtime fields except launch run ID/attempt.
+Independent authenticated bootstrap must bind its preauthorization, source, repo,
+case and actual run/attempt to the full approved config digest and operation
+grant. Full runtime validation and fresh protection/grant/scheduler/lease
+admission remain mandatory with the earliest deadline. Worker input or a hash
+cannot approve itself. Explicit input migration and as-built boundaries are in
+[workflow bootstrap](workflow-bootstrap.md). No setup/dispatch is authorized.

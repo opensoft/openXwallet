@@ -2,7 +2,15 @@
 
 **Branch**: `017-protected-runtime-qualification` | **Date**: 2026-11-12
 **Spec**: [spec.md](spec.md)
-**State**: T002–T011 source landed; isolated T012 workflow preparation candidate
+**State**: T002–T012 source landed; T013 operational selection/authorization preparation
+
+Bootstrap amendment: the current instruction commissions isolated T012B under
+factory change `fix-protected-runtime-dispatch-bootstrap`. The static dispatch
+selection commits every config field except assigned run ID/attempt. A fresh
+independently authenticated bootstrap readback supplies the actual-run full
+config digest and grant; existing admission retains exact runtime checks and
+earliest deadlines. See [migration/design](workflow-bootstrap.md). Candidate
+source acceptance and all setup/dispatch/live qualification stay separate.
 **Factory governance**: `opensoft/openXfactory`, `openspec/changes/prepare-protected-runtime-qualification/`.
 
 ## Summary

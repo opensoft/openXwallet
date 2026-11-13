@@ -100,16 +100,21 @@ class WorkflowAdmission:
     valid_until: int
 
 
-def validate_context(context):
-    require(type(context) is WorkflowContext, "workflow-context-mismatch")
+def _validate_launch_context(context):
     require(context.repository == REPOSITORY and context.event_name == "workflow_dispatch"
             and context.ref == REF and context.workflow_ref == REPOSITORY + "/" + CALLER + "@" + REF
             and all(type(v) is str and _SHA.fullmatch(v) and v != "0" * 40 for v in
                     (context.sha, context.workflow_sha, context.accepted_commit, context.source_commit))
             and context.sha == context.workflow_sha == context.accepted_commit == context.source_commit
             and all(type(v) is str and _NUMBER.fullmatch(v) for v in
-                    (context.repository_id, context.run_id, context.run_attempt))
-            and valid_digest(context.config_digest) and reference(context.operation_grant_ref),
+                    (context.repository_id, context.run_id, context.run_attempt)),
+            "workflow-context-mismatch")
+
+
+def validate_context(context):
+    require(type(context) is WorkflowContext, "workflow-context-mismatch")
+    _validate_launch_context(context)
+    require(valid_digest(context.config_digest) and reference(context.operation_grant_ref),
             "workflow-context-mismatch")
     try:
         _handle(context.operation_grant_ref)
@@ -146,7 +151,7 @@ class _Admission:
         return record
 
 
-def admit(context, *, bindings):
+def admit(context, *, bindings, deadline=None):
     """Check readiness before an environment/id-token-capable job is queued.
 
     This is bounded admission, not live qualification or authority issuance.
@@ -163,6 +168,8 @@ def admit(context, *, bindings):
                                            bindings.authorization_principal_ref, bindings.scheduler_principal_ref)),
             "workflow-admission-refused")
     use = _Admission(bindings)
+    require(deadline is None or integer(deadline), "workflow-admission-refused")
+    use.deadline = deadline
     before = use.now()
     try:
         selected = validate_config(bindings.load_config(), trust=bindings.runtime_trust)
@@ -170,7 +177,8 @@ def admit(context, *, bindings):
         raise BindingError("workflow-input-unavailable") from None
     require(selected.checked_at >= before and selected.config_digest == context.config_digest,
             "workflow-admission-refused")
-    use.last, use.deadline = selected.checked_at, selected.valid_until
+    use.last = selected.checked_at
+    use.deadline = selected.valid_until if deadline is None else min(deadline, selected.valid_until)
     use.now()
     selection, launch = selected.selection, selected.selection["launch"]
     require(all(launch[key] == getattr(context, key) for key in
