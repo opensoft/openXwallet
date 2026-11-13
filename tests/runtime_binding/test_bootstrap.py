@@ -97,8 +97,10 @@ def test_static_document_is_closed_bounded_and_not_runtime_input(b, change):
 def test_static_validation_cannot_weaken_full_runtime_validation(b, field):
     changed = deepcopy(b.w.c.config)
     del changed["launch"][field]
+    raw = encoded(changed)
+    trust = trust_for(b.w.c.config)[0]
     with pytest.raises(BindingError, match="^invalid-runtime-config$"):
-        validate_config(encoded(changed), trust=trust_for(b.w.c.config)[0])
+        validate_config(raw, trust=trust)
 
 
 @pytest.mark.parametrize("field,value", [("repository", "attacker/fork"), ("event_name", "pull_request_target"),

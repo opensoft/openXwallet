@@ -1067,3 +1067,44 @@ bytes still match the accepted merge. No full runtime suite was rerun for this
 documentation-only packet; the retained T012 suite evidence is unchanged.
 The digest probe used no fixture services, so it created no fixture processes,
 keys or state requiring cleanup. No T014 or deployed cleanup result is claimed.
+
+## Dispatch bootstrap amendment commissioning and initial qualification
+
+Brett commissioned the bootstrap fix through factory/adapter governance with
+setup and dispatch still unauthorized. New factory change
+`fix-protected-runtime-dispatch-bootstrap` preserves all accepted baseline/origin
+fields and hands off to this feature's T012B. The separate static selection
+profile commits all runtime fields except assigned run ID/attempt. Independent
+bootstrap readback then binds the final full digest/grant to actual source, repo,
+case and run/attempt before existing admission. No operational client, provider
+authentication or atomic authority service is supplied by this candidate.
+
+Initial adapter source `ce8687baa1f6fc703e33be1d41a2e79e3cd4772f` passed the
+complete ordered pin/syntax/plain+strict/pytest/pinned-OpenSpec sequence: **1,348
+passed**, zero failures/errors/skips. The native unprivileged network-none
+read-only-source matrix passed **1,046**, zero failures/errors/skips, with 38 I04
+and 35 R01 anchored nodes. Runtime/neutral pins remain unchanged. Both workflows
+pass actionlint. The first native attempt stopped at harness preflight because
+the operator had not created its required private root; the corrected fresh
+preflight and full matrix passed without product/harness changes. That refusal
+is retained and is not counted as a passing run.
+
+All nine expert roles completed source inspection. Security, reliability and QA
+independently passed all 161 bootstrap/workflow cases and removed their owned
+temporary fixtures. Standalone analysis found zero issues in the four runtime/CLI
+files and workflow test file, and one S5778 assertion-scope issue in the bootstrap
+test. The correction prepares encoded input/trust before pytest.raises so only
+the intended validator can satisfy that assertion. It changes no runtime code,
+assertion expectation, collected identity, rule or threshold. Final qualification
+at this corrected test source follows.
+
+Independent cleanup readback accounted for 22 recorded worker generations:
+11 ordinary identities absent and 11 inside the removed disposable namespace.
+No attributable helper remained; the owned container and all three focused/full/
+native fixture roots were removed and absence verified. Logs/XML and redacted
+audit remain outside Git. Initial full JUnit SHA-256:
+`3a2d0dc536ee99e0fca0755a377e82ae2e5e80a36404e27d26abf76a36f7ca8e`;
+native JUnit: `102d2f306ffaa8ec11781af40c4951972f248515d7825283dff902af8c77ae47`.
+No deployed cleanup, live bootstrap authentication, setup, protected dispatch,
+OIDC mint, human approval or consumer acceptance is claimed. Feedback stays
+deferred; neither historical blocked write was replayed.
