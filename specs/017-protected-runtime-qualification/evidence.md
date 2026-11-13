@@ -850,3 +850,27 @@ Collected node identities and runtime source are unchanged. A fresh complete
 ordered sequence and native matrix qualify the corrected test source below.
 GitHub Codex review was explicitly requested but refused by the account's review
 usage limit; no completed bot review is claimed.
+
+### Corrected T011 final verification
+
+The complete ordered sequence was repeated with source/tests and HEAD fixed at
+`4408c6a5a71a32b8ade921e56e853c7385129c72`: **1,185 passed**, zero failures,
+errors or skips, plus all pin/syntax/plain+strict/pinned OpenSpec gates. JUnit:
+`29bf770829104e81b0ab2cc06e187c50a79828152194c20066013ead53e45c4f`.
+The fresh native offline matrix passed **883 tests**, zero failures/errors/skips.
+Matrix JUnit:
+`0fc1b2578835ad65edcfc8356ca01fe2cfb5255276d349e2cd7809bf86a9ae88`.
+
+QA independently verified the assertion change by AST equivalence and reran all
+89 receipt tests successfully. Standalone analysis of the corrected tests reports
+zero issues; fresh hosted issue/quality results are checked at the updated PR head.
+No expectation, rule or threshold was removed or waived.
+
+Independent readback accounted for another **22 worker generations** (11 ordinary,
+11 in the removed private namespace), with no attributable helper. Both additional
+owned fixture roots were removed and verified absent. Across retained T011 run
+records, cleanup now accounts for **53 generations**, both disposable containers
+and all five owned focused/full/native roots; reviewer roots were independently
+removed too. This final receipt-only commit changes no tested code/tests/workflow.
+Source/fixture scope and all later operational/human gates remain unchanged.
+Feedback stays deferred; neither historical blocked write was replayed.
