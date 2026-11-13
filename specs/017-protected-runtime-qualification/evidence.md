@@ -671,3 +671,27 @@ audit denials are explicit rather than assertions hidden by generic error handli
 No rule, issue status or gate threshold is waived. The focused matrix now passes
 **54 tests**, including the post-cleanup and bridge-return regressions, retained
 reservations after refusal, interruption during finalization and revoked leases.
+
+### Final T009 source verification and cleanup
+
+The complete ordered sequence ran with source/tests and HEAD fixed at
+`8bb41cd33782f140878caefdabe3e7b94d818e92`: **1,044 tests passed**, including
+**54 T009 cases**, zero failures/errors/skips, both pin verifiers, syntax,
+plain/strict validation and all five canonical pinned OpenSpec items. Explicit
+owning-source integrations use clean `openWallet-code` at
+`bb0e9dae89a771b05f6c235d0a77237288b95c85`. JUnit SHA-256:
+`a6cb25f72474aa6d2fe4af0a921f8561e1141b0a3324ec71286885a5d24ccbe6`.
+
+All nine expert roles completed and the three P2 findings have independent closure.
+Standalone Sonar reports zero issues in both production files and all three test
+files. Fresh hosted CI, Sonar and Codex response are assessed at the published
+candidate head separately.
+
+Independent readback checked **16 recorded worker generations**, with none still
+present, and found no attributable fixture/worker/test PID. All owned focused,
+red and full temporary roots, including synthetic credential/key/state material,
+were removed and absence verified. Reviewers removed their own reproduction roots.
+Logs/XML remain outside source. This receipt follow-up changes no production code
+or tests. Actual provider lifecycle/admin isolation and protected-machine/human
+acceptance remain separate gates. Feedback stays deferred; neither historical
+blocked write was replayed.
