@@ -483,3 +483,27 @@ now accepts the outer deadline before any custody preflight and returns its
 retained earliest deadline to `RuntimeBridge` before later checks. The unchanged
 neutral signing API receives only the canonical message. Both regressions and
 the complete **59-case** T007 matrix now pass. No deadline, check or rule is waived.
+
+### Corrected T007 full verification and cleanup
+
+The complete ordered sequence at `ce1824c56f2a8445f1323a238b9307a01e948200`
+passes **937 tests**, including **59 T007 cases**, zero failures/errors/skips,
+both pin verifiers, syntax, plain/strict validation and all five canonical pinned
+OpenSpec items. Owning-source proof/transport integrations use the explicitly
+selected clean `openWallet-code` at `bb0e9dae89a771b05f6c235d0a77237288b95c85`.
+JUnit SHA-256:
+`377db69ce85552a810a294db60c473648ba837eb4ba5eec6ba9eb8ab2688267f`.
+
+The API and reliability reviewers independently confirmed closure in both
+deadline directions, including zero actual signer calls after the outer deadline.
+All nine local expert roles completed with no other actionable finding.
+Standalone Sonar reports zero issues across the new source/tests and runtime glue.
+
+Independent process readback found no attributable fixture/worker/test PID. The
+owned focused, red, initial-full and corrected-full temporary roots, including
+synthetic PKI/key/state files, were removed and absence verified. Reviewers also
+removed their own reproduction roots. Logs/XML remain outside source. This
+receipt follow-up changes no production code or tests. Fresh hosted CI, Sonar
+and Codex response are separate checks at the published candidate head.
+Deployed machine/human acceptance stays pending; feedback remains deferred and
+neither historical blocked write was replayed.
