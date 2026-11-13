@@ -2,7 +2,7 @@
 
 **Feature Branch**: `017-protected-runtime-qualification`
 **Created**: 2026-11-12
-**Status**: T002/T003 source accepted and landed; isolated T004/T005 source candidate
+**Status**: T002–T005 source accepted and landed; isolated T006 source candidate
 **Input**: Prepare the next runtime qualification step for the first codeXfactory pilot after #581 post-merge verification.
 **Governance owner**: `opensoft/openXfactory`, `openspec/changes/prepare-protected-runtime-qualification/`.
 
@@ -20,6 +20,12 @@ Brett then ratified factory #1308 at `7d99face8934` with adapter #51 at
 isolation. The opt-in bridge connects selected authenticated connector/hosting
 capabilities and preserves the unchanged proof semantics; no deployed machine
 or human acceptance follows from those isolated tests.
+
+Brett subsequently ratified #52 at `3833bc8629e6` for source acceptance and
+commissioned T006 in isolation. The observer measures controller-selected live
+process identity, launch/files/configuration and key/transport refs, signing the
+unchanged observation format. It does not establish independent deployment
+administration or worker OS access denial from same-user fixtures.
 
 ## User Scenarios & Testing
 

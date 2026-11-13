@@ -90,3 +90,55 @@ initialize, recover or qualify storage. Actual source measurement, supervisor
 independence, custody confinement, initialized-state/recovery and lifecycle gates
 remain T006–T009 and deployed acceptance work. The isolated composition yields
 only the existing possession result with `human_approval` false.
+
+## Isolated T006 realization
+
+`SupervisedBridge` is an opt-in trusted wrapper with the existing bridge and a
+selected `BoundService` supervisor. Its three-argument `sign(challenge_id,
+request, token)` obtains an observation through the authenticated connector,
+verifies it with the existing verifier, enforces the current deadline, and calls
+the unchanged four-argument bridge. It sends no worker policy, key, PID, path,
+measurement or loader. The connector's `observe(payload, *, deadline)` must
+authenticate the selected service and propagate the epoch deadline to the observer.
+
+`SupervisorObserver` has its own protected configuration/readback, current-source
+connectors, issuer source, observation key and `ProcessLaunch`. The authenticated
+server supplies `SupervisorPeer` outside the body. The protected gate allowlist
+must match the selected supervisor service's principal/credential pair and differ
+from the worker channel. Denied peers fail before protected configuration I/O.
+The observation key must match the policy's supervisor public key and differ from
+the wallet key. Only the existing domain-separated observation can be produced;
+there is no production key-export, generic-sign or policy-management operation.
+
+The trusted launcher captures the PID/start-time generation and selects resolved
+worker/configuration/cwd paths, source artifacts and an explicit executable digest.
+The supported command is exactly `executable -I -B worker configuration`. The
+observer checks actual Linux proc start time/liveness, argv, cwd and executable
+bytes, with bounded regular-file reads and no symlink/FIFO configuration acceptance.
+It reads actual worker configuration and sources, including this measurement
+module, and compares them with protected selection. The internal worker projection
+binds launch/source/dependency/service references, wallet/key/custody binding,
+authority refs and the supervisor public key, excluding self-referential hashes.
+
+Actual PID/start time, argv/cwd/executable digest and worker configuration enter
+the unchanged artifact/composition digest structure. The worker cannot supply the
+expected projection. A controller can calculate a candidate composition after
+launch; that calculation does not itself grant source or operational approval.
+The observer rechecks authority, protection, process/files and freshness after
+signing before returning any observation. The signed format and maximum 60-second
+validity remain unchanged, shortened by every accepted source/peer/client deadline.
+
+Before/after snapshots are not continuous liveness or memory/model attestation.
+They cannot prove that a program honored configuration, detect a change restored
+between snapshots, or defeat a hostile host. Deployment must enforce approved
+read-only launch sources and genuinely separate supervisor administration/key/
+policy/control access. Actual container/image/dependency selection remains an
+independent readback obligation. Filesystem paths and process metadata stay
+host-local; the returned observation carries their digest, not raw metadata/key.
+
+Isolated TLS fixtures use distinct gate/worker/admin credentials and real
+authorization routes to test observation, policy and key-control denial. An
+excess-permission mutation makes the denial probe fail; an outage does not pass
+as denial. Fixture admin routes are test-only, not a production API. Same-user
+processes cannot establish worker OS key secrecy or deployed administrative
+isolation. Those G02/P01 facts remain pending live gates.

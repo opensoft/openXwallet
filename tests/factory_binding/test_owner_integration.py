@@ -54,9 +54,9 @@ def private_write(path, raw):
         stream.write(raw)
 
 
-def make_pki(directory):
+def make_pki(directory, *, ca_common_name="isolated fixture CA"):
     key = ec.generate_private_key(ec.SECP256R1())
-    name = x509.Name([x509.NameAttribute(x509.NameOID.COMMON_NAME, "isolated fixture CA")])
+    name = x509.Name([x509.NameAttribute(x509.NameOID.COMMON_NAME, ca_common_name)])
     now = datetime.now(timezone.utc)
     ca = (x509.CertificateBuilder().subject_name(name).issuer_name(name).public_key(key.public_key())
           .serial_number(x509.random_serial_number()).not_valid_before(now - timedelta(minutes=1))

@@ -90,6 +90,16 @@ owned temporary tree. Current observations are in [evidence.md](evidence.md).
 
 ## Future Protected Machine Sequence
 
+T006's isolated tests are `test_supervisor.py` and `test_supervisor_access.py`.
+They launch a disposable Linux Python worker, capture its actual process
+generation through the trusted controller, measure current proc/files/config,
+and use the existing observation and owning proof verifier. The mTLS fixtures
+test gate/worker/admin roles, valid management requests and mutation-sensitive
+denial. No production service endpoint or administrative operation is supplied.
+The supported launch profile and snapshot/TCB limits are in the
+[embedding interface](contracts/runtime-embedding.md). Required fixtures retain
+only isolated scope; live G02/P01 needs separately approved deployment evidence.
+
 T004/T005 now have an isolated source implementation. Import `RuntimeBridge`
 and its constructor bindings from the opt-in runtime modules, following the
 [internal embedding interface](contracts/runtime-embedding.md). Only trusted

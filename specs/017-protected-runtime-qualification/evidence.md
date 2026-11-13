@@ -345,3 +345,43 @@ All five factory #1308 actual-main-triggered workflows passed at merge
 10,391 passed, six skipped, 338 deselected and 741 subtests passed. Adapter #51
 has no main-triggered workflows, so none is inferred. These post-merge results
 do not establish runtime deployment or human acceptance.
+
+## T006 source commissioning — 2026-11-12
+
+Brett ratified adapter #52 at `3833bc8629e6` for source acceptance only,
+directed its landing when green, and commissioned T006 implementation/testing
+in isolation. Feedback stays deferred; neither historical blocked write is
+authorized for replay.
+
+The PR landed normally as `b86b92512a17019c9fd1b5ac171f116949bffe4e`, tree
+`9e64a50e62e5cd5740e693cd5c16bf7287ead19f`, equal to the ratified candidate
+tree. Required checks and all runnable hosted checks passed; there were no
+unresolved review threads. No approval override was needed. The adapter has no
+main-triggered workflows, so no separate post-merge run is inferred. GitHub
+Codex review remained quota-refused; prior local review and hosted results are
+separate evidence, not bot approval.
+
+`SupervisorObserver` and `SupervisedBridge` obtain actual controller-selected
+Linux process/file/configuration measurements and use the unchanged observation
+and owning proof APIs. `ProcessLaunch` captures a process generation, requires
+explicit expected executable bytes and checks actual argv/cwd/liveness/source
+and bounded regular-file configuration. PID/start time and execution/configuration
+metadata enter the existing composition digest. No worker PID, file paths,
+measurement, policy or key are accepted in the observation request.
+
+The initial focused matrix passes **56 cases**, including actual loopback mTLS,
+separate gate/worker/admin credentials, valid observation/control requests,
+policy revocation/key rotation, an excess-worker-permission mutation and outage
+refusal. The owning proof verifier accepts a measured supervised result. Two
+coordinator regressions were reproduced before correction: denied peers initially
+reached protected configuration I/O, and an independently configured gate
+allowlist was not yet joined to the approved service principal/credential pair.
+Both now refuse with focused coverage. Distinct fixture CA names fixed an admin
+chain ambiguity without weakening certificate/hostname validation.
+
+These fixtures prove isolated behavior only. They do not establish worker OS
+key/policy secrecy, separate deployment administration, read-only launch mounts,
+actual image/dependency selection, continuous liveness or memory/model behavior.
+Observable snapshots can miss changes restored between reads. Real G02/P01 and
+T007–T015 remain separately gated. No protected setup/dispatch, live issuer,
+provider write, human approval, consumer lock/pin or release is supplied.
