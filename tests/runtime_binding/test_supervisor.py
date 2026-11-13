@@ -67,8 +67,9 @@ def test_wrong_actual_executable_digest_refuses(s):
     ("credential_ref", "credential:worker_channel"), ("issued_at", 9999999999), ("expires_at", 0)])
 def test_worker_or_expired_peer_cannot_obtain_supervisor_signature(s, field, value):
     peer = replace(s.peer, **{field: value})
+    payload, deadline = s.payload(), s.h.now + 30
     with pytest.raises(BindingError):
-        s.observer.observe(s.payload(), peer=peer, deadline=s.h.now + 30)
+        s.observer.observe(payload, peer=peer, deadline=deadline)
 
 
 @pytest.mark.parametrize("field", ["policy", "private_key", "artifacts", "configuration", "pid", "measurement"])
