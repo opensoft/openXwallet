@@ -13,6 +13,7 @@ from workload_factory_binding.evidence import (
 )
 from workload_factory_binding.gate import REQUEST_FIELDS
 from .config import RuntimeTrust, validate_config
+from .custody import ConfinedCustody
 from .issuer import IssuerKeySource, IssuerWorkloadVerifier
 from .loaders import BoundService, CurrentLoaders, ServiceIdentity, check_service
 
@@ -124,6 +125,10 @@ class _Use:
             # Fresh preflight may shorten the deadline. Sample only after it.
             if method == "read":
                 return service.target.read(*args, deadline=self.valid_until, **kwargs)
+            if role == "custody" and type(service.target) is ConfinedCustody:
+                signature, deadline = service.target.sign_for_use(*args, deadline=self.valid_until, **kwargs)
+                self.limit(deadline)
+                return signature
             return getattr(service.target, method)(*args, **kwargs)
         return self.guarded(invoke)
 

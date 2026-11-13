@@ -455,7 +455,7 @@ endpoint and sign-only subject/key/custody scope with monotonic per-use deadline
 The existing neutral API, offline entrypoints, proof semantics and pins remain.
 New custody-side assertions refuse for an upstream owner decision.
 
-The focused isolated matrix passes **57 tests**. A real owning mTLS service
+The focused isolated matrix passes **59 tests**. A real owning mTLS service
 accepts one gated proof verified by its owning verifier. A separate worker process
 using a resolve-only credential is explicitly denied the exact valid canonical
 preimage captured from that proof. An excess-worker-sign-permission mutation
@@ -468,3 +468,18 @@ prove OS key secrecy, independently administered deployment, immutable sources,
 actual image/dependency selection or network confinement. Live G03/P01, T008–T015
 and consumer runtime/human acceptance remain pending. Feedback stays deferred;
 neither historical blocked write is replayed. No protected setup/dispatch occurs.
+
+### T007 local review and composed deadline correction
+
+The initial complete sequence at `2762c8a66273afb4cc2f9e33c52982cee45eacde`
+passed **935 tests**, zero failures/errors/skips, both pin verifiers, syntax,
+plain/strict validation and all five canonical pinned OpenSpec items. The expert
+panel found one P2 composition issue independently reproduced in both directions:
+custody readback could cross an earlier outer proof deadline before invoking the
+signer; a shorter custody lease was not retained through later outer proof I/O.
+
+Both connected regressions failed before correction. The internal per-use seam
+now accepts the outer deadline before any custody preflight and returns its
+retained earliest deadline to `RuntimeBridge` before later checks. The unchanged
+neutral signing API receives only the canonical message. Both regressions and
+the complete **59-case** T007 matrix now pass. No deadline, check or rule is waived.

@@ -96,8 +96,8 @@ def _material(material):
 
 
 class _Use:
-    def __init__(self, signer):
-        self.signer, self.last, self.deadline = signer, None, None
+    def __init__(self, signer, deadline=None):
+        self.signer, self.last, self.deadline = signer, None, deadline
         self.check()
 
     def clock(self):
@@ -196,12 +196,21 @@ class ConfinedCustody:
         use.check()
 
     def sign(self, message):
+        """Owning compatibility seam for trusted standalone callers only."""
+        return self._sign(message, None)[0]
+
+    def sign_for_use(self, message, *, deadline):
+        """Internal bridge seam: exchange earliest deadlines, not a wire assertion."""
+        require(integer(deadline), "custody-access-expired")
+        return self._sign(message, deadline)
+
+    def _sign(self, message, deadline):
         require(type(message) is bytes and 0 < len(message) <= 8192, "invalid-custody-message")
-        use = _Use(self)
+        use = _Use(self, deadline)
         try:
             signature = self.remote.sign(message)
         except Exception:
             raise BindingError("custody-service-unavailable") from None
         use.check()
         require(type(signature) is bytes and len(signature) == 64, "invalid-custody-signature")
-        return signature
+        return signature, use.deadline

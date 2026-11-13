@@ -171,6 +171,13 @@ valid at most 60 seconds. The per-use earliest runtime/readback/issuance deadlin
 never extends; time/configuration/material/issuance checks repeat after signing.
 Post-sign refusal cannot undo an already-created signature.
 
+The bridge invokes the internal `sign_for_use(message, *, deadline)` seam after
+fresh guarded preflight. It passes the outer proof-use deadline inward, before
+added custody readback, and retains the returned earliest custody deadline through
+all later proof checks. The neutral owning signer still receives only `sign(message)`.
+Standalone `ConfinedCustody.sign(message)` is a trusted compatibility seam; it
+cannot know an enclosing proof deadline and is not the runtime bridge path.
+
 There is no new custody-side per-use assertion: unsupported trust models refuse
 with `custody-owner-decision-required`. Hosting callbacks must authenticate and
 bound I/O, independently measure the approved source/configuration selection,

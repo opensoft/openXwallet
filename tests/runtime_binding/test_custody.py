@@ -213,6 +213,40 @@ def test_signer_failure_and_bad_signature_are_safe(k):
         k.signer.sign(b"preimage")
 
 
+def test_outer_proof_deadline_limits_added_custody_readback_before_sign(k):
+    c, signed = k.c, []
+    c.context = replace(c.context, expires_at=c.h.now + 2)
+    c.services["custody"] = k.signer.service
+    c.bridge = c.make()
+    k.hook = lambda: setattr(c.h, "now", c.h.now + 3)
+    def sign(message):
+        signed.append(True)
+        return c.h.sign(message)
+    k.signer.remote.sign = sign
+    with pytest.raises(BindingError):
+        c.run()
+    assert signed == [], "custody signed after the outer proof deadline"
+    assert k.deadlines == [c.context.expires_at]
+
+
+def test_custody_lease_deadline_survives_later_proof_io(k):
+    c, signed = k.c, []
+    k.access = replace(k.access, expires_at=c.h.now + 2)
+    c.services["custody"] = k.signer.service
+    c.bridge = c.make()
+    def sign(message):
+        signed.append(True)
+        return c.h.sign(message)
+    def policy_read():
+        if signed:
+            c.h.now += 3
+    k.signer.remote.sign = sign
+    c.records.hook = policy_read
+    with pytest.raises(BindingError):
+        c.run()
+    assert signed == [True]
+
+
 def _worker_probe(k, owner, endpoint, message, directory):
     config = directory / "worker-probe.json"
     private_write(config, encoded({
