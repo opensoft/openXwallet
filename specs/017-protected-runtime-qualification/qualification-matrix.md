@@ -1,6 +1,6 @@
 # Required Qualification Matrix
 
-Status: isolated T002–T010 source cases landed; T011 receipt candidate; deployed cases pending
+Status: isolated T002–T011 source cases landed; T012 workflow preparation candidate; deployed cases pending
 
 | Cases | Required observation | Requirements |
 | --- | --- | --- |
@@ -48,3 +48,14 @@ The internal report authenticates no supplied Python object or test observation;
 only trusted harnesses supply results. Protected-machine scope remains unsupported. No offline row qualifies deployed
 independence, provider administration, real OIDC or human approval. Gate success
 is a source result, not a protected machine receipt.
+
+## T012 Preparation Coverage
+
+`test_workflow.py` covers caller/source/context bindings, existing environment and
+exact protection, separately current operation authority, registered external
+scheduler/readback, active lease, bounded freshness/clock composition, default CLI
+refusal before outputs/OIDC, and manual/local-reusable workflow permissions and
+source pins. The entire module is required by the collection contract. These are
+preparation checks, not P01 or deployed G02/G03/L01 evidence. Real hosting/clients,
+operational selection/authority, actual protected run and protected receipt
+promotion remain separately gated. No workflow dispatch is part of conformance.

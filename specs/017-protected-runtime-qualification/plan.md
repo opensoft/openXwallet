@@ -2,7 +2,7 @@
 
 **Branch**: `017-protected-runtime-qualification` | **Date**: 2026-11-12
 **Spec**: [spec.md](spec.md)
-**State**: T002–T010 source landed; isolated T011 source candidate
+**State**: T002–T011 source landed; isolated T012 workflow preparation candidate
 **Factory governance**: `opensoft/openXfactory`, `openspec/changes/prepare-protected-runtime-qualification/`.
 
 ## Summary
@@ -70,6 +70,17 @@ cleanup are bound through closed fields/digests; raw credentials, tokens, proofs
 provider payloads and exception text are omitted. This report is not an openMFA
 possession receipt or an acceptance grant. Protected-machine scope refuses in this
 slice; later protected hosting/acceptance must review any promotion separately.
+
+Brett ratified adapter #58 at `4916476364f7` for source acceptance only and
+commissioned T012 in isolation. The manual caller and local reusable workflow
+prepare same-commit source/claim binding, read-only admission before environment
+selection, narrow job-level OIDC and an always-run cleanup handoff. Trusted
+readiness requires current independent configuration, actual existing environment
+protection, a separate case/run/attempt operation grant, registered external janitor
+scheduling and independent readback. Production bindings remain unselected; the
+CLI blocks before admission outputs or token access. Live execution and cleanup
+clients remain T013/T014 hosting integrations, not a fixture fallback or hidden
+environment activation switch. No setup or dispatch is authorized or performed.
 
 ## Technical Context
 

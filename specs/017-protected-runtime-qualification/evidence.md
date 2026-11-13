@@ -874,3 +874,28 @@ and all five owned focused/full/native roots; reviewer roots were independently
 removed too. This final receipt-only commit changes no tested code/tests/workflow.
 Source/fixture scope and all later operational/human gates remain unchanged.
 Feedback stays deferred; neither historical blocked write was replayed.
+
+## T012 source commissioning — 2026-11-13
+
+Brett ratified #58 at `4916476364f79568bc09a14c41d44f4d1c474cdc` for source
+acceptance only and commissioned T012 in isolation. All runnable checks passed,
+with no unresolved review threads. The exact head merged normally as
+`a3867ed906f4da505a0b14d8643fde1dded2d1bf`, tree
+`fe072c6146d9412e1891578ff27a06c233f7618f`, matching the ratified tree.
+No admin bypass was needed; no main-triggered CI result is inferred.
+
+The candidate prepares a manual caller and same-commit local reusable workflow,
+job-scoped permissions, immutable checkout/action pins and independent admission
+before environment selection. Readiness binds trusted source/configuration,
+actual existing environment protections, separate case/run/attempt operation
+authority, external scheduler registration/readback and active lease. It repeats
+after environment approval. The CLI blocks with production hosting unselected,
+before emitting environment/ready outputs or requesting any token. Qualify/cleanup
+remain explicit not-performed integration handoffs; no fixture fallback can pass
+live qualification. A future cleanup client must preserve independent T009 authority
+after proof expiry/hard runner death. No workflow dispatch or provider setup occurs.
+
+Source validation uses actionlint and isolated readback/CLI/YAML tests; full gate,
+expert review and exact-head hosted evidence follow. No new neutral contract, pin,
+release or consumer lock is supplied. Feedback stays deferred; neither historical
+blocked write was replayed.

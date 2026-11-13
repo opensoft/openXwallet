@@ -17,6 +17,8 @@ PROFILE = "openxfactory-runtime-evidence-internal-v1"
 CASES = ("I01", "I02", "I03", "I04", "I05", "G01", "G02", "G03", "S01", "L01", "R01")
 SCOPES = ("source-conformance", "isolated-fixture")
 _CODES = frozenset(("qualification-failed", "qualification-cancelled", "invalid-qualification-evidence",
+                    "workflow-context-mismatch", "workflow-input-unavailable", "workflow-admission-refused",
+                    "workflow-operational-host-unselected", "workflow-live-qualification-not-performed",
                     "qualification-cleanup-mismatch", "lifecycle-cleanup-unverified", "lifecycle-operation-failed",
                     "runtime-config-unavailable", "runtime-service-unavailable", "runtime-use-expired",
                     "runtime-clock-unavailable", "issuer-keys-unavailable", "workload-unverified"))
