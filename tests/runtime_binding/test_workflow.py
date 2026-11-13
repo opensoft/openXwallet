@@ -76,7 +76,7 @@ def test_independent_readiness_binds_existing_environment_grant_and_scheduler(w)
 @pytest.mark.parametrize("field,value", [("repository", "attacker/fork"), ("repository_id", "0"),
     ("event_name", "pull_request_target"), ("ref", "refs/heads/unreviewed"), ("sha", "c" * 40),
     ("workflow_ref", REPOSITORY + "/other.yml@" + REF), ("workflow_sha", "c" * 40),
-    ("run_id", "0"), ("run_attempt", "0"), ("accepted_commit", "main"),
+    ("run_id", "0"), ("run_id", "1\u0661"), ("run_attempt", "0"), ("accepted_commit", "main"),
     ("source_commit", "c" * 40), ("config_digest", "raw-sensitive-canary"),
     ("operation_grant_ref", "bad\nready=true")])
 def test_wrong_dispatch_source_identity_or_injected_output_refuses_before_readback(w, field, value):

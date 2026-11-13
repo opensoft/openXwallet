@@ -17,7 +17,7 @@ CALLER = ".github/workflows/protected-runtime-qualification.yml"
 REUSABLE = ".github/workflows/protected-runtime-qualification-run.yml"
 REF = "refs/heads/main"
 _SHA = re.compile(r"[0-9a-f]{40}\Z")
-_NUMBER = re.compile(r"[1-9][0-9]{0,19}\Z")
+_NUMBER = re.compile(r"[1-9]\d{0,19}\Z", flags=re.ASCII)
 
 
 @dataclass(frozen=True, repr=False)

@@ -899,3 +899,15 @@ Source validation uses actionlint and isolated readback/CLI/YAML tests; full gat
 expert review and exact-head hosted evidence follow. No new neutral contract, pin,
 release or consumer lock is supplied. Feedback stays deferred; neither historical
 blocked write was replayed.
+
+### T012 local expert and static review
+
+All nine expert roles completed with no actionable findings. QA independently
+ran the original 79 cases and the final **80-case** suite, zero skips. Security
+verified the actual CLI/context/OIDC/environment guards; reliability exercised
+clock regression, expiry, plan rotation and lease revocation. Reviewers removed
+and verified their owned temporary roots. Standalone analysis found one regex
+convention issue; it is corrected with `\d` plus explicit ASCII mode, preserving
+numeric identity semantics. A new Unicode-digit refusal regression verifies no
+widening. No rule, threshold or expectation was waived. Both workflows pass
+`actionlint`; final ordered and native qualification follow at fixed source.

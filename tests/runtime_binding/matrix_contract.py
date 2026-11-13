@@ -8,7 +8,7 @@ ROOTS = ("tests/runtime_binding", "tests/factory_binding/test_binding.py",
          "tests/factory_binding/test_owner_integration.py")
 
 MODULE_COUNTS = {
-    "tests/runtime_binding/test_workflow.py": 79,
+    "tests/runtime_binding/test_workflow.py": 80,
     "tests/runtime_binding/test_evidence.py": 89,
     "tests/runtime_binding/test_conformance.py": 52,
     "tests/runtime_binding/test_authenticated_loaders.py": 5,
@@ -48,7 +48,7 @@ MODULE_DIGESTS = {
     "tests/runtime_binding/test_state.py": "746329082b578bfae519a26892c41de7e55f4a7c95c1a5e7b2af6c26eab8e835",
     "tests/runtime_binding/test_supervisor.py": "f3e5eccb6b1d4de48286c3446f859058eda6647a6f6be01516134f588db4859b",
     "tests/runtime_binding/test_supervisor_access.py": "0ec77ec5bfd0f55682659a5e7f68b0526e7d0d2470b084095eea205898abd03e",
-    "tests/runtime_binding/test_workflow.py": "80d54585da17d04e09274297af3e8c404da9510aeec5d5df9a2cff898dd88ef2"
+    "tests/runtime_binding/test_workflow.py": "a35e83502984fcd8b3f4231434aaeb70b409391394dd9f340d47a8bf0644d2a6"
 }
 
 
