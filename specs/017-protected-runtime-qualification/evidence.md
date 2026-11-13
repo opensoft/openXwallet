@@ -978,3 +978,13 @@ and protected receipt promotion remain T013/T014 source/operational gates. No
 protected workflow dispatch, environment/credential setup, consumer lock, human
 approval or domain effect is performed. Feedback stays deferred; neither historical
 blocked write was replayed. Hosted CI/review is checked at the published head.
+
+### Hosted T012 fixture-access correction
+
+The first candidate's hosted Sonar gate passed, but explicit issue readback found
+one test-only S8993 fixture-access finding not reported by standalone analysis.
+The lease-revocation test now uses the same lease fixture already prepared by
+`w`, rather than a second dynamic lookup. Required late construction remains
+inside the fixture after configuration preparation, preserving setup order.
+No runtime code, assertion, collected identity, rule or threshold changes.
+Fresh complete/native checks qualify this corrected test source below.

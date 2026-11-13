@@ -35,12 +35,13 @@ def w(c, request):
     config["sources"]["caller_workflow"]["path"] = CALLER
     config["sources"]["reusable_workflow"]["path"] = REUSABLE
     c.reselect_policy()
-    life = request.getfixturevalue("l").life
+    lease_fixture = request.getfixturevalue("l")
+    life = lease_fixture.life
     launch = config["launch"]
     context = WorkflowContext(REPOSITORY, launch["repository_id"], "workflow_dispatch", REF, SHA,
                               launch["workflow_ref"], SHA, launch["run_id"], launch["run_attempt"],
                               SHA, digest(config), "grant:operation", SHA)
-    b = SimpleNamespace(c=c, life=life, context=context, calls=[], hooks={})
+    b = SimpleNamespace(c=c, life=life, lease_fixture=lease_fixture, context=context, calls=[], hooks={})
     b.environment = EnvironmentReadback("principal:environment-reader", True, deepcopy(config["protection"]),
                                          c.h.now, c.h.now + 20)
     b.authorization = OperationReadback("principal:operation-reader", context.operation_grant_ref,
@@ -175,9 +176,8 @@ def test_worker_identity_cannot_supply_trusted_readback(w, field):
     assert w.calls == []
 
 
-def test_current_lease_revocation_is_checked_before_admission_returns(w, request):
-    l = request.getfixturevalue("l")
-    l.status = "revoked"
+def test_current_lease_revocation_is_checked_before_admission_returns(w):
+    w.lease_fixture.status = "revoked"
     with pytest.raises(BindingError):
         admit(w.context, bindings=w.bindings)
 
