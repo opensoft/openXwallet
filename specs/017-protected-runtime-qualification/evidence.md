@@ -584,3 +584,11 @@ could regress relative to the child's observation. Both connected regressions
 failed before correction. `StateUse` now carries earliest expiry and latest
 checked time; the bridge forwards its clock floor inward and retains the child's
 newest sample on return. The focused T008 matrix now passes **52 cases**.
+
+Both reviewers independently verified their corrections. Reliability also
+verified a connected post-reservation case: a newer child timestamp followed by
+an older parent timestamp refuses before signing, retains the durable reservation
+and refuses reuse after restart. That case is now tracked; the focused matrix
+passes **53 tests**. The preceding complete run reported **989 passed**, zero
+failures/errors/skips, with all ordered gates passing. Final qualification includes
+the added regression in a fresh complete sequence at the recorded source head.

@@ -240,6 +240,28 @@ def test_parent_latest_clock_checkpoint_reaches_state_before_io(s):
     assert s.calls == []
 
 
+def test_reservation_clock_checkpoint_refuses_parent_regression_and_stays_consumed(s):
+    original, now = s.ledger.reserve_for_use, s.c.h.now
+    def reserve_with_later_clock(**kwargs):
+        trust = s.ledger.runtime_trust
+        s.ledger.runtime_trust = replace(trust, clock=lambda: now + 2)
+        try:
+            return original(**kwargs)
+        finally:
+            s.ledger.runtime_trust = trust
+    s.ledger.reserve_for_use = reserve_with_later_clock
+    with pytest.raises(BindingError):
+        s.c.run()
+    assert s.c.h.calls == 0
+    with sqlite3.connect(s.directory / "reservations.sqlite") as db:
+        assert db.execute("SELECT count(*) FROM reservations").fetchone() == (1,)
+    s.c.state = replace(s.c.state, ledger=s.make())
+    s.c.bridge = s.c.make()
+    with pytest.raises(BindingError):
+        s.c.run()
+    assert s.c.h.calls == 0
+
+
 def test_outer_deadline_reaches_state_preflight_and_prevents_reservation(s):
     now = s.c.h.now
     s.c.context = replace(s.c.context, expires_at=now + 2)
