@@ -2,7 +2,7 @@
 
 **Branch**: `017-protected-runtime-qualification` | **Date**: 2026-11-12
 **Spec**: [spec.md](spec.md)
-**State**: T002–T010 source landed; isolated T011 source candidate
+**State**: T002–T011 source landed; isolated T012 workflow preparation candidate
 **Factory governance**: `opensoft/openXfactory`, `openspec/changes/prepare-protected-runtime-qualification/`.
 
 ## Summary
@@ -71,6 +71,17 @@ provider payloads and exception text are omitted. This report is not an openMFA
 possession receipt or an acceptance grant. Protected-machine scope refuses in this
 slice; later protected hosting/acceptance must review any promotion separately.
 
+Brett ratified adapter #58 at `4916476364f7` for source acceptance only and
+commissioned T012 in isolation. The manual caller and local reusable workflow
+prepare same-commit source/claim binding, read-only admission before environment
+selection, narrow job-level OIDC and an always-run cleanup handoff. Trusted
+readiness requires current independent configuration, actual existing environment
+protection, a separate case/run/attempt operation grant, registered external janitor
+scheduling and independent readback. Production bindings remain unselected; the
+CLI blocks before admission outputs or token access. Live execution and cleanup
+clients remain T013/T014 hosting integrations, not a fixture fallback or hidden
+environment activation switch. No setup or dispatch is authorized or performed.
+
 ## Technical Context
 
 - Python 3.12 / Linux x86_64; `requirements-workload-binding.lock` is the reviewed dependency baseline. Additional transport dependencies require a complete reviewed hash lock.
@@ -137,3 +148,8 @@ and the existing reservations suit the selected trusted-gate model. Disable the
 opt-in bridge and revoke run-owned credentials/leases on rollback; retain consumed
 state and safe evidence. Do not reset replay state or move domain/neutral pins
 to manufacture qualification success.
+
+T012 validation amendment: an existing test fixture could publish an empty ready
+file before its port, racing the positive custody connection. The owned fixture
+now publishes atomically, with deterministic paused/failed publication regressions.
+No production API, gate expectation, readiness deadline or retry policy changes.

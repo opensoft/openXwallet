@@ -18,3 +18,10 @@ Only non-secret references belong in reviewed selections. No credential, private
 key, token or factor material is requested. Missing input blocks execution; no
 invented endpoint, workflow, identity, credential or self-attestation fills a gap.
 Human broker enrollment/assurance and domain acceptance remain separate handoffs.
+
+T012 adds prepared manual/local-reusable workflow source and trusted readiness
+interfaces. No environment, production host/client or operational grant is selected.
+The default factory refuses before environment outputs/OIDC. T013 must reconcile
+actual immutable merged workflow sources to owner acceptance and select real
+non-secret references/authenticated clients; T014 owns actual execution. Qualify
+and cleanup clients and protected receipt promotion need separate source review.

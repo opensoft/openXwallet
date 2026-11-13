@@ -1,6 +1,6 @@
 # Offline Qualification and Operator Runbook
 
-Status: T002–T010 source landed; T011 isolated source candidate; no protected execution command supplied
+Status: T002–T011 source landed; T012 workflow preparation candidate; no dispatch authorization supplied
 
 ## Issuer-Only Library Boundary
 
@@ -241,3 +241,64 @@ approved janitor if incomplete. Never reset consumed replay state to retry a
 proof. Hard runner death still needs the independent scheduler/readback actor.
 Do not infer cleanup from a finally block or a successful receipt write. Missing
 live services, operational selections or authority stay blocked/not-performed.
+
+## T012 Prepared Workflow — Do Not Dispatch Without T013 Authority
+
+The prepared files are `.github/workflows/protected-runtime-qualification.yml`
+(manual caller) and `protected-runtime-qualification-run.yml` (local reusable).
+They are not triggered by pull requests, pushes or a schedule. Ordinary PR CI
+only validates their source/tests. Creating or merging these files does not
+provision an environment, select a service, grant signing rights or authorize a
+manual workflow run. No protected workflow was dispatched for this preparation.
+
+Current production behavior is deliberately blocked: the operational-host factory
+is unselected, the CLI emits `workflow-operational-host-unselected`, no admission
+outputs are written, and the protected job is not queued. There is no variable,
+JSON flag, secret, plugin name or fixture mode that enables production hosting.
+Do not add a pending service/name or use the offline matrix as a live fallback.
+The qualifier and cleanup entrypoints remain not-performed handoffs for separately
+reviewed T013/T014 clients. Protected-machine report scope remains unsupported.
+
+For isolated source checks in the declared bench, use the reviewed environment:
+
+```sh
+actionlint .github/workflows/protected-runtime-qualification.yml .github/workflows/protected-runtime-qualification-run.yml
+python3 -m pytest tests/runtime_binding/test_workflow.py -q -rs
+```
+
+These tests use synthetic trusted readbacks and actual local CLI subprocesses.
+They do not dispatch Actions, request GitHub/provider credentials or create any
+environment. The required offline matrix also runs them with loopback-only
+networking and no ambient provider credentials. Complete ordered gates remain
+required before publishing a source candidate.
+
+T013 must supply independently approved non-secret source/configuration selections,
+actual existing environment protection readback and case/run/attempt operation
+authority; selected authenticated hosting/client integration, services, initialized
+state and durable independent janitor/readback also remain required. A concrete
+production binding needs reviewed source integration, not a runtime plugin switch.
+The actual merge commit/tree used on main must be reconciled to the ratified source
+and independently accepted; a PR head string cannot replace `github.workflow_sha`.
+Fresh authorization must name the actual run and attempt, including retries.
+
+Only after those selections, source review and explicit scoped setup/dispatch
+commissioning may an operator consider running the manual workflow. Its inputs
+are expected accepted commit, configuration digest and opaque operation-grant
+reference. They are lookup/expectation data, not an approval. The reusable workflow
+must execute at the same immutable caller commit; external callers, non-main refs
+and other events refuse before checkout. No live command is supplied here.
+
+Read-only admission precedes any environment-bound job, since referencing a missing
+GitHub environment can create it without protections. Admission must obtain current
+actual existence/protection rather than copying a candidate. GitHub environment
+approval may wait beyond a prior readback's deadline, so the protected job repeats
+fresh source/configuration/operation/scheduler admission before future effects.
+Every required real proof gate must still perform its per-use validation.
+
+An `always()` cleanup step is a handoff, not independent cleanup proof. Hard death
+and cancellation require the external durable janitor/scheduler and fresh independent
+absence/revocation readback while preserving replay/shared resources. Future cleanup
+hosting must retain its fixed plan/authority despite expired proof configuration;
+missing readback must fail qualification. Do not reset state or weaken protections
+to enable this preparation. Feedback remains deferred; neither blocked write is an
+activation or cleanup step.

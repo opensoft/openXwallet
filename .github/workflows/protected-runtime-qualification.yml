@@ -1,0 +1,36 @@
+# Source preparation only. No setup/dispatch is authorized by adding this file.
+name: protected-runtime-qualification
+on:
+  workflow_dispatch:
+    inputs:
+      accepted_commit:
+        description: Exact source-accepted adapter/workflow commit (40 lowercase hex)
+        required: true
+        type: string
+      config_digest:
+        description: Independently approved runtime selection digest (sha256)
+        required: true
+        type: string
+      operation_grant_ref:
+        description: Independent current authorization for this case/run/attempt
+        required: true
+        type: string
+
+permissions: {}
+
+concurrency:
+  group: protected-runtime-qualification
+  cancel-in-progress: false
+
+jobs:
+  invoke:
+    # This reference resolves at the exact caller commit and supplies the
+    # reusable-workflow claim binding. No expression/floating external ref.
+    uses: ./.github/workflows/protected-runtime-qualification-run.yml
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      accepted_commit: ${{ inputs.accepted_commit }}
+      config_digest: ${{ inputs.config_digest }}
+      operation_grant_ref: ${{ inputs.operation_grant_ref }}

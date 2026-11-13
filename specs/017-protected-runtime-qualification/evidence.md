@@ -874,3 +874,142 @@ and all five owned focused/full/native roots; reviewer roots were independently
 removed too. This final receipt-only commit changes no tested code/tests/workflow.
 Source/fixture scope and all later operational/human gates remain unchanged.
 Feedback stays deferred; neither historical blocked write was replayed.
+
+## T012 source commissioning — 2026-11-13
+
+Brett ratified #58 at `4916476364f79568bc09a14c41d44f4d1c474cdc` for source
+acceptance only and commissioned T012 in isolation. All runnable checks passed,
+with no unresolved review threads. The exact head merged normally as
+`a3867ed906f4da505a0b14d8643fde1dded2d1bf`, tree
+`fe072c6146d9412e1891578ff27a06c233f7618f`, matching the ratified tree.
+No admin bypass was needed; no main-triggered CI result is inferred.
+
+The candidate prepares a manual caller and same-commit local reusable workflow,
+job-scoped permissions, immutable checkout/action pins and independent admission
+before environment selection. Readiness binds trusted source/configuration,
+actual existing environment protections, separate case/run/attempt operation
+authority, external scheduler registration/readback and active lease. It repeats
+after environment approval. The CLI blocks with production hosting unselected,
+before emitting environment/ready outputs or requesting any token. Qualify/cleanup
+remain explicit not-performed integration handoffs; no fixture fallback can pass
+live qualification. A future cleanup client must preserve independent T009 authority
+after proof expiry/hard runner death. No workflow dispatch or provider setup occurs.
+
+Source validation uses actionlint and isolated readback/CLI/YAML tests; full gate,
+expert review and exact-head hosted evidence follow. No new neutral contract, pin,
+release or consumer lock is supplied. Feedback stays deferred; neither historical
+blocked write was replayed.
+
+### T012 local expert and static review
+
+All nine expert roles completed with no actionable findings. QA independently
+ran the original 79 cases and the final **80-case** suite, zero skips. Security
+verified the actual CLI/context/OIDC/environment guards; reliability exercised
+clock regression, expiry, plan rotation and lease revocation. Reviewers removed
+and verified their owned temporary roots. Standalone analysis found one regex
+convention issue; it is corrected with `\d` plus explicit ASCII mode, preserving
+numeric identity semantics. A new Unicode-digit refusal regression verifies no
+widening. No rule, threshold or expectation was waived. Both workflows pass
+`actionlint`; final ordered and native qualification follow at fixed source.
+
+### T012 qualification fixture correction
+
+The first complete run at `458b2f2fa7c12042b42a0b29589196e25cdd7043`
+reported one existing custody integration failure (`service-unavailable`) and
+1,264 passes. The required native matrix passed 963 cases, three focused repeats
+passed, and a fresh unchanged-source ordered run passed all 1,265 plus the other
+gates. The initial failure remains retained rather than counted as a pass.
+
+Investigation then deterministically reproduced a readiness publication race in
+the owned test fixture: direct `Path.write_text` exposes an empty ready file before
+the port is written; a waiting consumer can select HTTPS's default 443 rather than
+the fixture's ephemeral port. A private delayed-writer wrapper reproduced the
+same failure mode on the actual owning-proof case. Delayed atomic publication
+passed. Port-443 connections were intercepted locally in the diagnostic, so no
+unrelated listener was contacted. This proves the fixture defect/failure mode;
+the original failed attempt did not retain its endpoint/cause detail.
+
+As a bounded validation amendment, the fixture now publishes the complete ready
+port via sibling staging plus atomic replacement, removing failed staging. Two
+tracked paused-writer/failure regressions fail against original direct publication
+and pass against the correction. All 61 custody cases pass. Reliability independently
+passed both regressions and the formerly failing owning-proof case; QA independently
+confirmed deterministic red/green. Existing TLS, service-positive check, valid-preimage
+denial, readiness deadlines and cleanup assertions remain unchanged. No retry,
+relaxed timeout, neutral API or production behavior is introduced. Standalone
+analysis of both touched test files reports zero issues. Fresh complete/native
+qualification follows at the amended source.
+
+### Final T012 source verification and cleanup
+
+Source/tests and HEAD stayed fixed at `90a4f90d89b3760e542176b9dc3d492f69063be6`
+through the final complete ordered sequence: **1,267 tests passed**, zero failures,
+errors or skips, including **80 T012 workflow tests** and both fixture publication
+regressions. Both pin verifiers, syntax, plain/strict validation and all five
+canonical pinned OpenSpec items passed. Full JUnit SHA-256:
+`9a049f67dd52dc2c641569c9ab9b60d66b16010127b583843fd7ad7b47f13ca2`.
+
+The fresh native network-none unprivileged matrix passed **965 tests**, zero
+failures/errors/skips, including 22 R01 and 8 G03 anchored cases. JUnit SHA-256:
+`ad143b9f5f5e19cd3d327e112eea1288947fa71d4c0761ef1b3d213fcb49c6c7`.
+The explicitly selected owning source stayed clean at
+`bb0e9dae89a771b05f6c235d0a77237288b95c85`; neutral pins are unchanged.
+Source/projects were read-only in the private container; only the owned evidence
+tree was writable, with no provider/profile/SSH/Docker-socket mounts supplied.
+Both prepared workflow files pass actionlint. Standalone analysis reports zero
+issues in all changed Python files. No rule, threshold or expectation was waived.
+
+All nine expert roles completed. QA verified all 80 workflow cases; security and
+reliability independently exercised their boundary cases. Both QA and reliability
+independently verified the fixture publication correction, including deterministic
+red/green and the original owning-proof case. The original failed complete run,
+focused repetitions and pre-amendment passing complete/native runs remain retained.
+
+Independent readback accounted for **55 recorded worker generations**: 33 ordinary
+PID/start-time identities were absent; private namespaces holding the other 22
+were gone with both owned disposable containers. No attributable helper remained.
+All eight owned focused/reproduction/full/native roots were removed and absence
+verified. Reviewers removed and verified their own roots. Logs/XML remain outside
+source. This receipt-only follow-up changes no tested code/tests/workflow.
+
+Only workflow preparation is supplied. Production hosting remains unselected;
+actual CLI phases block before outputs/OIDC, and live qualify/cleanup integration
+and protected receipt promotion remain T013/T014 source/operational gates. No
+protected workflow dispatch, environment/credential setup, consumer lock, human
+approval or domain effect is performed. Feedback stays deferred; neither historical
+blocked write was replayed. Hosted CI/review is checked at the published head.
+
+### Hosted T012 fixture-access correction
+
+The first candidate's hosted Sonar gate passed, but explicit issue readback found
+one test-only S8993 fixture-access finding not reported by standalone analysis.
+The lease-revocation test now uses the same lease fixture already prepared by
+`w`, rather than a second dynamic lookup. Required late construction remains
+inside the fixture after configuration preparation, preserving setup order.
+No runtime code, assertion, collected identity, rule or threshold changes.
+Fresh complete/native checks qualify this corrected test source below.
+
+### Corrected T012 final verification
+
+The complete ordered sequence ran again with source/tests and HEAD fixed at
+`14ea254b1ec856f209c6fdc7463c8be02275489e`: **1,267 passed**, zero failures,
+errors or skips, plus all pin/syntax/plain+strict/pinned OpenSpec gates. JUnit:
+`e66da8d06f357b35ae00e04383a2346128bf726577889352582441ce0ffd7668`.
+The fresh native offline matrix passed **965**, zero failures/errors/skips. JUnit:
+`80f14762efa33755563be1c2b1795ab62076ced6e9f6673ce6aff88601fd33a0`.
+
+QA independently passed all 80 workflow cases, verified the stored lease fixture
+is the same cached object as before, and matched the exact unchanged collected
+node fingerprint. Standalone analysis of the corrected test file reports zero
+issues. Fresh hosted quality/issue readback follows at the updated PR head.
+No rule, threshold or expectation was removed or waived.
+
+Another 22 recorded worker generations were accounted for (11 ordinary, 11 in the
+removed private namespace), and no attributable helper remained. Both new owned
+fixture roots were removed and absence verified. Across the retained T012 records,
+cleanup now accounts for **77 generations**, all three disposable containers and
+all ten owned focused/reproduction/full/native roots. Reviewers removed and verified
+their own roots too. This receipt-only follow-up changes no tested code/tests/YAML.
+The source-preparation boundary and later T013/T014 operational/human gates stay
+unchanged; no protected dispatch or setup occurred. Feedback stays deferred;
+neither historical blocked write was replayed.

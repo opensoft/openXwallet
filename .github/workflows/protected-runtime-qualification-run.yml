@@ -1,0 +1,78 @@
+name: protected-runtime-qualification-run
+on:
+  workflow_call:
+    inputs:
+      accepted_commit:
+        required: true
+        type: string
+      config_digest:
+        required: true
+        type: string
+      operation_grant_ref:
+        required: true
+        type: string
+
+permissions: {}
+
+env:
+  OPENXWALLET_ACCEPTED_COMMIT: ${{ inputs.accepted_commit }}
+  OPENXWALLET_CONFIG_DIGEST: ${{ inputs.config_digest }}
+  OPENXWALLET_OPERATION_GRANT_REF: ${{ inputs.operation_grant_ref }}
+
+jobs:
+  admission:
+    if: ${{ github.repository == 'opensoft/openXwallet' && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && github.workflow_ref == 'opensoft/openXwallet/.github/workflows/protected-runtime-qualification.yml@refs/heads/main' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      ready: ${{ steps.admit.outputs.ready }}
+      environment: ${{ steps.admit.outputs.environment }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+          submodules: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+      - name: Install reviewed wheel closure
+        run: |
+          pip install --only-binary :all: --require-hashes -r requirements-workload-binding.lock
+      - name: Require accepted source and independent operational admission
+        id: admit
+        run: python3 -I -B scripts/prepare-protected-runtime.py --phase preflight
+
+  protected-qualification:
+    needs: admission
+    if: ${{ needs.admission.result == 'success' && needs.admission.outputs.ready == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment:
+      name: ${{ needs.admission.outputs.environment }}
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.workflow_sha }}
+          persist-credentials: false
+          submodules: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+      - name: Install reviewed wheel closure
+        run: |
+          pip install --only-binary :all: --require-hashes -r requirements-workload-binding.lock
+      - name: Repeat fresh admission after protected-environment approval
+        run: python3 -I -B scripts/prepare-protected-runtime.py --phase preflight
+      - name: Require separately reviewed live hosting and machine evidence
+        run: python3 -I -B scripts/prepare-protected-runtime.py --phase qualify
+      - name: Require independent cleanup and readback
+        if: ${{ always() }}
+        run: python3 -I -B scripts/prepare-protected-runtime.py --phase cleanup
+      # No raw logs/JWT/provider bodies are uploaded. An independent external
+      # janitor is mandatory: this step cannot run after runner hard death.

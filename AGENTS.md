@@ -34,7 +34,11 @@ ownership, validation, versioning, and release constraints.
   for source acceptance only and commissioned T011 in isolation. Internal
   evidence.py emits bounded canonical source/fixture reports with fixed errors,
   exact source/case/readback/cleanup digests and no raw sensitive payload.
-  Protected-machine receipt scope remains unsupported in this slice.
+  Protected-machine receipt scope remains unsupported in this slice. Brett ratified
+  #58 at 4916476364f7 for source acceptance only and commissioned T012 in
+  isolation. Manual protected workflow preparation uses an exact caller/local
+  reusable commit, independent pre-environment admission and narrow OIDC.
+  Production hosting stays unselected; no setup/dispatch is authorized.
   Deployed supervisor, custody, state, lifecycle and operation stay
   separately gated. The factory owns the grammar.
   Existing offline entrypoints stay unchanged.

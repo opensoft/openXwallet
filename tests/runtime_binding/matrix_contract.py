@@ -8,11 +8,12 @@ ROOTS = ("tests/runtime_binding", "tests/factory_binding/test_binding.py",
          "tests/factory_binding/test_owner_integration.py")
 
 MODULE_COUNTS = {
+    "tests/runtime_binding/test_workflow.py": 80,
     "tests/runtime_binding/test_evidence.py": 89,
     "tests/runtime_binding/test_conformance.py": 52,
     "tests/runtime_binding/test_authenticated_loaders.py": 5,
     "tests/runtime_binding/test_config.py": 158,
-    "tests/runtime_binding/test_custody.py": 59,
+    "tests/runtime_binding/test_custody.py": 61,
     "tests/runtime_binding/test_https.py": 15,
     "tests/runtime_binding/test_issuer.py": 71,
     "tests/runtime_binding/test_issuer_edges.py": 27,
@@ -35,7 +36,7 @@ MODULE_DIGESTS = {
     "tests/runtime_binding/test_authenticated_loaders.py": "48f8b019c9e9068f117b862e7906772263ed770f026f09af03506d07f7950062",
     "tests/runtime_binding/test_config.py": "d52b813f04a9136ec1a552024ce2472a8f1588c3d5775129b1f1bd5f0e539664",
     "tests/runtime_binding/test_conformance.py": "6be10aed156b24c48c5768ec65e8d83d5eff1084b296487370f2647e66bd82ad",
-    "tests/runtime_binding/test_custody.py": "72ecf5b699264a2a04e0ce92cb9b5ec90704eb5b547b5d53abb83e159e2f7984",
+    "tests/runtime_binding/test_custody.py": "fe8ace24f91702792d817fd8fb78795bd24974a8757ceeb5334ef7787560c9cd",
     "tests/runtime_binding/test_evidence.py": "35e3356dfcd2e14639ba303db63f4c7aea5bcebc52af15d83be6fbc28581abae",
     "tests/runtime_binding/test_https.py": "eda9d445ef7dbb03646859c3b24730d4a3e73fdd6147dfc309cdeb642194eecc",
     "tests/runtime_binding/test_issuer.py": "2594640b2c901ea179056e56c12f80c18e3ed24349eebdc3335b46e5d020b47c",
@@ -46,7 +47,8 @@ MODULE_DIGESTS = {
     "tests/runtime_binding/test_runtime.py": "652345a0b8b1d5e723b17c28063e15305c414720d39c7de600c22b5d0fe9bff5",
     "tests/runtime_binding/test_state.py": "746329082b578bfae519a26892c41de7e55f4a7c95c1a5e7b2af6c26eab8e835",
     "tests/runtime_binding/test_supervisor.py": "f3e5eccb6b1d4de48286c3446f859058eda6647a6f6be01516134f588db4859b",
-    "tests/runtime_binding/test_supervisor_access.py": "0ec77ec5bfd0f55682659a5e7f68b0526e7d0d2470b084095eea205898abd03e"
+    "tests/runtime_binding/test_supervisor_access.py": "0ec77ec5bfd0f55682659a5e7f68b0526e7d0d2470b084095eea205898abd03e",
+    "tests/runtime_binding/test_workflow.py": "a35e83502984fcd8b3f4231434aaeb70b409391394dd9f340d47a8bf0644d2a6"
 }
 
 
@@ -76,7 +78,8 @@ CASES = {
                   "actual_worker_configuration_binding_cannot_be_self_reported", "owning_proof_verifier_accepts_measured_supervised_result")
            + _nodes("test_supervisor_access", "worker_valid_observation_request_is_denied",
                     "denial_probe_detects_excess_worker_permission", "outage_does_not_count_as_worker_denial"),
-    "G03": _nodes("test_custody", "owning_proof_worker_valid_preimage_denial_and_cleanup",
+    "G03": _nodes("test_custody", "ready_port_is_not_visible_until_publication_is_complete",
+                  "failed_port_publication_never_exposes_readiness", "owning_proof_worker_valid_preimage_denial_and_cleanup",
                   "excess_worker_permission_mutation_breaks_denial_probe", "custody_outage_does_not_pass_worker_denial_probe")
            + ("tests/factory_binding/test_owner_integration.py::test_owning_custody_and_cleanup",),
     "S01": _nodes("test_state", "runtime_never_creates_missing_store", "runtime_never_recreates_removed_database",
@@ -86,7 +89,9 @@ CASES = {
                   "independent_expiry_cleanup_survives_runner_hard_exit", "missing_independent_reader_cannot_qualify_cleanup",
                   "success_acknowledgement_without_actual_file_removal_fails_independent_audit",
                   "actual_replacement_generation_is_preserved_and_fails_cleanup"),
-    "R01": _nodes("test_evidence", "source_report_is_canonical_bound_and_never_machine_or_human_authority",
+    "R01": _nodes("test_workflow", "actual_cli_blocks_before_outputs_oidc_or_live_operations",
+                   "production_host_is_unselected_and_has_no_environment_activation_switch")
+           + _nodes("test_evidence", "source_report_is_canonical_bound_and_never_machine_or_human_authority",
                    "redaction_uses_closed_projection_even_for_secret_shaped_metadata",
                    "fixed_errors_never_interpolate_exception_payload_or_traceback",
                    "verified_cleanup_receipt_binds_plan_attempt_and_independent_readback",

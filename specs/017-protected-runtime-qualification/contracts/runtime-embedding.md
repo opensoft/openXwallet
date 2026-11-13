@@ -336,3 +336,60 @@ protected-machine promotion refuses until separately reviewed operational hostin
 Missing case/cleanup evidence prevents pass, wrong bindings refuse, and every
 report explicitly withholds protected qualification, human/domain authority and
 consumer-lock claims. Neutral proof/custody/possession receipt contracts stay unchanged.
+
+## Isolated T012 workflow preparation
+
+The manual caller `protected-runtime-qualification.yml` invokes the local reusable
+`protected-runtime-qualification-run.yml` at the same GitHub-selected commit.
+This supplies the reusable-workflow claim boundary without a floating external
+ref. Both files default to no permissions; the call delegates only contents-read
+and OIDC, admission removes OIDC, and only the admitted environment-bound job has
+`id-token: write`. Caller/repository/event/main-ref restrictions apply before
+checkout. Action implementations use full commit pins, source checkout uses
+`github.workflow_sha`, checkout credentials are not persisted, dependencies use
+the reviewed wheel-only hash lock, and no secrets are inherited or uploaded.
+
+`workflow.admit` is an internal trusted-host readiness library. `WorkflowContext`
+contains trusted platform/actual checkout metadata plus dispatch expectations;
+those expectations are not authority. `WorkflowBindings` supplies independently
+accepted source identity, `RuntimeTrust`, current config and authenticated bounded
+readers for environment protection, operation authorization and scheduler
+registration, plus the selected `RunLifecycle`. Each reader enforces its epoch
+I/O deadline and returns a fresh actual snapshot, never an echo of expected data.
+Readback identities must be selected outside worker input. These Python types
+do not authenticate a provider or establish administrative independence.
+
+Admission requires the accepted/current caller/reusable/adapter commits and exact
+run/attempt to agree with approved runtime selection. The environment must already
+exist with the exact selected repository/environment IDs, reviewers, prevented
+self-review, disabled admin bypass and deployment restrictions. The separate
+operation grant binds source/config/case/run/attempt and permits only qualification
+of existing resources. Source acceptance and a dispatch handle cannot create this
+grant. Scheduler readiness binds the registered run plan, cleanup reference and
+independent readback identity, and the active lease is rechecked before admission
+returns. Freshness/deadlines/clock floors compose without extension. Rotating the
+bound plan/readback during admission refuses. Unsupported actual protection rules
+must be rejected by the selected environment reader, never silently projected away.
+
+Only successful admission emits the environment name. The protected job requires
+both success and ready output, then repeats fresh admission after GitHub approval.
+An existence check is not atomic protection against an administrator deleting or
+changing an environment between checks. Deployed administration and per-use actual
+protection readback remain mandatory T013/T014 facts. Neither environment approval
+nor a signed environment claim alone proves the rest of the machine boundary.
+
+The production `operational_bindings` factory is intentionally unselected. No JSON,
+variable, worker body, plugin path or approval boolean enables it. The real CLI
+therefore blocks before environment outputs or any OIDC request. Qualify and
+cleanup phases are explicit not-performed handoffs; they cannot substitute the
+offline suite or a source/fixture report for live machine qualification. Concrete
+service clients and any protected receipt promotion require separate T013/T014
+source/operational review before activation. This completes workflow preparation,
+not deployed hosting or T014 execution.
+
+The always-run cleanup step cannot survive runner death or guarantee availability
+after workflow cancellation. The externally administered durable janitor/scheduler
+and independent readback must already be selected and registered. A future cleanup
+client must use its approved fixed plan and cleanup authority without requiring
+an unexpired proof configuration or token, preserving the T009 boundary. No cleanup
+write, credential request, environment setup or workflow dispatch is performed here.
