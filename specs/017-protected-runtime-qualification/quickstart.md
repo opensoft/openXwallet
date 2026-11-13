@@ -90,6 +90,15 @@ owned temporary tree. Current observations are in [evidence.md](evidence.md).
 
 ## Future Protected Machine Sequence
 
+T007's isolated source tests are in `test_custody.py`. Trusted hosting binds
+`ConfinedCustody.service` into `RuntimeBridge` with actual protected owning TLS
+material and independent issuance/deployment readback, as described in the
+[embedding interface](contracts/runtime-embedding.md). No worker endpoint,
+credential, assertion or claimed confinement boolean is accepted. These tests
+exercise actual owning mTLS, owning proof verification and a separate worker's
+valid-preimage refusal, plus excess-permission/outage probes and cleanup.
+They supply no production readback client, credential issuer or live command.
+
 T006's isolated tests are `test_supervisor.py` and `test_supervisor_access.py`.
 They launch a disposable Linux Python worker, capture its actual process
 generation through the trusted controller, measure current proc/files/config,

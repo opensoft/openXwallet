@@ -437,3 +437,34 @@ OpenSpec items. JUnit SHA-256:
 No attributable process remained, and the follow-up key/state/temp root was
 removed with absence verified. The receipt-only update preserves these tested
 source/tests. Fresh hosted acceptance remains separate from the local receipt.
+
+## T007 source commissioning — 2026-11-13
+
+Brett ratified adapter #53 at `aff5b1e14979` for source acceptance only,
+directed landing when green and commissioned isolated T007 implementation/tests.
+The exact ratified head passed all runnable checks with no unresolved review
+threads, then merged normally as `9fbff0266b31a7845499b6fdbd7f350009325e70`,
+tree `41422c76c3cd8caac6997f87cf831a9cea2a45a6`, equal to its ratified tree.
+No administrative approval override was needed. The adapter has no main-triggered
+workflows; a separate post-merge CI result is not inferred.
+
+`ConfinedCustody` joins protected actual TLS material and the selected owning
+client/signer to fresh authenticated deployment/issuance capability readback.
+It enforces exact approved configuration/sources/case/run, service, certificate,
+endpoint and sign-only subject/key/custody scope with monotonic per-use deadlines.
+The existing neutral API, offline entrypoints, proof semantics and pins remain.
+New custody-side assertions refuse for an upstream owner decision.
+
+The focused isolated matrix passes **57 tests**. A real owning mTLS service
+accepts one gated proof verified by its owning verifier. A separate worker process
+using a resolve-only credential is explicitly denied the exact valid canonical
+preimage captured from that proof. An excess-worker-sign-permission mutation
+breaks the probe, and an outage cannot count as denial. Success/injected-failure
+paths reap processes and remove their disposable custody key/state directory.
+
+These are isolated source results. The deployment/issuance readback is a trusted
+fixture, not a real provider control-plane integration. Same-user fixtures cannot
+prove OS key secrecy, independently administered deployment, immutable sources,
+actual image/dependency selection or network confinement. Live G03/P01, T008–T015
+and consumer runtime/human acceptance remain pending. Feedback stays deferred;
+neither historical blocked write is replayed. No protected setup/dispatch occurs.
