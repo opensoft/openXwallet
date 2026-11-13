@@ -507,3 +507,23 @@ receipt follow-up changes no production code or tests. Fresh hosted CI, Sonar
 and Codex response are separate checks at the published candidate head.
 Deployed machine/human acceptance stays pending; feedback remains deferred and
 neither historical blocked write was replayed.
+
+### T007 hosted assertion follow-up
+
+The first published T007 head passed all runnable hosted checks and its Sonar
+quality gate. Hosted Sonar retained one S9073 test-clarity finding for a composite
+assertion. It is split into two assertions; production code is unchanged. No
+issue, rule or quality threshold is waived.
+
+The complete local sequence at `2a974736dd122a57e5a48cedea4c693ecd6b114d`
+again passes **937 tests**, zero failures/errors/skips, both pin verifiers,
+syntax, plain/strict validation and all five canonical pinned OpenSpec items.
+JUnit SHA-256:
+`f05f7b599f8836b4c5f8d1748daafad965c85c50acad53248eca0e283546ea84`.
+No attributable fixture process remained; the follow-up PKI/key/state temporary
+root was removed and absence verified. This receipt follow-up changes no code/tests.
+Fresh hosted acceptance is checked at the updated PR head separately.
+
+GitHub Codex refused the initial manual request because the account review limit
+was reached. No bot approval is inferred; the nine-role local panel and independent
+deadline-fix checks are separate evidence. Machine/human acceptance remains pending.
