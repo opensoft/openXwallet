@@ -1,8 +1,8 @@
 # Tasks: Protected Machine Runtime Qualification
 
-Status: sole executable implementation list; T002–T007 landed; isolated T008 candidate
-Commission: 2026-11-13 source ratification of #54 at 8de227dadd53 and explicit
-isolated T008 commissioning. Operation stays separate. See [evidence](evidence.md).
+Status: sole executable implementation list; T002–T008 landed; isolated T009 candidate
+Commission: 2026-11-13 source ratification of #55 at caef11d92906 and explicit
+isolated T009 commissioning. Operation stays separate. See [evidence](evidence.md).
 
 ## Owner Gate
 
@@ -34,7 +34,7 @@ Independent acceptance: one bounded owning proof; no approval/apply operation.
 
 ## US3 — Qualification and Handoff
 
-- [ ] T009 [O] Implement run leases/finalizer and independent cleanup/readback; files: scripts/workload_factory_binding_runtime/lifecycle.py, tests/runtime_binding/test_lifecycle.py; verify: L01 success/failure/cancel; missing readback fails; shared resources remain.
+- [x] T009 [O] Implement run leases/finalizer and independent cleanup/readback; files: scripts/workload_factory_binding_runtime/lifecycle.py, tests/runtime_binding/test_lifecycle.py, tests/runtime_binding/test_lifecycle_process.py; verify: L01 success/failure/cancel; missing readback fails; shared resources remain. Isolated source candidate with actual independent janitor/readback processes, scoped generation/ownership checks, hard-runner-exit expiry cleanup and preserved replay/shared resources. Deployed registration, scheduler, administrative isolation and provider cleanup/readback qualification remain separate.
 - [ ] T010 [S] Wire substantive offline matrix and selected owning-source integration into conformance; files: tests/runtime_binding/**, .github/workflows/pytest-suite.yml; verify: required I/G/S/L/R cases collect with zero failures/errors/skips and no public issuer/provider credential use.
 - [ ] T011 [O] Add safe errors, redacted scoped receipts and operator runbook; files: scripts/workload_factory_binding_runtime/evidence.py, specs/017-protected-runtime-qualification/quickstart.md, tests/runtime_binding/test_evidence.py; verify: R01 exact sources/case/results/cleanup with no raw sensitive material.
 - [ ] T012 [O] Prepare protected qualification workflow after source acceptance; files: .github/workflows/protected-runtime-qualification.yml; verify: accepted immutable sources, protected environment, narrow OIDC permissions, trusted configuration, independent cleanup and manual dispatch. Workflow creation authorizes no setup/dispatch.

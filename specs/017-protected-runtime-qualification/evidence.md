@@ -508,6 +508,39 @@ and Codex response are separate checks at the published candidate head.
 Deployed machine/human acceptance stays pending; feedback remains deferred and
 neither historical blocked write was replayed.
 
+## T009 source commissioning — 2026-11-13
+
+Brett ratified adapter #55 at `caef11d92906` for source acceptance only,
+directed landing when green and commissioned isolated T009 implementation/tests.
+The exact head passed all runnable checks with no unresolved review threads and
+merged normally as `46c83b1bd10a742ddd9b7d68459d8ea2ba13c949`, tree
+`9f417f60768ced57fd829e1502b06083458f69de`, equal to the ratified tree.
+No administrative approval override was needed. The adapter has no main-triggered
+workflows; no separate post-merge CI result is inferred.
+
+`RunLifecycle` binds the fixed run scope, lease and resource manifest and exchanges
+deadline/clock checkpoints with the trusted bridge. The one-shot runner finalizes
+success, failure and cancellation and returns an operation value only after fresh
+independent cleanup verification. `RunJanitor` closes leases and conditionally
+cleans only exact run-owned generations, with retained replay/shared assets excluded.
+Its separately scheduled expiry sweep needs no runner finally or live proof config.
+
+The focused isolated matrix passes **46 tests**. Separate janitor/readback processes
+use bounded JSON over host-selected pipe capabilities, with peer identity outside
+the request. Actual worker processes are stopped/reaped, fixture credentials revoked
+and run files removed; replay state and shared sentinels remain. An owning proof
+verifies, including success/failure/cancellation after signing. Hard runner death,
+expiry cleanup, forged peer denial, missing reader, acknowledgement-without-removal
+and replacement generation are exercised. Cleanup readback includes a fresh random
+attempt reference so a prior positive observation cannot satisfy a new attempt.
+
+The fixture registrations, controlled clock and same-user processes establish only
+isolated behavior. Provider registration durability/conditional operations, actual
+independent scheduling/admin/readback, retention, OS isolation and deployed L01/P01
+remain unqualified. No provider setup, protected dispatch, release, consumer pin or
+human approval is supplied. Feedback stays deferred; neither historical blocked
+write is replayed.
+
 ### T007 hosted assertion follow-up
 
 The first published T007 head passed all runnable hosted checks and its Sonar

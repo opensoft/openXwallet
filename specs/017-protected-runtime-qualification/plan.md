@@ -2,7 +2,7 @@
 
 **Branch**: `017-protected-runtime-qualification` | **Date**: 2026-11-12
 **Spec**: [spec.md](spec.md)
-**State**: T002–T007 source landed; isolated T008 source candidate
+**State**: T002–T008 source landed; isolated T009 source candidate
 **Factory governance**: `opensoft/openXfactory`, `openspec/changes/prepare-protected-runtime-qualification/`.
 
 ## Summary
@@ -45,6 +45,14 @@ authenticated scope/recovery readback. Runtime uses SQLite `mode=rw`, the existi
 schema and reservation-before-signing semantics. It neither creates nor restores
 state. Deployed storage protection, retention/recovery administration and lifecycle
 qualification remain separate.
+
+Brett ratified adapter #55 at `caef11d92906` for source acceptance only and
+commissioned T009 in isolation. `RunLifecycle` binds a fixed run lease/manifest,
+guards proof uses and returns the trusted operation's value only after independent
+cleanup verification. `RunJanitor` operates over protected registrations and exact
+provider ownership/generation, preserving retained/shared resources. A separately
+scheduled expiry sweep works without runner finally. Actual provider registration,
+independent scheduler/admin/readback hosting and live acceptance remain later gates.
 
 ## Technical Context
 
