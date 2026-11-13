@@ -988,3 +988,28 @@ The lease-revocation test now uses the same lease fixture already prepared by
 inside the fixture after configuration preparation, preserving setup order.
 No runtime code, assertion, collected identity, rule or threshold changes.
 Fresh complete/native checks qualify this corrected test source below.
+
+### Corrected T012 final verification
+
+The complete ordered sequence ran again with source/tests and HEAD fixed at
+`14ea254b1ec856f209c6fdc7463c8be02275489e`: **1,267 passed**, zero failures,
+errors or skips, plus all pin/syntax/plain+strict/pinned OpenSpec gates. JUnit:
+`e66da8d06f357b35ae00e04383a2346128bf726577889352582441ce0ffd7668`.
+The fresh native offline matrix passed **965**, zero failures/errors/skips. JUnit:
+`80f14762efa33755563be1c2b1795ab62076ced6e9f6673ce6aff88601fd33a0`.
+
+QA independently passed all 80 workflow cases, verified the stored lease fixture
+is the same cached object as before, and matched the exact unchanged collected
+node fingerprint. Standalone analysis of the corrected test file reports zero
+issues. Fresh hosted quality/issue readback follows at the updated PR head.
+No rule, threshold or expectation was removed or waived.
+
+Another 22 recorded worker generations were accounted for (11 ordinary, 11 in the
+removed private namespace), and no attributable helper remained. Both new owned
+fixture roots were removed and absence verified. Across the retained T012 records,
+cleanup now accounts for **77 generations**, all three disposable containers and
+all ten owned focused/reproduction/full/native roots. Reviewers removed and verified
+their own roots too. This receipt-only follow-up changes no tested code/tests/YAML.
+The source-preparation boundary and later T013/T014 operational/human gates stay
+unchanged; no protected dispatch or setup occurred. Feedback stays deferred;
+neither historical blocked write was replayed.
