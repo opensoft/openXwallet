@@ -13,6 +13,16 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
 from workload_factory_binding.evidence import artifact_digest, canonical, decode_object, observe_artifacts
 
 
+def publish_ready(path, port):
+    """Expose the complete port atomically, never a newly opened empty file."""
+    staging = path.with_name(path.name + ".pending")
+    try:
+        staging.write_text(str(port))
+        staging.replace(path)
+    finally:
+        staging.unlink(missing_ok=True)
+
+
 def worker_configuration(worker):
     """Measure actual source selection and public transport/binding configuration."""
     if set(worker) != {"owner_code", "endpoint", "ca_file", "certificate", "private_key",
@@ -103,7 +113,7 @@ def main():
         context = server_context(ca_file=config["ca_file"], certificate=config["certificate"],
                                  private_key=config["private_key"])
         with ReferenceServer(("127.0.0.1", 0), context=context, application=app) as server:
-            Path(config["ready"]).write_text(str(server.server_port))
+            publish_ready(Path(config["ready"]), server.server_port)
             server.serve_forever()
         return
     # The worker gets only its resolve-only transport credential and public binding.

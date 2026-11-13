@@ -280,6 +280,43 @@ def _stop(process):
             stream.close()
 
 
+def test_ready_port_is_not_visible_until_publication_is_complete(tmp_path, monkeypatch):
+    from concurrent.futures import ThreadPoolExecutor
+    from threading import Event
+    from factory_binding.fixture_role import publish_ready
+    opened, release = Event(), Event()
+    ready = tmp_path / "ready"
+    def delayed_write(path, text):
+        with path.open("w") as stream:
+            opened.set()
+            assert release.wait(3)
+            stream.write(text)
+    monkeypatch.setattr(Path, "write_text", delayed_write)
+    with ThreadPoolExecutor(max_workers=1) as pool:
+        future = pool.submit(publish_ready, ready, 34567)
+        try:
+            assert opened.wait(3)
+            assert not ready.exists()
+        finally:
+            release.set()
+        future.result(timeout=3)
+    assert ready.read_text() == "34567"
+    assert not ready.with_name("ready.pending").exists()
+
+
+def test_failed_port_publication_never_exposes_readiness(tmp_path, monkeypatch):
+    from factory_binding.fixture_role import publish_ready
+    ready = tmp_path / "ready"
+    def failed_write(path, _text):
+        with path.open("w"):
+            raise OSError("injected-publication-failure")
+    monkeypatch.setattr(Path, "write_text", failed_write)
+    with pytest.raises(OSError, match="^injected-publication-failure$"):
+        publish_ready(ready, 34567)
+    assert not ready.exists()
+    assert not ready.with_name("ready.pending").exists()
+
+
 def _owning_run(k, directory, *, allow_worker_sign=False, fail_after_proof=False):
     owner = owner_source()
     from openwallet_runtime.custody import RemoteRegistry, RemoteSigner, TLSClient

@@ -13,7 +13,7 @@ MODULE_COUNTS = {
     "tests/runtime_binding/test_conformance.py": 52,
     "tests/runtime_binding/test_authenticated_loaders.py": 5,
     "tests/runtime_binding/test_config.py": 158,
-    "tests/runtime_binding/test_custody.py": 59,
+    "tests/runtime_binding/test_custody.py": 61,
     "tests/runtime_binding/test_https.py": 15,
     "tests/runtime_binding/test_issuer.py": 71,
     "tests/runtime_binding/test_issuer_edges.py": 27,
@@ -36,7 +36,7 @@ MODULE_DIGESTS = {
     "tests/runtime_binding/test_authenticated_loaders.py": "48f8b019c9e9068f117b862e7906772263ed770f026f09af03506d07f7950062",
     "tests/runtime_binding/test_config.py": "d52b813f04a9136ec1a552024ce2472a8f1588c3d5775129b1f1bd5f0e539664",
     "tests/runtime_binding/test_conformance.py": "6be10aed156b24c48c5768ec65e8d83d5eff1084b296487370f2647e66bd82ad",
-    "tests/runtime_binding/test_custody.py": "72ecf5b699264a2a04e0ce92cb9b5ec90704eb5b547b5d53abb83e159e2f7984",
+    "tests/runtime_binding/test_custody.py": "fe8ace24f91702792d817fd8fb78795bd24974a8757ceeb5334ef7787560c9cd",
     "tests/runtime_binding/test_evidence.py": "35e3356dfcd2e14639ba303db63f4c7aea5bcebc52af15d83be6fbc28581abae",
     "tests/runtime_binding/test_https.py": "eda9d445ef7dbb03646859c3b24730d4a3e73fdd6147dfc309cdeb642194eecc",
     "tests/runtime_binding/test_issuer.py": "2594640b2c901ea179056e56c12f80c18e3ed24349eebdc3335b46e5d020b47c",
@@ -78,7 +78,8 @@ CASES = {
                   "actual_worker_configuration_binding_cannot_be_self_reported", "owning_proof_verifier_accepts_measured_supervised_result")
            + _nodes("test_supervisor_access", "worker_valid_observation_request_is_denied",
                     "denial_probe_detects_excess_worker_permission", "outage_does_not_count_as_worker_denial"),
-    "G03": _nodes("test_custody", "owning_proof_worker_valid_preimage_denial_and_cleanup",
+    "G03": _nodes("test_custody", "ready_port_is_not_visible_until_publication_is_complete",
+                  "failed_port_publication_never_exposes_readiness", "owning_proof_worker_valid_preimage_denial_and_cleanup",
                   "excess_worker_permission_mutation_breaks_denial_probe", "custody_outage_does_not_pass_worker_denial_probe")
            + ("tests/factory_binding/test_owner_integration.py::test_owning_custody_and_cleanup",),
     "S01": _nodes("test_state", "runtime_never_creates_missing_store", "runtime_never_recreates_removed_database",

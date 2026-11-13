@@ -911,3 +911,31 @@ convention issue; it is corrected with `\d` plus explicit ASCII mode, preserving
 numeric identity semantics. A new Unicode-digit refusal regression verifies no
 widening. No rule, threshold or expectation was waived. Both workflows pass
 `actionlint`; final ordered and native qualification follow at fixed source.
+
+### T012 qualification fixture correction
+
+The first complete run at `458b2f2fa7c12042b42a0b29589196e25cdd7043`
+reported one existing custody integration failure (`service-unavailable`) and
+1,264 passes. The required native matrix passed 963 cases, three focused repeats
+passed, and a fresh unchanged-source ordered run passed all 1,265 plus the other
+gates. The initial failure remains retained rather than counted as a pass.
+
+Investigation then deterministically reproduced a readiness publication race in
+the owned test fixture: direct `Path.write_text` exposes an empty ready file before
+the port is written; a waiting consumer can select HTTPS's default 443 rather than
+the fixture's ephemeral port. A private delayed-writer wrapper reproduced the
+same failure mode on the actual owning-proof case. Delayed atomic publication
+passed. Port-443 connections were intercepted locally in the diagnostic, so no
+unrelated listener was contacted. This proves the fixture defect/failure mode;
+the original failed attempt did not retain its endpoint/cause detail.
+
+As a bounded validation amendment, the fixture now publishes the complete ready
+port via sibling staging plus atomic replacement, removing failed staging. Two
+tracked paused-writer/failure regressions fail against original direct publication
+and pass against the correction. All 61 custody cases pass. Reliability independently
+passed both regressions and the formerly failing owning-proof case; QA independently
+confirmed deterministic red/green. Existing TLS, service-positive check, valid-preimage
+denial, readiness deadlines and cleanup assertions remain unchanged. No retry,
+relaxed timeout, neutral API or production behavior is introduced. Standalone
+analysis of both touched test files reports zero issues. Fresh complete/native
+qualification follows at the amended source.

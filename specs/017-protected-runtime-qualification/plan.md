@@ -148,3 +148,8 @@ and the existing reservations suit the selected trusted-gate model. Disable the
 opt-in bridge and revoke run-owned credentials/leases on rollback; retain consumed
 state and safe evidence. Do not reset replay state or move domain/neutral pins
 to manufacture qualification success.
+
+T012 validation amendment: an existing test fixture could publish an empty ready
+file before its port, racing the positive custody connection. The owned fixture
+now publishes atomically, with deterministic paused/failed publication regressions.
+No production API, gate expectation, readiness deadline or retry policy changes.
