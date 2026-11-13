@@ -105,7 +105,7 @@ authenticate the selected service and propagate the epoch deadline to the observ
 connectors, issuer source, observation key and `ProcessLaunch`. The authenticated
 server supplies `SupervisorPeer` outside the body. The protected gate allowlist
 must match the selected supervisor service's principal/credential pair and differ
-from the worker channel. Denied peers fail before protected configuration I/O.
+from the worker channel. Unexpected peer identities fail before protected configuration I/O.
 The observation key must match the policy's supervisor public key and differ from
 the wallet key. Only the existing domain-separated observation can be produced;
 there is no production key-export, generic-sign or policy-management operation.

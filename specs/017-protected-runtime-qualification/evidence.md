@@ -402,3 +402,21 @@ confirmed refusal with `supervisor-clock-unavailable`; the focused suite passes
 data-integrity and simplicity reviews found no additional actionable issue.
 Standalone analysis reports zero issues in both production modules and the
 RPC fixture with its test scope; hosted acceptance remains a separate readback.
+
+### Corrected T006 full verification and cleanup
+
+The complete sequence at `4ee4b97f94ed96fdfc0ee9c972a0824d76dfbabe` passes
+**878 tests**, including **57 new supervisor cases**, zero failures/errors/skips,
+both pin verifiers, syntax, plain/strict validators and all five canonical pinned
+OpenSpec items. Selected owning-source proof and transport integration are included.
+JUnit SHA-256:
+`2c643775534077c5b5a9c9281b4fec127c9f8612e20c0e09471138818c8ef777`.
+
+Independent process readback found no attributable worker/test/helper PID. All
+owned focused/red/full temporary roots, including PKI and state files, were
+removed after completion and absence verified. Logs/XML remain outside source.
+The receipt follow-up changes no production code or tests. Fresh hosted CI,
+Sonar and Codex review are assessed at the published candidate head separately.
+Same-user fixture success still grants no deployed OS/admin isolation, provider
+activation, human approval or domain effect. Feedback remains deferred; neither
+historical blocked write was replayed.
