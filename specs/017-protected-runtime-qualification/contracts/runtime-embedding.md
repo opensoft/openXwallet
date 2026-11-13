@@ -216,11 +216,14 @@ hot-journal recovery is normal transaction recovery, not backup restoration.
 WAL/SHM and unsupported modes refuse in this narrow existing-store profile.
 
 SQLite connections explicitly use `mode=rw`, so loss between metadata check and
-connect cannot create a file. Integrity work has a three-second progress budget;
-lock timeout is capped by three seconds and the current use deadline. Epoch
+connect cannot create a file. Integrity work and lock timeout are capped by three
+seconds and the remaining use budget; progress deadline is set before connecting. Epoch
 time is rechecked after blocking I/O and lock acquisition, before insert/commit
-and after reservation. `reserve_for_use` exchanges the earliest deadline with
-the bridge, and state preflight repeats through the final proof check. Ordinary
+and after reservation. State preflight and `reserve_for_use` exchange the earliest
+deadline and latest checked time with the bridge. Internal `StateUse` carries
+those two checkpoints; the child retains the parent's clock floor before I/O,
+and the parent retains the child's newest sample before sampling again. State
+preflight repeats through the final proof check. Ordinary
 reservation, uniqueness and reserve-before-sign semantics are unchanged.
 
 Durably committed reservations survive restart, process exit without a response,

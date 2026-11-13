@@ -561,3 +561,26 @@ retention/recovery enforcement, OS/admin isolation, lifecycle and live machine
 qualification remain pending. No protected setup/dispatch, consumer pin movement,
 release or human approval occurs. Feedback stays deferred and neither historical
 blocked write is replayed.
+
+### T008 review and bounded-integrity correction
+
+The complete initial ordered sequence at `818d7fe358922e13402eb97fd8511911048967ed`
+passes **986 tests**, zero failures/errors/skips, both pin verifiers, syntax,
+plain/strict validation and all five canonical pinned OpenSpec items. Local expert
+review found one P2: SQLite's progress handler retained a new three-second budget
+even when its caller supplied an earlier deadline. Post-I/O refusal prevented a
+proof after expiry, but integrity work could exceed the forwarded short budget.
+
+The focused regression reproduced continuation at 1.5 seconds with a one-second
+budget. The progress deadline now uses the earlier requested budget and is set
+before connection. The regression and complete **50-case** T008 matrix pass.
+Standalone static findings were corrected with a filename constant, explicit
+preflight transaction checks and exception-test setup outside assertions. No
+rule, issue status or gate threshold was waived.
+
+Reliability review also identified a P2 composed-clock gap: the state wrapper
+returned expiry without its newest clock checkpoint, so a later parent sample
+could regress relative to the child's observation. Both connected regressions
+failed before correction. `StateUse` now carries earliest expiry and latest
+checked time; the bridge forwards its clock floor inward and retains the child's
+newest sample on return. The focused T008 matrix now passes **52 cases**.

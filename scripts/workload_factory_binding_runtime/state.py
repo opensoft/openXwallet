@@ -18,6 +18,7 @@ from workload_factory_binding.ledger import ReplayLedger
 from .config import RuntimeTrust, validate_config
 
 _REFS = ("store_ref", "initialization_ref", "retention_ref", "recovery_ref")
+_DATABASE = "reservations.sqlite"
 
 
 @dataclass(frozen=True, repr=False)
@@ -67,6 +68,13 @@ class StateTrust:
     load_access: object
 
 
+@dataclass(frozen=True, repr=False)
+class StateUse:
+    """Internal bridge checkpoint; neither a receipt nor a public wire contract."""
+    valid_until: int
+    checked_at: int
+
+
 def _private(info, *, directory=False):
     require((stat.S_ISDIR(info.st_mode) if directory else stat.S_ISREG(info.st_mode))
             and info.st_uid == os.geteuid() and not stat.S_IMODE(info.st_mode) & 0o077
@@ -77,11 +85,11 @@ def _files(directory):
     try:
         folder = directory.lstat()
         _private(folder, directory=True)
-        database = (directory / "reservations.sqlite").lstat()
+        database = (directory / _DATABASE).lstat()
         _private(database)
         for suffix in ("-journal", "-wal", "-shm"):
             try:
-                sidecar = (directory / ("reservations.sqlite" + suffix)).lstat()
+                sidecar = (directory / (_DATABASE + suffix)).lstat()
             except FileNotFoundError:
                 continue
             _private(sidecar)
@@ -95,14 +103,14 @@ def _files(directory):
 def _open(directory, *, expected=None, timeout=3):
     identity = _files(directory)
     require(expected is None or identity == expected, "runtime-state-replaced")
+    budget = time.monotonic() + min(3, timeout)
     try:
         # mode=rw is essential: sqlite3's default silently creates absent files.
-        db = sqlite3.connect((directory / "reservations.sqlite").as_uri() + "?mode=rw",
+        db = sqlite3.connect((directory / _DATABASE).as_uri() + "?mode=rw",
                              uri=True, timeout=timeout, isolation_level=None)
     except sqlite3.Error:
         raise BindingError("runtime-state-unavailable") from None
     with closing(db):
-        budget = time.monotonic() + 3
         db.set_progress_handler(lambda: int(time.monotonic() >= budget), 1000)
         try:
             ReplayLedger._check_schema(db)
@@ -125,15 +133,16 @@ def inspect_initialized_state(directory):
     """
     directory = Path(directory).absolute()
     identity = _files(directory)
-    with _open(directory, expected=identity):
-        pass
+    with _open(directory, expected=identity) as db:
+        require(not db.in_transaction, "invalid-state-schema")
     require(_files(directory) == identity, "runtime-state-replaced")
     return identity
 
 
 class _Use:
-    def __init__(self, ledger, deadline=None):
-        self.ledger, self.deadline, self.last = ledger, deadline, None
+    def __init__(self, ledger, deadline=None, checked_at=None):
+        require(checked_at is None or integer(checked_at), "runtime-state-clock-unavailable")
+        self.ledger, self.deadline, self.last = ledger, deadline, checked_at
         self.check()
 
     def clock(self):
@@ -180,8 +189,8 @@ class _Use:
         self.deadline = min(self.deadline, access.expires_at)
         now = self.clock()
         with _open(self.ledger.directory, expected=trust.initialization,
-                   timeout=min(3, self.deadline - now)):
-            pass
+                   timeout=min(3, self.deadline - now)) as db:
+            require(not db.in_transaction, "invalid-state-schema")
         self.clock()
 
 
@@ -201,22 +210,23 @@ class InitializedLedger:
         self.load_config, self.runtime_trust, self.state_trust = load_config, runtime_trust, state_trust
         _Use(self)
 
-    def check_for_use(self, *, deadline):
+    def check_for_use(self, *, deadline, checked_at=None):
         require(integer(deadline), "runtime-state-expired")
-        return _Use(self, deadline).deadline
+        use = _Use(self, deadline, checked_at)
+        return StateUse(use.deadline, use.last)
 
     def reserve(self, **kwargs):
         """Standalone trusted compatibility seam; runtime uses reserve_for_use."""
         self._reserve(None, **kwargs)
 
-    def reserve_for_use(self, *, deadline, **kwargs):
+    def reserve_for_use(self, *, deadline, checked_at=None, **kwargs):
         require(integer(deadline), "runtime-state-expired")
-        return self._reserve(deadline, **kwargs)
+        return self._reserve(deadline, checked_at=checked_at, **kwargs)
 
-    def _reserve(self, deadline, *, issuer, jti, challenge_issuer, challenge_id, now):
+    def _reserve(self, deadline, *, issuer, jti, challenge_issuer, challenge_id, now, checked_at=None):
         require(all(reference(v) for v in (issuer, jti, challenge_issuer, challenge_id))
                 and integer(now), "invalid-reservation")
-        use = _Use(self, deadline)
+        use = _Use(self, deadline, checked_at)
         try:
             with _open(self.directory, expected=self.state_trust.initialization,
                        timeout=min(3, use.deadline - use.clock())) as db:
@@ -236,4 +246,4 @@ class InitializedLedger:
             raise BindingError("replay-refused") from None
         except (OSError, sqlite3.Error):
             raise BindingError("runtime-state-unavailable") from None
-        return use.deadline
+        return StateUse(use.deadline, use.last)

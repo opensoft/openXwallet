@@ -221,6 +221,25 @@ def test_readback_clock_regression_refuses(s):
         s.ledger.check_for_use(deadline=s.c.h.now + 10)
 
 
+def test_child_latest_clock_checkpoint_survives_return_to_bridge(s):
+    now = s.c.h.now
+    s.ledger.runtime_trust = replace(s.c.trust, clock=lambda: now + 2)
+    with pytest.raises(BindingError):
+        s.c.run()  # child observed N+2, parent must not subsequently accept N
+    assert s.c.h.calls == 0
+
+
+def test_parent_latest_clock_checkpoint_reaches_state_before_io(s):
+    from workload_factory_binding_runtime.runtime import _Use
+    now = s.c.h.now
+    s.c.h.now = now + 2
+    s.ledger.runtime_trust = replace(s.c.trust, clock=lambda: now)
+    use = _Use(s.c.bridge)
+    with pytest.raises(BindingError):
+        use.check_state()
+    assert s.calls == []
+
+
 def test_outer_deadline_reaches_state_preflight_and_prevents_reservation(s):
     now = s.c.h.now
     s.c.context = replace(s.c.context, expires_at=now + 2)
@@ -266,8 +285,9 @@ def test_failure_after_durable_reservation_never_resets_it(s):
         reserve(s)
     s.hook = None
     s.access = replace(s.access, status="active")  # fixture-only return of readback
+    restarted = s.make()
     with pytest.raises(BindingError, match="^replay-refused$"):
-        reserve(s, s.make())
+        reserve(s, restarted)
 
 
 def test_concurrent_reservations_have_exactly_one_winner(s):
@@ -291,8 +311,9 @@ def test_process_exit_after_commit_is_consumed_on_restart(s):
     try:
         process.join(timeout=10)
         assert process.exitcode == 0
+        restarted = s.make()
         with pytest.raises(BindingError, match="^replay-refused$"):
-            reserve(s, s.make())
+            reserve(s, restarted)
     finally:
         if process.is_alive():
             process.kill()
@@ -333,6 +354,24 @@ def test_expiry_while_acquiring_write_lock_refuses_before_insert(s, monkeypatch)
         s.ledger.reserve_for_use(**arguments)
     with connect(s.directory / "reservations.sqlite") as db:
         assert db.execute("SELECT count(*) FROM reservations").fetchone() == (0,)
+
+
+def test_integrity_progress_honors_shorter_enclosing_budget(s, monkeypatch):
+    import workload_factory_binding_runtime.state as state
+    connect, elapsed, callbacks = sqlite3.connect, [0.0], []
+    class ObservedConnection:
+        def __init__(self, db):
+            self.db = db
+        def __getattr__(self, name):
+            return getattr(self.db, name)
+        def set_progress_handler(self, callback, steps):
+            callbacks.append(callback)
+            self.db.set_progress_handler(callback, steps)
+    monkeypatch.setattr(sqlite3, "connect", lambda *args, **kwargs: ObservedConnection(connect(*args, **kwargs)))
+    monkeypatch.setattr(state.time, "monotonic", lambda: elapsed[0])
+    with state._open(s.directory, expected=s.initialization, timeout=1):
+        elapsed[0] = 1.5
+        assert callbacks[0]() == 1, "integrity work outlived its enclosing budget"
 
 
 def test_recovery_requires_new_approved_scope_and_initialization(s, tmp_path):
