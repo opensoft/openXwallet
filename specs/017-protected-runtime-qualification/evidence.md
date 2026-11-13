@@ -733,3 +733,37 @@ IDs. A compensated-substitution unit test and actual pytest subprocess mutation
 require refusal while preserving order independence. Expected fingerprints are
 never generated during CI. The preceding frozen commit passed all **1,094 tests**
 and a native **792-test** offline matrix; a fresh corrected sequence follows.
+
+### Final T010 source verification and cleanup
+
+Source/tests and HEAD stayed fixed at `959e80061b1041a373498a9aaf0bd548ed26b5dd`
+through the complete ordered sequence: **1,096 tests passed**, zero failures,
+errors or skips; both pin verifiers, syntax, plain/strict validation and all five
+canonical pinned OpenSpec items passed. Full JUnit SHA-256:
+`5ef345273e638ade0e7d6b07446909c5812ba4be6f5b597817bdb612f1edca56`.
+
+The final native network-none disposable-container matrix passed **794 tests**,
+including **52 harness cases**, with zero failures/errors/skips and all required
+I/G/S/L/current-R01 anchors. Both the parent and an isolated Python exec verified
+loopback-only networking, no capabilities/groups or privilege regain, a cleared
+environment and fresh private home/temp. JUnit SHA-256:
+`e6f793088e6d6bedfa3e88991e6423f4b5099f813009a853b6c1acda3d482220`.
+The projects/source bind was read-only, only the owned evidence tree was writable,
+and no provider/profile/SSH/Docker-socket mounts were supplied. Actual owning
+source was clean at `bb0e9dae89a771b05f6c235d0a77237288b95c85`; the adapter's
+neutral pin remains unchanged. Hosted sudo/unshare execution is checked separately.
+
+All nine local expert roles completed. QA independently verified the collection-
+identity correction with three focused tests; standalone Sonar reported zero
+issues in the final four Python files. No rule, threshold or issue was waived.
+
+Independent cleanup readback covered **40 recorded worker generations**: 16
+ordinary-bench generations were absent by PID/start-time identity, and the private
+PID/network namespaces containing the other 24 were gone with all three owned
+disposable containers. No attributable helper process remained. All six owned
+initial, focused and final fixture roots were removed and absence verified;
+reviewer temporary roots were also removed. Reports/logs remain outside source.
+This receipt-only follow-up changes no tested code, tests or workflow. Deployed
+qualification, full T011 receipts, protected setup/dispatch and human approval
+remain separate. Feedback stays deferred; neither historical blocked write was
+replayed.
