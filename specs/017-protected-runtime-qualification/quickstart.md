@@ -1,6 +1,6 @@
-# Issuer Slice Checks and Future Execution
+# Offline Qualification and Operator Runbook
 
-Status: bounded issuer source candidate; no protected execution command supplied
+Status: T002–T010 source landed; T011 isolated source candidate; no protected execution command supplied
 
 ## Issuer-Only Library Boundary
 
@@ -156,3 +156,88 @@ same-user TLS fixture is not deployed qualification.
 No placeholder live command is supplied: implementation, selected services and
 operational grant do not yet exist. Feedback remains deferred; neither blocked
 write is part of this preparation or an inferred future authorization.
+
+## Internal T011 Receipt and Error Handling
+
+`workload_factory_binding_runtime.evidence` is an adapter-internal reporting API.
+It changes no openWallet proof, registry or custody API and no openMFA possession
+receipt contract. Its canonical JSON report is not signed authority, owner
+acceptance, human assurance, a dependency lock or a deployment authorization.
+Only `source-conformance` and `isolated-fixture` are supported. Requests for
+`protected-machine` refuse; T012/T014 hosting and any protected-scope promotion
+need separate reviewed inputs and operational commissioning.
+
+Trusted hosting captures `ValidatedConfig` before the operation. That snapshot
+contains only the frozen approved selection and digest/time metadata for its
+independently authenticated configuration/protection readback. It must come from
+`validate_config`; constructor types alone do not authenticate a deployment.
+Retain the snapshot for historical reporting, never reuse it as live preflight
+after expiry. Select receipt scope, plan, clock and observed cases outside worker
+control. This module has no worker JSON endpoint, file resolver or provider client.
+
+Run the prescribed complete repository gates and the T010 fixed-collection matrix.
+Obtain each `CaseResult` from the actual trusted harness: case ID, collected,
+passed, failures, errors, skipped, observation time and retained artifact digest.
+Do not invent counts or mark an unexecuted negative vector passed. The report
+checks shape, bounds, duplicate IDs, count consistency and time, but does not
+rerun tests or authenticate supplied observations. T010 enforces the complete
+reviewed parameter identities. Missing cases are explicitly `not-performed`;
+zero collection, failures/errors/skips and incomplete reports cannot pass.
+
+For fixture execution, invoke the existing synchronous `RunLifecycle.run` and
+independently verify any owning proof before recording its result. Capture the
+actual operation error/cancellation; successful cleanup cannot erase an operation
+failure. After run/finalize completes, `cleanup_verification` contains the latest-
+started attempt's verified checkpoint or `None`; each retry clears old success.
+The checkpoint binds plan/scope, random attempt, independent readback identity,
+record digest and observation/check/deadline times. It retains no raw provider
+record. Readback must follow the latest reported case observation, match the
+selected case/run/attempt/configuration and preserve selected replay/shared state.
+A janitor acknowledgement, credential outage or missing independent reader is
+not cleanup evidence. Hosting serializes its report assembly after operation and
+cleanup; a Python checkpoint is not independent administrative attestation.
+
+The trusted embedding supplies these already-obtained variables; this is a
+library call, not a live setup or dispatch command:
+
+```python
+from workload_factory_binding_runtime.evidence import build_receipt
+
+receipt_bytes = build_receipt(
+    scope="isolated-fixture", selected=selected, cases=observed_cases,
+    started_at=started_at, now=trusted_clock(), plan=lifecycle.plan,
+    cleanup=lifecycle.cleanup_verification, error=operation_error,
+)
+```
+
+Keep counts and timestamps case/run bound. For source-only reports omit plan and
+cleanup. For fixture reports absent cleanup remains `missing` and prevents pass.
+Wrong scope/plan/configuration/time/digest refuses with a fixed error. A complete
+report still sets protected-machine qualification, human approval, domain effect
+and consumer-lock claims to false. P01 and deployed G02/G03/L01 remain explicitly
+`not-performed`. A report created later does not extend the original selection,
+proof or readback deadline or turn archived absence into current absence.
+
+The closed projection emits source commit/content digests and hashes repository,
+path, case and opaque service/state/retention references. Map them through the
+independently retained approved non-secret selection. It emits no token, JWK,
+private key, credential/factor response, browser state, raw proof, provider body,
+exception args/notes/causes or traceback. `safe_error(error)` returns only a fixed
+allowlisted code without calling exception `str`/`repr`. Never publish a raw
+exception, traceback/locals dump or arbitrary metadata alongside the report.
+The reporting boundary exposes `invalid-qualification-evidence` on bad input.
+
+`build_receipt` returns immutable canonical bytes and performs no file I/O. The
+operator's separately selected retention sink must be private (0700 parent, 0600
+file), use an exclusive/atomic write and retain its content digest plus the exact
+source/run selection. Keep raw temporary evidence in its protected run boundary;
+never put keys, tokens, provider responses or browser state in Git or public CI
+artifacts. An internal source/fixture report is not a retention-policy setup grant.
+
+On failure or cancellation retain only the safe report and diagnostics. Revoke
+and remove only the registered run-owned generations, independently read back
+absence/revocation and preserved replay/shared resources, and retry via the
+approved janitor if incomplete. Never reset consumed replay state to retry a
+proof. Hard runner death still needs the independent scheduler/readback actor.
+Do not infer cleanup from a finally block or a successful receipt write. Missing
+live services, operational selections or authority stay blocked/not-performed.

@@ -1,6 +1,6 @@
 # Required Qualification Matrix
 
-Status: isolated T002–T009 source cases landed; T010 conformance candidate; deployed cases pending
+Status: isolated T002–T010 source cases landed; T011 receipt candidate; deployed cases pending
 
 | Cases | Required observation | Requirements |
 | --- | --- | --- |
@@ -42,7 +42,9 @@ clean at the accepted `bb0e9dae89a771b05f6c235d0a77237288b95c85` before and afte
 execution, and imports must resolve under that source. The neutral adapter pin
 remains unchanged. The harness tests include actual subprocess pytest mutations.
 
-R01 anchors currently cover fixed error/scope privacy only. They do not claim
-the scoped redacted receipt required by T011. No offline row qualifies deployed
+R01 anchors now cover the T011 closed scoped report, fixed error/privacy rules,
+exact source/case/readback/cleanup binding and actual owning-proof/cleanup export.
+The internal report authenticates no supplied Python object or test observation;
+only trusted harnesses supply results. Protected-machine scope remains unsupported. No offline row qualifies deployed
 independence, provider administration, real OIDC or human approval. Gate success
 is a source result, not a protected machine receipt.

@@ -1,8 +1,8 @@
 # Tasks: Protected Machine Runtime Qualification
 
-Status: sole executable implementation list; T002–T009 landed; isolated T010 candidate
-Commission: 2026-11-13 source ratification of #56 at 508cb51f3407 and explicit
-isolated T010 commissioning. Operation stays separate. See [evidence](evidence.md).
+Status: sole executable implementation list; T002–T010 landed; isolated T011 candidate
+Commission: 2026-11-13 source ratification of #57 at 2c36b07622fc and explicit
+isolated T011 commissioning. Operation stays separate. See [evidence](evidence.md).
 
 ## Owner Gate
 
@@ -36,7 +36,7 @@ Independent acceptance: one bounded owning proof; no approval/apply operation.
 
 - [x] T009 [O] Implement run leases/finalizer and independent cleanup/readback; files: scripts/workload_factory_binding_runtime/lifecycle.py, tests/runtime_binding/test_lifecycle.py, tests/runtime_binding/test_lifecycle_process.py; verify: L01 success/failure/cancel; missing readback fails; shared resources remain. Isolated source candidate with actual independent janitor/readback processes, scoped generation/ownership checks, hard-runner-exit expiry cleanup and preserved replay/shared resources. Deployed registration, scheduler, administrative isolation and provider cleanup/readback qualification remain separate.
 - [x] T010 [S] Wire substantive offline matrix and selected owning-source integration into conformance; files: tests/runtime_binding/**, .github/workflows/pytest-suite.yml; verify: required I/G/S/L and current R01 scope/error-privacy cases collect with zero failures/errors/skips and no public issuer/provider credential use. The dedicated fixed-collection gate verifies the clean exact selected owner before/after pytest, requires all three phases to pass, and runs unprivileged with loopback only across exec. Full redacted receipts remain T011; deployed qualification stays separate.
-- [ ] T011 [O] Add safe errors, redacted scoped receipts and operator runbook; files: scripts/workload_factory_binding_runtime/evidence.py, specs/017-protected-runtime-qualification/quickstart.md, tests/runtime_binding/test_evidence.py; verify: R01 exact sources/case/results/cleanup with no raw sensitive material.
+- [x] T011 [O] Add safe errors, redacted scoped receipts and operator runbook; files: scripts/workload_factory_binding_runtime/evidence.py, specs/017-protected-runtime-qualification/quickstart.md, tests/runtime_binding/test_evidence.py; verify: R01 exact sources/case/results/cleanup with no raw sensitive material. The internal canonical source/fixture report uses closed projection and digest bindings, immutable config/readback metadata and actual lifecycle cleanup checkpoints; missing cases/cleanup cannot pass. Protected-machine scope refuses until later separately reviewed operational qualification; no neutral receipt API is changed.
 - [ ] T012 [O] Prepare protected qualification workflow after source acceptance; files: .github/workflows/protected-runtime-qualification.yml; verify: accepted immutable sources, protected environment, narrow OIDC permissions, trusted configuration, independent cleanup and manual dispatch. Workflow creation authorizes no setup/dispatch.
 - [ ] T013 [O] Obtain operational selections and scoped setup/dispatch authorization; files: specs/017-protected-runtime-qualification/evidence.md; verify: all operational-input categories have approved non-secret references and independent readback. This is an owner/operator act.
 - [ ] T014 [O] Execute real protected machine qualification at accepted sources; files: specs/017-protected-runtime-qualification/evidence.md; verify: P01/deployed G02/G03/L01, real issuer/independence/confinement and fresh cancellation/cleanup; missing facts stay blocked/not-performed.

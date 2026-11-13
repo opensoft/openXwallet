@@ -767,3 +767,110 @@ This receipt-only follow-up changes no tested code, tests or workflow. Deployed
 qualification, full T011 receipts, protected setup/dispatch and human approval
 remain separate. Feedback stays deferred; neither historical blocked write was
 replayed.
+
+## T011 source commissioning — 2026-11-13
+
+Brett ratified adapter #57 at `2c36b07622fc81202d5a8167aade7c4a5ff20700`
+for source acceptance only and commissioned isolated T011 implementation/tests.
+All runnable checks passed with no unresolved review threads. The exact head
+merged normally as `cc4e7fb2932116d6fd42b0cadb35233b2d9adeaf`; merged tree
+matches the ratified tree. No administrative bypass was used. No main-triggered
+CI result is inferred.
+
+The internal receipt builder projects only closed fields/digests from a trusted
+validated selection, actual harness case observations and verified lifecycle
+cleanup. It binds exact sources/dependencies, case/run/attempt, protection/readback,
+results and fresh cleanup attempt/identity/record, without raw token/proof/provider
+or credential/factor/browser payloads. Fixed errors do not stringify exceptions.
+Reports are historical source/fixture observations, not signed neutral possession
+receipts or authentication of supplied Python objects. Missing cases/cleanup
+cannot pass; protected-machine scope refuses. Neutral APIs/pins remain unchanged.
+
+The focused isolated matrix passed **88 tests**, including actual owning proof
+verification with separate janitor/readback processes on success/failure/cancel.
+Only the exercised receipt case is recorded in those runs; unexecuted matrix cases
+stay not-performed. Complete synthetic report tests verify schema only. Cases cover
+canary redaction, malformed scope/count/time/source/readback/cleanup, missing cases,
+failed retry clearing and out-of-order cleanup checkpoint publication. No live
+provider setup, protected dispatch, consumer lock or human approval is supplied.
+Feedback stays deferred; neither historical blocked write was replayed.
+
+### T011 expert review and provenance correction
+
+All nine local expert roles completed. Reliability reproduced a P2 attribution
+race: readback capability rotation during a callback could verify the old
+service's record but label it with the replacement identity. Finalization now
+captures one capability per attempt and uses its target and identity consistently.
+A tracked rotation regression covers the actual record-return path. The focused
+receipt matrix now passes **89 tests**. QA independently ran the original 88.
+Standalone Sonar's one conventional dictionary construction and two exception-
+test setup findings were corrected without waivers; final analysis follows.
+
+### Final T011 source verification and cleanup
+
+Source/tests and HEAD stayed fixed at `2b809c0ebe132fad56dc565b3d895667cf218b79`
+through the complete ordered sequence: **1,185 tests passed**, including **89 T011
+cases**, zero failures/errors/skips. Both pin verifiers, syntax, plain/strict
+validation and all five canonical pinned OpenSpec items passed. Full JUnit SHA-256:
+`d5ec271061eb7778bdf6cbef41f9277fb2d15f897390192c596073b1a80cd2fd`.
+
+The native network-none, unprivileged disposable-container matrix passed **883
+tests**, zero failures/errors/skips, including **18 R01 anchors**. Selected owning
+code was clean at `bb0e9dae89a771b05f6c235d0a77237288b95c85`; neutral pins
+remain unchanged. Matrix JUnit SHA-256:
+`7b24c0ce4dc6079f6814208082a72fd5341fd9d60f8d83ec86afe6a9cae21408`.
+The source/projects bind stayed read-only, only the owned evidence tree was
+writable, and no provider/profile/SSH/Docker-socket mounts were supplied.
+
+All nine expert roles completed. Reliability independently closed its provenance
+race with three focused tests. Standalone Sonar reports zero issues in final
+config, lifecycle, evidence, receipt tests and matrix contract. No rule, threshold
+or issue status was waived. Hosted CI/review are checked separately at publication.
+
+Independent cleanup readback accounted for **31 recorded worker generations**:
+20 ordinary-bench PID/start-time identities were absent; the private namespace
+holding the other 11 was gone with the owned disposable container. No attributable
+helper remained. All three owned focused/full/native fixture roots were removed
+and absence verified. QA/reliability reviewers removed and verified their own
+roots. Reports/logs remain outside source. This receipt-only follow-up changes
+no tested source, tests or workflow.
+
+Only structural source/fixture report scopes are supplied. Protected-machine
+promotion, selected operational services, provider setup/dispatch, consumer-lock
+acceptance and human/domain assurance remain separate. Feedback stays deferred;
+neither historical blocked write was replayed.
+
+### Hosted T011 assertion-quality correction
+
+The first published candidate's Sonar quality gate passed, but an explicit issue
+query found ten test-only `python:S9073` findings that standalone analysis did not
+report. Each composite assertion is now split into its equivalent individual
+assertions; no condition, expectation, rule or threshold is removed or waived.
+Collected node identities and runtime source are unchanged. A fresh complete
+ordered sequence and native matrix qualify the corrected test source below.
+GitHub Codex review was explicitly requested but refused by the account's review
+usage limit; no completed bot review is claimed.
+
+### Corrected T011 final verification
+
+The complete ordered sequence was repeated with source/tests and HEAD fixed at
+`4408c6a5a71a32b8ade921e56e853c7385129c72`: **1,185 passed**, zero failures,
+errors or skips, plus all pin/syntax/plain+strict/pinned OpenSpec gates. JUnit:
+`29bf770829104e81b0ab2cc06e187c50a79828152194c20066013ead53e45c4f`.
+The fresh native offline matrix passed **883 tests**, zero failures/errors/skips.
+Matrix JUnit:
+`0fc1b2578835ad65edcfc8356ca01fe2cfb5255276d349e2cd7809bf86a9ae88`.
+
+QA independently verified the assertion change by AST equivalence and reran all
+89 receipt tests successfully. Standalone analysis of the corrected tests reports
+zero issues; fresh hosted issue/quality results are checked at the updated PR head.
+No expectation, rule or threshold was removed or waived.
+
+Independent readback accounted for another **22 worker generations** (11 ordinary,
+11 in the removed private namespace), with no attributable helper. Both additional
+owned fixture roots were removed and verified absent. Across retained T011 run
+records, cleanup now accounts for **53 generations**, both disposable containers
+and all five owned focused/full/native roots; reviewer roots were independently
+removed too. This final receipt-only commit changes no tested code/tests/workflow.
+Source/fixture scope and all later operational/human gates remain unchanged.
+Feedback stays deferred; neither historical blocked write was replayed.

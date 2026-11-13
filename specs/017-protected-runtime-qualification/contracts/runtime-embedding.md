@@ -308,3 +308,31 @@ replay database and shared sentinel. Owning proofs verify. Success/failure/cance
 hard-runner-exit expiry cleanup, forged worker peer denial, missing reader,
 acknowledgement-without-removal and replacement-generation refusal are exercised.
 Same-user fixtures do not prove deployed OS/admin isolation or hostile-host safety.
+
+## Isolated T011 realization
+
+`ValidatedConfig` additionally retains configuration/protection readback digest,
+principal digest and observation/expiry timestamps. It retains no raw readback.
+`CleanupVerification` additionally records independent cleanup readback/identity
+and attempt digests with observed/check/expiry times. `RunLifecycle` publishes its
+latest-started successful checkpoint through `cleanup_verification`; starting a
+retry clears previous success, and an older completion cannot overwrite a newer
+attempt. The property is cleanup evidence only, never operation success.
+
+`evidence.build_receipt` emits at most 16 KiB of canonical JSON from a closed
+projection of trusted selected configuration, a tuple of `CaseResult` observations,
+explicit scope and optional exact plan/checkpoint plus operation error. It reports
+sources, dependency/composition, protection/readback, case/run/attempt, results and
+cleanup via fixed fields and digests; repository/path/reference strings are hashed.
+No arbitrary payload/metadata or exception text is copied. `safe_error` uses only
+fixed codes, never exception stringification. There is no sink or provider I/O.
+
+These are structural historical reports, not authentication of arbitrary Python
+objects or supplied test observations. Hosting owns authenticated measurements,
+complete actual case collection, owning proof verification, operation outcome and
+private retention. The T010 collection contract remains the substantive source
+conformance gate. Only source-conformance/isolated-fixture scopes are implemented;
+protected-machine promotion refuses until separately reviewed operational hosting.
+Missing case/cleanup evidence prevents pass, wrong bindings refuse, and every
+report explicitly withholds protected qualification, human/domain authority and
+consumer-lock claims. Neutral proof/custody/possession receipt contracts stay unchanged.

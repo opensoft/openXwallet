@@ -181,6 +181,10 @@ class ValidatedConfig:
     config_digest: str
     checked_at: int
     valid_until: int
+    readback_digest: str
+    readback_principal_digest: str
+    readback_observed_at: int
+    readback_valid_until: int
 
 
 def _clock(trust):
@@ -234,4 +238,5 @@ def validate_config(raw, *, trust):
     require(before <= after < config["expires_at"], "runtime-config-inactive")
     deadline = _readback(observed, config, selected_digest, trust.readback_principal, after)
     return ValidatedConfig(_freeze(config), selected_digest, after,
-                           min(config["expires_at"], deadline))
+                           min(config["expires_at"], deadline), digest(observed),
+                           digest(trust.readback_principal), observed["observed_at"], deadline)
