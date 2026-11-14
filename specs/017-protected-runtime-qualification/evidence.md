@@ -1,7 +1,7 @@
 # Preparation and Issuer Slice Evidence
 
-Status: issuer-only source candidate; remaining qualification not performed
-Scope: current bounded issuer source plus historical preparation/rehearsal evidence
+Status: isolated T012H–K source candidate qualified; operational qualification not performed
+Scope: source/isolated fixtures only, with historical preparation and earlier slice evidence
 
 At preparation baseline #49, the new runtime feature had no implementation or live qualification result.
 Baseline adapter merge is `336055fde62e45b49c5ff45cee36e1152ca695f1`, acceptance
@@ -1253,3 +1253,108 @@ T012G-M are pending proposed source tasks, not an implementation commission.
 The earlier default/reference profile and no-output/OIDC refusal are unchanged.
 T001/T013/T014/T015 remain unchecked, feedback deferred, and neither historical
 blocked write is replayed.
+
+
+## 2026-11-14 GitHub bootstrap source ratification and isolated commission
+
+Brett Heap explicitly ratified factory #1314 at
+`94bf0f43704fe8899dc48981263615039eac0d89` with adapter #64 at
+`ff9bd72278a5b5ed14fda2eddb18265f6a109814` for source acceptance, directed
+ordered landing when green, then commissioned implementation/testing of
+T012H–K in isolation. This supplies T012G's actual owner decision, including
+the new bootstrap-only admission OIDC policy and source trust/failure bounds.
+It authorizes no actual credential/App configuration, token mint, setup or dispatch.
+
+Factory #1314 merged first as `3432baf6d929112be283d3daa1a4330a4130ab64`,
+using the standing self-authored approval exception after all runnable checks
+and exact-head Codex/local review passed. Its ratified and merged tree is
+`040d1de2563c5b826ebd93e1c14f6bc9d24688c8`. Adapter #64 then merged normally
+as `a352ebc7ed22f67ff9d759789f807573d9f66ff2`, with ratified/merged tree
+`60fdb64a19eb87370439b988e9be833e873dd660`. No review threads remained.
+Owner records: [factory](https://github.com/opensoft/openXfactory/pull/1314#issuecomment-6879201871)
+and [adapter](https://github.com/opensoft/openXwallet/pull/64#issuecomment-6879205316).
+
+Implementation is a subsequent candidate from the accepted adapter merge,
+not automatically source-accepted. Operational selections and deployed
+qualification stay at T013–T015; their owner checkboxes and T001 stay unchecked.
+Feedback remains deferred; neither historical blocked write may be replayed.
+
+
+## 2026-11-14 isolated GitHub bootstrap T012H–K candidate
+
+Commission: the exact source ratification/ordered landings and isolated H–K
+instruction are recorded in the preceding owner-decision section. T012G records
+that owner act; T012H–K are implemented/tested in this subsequent local candidate.
+T012L review/source ratification and T012M handoff remain pending. T001/T013–T015
+stay unchecked. Candidate branch: `017-github-bootstrap-auth`, based on accepted
+adapter merge `a352ebc7ed22f67ff9d759789f807573d9f66ff2`.
+
+The separate bootstrap verifier/client uses actual RSA and bounded verified TLS,
+with exact selected audience/phase/source/run policy. Protected proof verification
+and its environment requirement are unchanged. Signature-valid positive controls
+and audience-only/environment-only negatives run before custody. The broker
+persists exact dispatch bytes and explicit case/window/source/actor scope before
+credential/dispatch I/O, rechecks fresh source and approval after TLS, and retains
+consumption on crash, expiry, revocation, lost/insufficient response or cancellation.
+No retry/reset/newest-run path exists. Versioned read-only API correlation checks
+actual run/first attempt/source/reusable/actor/job facts, current protection and
+originating-human/App reviewer separation; final run/authority checks repeat after
+blocking reads. Missing/ambiguous provenance or an exhausted budget refuses.
+
+The opt-in phase composition preserves three workflow inputs and seven runtime
+roles. Source admission gains bootstrap token-request capability; protected
+admission uses its separate route after environment approval. Default production
+bindings still refuse before token access/outputs. Qualify/cleanup remain explicit
+unperformed hosting handoffs. No listener, App setup, operational selector,
+provider credential, neutral API/pin change or receipt-scope promotion is supplied.
+
+Final qualification used the existing reviewed Python closure and clean accepted
+owning code `bb0e9dae89a771b05f6c235d0a77237288b95c85`:
+
+- Ordered scoped submodule init, both pin verifiers, syntax gate and plain/strict
+  validator pass. Full suite: **1,609 passed, zero failures/errors/skips**.
+- Required native matrix: **1,307 passed, zero missing/deselected/skipped/non-passing
+  cases**, including 183 new cases. The network-none disposable bench-image
+  container mounts source read-only, exposes no host credentials/socket and drops
+  groups/capabilities with no-new-privileges before pytest and helper exec.
+- Existing I/G/S/L/R and B01–B03 anchors remain; B04/B05 add actual RSA/loopback TLS,
+  single-claim proof barriers, durable broker/correlation/phase negatives and one
+  owning-verifier-accepted proof/replay plus independent success/failure/cancel/
+  runner-death cleanup. Provider observations and dispatch remain deterministic
+  fixtures; no bootstrap OIDC token was requested and no provider dispatch endpoint was called.
+- Five pinned adapter OpenSpec items and strict governing factory packet validation
+  pass. The 21 runtime/test/workflow file hashes were unchanged through final
+  qualification. Required module counts/full-node fingerprints were updated only
+  for the three new test modules and the accepted workflow-policy assertion update.
+- Independent cleanup checked **107 process generations**, **52 integrated
+  preservation records** and **32 retained consumed dispatch journals** across
+  this task's runs. No attributable helper remained; both disposable containers
+  were absent. Eight exact owned temporary roots were removed after verification.
+  Runtime cleanup preserved retained/shared state before disposable-fixture teardown.
+  Bench containers remained running with their original 2026-11-11 start times.
+
+The initial full invocation omitted matching TMPDIR and correctly failed two
+neutrality export-root tests; its other 1,604 tests passed. Corrected invocation
+and targeted controls passed without changing that gate. A final integrity review
+also added explicit retained case/window scope and wire/scope corruption controls,
+then repeated full qualification. `unshare --net` was unavailable inside py-bench;
+the mandatory native run used the existing reviewed network-none container route,
+not a relaxed isolation check. External token-response metadata is projected out
+using the required `value` field; internal envelopes remain closed.
+
+Factory #1314 post-merge CI passed all emitted workflows, including pytest. Adapter
+#64 emitted no separate main run; its exact ratified PR checks passed before landing.
+This new local implementation has no hosted candidate CI or Codex/panel review
+claim; those are T012L. Both protected workflows were independently re-read with
+**zero runs**. Actual provider subjects/behavior, callback authentication/administration,
+worker exclusion, coarse App scope, source-update controls and live qualification
+remain T013/P01 decisions. Setup/dispatch are NOT GRANTED; feedback is deferred
+and neither historical blocked write was replayed.
+
+Retained private verification artifact digests (disposable fixture bodies removed):
+
+- `qualified-full.xml`: `5301625f9e68c56843c89e41b8c92b8d805017695bfc5f1d7ce6f689980483ef`
+- `qualified-full.log`: `7cac152c4e45ef2540755f2c5324a064b28b369616ab3dcf48532eed0647aba6`
+- `qualified-matrix.log`: `583a83fba6f4bd5168d04dec65e038e1cfca5713a29738413ee4358c65399f0a`
+- `qualified-runtime-inputs.json`: `92495f3131914872d70d4f1bdc146aad091566a397220d352c14e073f3583edb`
+- `cleanup-audit.json`: `d94fe22ede1f9dc2e5fb5a3fd0f6a62e95f537d8c241745d0631be4bbd18203e`

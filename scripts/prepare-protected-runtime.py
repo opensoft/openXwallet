@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prepared workflow entrypoint. No setup, dispatch, token mint or live client."""
+"""Protected workflow source entrypoint; operational hosting remains unselected."""
 import argparse
 import os
 from pathlib import Path
@@ -12,7 +12,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from workload_factory_binding.evidence import BindingError
 from workload_factory_binding_runtime.evidence import safe_error
 from workload_factory_binding_runtime.bootstrap import DispatchContext, bootstrap, validate_dispatch_context
-from workload_factory_binding_runtime.workflow import operational_bindings
+from workload_factory_binding_runtime.workflow import operational_bindings, GithubWorkflowBindings, admit_github
 
 
 def context_from_environment(environment, source_commit):
@@ -24,7 +24,7 @@ def context_from_environment(environment, source_commit):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--phase", choices=("preflight", "qualify", "cleanup"), required=True)
+    parser.add_argument("--phase", choices=("preflight", "protected-admission", "qualify", "cleanup"), required=True)
     args = parser.parse_args()
     try:
         source = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, check=True, capture_output=True,
@@ -34,11 +34,16 @@ def main():
         # Intentionally blocks before any environment output or OIDC operation.
         # Production binding selection needs a later reviewed source integration.
         bindings = operational_bindings()
-        if args.phase != "preflight":
+        if args.phase not in ("preflight", "protected-admission"):
             # T012 prepares admission/job wiring. Live execution and independent
             # cleanup adapters remain gated; never substitute the offline suite.
             raise BindingError("workflow-live-qualification-not-performed")
-        admitted = bootstrap(context, bindings=bindings)
+        if type(bindings) is GithubWorkflowBindings:
+            admitted = admit_github(context, bindings=bindings, phase=args.phase, environment=os.environ)
+        elif args.phase == "preflight":
+            admitted = bootstrap(context, bindings=bindings)
+        else:
+            raise BindingError("workflow-admission-refused")
         output = Path(os.environ["GITHUB_OUTPUT"])
         with output.open("a", encoding="utf-8") as stream:
             stream.write("ready=true\nenvironment=" + admitted.environment + "\n")

@@ -1,15 +1,18 @@
 # Actual GitHub bootstrap authentication preparation
 
-Status: FUTURE SOURCE DESIGN OPTION; no implementation, hosting, credential or dispatch authorized
+Status: source design accepted; isolated T012H–K candidate qualified; hosting/credential/setup/dispatch unauthorized
 Updated: 2026-11-14
 Owner boundary: factory grammar; adapter feature 017 implementation; no neutral API promotion
 
-The subsequent factory-owned [real authentication proposal](github-bootstrap-proposal.md)
-now recommends an explicit bootstrap-only OIDC amendment as a separate source
-choice. This accepted preparation's strict no-preflight-OIDC basis remains the
-current default until a new profile is ratified/commissioned and implemented.
-Do not infer that GitHub technically requires an environment to issue any OIDC
-identity; the protected proof identity class and current policy are the constraint.
+The factory-owned [real authentication proposal](github-bootstrap-proposal.md)
+was source-ratified in #1314 / adapter #64, landed, and followed by isolated
+T012H–K commissioning. The current [plan](plan.md) and [evidence](evidence.md)
+record the subsequent implementation candidate; it is not automatically accepted
+or operationally selected. The strict/reference profile remains unchanged and
+the production factory remains unselected before token requests/outputs. Actual
+subjects, audiences, host/credential administration, relying-party/source-update
+controls and setup/dispatch stay separate T013 decisions. Protected proof still
+requires its existing environment/identity policy.
 
 ## Three different facts must be established
 
@@ -23,7 +26,7 @@ The reference profile is fixed to `isolated-fixture` and loopback; neither its
 profile nor test launcher may be relabeled or deployed as operational acceptance.
 The default operational factory remains unselected and refuses before outputs/OIDC.
 
-## Proposed correlation route for a separately commissioned source proposal
+## Accepted correlation design and subsequent isolated candidate
 
 Version correction in the subsequent real-authentication proposal: the selected
 `2026-03-10` dispatch schema has only `ref` and `inputs`, returning 200 with the
@@ -88,8 +91,8 @@ reviewed selections, not existing grants.
 ## Strict-profile admission identity and the proposed alternative
 
 The API-returned ID does **not** authenticate the job making a bootstrap request.
-Preflight runs before the protected proof identity class is released; the current
-accepted profile does not permit a preflight OIDC request. Do not
+Preflight runs before the protected proof identity class is released; the strict/reference
+profile does not permit a preflight OIDC request. Do not
 request an id-token to discover context, place signer credentials in admission,
 trust a worker hash, or assume a general repository token proves a run identity.
 If strict no-preflight-OIDC is retained, a source proposal must select and test
@@ -128,3 +131,15 @@ Documentation was checked on 2026-11-14; the documented API version is
 separately authorized live corroboration. No workflow was dispatched, no API
 write was tested, and no implementation/credential/setup action follows from this
 preparation. T013/T014/T015 and setup/dispatch authorization remain incomplete.
+
+## Subsequent isolated source commission
+
+The factory #1314 / adapter #64 source design was accepted and landed, followed
+by explicit T012H–K isolated commissioning. The current [plan](plan.md) describes
+the source candidate and [evidence](evidence.md) records the exact decision. Earlier
+preparation-only statements above describe that historical preparation, not an
+additional approval gate for the already commissioned isolated source tasks.
+T013's real subject, client-host/admin, relying-party, source-update, App/credential,
+cleanup and setup/dispatch decisions remain unapproved. No live token or write
+endpoint was tested. The candidate still refuses by default without operational
+bindings; fixtures are not deployed qualification.

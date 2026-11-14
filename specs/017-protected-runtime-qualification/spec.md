@@ -2,7 +2,7 @@
 
 **Feature Branch**: `017-protected-runtime-qualification`
 **Created**: 2026-11-12
-**Status**: T002–T012F source accepted and landed; T013 operational decision preparation only
+**Status**: T012G owner act recorded; T012H–K isolated source candidate qualified; operational acceptance pending
 **Input**: Prepare the next runtime qualification step for the first codeXfactory pilot after #581 post-merge verification.
 **Governance owner**: `opensoft/openXfactory`, `openspec/changes/prepare-protected-runtime-qualification/`.
 
@@ -187,14 +187,22 @@ profile and grant no setup, dispatch, proof use, deployed independence, protecte
 receipt or human/domain acceptance.
 
 
-## Proposed actual bootstrap identity amendment (not current requirements)
+## Source-accepted bootstrap identity amendment; isolated candidate
 
-The new factory-owned `github-bootstrap-authentication` proposal recommends a
-purpose-specific admission identity before environment approval, explicitly
-amending the earlier no-preflight-OIDC expectation only after owner acceptance
-and commissioning. Its exact policy and scenarios live in the factory packet;
-[adapter planning/handoff](github-bootstrap-proposal.md) and T012G-M are proposed,
-not implemented or ratified. Existing proof identity/environment requirements,
-fixture profile, runtime service roles, inputs and neutral pins remain unchanged.
-T013 operational authority and actual source-update/host/subject selections remain
-separate; default bindings still refuse before outputs/OIDC today.
+The factory-owned `add-github-bootstrap-authentication` design was source-ratified
+in #1314 / adapter #64, with explicit isolated T012H–K commissioning. T012G's
+actual owner act and matching-tree landings are recorded in [evidence](evidence.md).
+The new opt-in bootstrap profile authenticates admission before environment approval
+without changing protected proof identity/environment policy. All required immutable
+source/run/attempt, phase, subject, current authority and independent provider facts
+must agree. Distinct verifier/client routes preserve bootstrap/proof separation.
+
+The isolated candidate implements durable pre-I/O dispatch-attempt consumption,
+fresh authorization after credentials/TLS/source checks, no ambiguous retry/reset,
+current provider correlation and originating-human/App review separation. Mock
+provider I/O and synthetic RSA tokens supply isolated evidence only. Existing fixture
+profile, seven service roles, three workflow inputs and neutral pins/APIs stay fixed.
+No operational resolver or environment activation switch is added. Default bindings
+still refuse before token requests/outputs; qualify/cleanup remain explicit live
+hosting handoffs. Actual subjects, hosting, relying-party/source-update controls and
+every setup/dispatch step remain unapproved T013 selections; T014/T015 remain open.

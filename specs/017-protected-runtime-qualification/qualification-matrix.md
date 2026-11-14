@@ -69,3 +69,15 @@ source pins. The entire module is required by the collection contract. These are
 preparation checks, not P01 or deployed G02/G03/L01 evidence. Real hosting/clients,
 operational selection/authority, actual protected run and protected receipt
 promotion remain separately gated. No workflow dispatch is part of conformance.
+
+## GitHub bootstrap source conformance extension
+
+B04/B05 extend the internal fixed-collection test matrix under source-accepted
+factory #1314 / adapter #64 and commissioned isolated T012H–K. They cover actual
+RSA/loopback TLS identity and independent single-claim proof barriers; durable
+pre-I/O dispatch consumption/crash/concurrency/revocation; bounded versioned
+provider and phase/source/attempt/review corroboration; unchanged default refusal;
+and one owning proof/replay with independent cleanup on all four outcomes.
+Provider observations/tokens are synthetic and dispatch uses deterministic doubles.
+The existing closed R01 receipt vocabulary is unchanged; these additional internal
+anchors do not extend protected-machine receipt scope or clear live P01/G02/G03.
