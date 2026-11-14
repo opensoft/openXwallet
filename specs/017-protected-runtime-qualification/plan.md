@@ -2,7 +2,7 @@
 
 **Branch**: `017-protected-runtime-qualification` | **Date**: 2026-11-12
 **Spec**: [spec.md](spec.md)
-**State**: T002–T012G source decision recorded; isolated T012H–K candidate; operation unauthorized
+**State**: T002–T012L source accepted; T012M handoff complete; T013 preparation refreshed; operation unauthorized
 
 Bootstrap amendment `fix-protected-runtime-dispatch-bootstrap` was source
 accepted and landed in factory #1311 / adapter #60. The static dispatch selection
@@ -198,7 +198,9 @@ unchecked and every setup/dispatch stage remains NOT GRANTED.
 
 Factory #1314 / adapter #64 were source-ratified and landed with matching accepted
 trees, followed by explicit isolated T012H–K commissioning. T012G is recorded in
-[evidence](evidence.md). The new candidate is not automatically source-accepted.
+[evidence](evidence.md). The subsequent implementation was source-ratified in #65
+and landed as 366533bed77293b096b0a7dbda61399ff5dbafe5 with the ratified tree.
+T012M reconciles that source and refreshes T013; no operation is authorized.
 
 The opt-in `github_bootstrap/` package contains a separate RSA bootstrap verifier,
 exact selected job-token request client, bounded HTTPS child, initialized private
@@ -243,8 +245,9 @@ proof, replay refusal and independent cleanup after success/failure/cancel/runne
 death, preserving journal/replay/shared state. Source-only evidence cannot clear
 T013/P01 deployed worker exclusion, administrator separation or live acceptance.
 
-T012L source review/ratification and T012M handoff remain pending. T001/T013–T015
-remain owner-controlled and unchecked. Main-update coordination/residual exposure,
+T012L source review/ratification is complete under the actual #65 owner decision;
+T012M handoff is complete in the refreshed T013 packet. T001/T013–T015 remain
+owner-controlled and unchecked. Main-update coordination/residual exposure,
 actual credentials/subjects/target and setup/dispatch remain unselected/ungranted.
 
 The source route currently supports only the first run attempt. Actual provider
@@ -253,3 +256,22 @@ of trusted approval/source/environment/materialization callbacks remain separate
 selected hosting inputs. Constructor types and callback labels do not authenticate
 a deployment; callbacks must obtain actual current facts and honor passed deadlines.
 The source adapter's post-call checks do not preempt an arbitrary hung callback.
+
+
+## T012M accepted-source handoff
+
+[The #65 source/landing record](evidence.md#2026-11-14-65-source-acceptance-and-t012m-handoff) closes T012L and records this
+commission. [Operational inputs](operational-inputs.md), [decision record](t013-decision-record.md),
+[scoped authority](scoped-authorization.md) and [authentication handoff](bootstrap-authentication-plan.md)
+now distinguish accepted bootstrap implementation from unselected actual hosting,
+identity issuance and operational authority. The accepted first-attempt broker
+and API adapter need no duplicate proposal; actual authenticated bounded callbacks,
+operational bindings, live qualify/cleanup and protected-receipt source integration
+still require governed review/acceptance before any activation. This refresh changes
+documentation only; runtime/tests/workflows/locks/neutral pins are unchanged.
+
+T013 must select actual target/admin identities, exact phase subjects/proof audience
+and relying-party policy, App effective scope/originator/reviewers, protection,
+initialized retained stores and independent cleanup/readback, and an explicit
+main-update coordination or bounded-residual-exposure decision. Every setup/dispatch
+stage stays NOT GRANTED; no source acceptance or CI result supplies that authority.

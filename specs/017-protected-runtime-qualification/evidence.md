@@ -1451,3 +1451,107 @@ Retained private artifact SHA-256 values:
 - `cleanup-audit-final.json`: `43a4d2ca97af48c45a28904129451688f1820274e0aed14a5644046fb190d7bb`
 - `fixture-removal-final.json`: `7406b286ef67894265719338e3a3cae35512595adade42794fe21098311f6773`
 - `static-sonar-closure-final.json`: `e358e2a190d90b2c46dfbfc9f1e87176ee019909221d4f4eca3d3fa6d841bcbd`
+
+
+## 2026-11-14 #65 source acceptance and T012M handoff
+
+Brett Heap explicitly ratified openXwallet #65 at
+`ab34ff4ec4fe27d56c8fd09c99614785c23e760f` for source acceptance only and directed
+landing when green, then T012M completion and T013 refresh. The instruction keeps
+setup/dispatch unauthorized, feedback deferred and neither historical blocked
+write replayed. [The owner record](https://github.com/opensoft/openXwallet/pull/65#issuecomment-6881983735) records this actual source decision.
+T012L's owner acceptance is satisfied; T012M is the commissioned accepted-source
+reconciliation and handoff, not an operational selection or grant.
+
+#65 merged normally at `2026-11-14T18:09:45Z` as
+`366533bed77293b096b0a7dbda61399ff5dbafe5`. Independent GitHub readback gives equal
+ratified/merged tree `669a1b431f17d360fcf827a749a756e863ec9ed8`. All seven runnable
+ratified-head checks passed; Sourcery was skipped. No review threads remained.
+Local Codex/expert review by the coordinator plus ten reviewers closed the source
+findings; the owner explicitly waived a hosted connector request. Sonar's quality
+gate passed with zero open PR issues after source corrections and two documented
+false-positive dispositions, without changing rules/gates. The source review
+checkpoint `d0ff4e5d0ba4d144b6cb8f2b38f401b0d73ce11c` and accepted final head differ
+only in feature evidence documentation, with all 21 runtime/test/workflow hashes
+unchanged. Local full/matrix qualification passed 1,641 / 1,339 cases with zero
+skips; [hosted pytest](https://github.com/opensoft/openXwallet/actions/runs/43622459059)
+passed 1,638 full cases with three documented shallow-history skips and all 1,339
+mandatory cases without skips. Dedicated full-history jobs passed separately.
+
+Read-only post-merge inspection returned zero Actions runs at the merge commit.
+The ordinary validation workflows are PR-triggered; no main CI success is inferred
+from PR checks or tree equality. No protected workflow was dispatched to create a
+post-merge run. Factory #1314's accepted design/merge remains
+`3432baf6d929112be283d3daa1a4330a4130ab64`; its already recorded source acceptance
+is unchanged. No factory grammar, frozen origin, neutral API/pin, runtime, test,
+workflow or dependency lock is changed by this handoff.
+
+T012M refreshes [operational inputs](operational-inputs.md),
+[scoped authority](scoped-authorization.md), [T013 decisions](t013-decision-record.md)
+and [authentication handoff](bootstrap-authentication-plan.md), with consistent
+current task/plan/spec/runbook/context references. The packet now records accepted
+source/merge/tree and immutable content hashes, exact three dispatch inputs,
+separate preflight bootstrap versus protected proof policy, implemented broker/
+journal/API correlation, first-attempt-only behavior and no ambiguous retry/reset.
+The obsolete active claims that the new bootstrap adapter was unratified or
+unimplemented are removed; prior preparation evidence remains historical.
+
+The source baseline is not an operational `accepted_commit` or complete source
+selection. This documentation refresh and later hosting merges can change the
+executing `github.workflow_sha` even when workflow content hashes agree. Actual
+main-update coordination or bounded-residual-start acceptance, relying-party and
+coarse App credential limits remain explicit operator decisions; enum labels
+establish no deployed control. Authenticated bounded callbacks/issuance/hosting,
+actual complete subjects and distinct proof audience, original human/App/reviewer
+identities, target/protection/services, initialized retained stores and independent
+cleanup/readback remain unselected. Live qualifier/cleanup and protected-receipt
+source integration still require governed review/acceptance. T013 preparation
+is refreshed; the actual T013/T014/T015 owner/operational acts remain incomplete.
+
+Fresh read-only provider inspection at `2026-11-14T18:11:54.230954+00:00` confirms repository
+ID `1347887821`, owner ID `638385`, default main and only existing `copilot`
+environment ID `20677426348`, with no protection rules and admin bypass enabled.
+It is preserved and ineligible for the pilot. Default workflow token is read-only
+with PR approval disabled. OIDC remains default/immutable-ID with prefix
+`repo:opensoft@638385/openXwallet@1347887821`; this configuration read is not a
+minted token or full-subject approval. Caller workflow `417795073` and local
+reusable `417795071` are active and both have zero runs. No resource, App,
+credential, federation, permission or environment setting is changed.
+
+T012L and T012M are complete in the implementation list; T001/T013/T014/T015
+remain unchecked. Every setup, one-dispatch, actual-run authority and exact-generation
+cleanup stage is NOT GRANTED. There is no executable config/grant, provider setup,
+bootstrap token request, protected receipt, pin promotion, human/domain approval
+or live qualification. Feedback remains deferred; neither historical blocked write
+was replayed, and the optional PR-description update denied in the earlier turn
+was not retried. Verification of this documentation-only handoff follows.
+
+
+T012M documentation verification passed: scoped initialization, both pin checks,
+syntax, plain/strict validation, **1,641 full tests with zero failures/errors/skips**,
+five pinned adapter OpenSpec items and strict governing factory packet. All eleven
+changed files are Markdown. All 116 recorded runtime/test/workflow/contract inputs,
+including the neutral gitlink, are unchanged. All 73 relative links and seven
+immutable Git-blob artifact hash rows verify; the portable feature pointer remains
+unchanged. No new runtime test or source profile is introduced by documentation.
+The accepted #65 zero-skip native matrix remains source evidence; ordinary PR CI
+separately repeats mandatory conformance for this handoff candidate.
+
+The coordinator plus nine local pre-PR experts completed architecture, performance,
+security, QA, static/quality, API/integration, data-integrity, reliability and simplicity
+review with no actionable findings. The final addition to the reviewed documents is
+this factual verification record only. Local Codex review continues the owner's
+local-review preference; no hosted connector review is claimed. Independently audited
+cleanup checked 19 process generations, eight integrated retained/shared preservation
+records and four consumed correlated journals. No attributable helper remained. The
+one exact private fixture root was removed only after audit, with absence verified;
+JUnit/log/hash/readback/review receipts remain retained. Benches and accepted owning
+code remained unchanged. Every operational stage is still NOT GRANTED.
+
+Private verification artifact SHA-256 values:
+
+- `full.xml`: `6a4168ee0470113059b8946798b5b954e7fb7b6d3d7d90a1a0d9ca4e389d9e71`
+- `document-consistency.json`: `8e835e5e2175114bd4ef4d746763be1f3c77fdfdc64b37e23d19c1f398c9dc93`
+- `cleanup-audit-final.json`: `c4e8a7e086d426040a2178dd0082eb4d0f7c17d39281fd90437ec2edddcbbbb9`
+- `fixture-removal.json`: `8d9763edd5778e7f42156370db8424c8ba9e1d6366328e862fd3aeaf1fbccdcd`
+- `unchanged-runtime-baseline.json`: `063902907dc4cc2b495086aa87c5dc0026ceaef6c671a59b4ecb1a545104d68b`

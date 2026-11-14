@@ -1,6 +1,6 @@
 # Offline Qualification and Operator Runbook
 
-Status: T002–T011 source landed; T012 workflow preparation candidate; no dispatch authorization supplied
+Status: T002–T012L source accepted; T012M handoff complete; T013 preparation refreshed; no operational authorization supplied
 
 ## Issuer-Only Library Boundary
 
@@ -283,8 +283,10 @@ Fresh authorization must name the actual run and attempt, including retries.
 
 Only after those selections, source review and explicit scoped setup/dispatch
 commissioning may an operator consider running the manual workflow. Its inputs
-are expected accepted commit, configuration digest and opaque operation-grant
-reference. They are lookup/expectation data, not an approval. The reusable workflow
+remain exactly `accepted_commit`, `selection_digest`, `preauthorization_ref`.
+The static selection omits only assigned run ID/attempt; full configuration digest,
+operation grant and plan/lease binding follow actual run assignment before admission.
+Inputs are lookup/expectation data, not an approval. The reusable workflow
 must execute at the same immutable caller commit; external callers, non-main refs
 and other events refuse before checkout. No live command is supplied here.
 
@@ -302,3 +304,21 @@ hosting must retain its fixed plan/authority despite expired proof configuration
 missing readback must fail qualification. Do not reset state or weaken protections
 to enable this preparation. Feedback remains deferred; neither blocked write is an
 activation or cleanup step.
+
+
+## Accepted GitHub bootstrap source; T013 decisions remain
+
+#65 is source-ratified and landed at 366533bed77293b096b0a7dbda61399ff5dbafe5
+with its ratified tree. [T012M evidence](evidence.md#2026-11-14-65-source-acceptance-and-t012m-handoff) and the [decision packet](t013-decision-record.md)
+identify what remains. The opt-in bootstrap-purpose OIDC preflight is source accepted;
+it is distinct from the protected-phase repeat and unchanged proof environment/audience
+checks. That source acceptance does not permit live token acquisition or choose subjects,
+hosting, credentials or relying-party trust. The default factory remains unselected.
+
+The broker/journal/API correlation code is implemented and isolated-qualified.
+T013 still needs actual bounded authenticated callbacks/endpoint/issuance and deployed
+worker/admin separation, source-update policy, final accepted source SHA, runtime
+services/state/lifecycle and explicit staged owner authority. Live qualify/cleanup
+clients and protected-machine receipt promotion require separately reviewed source.
+Do not bypass the default refusal or use fixture keys, stores, IDs or grants as
+operational inputs. Both protected workflows still have zero runs.

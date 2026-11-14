@@ -1,30 +1,13 @@
 # T013 Scoped Authorization Draft
 
-Status: prepared after portable-reference source landing; every operational stage NOT GRANTED
+Status: T012M reconciled after #65 source landing; every operational stage NOT GRANTED
 Updated: 2026-11-14
 Selections: [operational inputs](operational-inputs.md)
 Accepted bootstrap source: [bootstrap record](workflow-bootstrap.md)
 
-The source-only ratification of factory #1311 at
-`6dadf188a0afa22e3c205561299f6045a9c95359` with adapter #60 at
-`78e7bbeabca250073d5896154ccc99bb163116cc` is recorded. Their accepted merge
-baselines are factory `f2fb60f04c8229f4343e25a0155418f2f737d73a` and adapter
-`61fbe41f7e08e831e0b15c2c97ea6ff386f587f3`, each with its ratified tree.
-Factory post-merge source CI is verified in the [selection packet](operational-inputs.md).
-This resolves the earlier source-input circularity; it grants no operation.
+Brett source-ratified adapter #65 at `ab34ff4ec4fe27d56c8fd09c99614785c23e760f`, directed landing when green, and commissioned T012M/T013 documentation. It landed as `366533bed77293b096b0a7dbda61399ff5dbafe5` with equal ratified/merged tree `669a1b431f17d360fcf827a749a756e863ec9ed8`. Factory #1314's accepted source design is unchanged. The [owner/landing evidence](evidence.md#2026-11-14-65-source-acceptance-and-t012m-handoff) records the exact act and source checks.
 
-The 2026-11-14 instruction ratifies factory #1312 and adapter #61/#62 for
-source acceptance only and authorizes ordered landing plus T013 preparation.
-The [source acceptance record](evidence.md#2026-11-14-source-ratification-and-ordered-landing)
-names the exact heads, merges and equal trees. The
-[T013 decision packet](t013-decision-record.md) separates proposed selections,
-source prerequisites, setup and dispatch decisions. The
-[authentication preparation](bootstrap-authentication-plan.md) is a future
-source design option, not a selected operational integration.
-It explicitly keeps setup and dispatch unauthorized. All operative stages below
-are **NOT GRANTED**. Portable reference services are now source accepted in isolation; actual
-hosting/authentication integrations and administration remain unselected.
-The current CLI still refuses before environment outputs/OIDC.
+This closes T012L source acceptance and supplies T012M's handoff, with no operational selection or grant. The [selection packet](operational-inputs.md), [T013 decisions](t013-decision-record.md) and [authentication handoff](bootstrap-authentication-plan.md) identify remaining target/administration, client issuance, actual provider evidence and source-update choices. Accepted bootstrap-only preflight OIDC is separate from protected proof identity; it is not permission to request a live token. Default bindings still refuse before token access/outputs. Hosting and qualify/cleanup/receipt integration remain unselected.
 
 ## Decision record to complete
 
@@ -41,10 +24,12 @@ create decision. Unselected scope blocks the corresponding decision.
 | Target | Dedicated disposable nonproduction Linux deployment | Exact provider/account or tenant/subscription, existing parent IDs, host/cluster, region and namespace/resource-group scope |
 | Administrators | Worker cannot administer supervisor, custody, bootstrap/operation grants, readback or cleanup | Named independent principals, control-plane owners, credential/trust refs and effective access evidence |
 | Environment | Proposed new `wallet-mfa-pilot-qa` in repo ID `1347887821` | Before setup: approved name and create scope, 1–6 reviewer IDs, distinct dispatcher, prevent self-review, no admin bypass, exact `refs/heads/main` deployment restriction; after setup: actual ID and complete effective protection readback |
-| Bootstrap authority | Static approval precedes actual-run binding; no pre-admission OIDC dependency | Source-accepted authentication/client design, authority administrator/principal/credential/trust refs, authenticated actual GitHub context, atomic one-preauthorization/one-run-attempt consumption and revocation/readback |
+| Bootstrap/controller | Source-accepted `openxfactory-github-bootstrap-internal-v1`; preflight bootstrap-purpose OIDC before environment, protected-phase repeat afterward | Actual separately configured phase subjects, trusted endpoint/CA/token-request transport, bounded authenticated callbacks, journal/authority administrator/principal/credential refs, current revocation/readback and deployed worker exclusion |
+| Broker/App/originator | Durable dispatch-attempt consumption precedes credential/send; first attempt only | Repository-limited installation and effective Actions-write scope, separate read-only identity, credential resolver/issuance/revocation owner, original human and broker actor IDs; distinct eligible reviewer identities |
+| Main-update control | Source accepts `coordinated` or `bounded-residual-exposure` values | Explicit owner selection and actual coordination evidence or bounded residual-start exposure with credential/relying-party boundaries; no automatic freeze/rule/tag change |
 | Selection/authorization | Separate independent static approval and actual-run full approval | Decision issuer, case/time window, static digest, preauthorization ref and revocation path; then actual-run config digest and operation grant |
 | Services | Exactly seven runtime roles; independently authenticated current records/challenge | Per-service principal/credential/trust refs; separate bootstrap, environment, authorization, scheduler and cleanup readback clients |
-| Issuer/subject | Fixed GitHub endpoints; observed immutable-ID subject settings/prefix in selection packet | Explicit audience and complete configured subject/claims; fresh independent corroboration, no guessed name-only subject |
+| Issuer/subject | Fixed GitHub endpoints; accepted bootstrap-purpose audience; observed immutable-ID settings/prefix | Actual preflight/protected subjects/claims, distinct protected proof audience and relying-party acceptance/exclusion readback; job token-request permission can request other audiences |
 | State | Explicitly initialized private retained replay store | Store/initialization/retention/recovery refs, provisioning owner, initialization receipt and preservation/access policy |
 | Lifecycle | Bounded lease and independent registered janitor/scheduler/readback | Exact plan/scope, principals, generation/ownership allowlist, deadlines and receipt retention; runner death/expiry readback |
 | Setup limit | Smallest bounded pilot; preserve unrelated/shared resources | Exact create/update actions and parent/name allowlist, resource limits, spend ceiling, UTC start/end/expiry and setup rollback owner |
@@ -74,15 +59,18 @@ the existing `copilot` environment and current provider configuration.
    complete static selection under `openxfactory-dispatch-selection-internal-v1`
    and one preauthorization. Use only manual inputs `accepted_commit`,
    `selection_digest`, `preauthorization_ref` at the exact accepted workflow
-   source. A future separately source-approved broker must first durably reserve/
-   consume the dispatch attempt against the selected preauthorization under an
-   atomic compare-and-set; only that winner may send one request. A crash before
+   source. The accepted #65 broker source still needs selected/qualified hosting,
+   retained journal, authenticated callbacks and credential issuance. It must
+   first durably reserve/consume the dispatch attempt against the selected
+   preauthorization under an atomic compare-and-set; only that winner may send one request. A crash before
    I/O or lost response leaves pending/indeterminate scope, never an automatic
    reset/retry. The reference authority alone does not implement this operational
    dispatch phase. No PR/fork trigger, floating source, second dispatch, automatic retry
    or token-for-discovery is covered. Reconcile exact source if `main` has moved.
-   Bootstrap authentication must work before environment selection/OIDC; an
-   unverified worker context or prior job output cannot authorize this stage.
+   Bootstrap-only identity is acquired by the accepted preflight phase after
+   run assignment, before environment-bound proof identity. The bootstrap token
+   authenticates admission only; it cannot authorize this dispatch stage. An
+   unverified worker context or prior job output supplies neither identity nor grant.
 3. **Actual run/attempt authority — NOT GRANTED.** After GitHub assigns the
    run, the independent authority authenticates/corroborates it and binds the
    already-reserved dispatch scope to the actual run/attempt, without freeing or
@@ -128,7 +116,7 @@ acceptance remain separate. Environment review does not establish independent
 domain human approval.
 
 The next owner decisions are the actual nonproduction target, administrative
-owners, distinct dispatcher/reviewer, bootstrap authentication/authority design
+owners, distinct dispatcher/reviewer, actual bootstrap/controller hosting, issuance and source-update policy
 and resource/budget/window limits. They can commission the required source
 integrations without authorizing setup or dispatch. Source bootstrap acceptance
 is complete; live hosting/authentication and operational decisions remain open.

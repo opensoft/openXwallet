@@ -2,7 +2,7 @@
 
 **Feature Branch**: `017-protected-runtime-qualification`
 **Created**: 2026-11-12
-**Status**: T012G owner act recorded; T012H–K isolated source candidate qualified; operational acceptance pending
+**Status**: T012G–L source accepted; T012M handoff complete; T013 operational acceptance pending
 **Input**: Prepare the next runtime qualification step for the first codeXfactory pilot after #581 post-merge verification.
 **Governance owner**: `opensoft/openXfactory`, `openspec/changes/prepare-protected-runtime-qualification/`.
 
@@ -187,7 +187,7 @@ profile and grant no setup, dispatch, proof use, deployed independence, protecte
 receipt or human/domain acceptance.
 
 
-## Source-accepted bootstrap identity amendment; isolated candidate
+## Source-accepted bootstrap identity amendment and implementation
 
 The factory-owned `add-github-bootstrap-authentication` design was source-ratified
 in #1314 / adapter #64, with explicit isolated T012H–K commissioning. T012G's
@@ -197,7 +197,7 @@ without changing protected proof identity/environment policy. All required immut
 source/run/attempt, phase, subject, current authority and independent provider facts
 must agree. Distinct verifier/client routes preserve bootstrap/proof separation.
 
-The isolated candidate implements durable pre-I/O dispatch-attempt consumption,
+The implementation source-accepted in #65 supplies durable pre-I/O dispatch-attempt consumption,
 fresh authorization after credentials/TLS/source checks, no ambiguous retry/reset,
 current provider correlation and originating-human/App review separation. Mock
 provider I/O and synthetic RSA tokens supply isolated evidence only. Existing fixture
@@ -206,3 +206,15 @@ No operational resolver or environment activation switch is added. Default bindi
 still refuse before token requests/outputs; qualify/cleanup remain explicit live
 hosting handoffs. Actual subjects, hosting, relying-party/source-update controls and
 every setup/dispatch step remain unapproved T013 selections; T014/T015 remain open.
+
+
+## T012M reconciliation boundary
+
+Brett source-ratified #65 at ab34ff4ec4fe and directed landing plus T012M/T013
+preparation. The accepted merge/tree and actual owner record are in [evidence](evidence.md#2026-11-14-65-source-acceptance-and-t012m-handoff).
+T012M's packet reconciles the current source and distinct bootstrap/proof phases,
+without changing these requirements or selecting a deployment. The default remains
+unselected; actual authenticated hosting/issuance, provider observations, source-update
+controls, protection and staged operational decisions remain T013. T001/T013–T015
+stay unchecked, setup/dispatch NOT GRANTED, feedback deferred and neither historical
+blocked write is replayed.
