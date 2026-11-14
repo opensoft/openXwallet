@@ -317,7 +317,7 @@ def test_failed_port_publication_never_exposes_readiness(tmp_path, monkeypatch):
     assert not ready.with_name("ready.pending").exists()
 
 
-def _owning_run(k, directory, *, allow_worker_sign=False, fail_after_proof=False):
+def _owning_run(k, directory, *, allow_worker_sign=False, fail_after_proof=False, before_proof=None, perform=None):
     owner = owner_source()
     from openwallet_runtime.custody import RemoteRegistry, RemoteSigner, TLSClient
     from openwallet_runtime.proof import TrustedKeyBinding, create_proof, verify_proof
@@ -369,7 +369,9 @@ def _owning_run(k, directory, *, allow_worker_sign=False, fail_after_proof=False
         c.services["custody"] = signer.service
         c.services["registry"] = BoundService(ServiceIdentity(**c.config["services"]["registry"]), remote_registry)
         c.bridge = c.make(create_proof=create_proof)
-        result = c.run()
+        if before_proof is not None:
+            before_proof(c, create_proof)
+        result = c.run() if perform is None else perform(c.run)
         verified = verify_proof(result["proof"], expected_digest=h.challenge.digest, binding=h.binding, now=h.now)
         assert verified.subject_ref == h.binding.subject_ref
         assert result["human_approval"] is False
