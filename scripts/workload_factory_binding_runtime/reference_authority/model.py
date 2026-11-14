@@ -25,10 +25,10 @@ def window(start, end, now):
 def signed_observation(key, context, *, event_ref, now, expires_at):
     """Fixture controller helper, not a GitHub observation or provider verifier."""
     validate_dispatch_context(context)
-    observation = dict(scope=SCOPE, event_ref=event_ref, context=asdict(context),
-                       observed_at=now, expires_at=expires_at)
-    return dict(profile=PROFILE, observation=observation,
-                signature=encode64(key.sign(DOMAIN + canonical(observation))))
+    observation = {"scope": SCOPE, "event_ref": event_ref, "context": asdict(context),
+                   "observed_at": now, "expires_at": expires_at}
+    return {"profile": PROFILE, "observation": observation,
+            "signature": encode64(key.sign(DOMAIN + canonical(observation)))}
 
 
 def verify_observation(envelope, public_key, now):

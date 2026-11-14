@@ -3,7 +3,7 @@
 Private POSIX files and pinned inode receipts detect observable replacement.
 This is not protection against a hostile host or an in-place valid backup restore.
 """
-from contextlib import contextmanager
+from contextlib import closing, contextmanager
 from dataclasses import asdict, dataclass
 import os
 from pathlib import Path
@@ -44,9 +44,10 @@ def _identity(directory):
                     and (is_dir or info.st_nlink == 1), ERROR)
         for suffix in ("-journal", "-wal", "-shm"):
             sidecar = directory / (DATABASE + suffix)
-            if not sidecar.exists() and not sidecar.is_symlink():
+            try:
+                info = sidecar.lstat()
+            except FileNotFoundError:
                 continue
-            info = sidecar.lstat()
             require(suffix == "-journal" and stat.S_ISREG(info.st_mode) and info.st_nlink == 1
                     and info.st_uid == os.geteuid() and not stat.S_IMODE(info.st_mode) & 0o077, ERROR)
         return StoreIdentity(folder.st_dev, folder.st_ino, db.st_dev, db.st_ino)
@@ -62,7 +63,7 @@ def initialize_store(directory, controller_public_key):
         directory.mkdir(mode=0o700)
         fd = os.open(directory / DATABASE, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
         os.close(fd)
-        with sqlite3.connect(directory / DATABASE) as db:
+        with closing(sqlite3.connect(directory / DATABASE)) as db, db:
             db.execute("PRAGMA synchronous=FULL")
             for sql in SCHEMA:
                 db.execute(sql)
@@ -88,7 +89,7 @@ class AuthorityStore:
         self.public_key, self.clock = controller_public_key, clock
         self.bootstrap_principal, self.operation_principal = bootstrap_principal, operation_principal
         with self._transaction():
-            pass
+            pass  # Validate the selected existing store and persist its current clock.
 
     @contextmanager
     def _transaction(self):
@@ -103,7 +104,7 @@ class AuthorityStore:
             require(db.execute("PRAGMA journal_mode").fetchone() == ("delete",)
                     and db.execute("PRAGMA integrity_check(1)").fetchone() == ("ok",), ERROR)
             actual = tuple(row[0] for row in db.execute(
-                "SELECT sql FROM sqlite_master WHERE type='table' ORDER BY name"))
+                "SELECT sql FROM sqlite_master WHERE sql IS NOT NULL ORDER BY name"))
             require(actual == tuple(sorted(SCHEMA, key=lambda s: s.split()[2])), ERROR)
             db.execute("BEGIN IMMEDIATE")
             metadata = db.execute("SELECT version, controller, highwater FROM metadata").fetchall()
@@ -112,9 +113,21 @@ class AuthorityStore:
             require(integer(now) and integer(metadata[0][2]) and now >= metadata[0][2], ERROR)
             db.execute("UPDATE metadata SET highwater=?", (now,))
             require(_identity(self.directory) == self.identity, ERROR)
-            yield db, now
-            require(_identity(self.directory) == self.identity, ERROR)
-            db.execute("COMMIT")
+            # Failed business requests must not erase a trusted clock observation.
+            # Retain that metadata under the same write lock while rolling back
+            # every attempted claim/revoke/observation mutation on refusal.
+            db.execute("SAVEPOINT business")
+            try:
+                yield db, now
+                require(_identity(self.directory) == self.identity, ERROR)
+            except Exception:
+                db.execute("ROLLBACK TO business")
+                db.execute("RELEASE business")
+                db.execute("COMMIT")
+                raise
+            else:
+                db.execute("RELEASE business")
+                db.execute("COMMIT")
         except Exception:
             if db is not None and db.in_transaction:
                 db.execute("ROLLBACK")
@@ -204,5 +217,5 @@ class AuthorityStore:
             operation = OperationReadback(self.operation_principal, grant, "qualify-existing-resources",
                 configuration_digest, context.accepted_commit, config["case_ref"], context.run_id,
                 context.run_attempt, now, expiry)
-            return dict(profile=PROFILE, scope=SCOPE, configuration=config,
-                        bootstrap=asdict(bootstrap), operation=asdict(operation))
+            return {"profile": PROFILE, "scope": SCOPE, "configuration": config,
+                    "bootstrap": asdict(bootstrap), "operation": asdict(operation)}

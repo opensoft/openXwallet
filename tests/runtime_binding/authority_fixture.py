@@ -98,18 +98,20 @@ def a(b, tmp_path):
                    for role, peer in peers.items() if role != "server"}
         return SimpleNamespace(process=process, port=port, clients=clients)
     result.launch = launch
-    yield result
-    for process in result.processes:
-        if process.poll() is None:
-            process.terminate()
-            try:
-                process.wait(timeout=5)
-            except subprocess.TimeoutExpired:
-                process.kill()
-                process.wait(timeout=5)
-        for stream in (process.stdout, process.stderr):
-            stream.close()
-        assert process.poll() is not None
+    try:
+        yield result
+    finally:
+        for process in result.processes:
+            if process.poll() is None:
+                process.terminate()
+                try:
+                    process.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    process.wait(timeout=5)
+            for stream in (process.stdout, process.stderr):
+                stream.close()
+            assert process.poll() is not None
 
 
 def authorization(a):

@@ -60,12 +60,14 @@ class AuthorityServer(ThreadingMixIn, HTTPServer):
 
     def get_request(self):
         raw, address = super().get_request()
-        try:
-            raw.settimeout(2)
-            return self.tls.wrap_socket(raw, server_side=True), address
-        except Exception:
-            raw.close()
-            raise
+        raw.settimeout(2)
+        return raw, address
+
+    def finish_request(self, request, client_address):
+        # Handshake belongs to a bounded worker. One idle TCP peer must not
+        # block the accept loop and all authenticated requests behind it.
+        with self.tls.wrap_socket(request, server_side=True) as secured:
+            self.RequestHandlerClass(secured, client_address, self)
 
     def process_request(self, request, client_address):
         if not self.slots.acquire(blocking=False):
@@ -110,7 +112,7 @@ class _Handler(BaseHTTPRequestHandler):
         super().finish()
 
     def log_message(self, format, *args):
-        pass
+        pass  # Request input and peer material must never enter default HTTP logs.
 
     def _reply(self, status, value):
         body = canonical(value)
@@ -121,6 +123,9 @@ class _Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
         self.close_connection = True
+
+    def send_error(self, code, message=None, explain=None):
+        self._reply(400, {"error": ERROR})
 
     def do_POST(self):
         try:
@@ -152,5 +157,5 @@ class _Handler(BaseHTTPRequestHandler):
         except Exception:
             try:
                 self._reply(400, {"error": ERROR})
-            except (OSError, ssl.SSLError):
+            except OSError:
                 pass

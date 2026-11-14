@@ -60,13 +60,21 @@ def test_portable_authority_owning_wallet_and_independent_cleanup(k, w, request,
                           create_proof=create_proof, lifecycle=janitor.life)
         retained["shared"] = (janitor.root / "shared").read_bytes()
 
+    def one_use(run):
+        result = run()
+        # Prove replay refusal while the lease/credential are still active,
+        # before cleanup could mask it with an unrelated lease failure.
+        with pytest.raises(BindingError, match="^replay-refused$"):
+            run()
+        return result
+
     def perform(run):
         janitor = retained["janitor"]
         if outcome == "hard-exit":
             context = multiprocessing.get_context("fork")
             parent, child = context.Pipe(duplex=False)
             def runner():
-                run()
+                one_use(run)
                 child.send_bytes(b"proof-complete")
                 time.sleep(300)
             process = context.Process(target=runner)
@@ -91,7 +99,7 @@ def test_portable_authority_owning_wallet_and_independent_cleanup(k, w, request,
                 process.close();parent.close();child.close()
             raise RuntimeError("runner-hard-exit-observed")
         def operation():
-            result = run()
+            result = one_use(run)
             from openwallet_runtime.proof import verify_proof
             verified = verify_proof(result["proof"], expected_digest=k.c.h.challenge.digest,
                                     binding=k.c.h.binding, now=k.c.h.now)
@@ -126,3 +134,5 @@ def test_portable_authority_owning_wallet_and_independent_cleanup(k, w, request,
     finally:
         if "fixture" in retained:
             retained["fixture"].close()
+            assert all(process.poll() is not None and process.stdout.closed and process.stderr.closed
+                       for process in retained["authority"].processes)

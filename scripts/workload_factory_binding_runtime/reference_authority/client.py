@@ -29,7 +29,7 @@ class AuthorityClient:
                                                   timeout=min(2, deadline - now))
         timer = None
         try:
-            body = canonical(dict(method=method, arguments=arguments))
+            body = canonical({"method": method, "arguments": arguments})
             require(len(body) <= LIMIT, ERROR)
             connection.connect()
             require(fingerprint(connection.sock.getpeercert(binary_form=True)) == self.server_fingerprint
@@ -73,12 +73,14 @@ class AuthorityClient:
 
 def probe_worker_denied(worker, *, context, event_ref, deadline):
     """Caller must establish the same positive reader path first. Outage is failure."""
-    try:
-        worker.request("claim", context=asdict(context), event_ref=event_ref, deadline=deadline)
-    except BindingError as exc:
-        require(str(exc) == "bootstrap-authority-denied", ERROR)
-        return
-    raise BindingError(ERROR)
+    for method in ("claim", "operation"):
+        try:
+            worker.request(method, context=asdict(context), event_ref=event_ref, deadline=deadline)
+        except BindingError as exc:
+            require(str(exc) == "bootstrap-authority-denied", ERROR)
+        else:
+            raise BindingError(ERROR)
+
 
 
 class AuthoritySession:
