@@ -59,13 +59,23 @@ def test_portable_authority_owning_wallet_and_independent_cleanup(k, w, request,
         c.bridge = c.make(load_config=lambda: session.raw, trust=bindings.workflow.runtime_trust,
                           create_proof=create_proof, lifecycle=janitor.life)
         retained["shared"] = (janitor.root / "shared").read_bytes()
+        retained["replay_refusals"] = []
+        reserve = c.h.ledger.reserve
+        def observe_reservation(**arguments):
+            try:
+                return reserve(**arguments)
+            except BindingError as exc:
+                retained["replay_refusals"].append(str(exc))
+                raise
+        c.h.ledger.reserve = observe_reservation
 
     def one_use(run):
         result = run()
         # Prove replay refusal while the lease/credential are still active,
         # before cleanup could mask it with an unrelated lease failure.
-        with pytest.raises(BindingError, match="^replay-refused$"):
+        with pytest.raises(BindingError, match="^runtime-service-unavailable$"):
             run()
+        assert retained["replay_refusals"] == ["replay-refused"]
         return result
 
     def perform(run):

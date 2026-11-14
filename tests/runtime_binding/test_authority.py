@@ -20,10 +20,11 @@ def test_durable_binding_same_run_refresh_restart_and_revocation(a):
     assert value["scope"] == "isolated-fixture"
     assert a.open().read(**assigned(a), bind=False) == value
     a.store.revoke(ref=a.b.context.preauthorization_ref)
+    restarted, arguments, approval = a.open(), assigned(a), authorization(a)
     with pytest.raises(BindingError):
-        a.open().read(**assigned(a), bind=True)
+        restarted.read(**arguments, bind=True)
     with pytest.raises(BindingError):
-        a.open().authorize(**authorization(a))
+        restarted.authorize(**approval)
     with sqlite3.connect(a.root / "state" / DATABASE) as db:
         assert db.execute("SELECT revoked, context IS NOT NULL FROM preauthorizations").fetchone() == (1, 1)
         assert db.execute("SELECT count(*) FROM observations").fetchone() == (1,)
@@ -55,10 +56,17 @@ def test_signed_context_cannot_rebind_or_change_selected_source(a, field, value)
     approve(a)
     a.store.read(**assigned(a), bind=True)
     context = replace(a.b.context, **{field: value})
-    # Invalid source contexts may fail during signing validation itself.
-    with pytest.raises(BindingError):
-        a.store.observe(envelope=a.envelope(context, "event:other"))
-        a.open().read(context=asdict(context), event_ref="event:other", bind=True)
+    envelope = a.envelope(event="event:other")
+    envelope["observation"]["context"] = asdict(context)
+    envelope["signature"] = encode64(a.key.sign(DOMAIN + canonical(envelope["observation"])))
+    if field in ("source_commit", "accepted_commit"):
+        with pytest.raises(BindingError):
+            a.store.observe(envelope=envelope)
+    else:
+        a.store.observe(envelope=envelope)
+        restarted, arguments = a.open(), asdict(context)
+        with pytest.raises(BindingError):
+            restarted.read(context=arguments, event_ref="event:other", bind=True)
 
 
 @pytest.mark.parametrize("change", ["signature", "root", "context", "scope", "profile", "extra", "future", "expired", "long", "event"])
@@ -80,16 +88,19 @@ def test_signed_observation_is_closed_current_and_independently_authenticated(a,
         envelope["signature"] = encode64(a.key.sign(DOMAIN + canonical(envelope["observation"])))
     with pytest.raises(BindingError):
         a.store.observe(envelope=envelope)
+    arguments = assigned(a)
     with pytest.raises(BindingError):
-        a.store.read(**assigned(a), bind=True)
+        a.store.read(**arguments, bind=True)
 
 
 def test_operation_read_cannot_create_binding_and_event_cannot_be_replaced(a):
     approve(a)
-    with pytest.raises(BindingError):a.store.read(**assigned(a), bind=False)
+    arguments = assigned(a)
+    with pytest.raises(BindingError):a.store.read(**arguments, bind=False)
     a.store.observe(envelope=a.envelope())  # exact retry only
+    conflicting = a.envelope(replace(a.b.context, run_id="999"))
     with pytest.raises(BindingError):
-        a.store.observe(envelope=a.envelope(replace(a.b.context, run_id="999")))
+        a.store.observe(envelope=conflicting)
     a.store.read(**assigned(a), bind=True)
 
 
@@ -124,12 +135,14 @@ def test_expired_authorization_and_observation_cannot_refresh_binding(a):
     approve(a)
     a.store.read(**assigned(a), bind=True)
     a.now += 51
-    with pytest.raises(BindingError):a.open().read(**assigned(a), bind=True)
+    restarted, arguments = a.open(), assigned(a)
+    with pytest.raises(BindingError):restarted.read(**arguments, bind=True)
     a.store.observe(envelope=a.envelope(event="event:refresh"))
     assert a.store.read(context=asdict(a.b.context), event_ref="event:refresh", bind=True)["bootstrap"]["expires_at"] == a.b.w.c.h.now + 60
     a.now += 10
+    restarted, context = a.open(), asdict(a.b.context)
     with pytest.raises(BindingError):
-        a.open().read(context=asdict(a.b.context), event_ref="event:refresh", bind=True)
+        restarted.read(context=context, event_ref="event:refresh", bind=True)
 
 
 
@@ -149,8 +162,9 @@ def test_first_claim_must_match_static_source_before_any_binding(a, change):
         "sha": "c" * 40, "workflow_sha": "c" * 40, "accepted_commit": "c" * 40, "source_commit": "c" * 40}
     context = replace(a.b.context, **changes)
     a.store.observe(envelope=a.envelope(context, "event:first"))
+    arguments = asdict(context)
     with pytest.raises(BindingError):
-        a.store.read(context=asdict(context), event_ref="event:first", bind=True)
+        a.store.read(context=arguments, event_ref="event:first", bind=True)
     with sqlite3.connect(a.root / "state" / DATABASE) as db:
         assert db.execute("SELECT context, configuration, grant_ref FROM preauthorizations").fetchone() == (None, None, None)
 
@@ -160,7 +174,8 @@ def test_expired_refusal_retains_clock_highwater_across_restart(a):
     approve(a)
     a.store.read(**assigned(a), bind=True)
     a.now += 61
-    with pytest.raises(BindingError):a.store.read(**assigned(a), bind=True)
+    arguments = assigned(a)
+    with pytest.raises(BindingError):a.store.read(**arguments, bind=True)
     a.now -= 60
     with pytest.raises(BindingError):a.open()
     with sqlite3.connect(a.root / "state" / DATABASE) as db:
@@ -181,3 +196,19 @@ def test_initializer_closes_connection_without_garbage_collection(a, monkeypatch
     assert len(opened) == 1
     with pytest.raises(sqlite3.ProgrammingError, match="closed"):
         opened[0].execute("SELECT 1")
+
+
+
+def test_cancellation_rolls_back_business_but_retains_clock(a, monkeypatch):
+    from workload_factory_binding_runtime.reference_authority import store
+    approve(a)
+    a.now += 1
+    def cancel(*args):raise KeyboardInterrupt()
+    monkeypatch.setattr(store, "verify_observation", cancel)
+    arguments = assigned(a)
+    with pytest.raises(KeyboardInterrupt):a.store.read(**arguments, bind=True)
+    with sqlite3.connect(a.root / "state" / DATABASE) as db:
+        assert db.execute("SELECT highwater FROM metadata").fetchone() == (a.now,)
+        assert db.execute("SELECT context FROM preauthorizations").fetchone() == (None,)
+    a.now -= 1
+    with pytest.raises(BindingError):a.open()

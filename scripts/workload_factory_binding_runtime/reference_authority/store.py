@@ -117,15 +117,14 @@ class AuthorityStore:
             # Retain that metadata under the same write lock while rolling back
             # every attempted claim/revoke/observation mutation on refusal.
             db.execute("SAVEPOINT business")
+            failed = True
             try:
                 yield db, now
                 require(_identity(self.directory) == self.identity, ERROR)
-            except Exception:
-                db.execute("ROLLBACK TO business")
-                db.execute("RELEASE business")
-                db.execute("COMMIT")
-                raise
-            else:
+                failed = False
+            finally:
+                if failed:
+                    db.execute("ROLLBACK TO business")
                 db.execute("RELEASE business")
                 db.execute("COMMIT")
         except Exception:

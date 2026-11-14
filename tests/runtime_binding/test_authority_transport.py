@@ -34,8 +34,9 @@ def test_real_mtls_roles_bootstrap_admission_restart_and_revocation(a):
                                  event_ref="event:assigned", deadline=a.now + 10)
     assert restarted.value == session.value
     service.clients["operator"].request("revoke", ref=a.b.context.preauthorization_ref, deadline=a.now + 10)
+    bindings = restarted.bindings(a.b.w.bindings)
     with pytest.raises(BindingError):
-        bootstrap(a.b.context, bindings=restarted.bindings(a.b.w.bindings))
+        bootstrap(a.b.context, bindings=bindings)
 
 
 @pytest.mark.parametrize("role,method", [("worker", "authorize"), ("worker", "observe"), ("worker", "claim"),
@@ -82,8 +83,9 @@ def test_selected_server_and_mutual_certificate_are_required(a, change):
     elif change == "ca":client.tls = ssl.create_default_context()
     else:
         client.tls = ssl.create_default_context(cafile=a.ca)  # no client certificate
+    arguments = assigned(a)
     with pytest.raises(BindingError, match="^workflow-input-unavailable$"):
-        client.request("claim", deadline=a.now + 10, **assigned(a))
+        client.request("claim", deadline=a.now + 10, **arguments)
 
 
 @pytest.mark.parametrize("raw", [b'{"a":1,"a":2}', b'{"a":NaN}', b'{"a":1.5}', b'[]', b'x' * 65537, '{"method":"claim"}'.encode('utf-16'),
@@ -161,8 +163,9 @@ def test_actual_response_errors_and_total_deadline_fail_closed(a, mode):
             client = AuthorityClient(port=server.server_port, ca_file=a.ca, cert_file=a.peers["reader"][0],
                 key_file=a.peers["reader"][1], server_fingerprint=a.peers["server"][2], clock=lambda: a.now)
             started = time.monotonic()
+            arguments = assigned(a)
             with pytest.raises(BindingError, match="^workflow-input-unavailable$"):
-                client.request("claim", deadline=a.now + 2, **assigned(a))
+                client.request("claim", deadline=a.now + 2, **arguments)
             assert time.monotonic() - started < 3
         finally:
             server.shutdown();thread.join(timeout=3)

@@ -68,3 +68,17 @@ exercise real cryptography; same-user fixture processes and keys do not establis
 deployed OS/administrative isolation, actual GitHub authentication, provider
 readback, human approval, setup authority or runtime acceptance. T013/T014/T015
 owner and operation gates remain incomplete.
+
+## Candidate review corrections
+
+The nine-role local panel covered architecture, performance, security, QA, static
+analysis, API integration, persistence, reliability and simplicity. Corrections
+move TLS handshakes into bounded workers, test worker claim and operation denial,
+close all fixture processes even during generator cancellation/startup failure,
+handle journal disappearance during concurrent refresh, close initializer database
+connections explicitly, and retain trusted clock high-water observations while
+rolling back failed or cancelled business operations. Negative tests isolate the
+intended refusal; integrated replay checks the underlying ledger refusal while the
+lease is still active, before cleanup can mask it. The corrected focused suite
+passes all 78 tests. Final full-suite, isolated-matrix and hosted-CI evidence is
+recorded separately; snippet analysis does not substitute for hosted review.
