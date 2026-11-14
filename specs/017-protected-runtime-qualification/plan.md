@@ -192,3 +192,26 @@ These documents propose the remaining source/target decisions; they do not
 implement an operational profile or select/deploy services. No source/test, pin,
 workflow, grant or provider configuration changes in this preparation. T013 stays
 unchecked and every setup/dispatch stage remains NOT GRANTED.
+
+
+## Proposed actual GitHub bootstrap source slice (not commissioned)
+
+Factory change `add-github-bootstrap-authentication` and
+[adapter proposal](github-bootstrap-proposal.md) recommend a new opt-in internal
+bootstrap profile. The owner must first accept the explicit bootstrap-only
+admission OIDC amendment, distinct verifier/audiences/phase policy, controlled
+orchestration/worker boundary and failure bounds. Reuse fixed issuer transport;
+keep the protected-proof verifier/environment requirement unchanged. Expected
+future modules live under `scripts/workload_factory_binding_runtime/github_bootstrap/`;
+workflow/entrypoint edits and `test_github_bootstrap*.py` follow only after source
+commissioning. No code, workflow or dependency is modified in this proposal.
+
+The planned sequence is T012G owner decision -> T012H verifier/client and T012I
+journal/controller -> T012J purpose/phase integration -> T012K isolated negative
+matrix -> T012L source review/ratification -> T012M independent T013 handoff.
+Durable attempt reservation precedes any future external I/O. The actual returned
+run/attempt must agree with signed identity, independent journal and provider
+readback. No dispatch retry/reset, phase/audience fallback or proof-policy
+relaxation is allowed. Main-update exposure and actual subject/credential/target
+selection stay unapproved. This is preparation, not an implementation commission
+or a grant to mint tokens, setup or dispatch.

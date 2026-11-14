@@ -60,6 +60,12 @@ ownership, validation, versioning, and release constraints.
   remains fixture-only, not an operational hosting/authentication selection.
   Feature 017 t013-decision-record.md and bootstrap-authentication-plan.md
   prepare source/target decisions; T013 and all setup/dispatch gates stay open.
+  Brett subsequently source-ratified adapter #63 at 54dd1e1d4dc6; it landed
+  normally as be41830acd16 with matching tree. Current proposal preparation
+  uses factory change add-github-bootstrap-authentication and feature017
+  github-bootstrap-proposal.md plus proposed T012G-M. Bootstrap-only admission
+  OIDC is an explicit unratified policy amendment; no implementation, token
+  mint, workflow permission edit, setup or dispatch is commissioned.
   Default operational bindings continue to refuse before outputs/OIDC.
   Production hosting stays unselected; no setup/dispatch is authorized.
   Deployed supervisor, custody, state, lifecycle and operation stay

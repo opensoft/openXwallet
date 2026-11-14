@@ -4,6 +4,13 @@ Status: FUTURE SOURCE DESIGN OPTION; no implementation, hosting, credential or d
 Updated: 2026-11-14
 Owner boundary: factory grammar; adapter feature 017 implementation; no neutral API promotion
 
+The subsequent factory-owned [real authentication proposal](github-bootstrap-proposal.md)
+now recommends an explicit bootstrap-only OIDC amendment as a separate source
+choice. This accepted preparation's strict no-preflight-OIDC basis remains the
+current default until a new profile is ratified/commissioned and implemented.
+Do not infer that GitHub technically requires an environment to issue any OIDC
+identity; the protected proof identity class and current policy are the constraint.
+
 ## Three different facts must be established
 
 1. An independently approved static selection/case/window authorizes one dispatch.
@@ -18,12 +25,14 @@ The default operational factory remains unselected and refuses before outputs/OI
 
 ## Proposed correlation route for a separately commissioned source proposal
 
-GitHub documents an optional `return_run_details` flag on workflow dispatch: a
-200 response then includes `workflow_run_id` and run URLs; false/default returns
-204 without those details. This endpoint requires repository Actions write for
-fine-grained tokens. This is documentation evidence, not a tested capability of
-our selected App or an authorization to call the endpoint. See
-[GitHub workflow dispatch API](https://docs.github.com/en/rest/actions/workflows#create-a-workflow-dispatch-event).
+Version correction in the subsequent real-authentication proposal: the selected
+`2026-03-10` dispatch schema has only `ref` and `inputs`, returning 200 with the
+run ID by default. The earlier preparation mixed the older `2022-11-28` optional
+`return_run_details`/204 behavior with a newer version header. Do not carry that
+flag into the proposed 2026 request. This corrects documentation only; no endpoint
+behavior has been tested and no dispatch is authorized. The endpoint requires
+repository Actions write for a selected fine-grained credential; see the
+[version-pinned workflow API](https://docs.github.com/en/rest/actions/workflows?apiVersion=2026-03-10#create-a-workflow-dispatch-event).
 
 A future selected trusted dispatch broker could journal the approved static
 selection digest, case, preauthorization, exact repository/workflow/main source,
@@ -34,9 +43,9 @@ at most one dispatch attempt after the separate one-dispatch owner decision;
 concurrent callers, restarts and crashes cannot send again. A crash before I/O
 may leave no run and still consumes this attempt; retain pending/indeterminate
 state for separately authorized reconciliation, never automatic release/reset.
-The winner could request run details and durably bind the returned run ID
-to that journal entry. `return_run_details` is an API option, not a fourth workflow
-input; accepted caller inputs remain exactly `accepted_commit`, `selection_digest`
+The winner could require the selected 2026 response and durably bind its run ID
+to that journal entry. The API body contains `ref` and the three configured workflow
+inputs; accepted caller inputs remain exactly `accepted_commit`, `selection_digest`
 and `preauthorization_ref`. Never use client-supplied run URLs as fetch targets.
 
 The API's main branch `ref` is not an atomic pin to an accepted SHA. Recheck the
@@ -71,21 +80,27 @@ reviewed selections, not existing grants.
 
 - Authenticate the broker journal/controller/readback channel independently of request bodies. Bind immutable repo/owner IDs, selected workflow ID/path, event `workflow_dispatch`, main ref, accepted source SHA, independently selected actor/dispatcher and exact run/attempt. Do not silently normalize changed names, refs or subjects.
 - Corroborate each required field from its authoritative source and record provenance. The implementation proposal must map exact API response fields and missing-field behavior. A public run record or signed copy of worker environment variables does not prove an approved dispatch or authentic client.
-- A 204 response is insufficient for this proposed direct-correlation route. Missing/malformed/mismatched response, unsupported API behavior or ambiguity refuses; do not select the newest run from a list, infer identity from time/title, predict an ID, trust worker outputs or fall back to matching only source/actor.
+- A legacy/unexpected 204 response is insufficient for this version-pinned route. Missing/malformed/mismatched response, unsupported API behavior or ambiguity refuses; do not select the newest run from a list, infer identity from time/title, predict an ID, trust worker outputs or fall back to matching only source/actor.
 - A timeout/lost response after the dispatch request may mean GitHub created a run. Retain dispatch-pending/indeterminate state and prohibit automatic retry/unbind/reset. Escalate to the named reconciliation owner. Manual attribution/cancellation needs separately authorized scope; this packet authorizes neither. Do not claim the API offers an idempotency key or exactly-once dispatch.
 - Observe no run/attempt as approved until its independent journal correlation is authenticated. Atomic authority binding, immutable static projection, current revocation and earliest deadlines remain required. A rerun/changed attempt needs a new decision and cannot inherit prior authority.
 - Require a new owner-approved operational source profile and implementation proposal; preserve the accepted fixture profile, neutral pins/APIs and seven runtime service roles. Bounded canonical signatures may carry controller observations only after actual observation authentication and issuance are qualified.
 
-## Admission identity remains a separate unresolved source gate
+## Strict-profile admission identity and the proposed alternative
 
 The API-returned ID does **not** authenticate the job making a bootstrap request.
-Preflight runs before the protected environment can supply job-scoped OIDC. Do not
+Preflight runs before the protected proof identity class is released; the current
+accepted profile does not permit a preflight OIDC request. Do not
 request an id-token to discover context, place signer credentials in admission,
 trust a worker hash, or assume a general repository token proves a run identity.
-A future source proposal must select and test narrow pre-OIDC admission-client
-credential issuance/delivery, service identity, run/case/static scope, expiry,
-revocation, worker exclusion and administrative control. Repository secrets,
-self-hosted admission identities or another control plane are not selected here.
+If strict no-preflight-OIDC is retained, a source proposal must select and test
+independent admission-client issuance/delivery, service identity, run/case/static
+scope, expiry, revocation, worker exclusion and administrative control. Repository
+secrets, self-hosted admission identities or another control plane are not selected.
+The newly proposed mode instead uses bootstrap-purpose GitHub OIDC after explicit
+owner source acceptance/commissioning; it does not require inventing a stored
+pre-OIDC credential for that mode. Actual audiences/subjects, trusted token-request
+transport and worker exclusion remain independent qualification gates. No new mode
+is implemented or selected by this preparation.
 Different principal strings or certificates alone do not establish this boundary.
 
 The existing real-workload OIDC verifier remains a later proof-gate input, with
@@ -102,7 +117,9 @@ most one external dispatch attempt under concurrent brokers, crash-before-I/O
 consumption and no reset/retry; main/source movement refusal; duplicate journal binding;
 restart/revocation and lost-response consumption; reader/controller/worker access
 denial with positive controls; actual client authentication and credential scope;
-no OIDC/outputs before admission; full config/lease/source/protection continuity;
+strict/default no-OIDC/no-output refusal; proposed-mode bootstrap-only identity
+before readiness with no outputs until verified admission and no protected-proof
+identity before environment approval; full config/lease/source/protection continuity;
 and independent cleanup after failure/cancellation/runner death preserving state.
 These are source acceptance criteria, not an added duplicate implementation list.
 
