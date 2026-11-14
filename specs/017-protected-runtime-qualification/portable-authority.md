@@ -1,8 +1,15 @@
 # Portable bootstrap authority candidate
 
-Status: commissioned source candidate; isolated fixture only. Setup and protected
+Status: source accepted and landed; isolated fixture only. Setup and protected
 dispatch are unauthorized. Feedback remains deferred; neither historical blocked
 write is replayed. Source acceptance and operational qualification remain separate.
+
+Source ratification/landing update: on 2026-11-14 Brett ratified factory #1312
+and adapter #61/#62 for source acceptance only; all three landed in order with
+matching accepted trees. See [owner/landing record](evidence.md#2026-11-14-source-ratification-and-ordered-landing).
+The candidate qualification/publication record below is retained as historical
+evidence. Current T013 preparation is in [decisions](t013-decision-record.md) and
+[authentication plan](bootstrap-authentication-plan.md); no operational use is approved.
 
 ## Scope and ownership
 
@@ -142,5 +149,6 @@ Final-head CI receipts are recorded on the candidate PR.
 Explicit GitHub Codex reviews were requested. The connector returned review-usage
 limit refusals; there is no completed connector review. The corrected nine-role
 local panel is source review evidence, with hosted Codex explicitly unverified.
-Source acceptance remains for the owner. T001/T013/T014/T015 and all setup,
+At the candidate-publication stage source acceptance remained for the owner;
+the later source ratification is recorded above. T001/T013/T014/T015 and all setup,
 protected dispatch, deployed isolation and human-approval gates remain unmarked.

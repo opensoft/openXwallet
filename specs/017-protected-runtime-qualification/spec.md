@@ -2,7 +2,7 @@
 
 **Feature Branch**: `017-protected-runtime-qualification`
 **Created**: 2026-11-12
-**Status**: T002–T011 source accepted and landed; isolated T012 workflow preparation candidate
+**Status**: T002–T012F source accepted and landed; T013 operational decision preparation only
 **Input**: Prepare the next runtime qualification step for the first codeXfactory pilot after #581 post-merge verification.
 **Governance owner**: `opensoft/openXfactory`, `openspec/changes/prepare-protected-runtime-qualification/`.
 
@@ -158,7 +158,7 @@ admission remain mandatory with the earliest deadline. Worker input or a hash
 cannot approve itself. Explicit input migration and as-built boundaries are in
 [workflow bootstrap](workflow-bootstrap.md). No setup/dispatch is authorized.
 
-## Commissioned portable bootstrap authority slice
+## Historical portable bootstrap authority commission (superseded by source landing)
 
 Brett commissioned the eight-hour portable reference authority and isolated
 wallet flow on 2026-11-14. Factory governance is
@@ -170,6 +170,18 @@ fixture control-plane observations. An authenticated client feeds unchanged
 bootstrap/admission and the owning wallet proof with independent cleanup.
 Real GitHub authentication and deployed administrative/OS isolation are not
 claimed. No neutral API/pin or production CLI activation is introduced.
-Candidate source acceptance and all setup/dispatch remain separate; T013–T015
-and human/domain gates remain unmarked. The adapter candidate stacks on #61
-until that documentation PR lands; this commission does not merge it.
+At that candidate stage, source acceptance and setup/dispatch were separate.
+The later owner instruction explicitly ratified and landed #1312/#61/#62,
+superseding the original no-merge/stacking limitation. T013–T015 and human/domain
+gates remain unmarked; source landing grants no setup or dispatch.
+
+
+## 2026-11-14 preparation boundary
+
+The source-ratified portable reference and preparation landings are recorded in
+[evidence](evidence.md#2026-11-14-source-ratification-and-ordered-landing).
+[T013 decisions](t013-decision-record.md) and the
+[authentication option](bootstrap-authentication-plan.md) identify remaining
+owner/source prerequisites. They add no executable contract or operational
+profile and grant no setup, dispatch, proof use, deployed independence, protected
+receipt or human/domain acceptance.

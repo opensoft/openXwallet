@@ -1,14 +1,31 @@
 # T013 Operational Selection Packet
 
-Status: refreshed preparation; operational selections incomplete; setup/dispatch NOT GRANTED
-Updated: 2026-11-13
+Status: source-accepted portable reference; T013 decision preparation; setup/dispatch NOT GRANTED
+Updated: 2026-11-14
 Governance: `opensoft/openXfactory`, `prepare-protected-runtime-qualification`
 Bootstrap amendment: `fix-protected-runtime-dispatch-bootstrap`
 Implementation list: [feature 017 tasks](tasks.md); T013 remains an owner act
 Decision draft: [scoped authorization](scoped-authorization.md)
 Accepted bootstrap and hosting gates: [bootstrap record](workflow-bootstrap.md)
 
-## Accepted source baselines
+## Current source acceptance and next decision
+
+Factory #1312 and adapter #61/#62 landed in the ratified order, with unchanged
+ratified trees. See the [owner/landing record](evidence.md#2026-11-14-source-ratification-and-ordered-landing).
+The accepted portable reference is described in [portable authority](portable-authority.md).
+The earlier bootstrap baselines below remain historical provenance; the current
+adapter source merge is `425606899116c4e7fe5d3c6fe3382c058081336b` and current
+factory source merge is `6604b55b980cba0c507f1e9c5de9b715282b5c35`.
+These are source baselines, not an approved execution `accepted_commit`.
+
+The concrete next decisions and dependency order are in the
+[T013 decision packet](t013-decision-record.md). The proposed authenticated
+GitHub correlation path and its remaining source/issuance gates are in
+[bootstrap authentication preparation](bootstrap-authentication-plan.md).
+Neither document supplies a runtime config, grant, credential or setup/dispatch
+command. T013 remains incomplete and all operational authority stays NOT GRANTED.
+
+## Earlier accepted source baselines
 
 Brett ratified factory #1311 at `6dadf188a0afa22e3c205561299f6045a9c95359`
 with adapter #60 at `78e7bbeabca250073d5896154ccc99bb163116cc` for source
@@ -63,8 +80,9 @@ Fresh independent bootstrap must bind selected source, repository, case,
 preauthorization, actual run/attempt, full config digest and operation grant.
 Existing environment/protection, source, authorization, scheduler and active
 lease checks follow, bounded by the earliest deadline. Bootstrap/admission repeat
-after environment approval. Actual authentication and atomic preauthorization
-consumption remain hosting qualification requirements. No worker hash, output
+after environment approval. The accepted reference now supplies atomic preauthorization consumption in
+isolation. Actual GitHub authentication, credential issuance, deployed durability
+and administrative independence remain hosting qualification requirements. No worker hash, output
 or boolean can stand in for either.
 
 The earlier input circularity is resolved in accepted source. The default
@@ -74,7 +92,7 @@ promotion require separate source integration/review before any operative run.
 
 ## Fresh repository and protection readback
 
-Read-only GitHub API inspection on 2026-11-13 established the following. These
+Read-only GitHub API inspection refreshed on 2026-11-14 established the following. These
 observations must be reacquired for an eventual operational decision/use:
 
 | Fact | Observed value | Operational meaning |
@@ -87,6 +105,7 @@ observations must be reacquired for an eventual operational decision/use:
 | Default workflow token | `read`; PR review approval disabled | Job-specific effective permissions remain separate readback |
 | OIDC subject settings | `use_default: true`, `use_immutable_subject: true` | Record actual provider settings; do not assume a name-only subject |
 | OIDC configured prefix | `repo:opensoft@638385/openXwallet@1347887821` | Exact full environment/workflow subject still needs selection/corroboration |
+| Protected workflow identity | ID `417795073`; `.github/workflows/protected-runtime-qualification.yml`; active | Workflow exists; this is not operational admission |
 | Protected qualification workflow runs | `0` | No protected qualification has been dispatched |
 
 OIDC settings came from the read-only repository
@@ -101,7 +120,7 @@ documents the configuration-read endpoint.
 ## Operational selection matrix
 
 Retain the earlier portable reference-service route, qualified in isolation.
-The proposed operational shape is a dedicated disposable **nonproduction** Linux
+The proposed operational shape remains a dedicated disposable **nonproduction** Linux
 deployment, with GitHub-hosted orchestration and independently administered
 runtime services. No provider, tenant, host/cluster/namespace or administration
 boundary has been selected. An existing bench or production target is not an
@@ -113,7 +132,7 @@ implicit deployment choice.
 | Final source set | Accepted factory/bootstrap/adapter baselines above | All eight source roles, relative content paths/digests, dependencies, composition, deployed image/launch measurements and later hosting client source acceptance |
 | Environment | Proposed new `wallet-mfa-pilot-qa` in the exact qualification repository | Approved name and create scope; actual assigned ID and effective protection after authorized setup |
 | Reviewer/dispatcher | 1–6 distinct User/Team reviewer IDs; self-review prevented; admin bypass disabled; exact `refs/heads/main` restriction | Distinct eligible reviewer and dispatcher, membership/permission readback; Brett cannot approve his own initiated run |
-| Bootstrap authority | Independently approved static digest and authenticated current reader; atomic one-preauthorization/one-run-attempt binding | Administrator/principal/client/trust/credential refs, actual GitHub context authentication, authoritative atomic consumption/revocation and freshness/readback evidence |
+| Bootstrap authority | Accepted reference provides durable atomic one-preauthorization/one-run-attempt binding; fixed fixture profile only | Administrator/principal/client/trust/credential refs, actual GitHub context authentication, authoritative atomic consumption/revocation and freshness/readback evidence |
 | Workload/issuer | Fixed GitHub issuer/discovery/JWKS; same-commit caller/reusable | Explicit audience, complete configured subject, exact claims/ref/source/measurement policy; preserve observed immutable prefix semantics |
 | Hosting/control plane | Nonproduction immutable accepted runtime; bounded authenticated worker channel | Exact provider/account/host or cluster/region/namespace IDs, network/OS policy and independent administrative ownership |
 | Supervisor | Worker cannot read keys/policy, alter observation or modify measured launch sources | Named administrator/principal/key/policy refs and actual OS/network/process denial evidence |
@@ -141,7 +160,11 @@ Authorize setup only through a separate explicit decision; created-resource
 identities and actual protection/readback are prerequisites for a later dispatch.
 
 After all rows and integrations are accepted, approve the static selection and
-preauthorization independently for one dispatch. Once assigned, independently
+preauthorization independently for one dispatch. A separately source-approved
+broker must durably reserve/consume the one dispatch attempt before external I/O;
+a lost response or crash never permits automatic retry/reset. This future dispatch
+phase is distinct from the accepted reference authority's actual-run binding.
+Once assigned, independently
 bind the final full config and current grant to its exact run/attempt. A changed
 source/ref, time window or selection requires reconciliation; a rerun never
 inherits authority. If `main` has moved, reconcile its exact workflow SHA before
