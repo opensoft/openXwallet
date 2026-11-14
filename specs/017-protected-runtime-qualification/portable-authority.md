@@ -112,3 +112,35 @@ removed run files while preserving shared and retained state. Both disposable
 native containers were absent. Fixture keys and temporary trees were then removed
 from the four owned evidence subdirectories after reports were retained. This
 cleanup does not remove the source checkouts or persistent unrelated bench data.
+
+## Published candidate and hosted qualification
+
+Factory source candidate [#1312](https://github.com/opensoft/openXfactory/pull/1312)
+at `b741ae396bc0c75622b69af6052b8cbacf9c57d2` has all runnable hosted checks passing.
+Its [pytest run](https://github.com/opensoft/openXfactory/actions/runs/43545972069)
+reports 10,391 passed tests, 747 passed subtests, six existing expected skips and
+338 PostgreSQL deselections. The generated ledger contains exactly the new
+proposal row with provenance #1312; no frozen baseline origin was edited.
+
+Adapter source candidate [#62](https://github.com/opensoft/openXwallet/pull/62)
+was qualified at `46bd27df1dc4c58177fbc8e1926b1dc3aa34ee41` by
+[hosted run43546919124](https://github.com/opensoft/openXwallet/actions/runs/43546919124):
+1,423 passed plus the three documented depth-one history skips in the ordinary
+suite, and all 1,124 tests passed in the required isolated matrix with no skips.
+The separate full-history carve and neutrality/pruning checks pass. Both PR
+Sonar quality gates are OK with zero open or confirmed issues.
+
+The branch descends from openXwallet #61. Existing ordinary CI only targets main,
+so #62 temporarily targeted main and used a normal PR reopen event. Both main and
+#61 are ancestors of the candidate, and the tested merge tree equals the candidate
+head tree byte-for-byte. The review base is restored to `017-operational-refresh`
+after final exact-head CI. No protected dispatch or CI-trigger policy change is
+used. This completion-record follow-up changes documentation/task status only;
+the qualified runtime and tests remain identical to the frozen implementation.
+Final-head CI receipts are recorded on the candidate PR.
+
+Explicit GitHub Codex reviews were requested. The connector returned review-usage
+limit refusals; there is no completed connector review. The corrected nine-role
+local panel is source review evidence, with hosted Codex explicitly unverified.
+Source acceptance remains for the owner. T001/T013/T014/T015 and all setup,
+protected dispatch, deployed isolation and human-approval gates remain unmarked.
