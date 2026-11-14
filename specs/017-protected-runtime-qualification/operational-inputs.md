@@ -8,6 +8,15 @@ Implementation list: [feature 017 tasks](tasks.md); T013 remains an owner act
 Decision draft: [scoped authorization](scoped-authorization.md)
 Accepted bootstrap and hosting gates: [bootstrap record](workflow-bootstrap.md)
 
+
+The subsequent planning commission uses the recommended T013 values as the
+[hosting/issuance design basis](hosting-issuance-selections.md). The new factory
+source proposal and [Speckit plan](hosting-issuance-plan.md) include an explicit
+static-v2/finalization prerequisite discovered in research; callbacks alone do not
+resolve unknown actual run/process digests. These are draft source proposals, not
+new operational selections, appointments or grants. T012N-V require source acceptance
+and commissioning first; T013 and all four operational stages remain ungranted.
+
 ## Current source acceptance and next decision
 
 Brett source-ratified [adapter #65](https://github.com/opensoft/openXwallet/pull/65#issuecomment-6881983735) at `ab34ff4ec4fe27d56c8fd09c99614785c23e760f` and directed landing when green, then T012M completion and T013 refresh. It merged normally as `366533bed77293b096b0a7dbda61399ff5dbafe5` on 2026-11-14 at 18:09:45 UTC. The merged tree `669a1b431f17d360fcf827a749a756e863ec9ed8` equals the ratified tree. Factory design #1314 is accepted at merge `3432baf6d929112be283d3daa1a4330a4130ab64` (tree `040d1de2563c5b826ebd93e1c14f6bc9d24688c8`); adapter #64 is its accepted preparation baseline. Earlier #1311/#60 and #1312/#61/#62 remain historical provenance.

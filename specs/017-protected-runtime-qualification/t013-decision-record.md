@@ -6,6 +6,15 @@ Governance: factory `prepare-protected-runtime-qualification`; adapter feature 0
 
 The [GitHub bootstrap design](github-bootstrap-proposal.md) was accepted in factory #1314 / adapter #64 and implemented, reviewed and source-ratified in [adapter #65](https://github.com/opensoft/openXwallet/pull/65#issuecomment-6881983735) at `ab34ff4ec4fe27d56c8fd09c99614785c23e760f`. #65 merged as `366533bed77293b096b0a7dbda61399ff5dbafe5` with matching ratified/merged tree `669a1b431f17d360fcf827a749a756e863ec9ed8`. T012L is complete; this T012M refresh hands operational decisions to T013 without choosing them.
 
+
+The subsequent planning commission uses the recommended T013 values as the
+[hosting/issuance design basis](hosting-issuance-selections.md). The new factory
+source proposal and [Speckit plan](hosting-issuance-plan.md) include an explicit
+static-v2/finalization prerequisite discovered in research; callbacks alone do not
+resolve unknown actual run/process digests. These are draft source proposals, not
+new operational selections, appointments or grants. T012N-V require source acceptance
+and commissioning first; T013 and all four operational stages remain ungranted.
+
 ## What is now accepted
 
 The portable authority and GitHub bootstrap source adapters are accepted within their isolated source/fixture scope. #65 provides actual RSA/loopback TLS, separate bootstrap/proof policy, durable dispatch-attempt journal, broker/provider correlation and phase-separated readiness. It passed 1,641 local full tests and 1,339 mandatory native cases without skips; all runnable ratified-head hosted checks passed with local expert closure. [Evidence](evidence.md#2026-11-14-65-source-acceptance-and-t012m-handoff) records the source decision and equal-tree landing. No separate merge-triggered adapter CI run was emitted at readback.

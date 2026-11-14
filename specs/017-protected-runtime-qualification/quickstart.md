@@ -322,3 +322,19 @@ services/state/lifecycle and explicit staged owner authority. Live qualify/clean
 clients and protected-machine receipt promotion require separately reviewed source.
 Do not bypass the default refusal or use fixture keys, stores, IDs or grants as
 operational inputs. Both protected workflows still have zero runs.
+
+
+## Hosting/issuance proposal is not activation
+
+[The proposed source plan](hosting-issuance-plan.md) and [selection basis](hosting-issuance-selections.md)
+are draft planning artifacts. The existing static-v1 and full preflight path do
+not solve the actual run/process composition precommit dependency. Do not fill
+unknown fields with fixture values, predict IDs, mutate accepted bytes, start a
+worker in read-only preflight or bypass source approval. A separately accepted v2
+source slice is required before the proposed host binding can be operative.
+
+T012N-V are proposed, unchecked and uncommissioned. Plan/status tool completion
+is not source ratification or implementation authority. No operational factory,
+listener, service unit, provider write, credential, setup or dispatch follows from
+this plan. Use only document/pinned-validator checks for preparation; later source
+qualification uses the reviewed [acceptance matrix](hosting-issuance-acceptance.md).

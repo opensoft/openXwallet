@@ -1,7 +1,7 @@
 # Tasks: Protected Machine Runtime Qualification
 
-Status: sole implementation list; T012G–L source accepted; T012M handoff complete; T013 preparation refreshed; operation unauthorized
-Current commission: 2026-11-14 source-ratify #65 at ab34ff4ec4fe, land when green, complete T012M and refresh T013; setup/dispatch remain unauthorized.
+Status: sole implementation list; T012G–M source handoff accepted; T012N-V hosting/finalization source tasks proposed only; operation unauthorized
+Current commission: 2026-11-14 prepare the factory-governed hosting/issuance source proposal and Speckit plan using recommended T013 choices; no source implementation or setup/dispatch is commissioned.
 Prior commission: 2026-11-13 verify #1311 post-merge CI and refresh T013 after paired
 source-only ratification/landing of #1311/#60. Setup and dispatch stay unauthorized.
 See [evidence](evidence.md), [selections](operational-inputs.md),
@@ -64,6 +64,27 @@ T012L's actual source acceptance and T012M's bounded handoff are recorded in
 - [x] T012L [O] Review, qualify and present paired source candidates for owner ratification; files: specs/017-protected-runtime-qualification/evidence.md; verify: full ordered gates, isolated matrix, exact-head hosted CI, local expert review receipts (hosted Codex request waived by the owner for this candidate), no unresolved source findings and actual owner acceptance; no operational grants or pin promotion.
 - [x] T012M [O] Reconcile the accepted source and hand off actual selection/authorization obligations to T013; files: specs/017-protected-runtime-qualification/operational-inputs.md, scoped-authorization.md, t013-decision-record.md; verify: main-update residual-exposure/control, actual subjects/target/identities/protection/issuance/state/cleanup remain operator decisions; setup/dispatch NOT GRANTED and T013/T014/T015 unchecked.
 
+### Proposed hosting/issuance source work — not ratified or commissioned
+
+Factory owner: `add-protected-runtime-hosting-issuance`. The user commissioned
+proposal/plan preparation using the T013 recommendations, not implementation or
+operational authority. [Hosting plan](hosting-issuance-plan.md), [research](hosting-issuance-research.md),
+[model](hosting-issuance-model.md), [interfaces](contracts/hosting-issuance.md),
+[selection basis](hosting-issuance-selections.md) and [acceptance](hosting-issuance-acceptance.md)
+are draft inputs. They expose the run/process-digest precommit dependency and
+propose explicit v2 plan-only preflight/protected staging/finalization, rather than
+silently changing accepted v1. No proposed checkbox is completed by preparation.
+
+- [ ] T012N [O] Obtain actual owner acceptance of the factory-owned static-v2/phase/finalization, hosting/issuance/admin/software-custody/failure model and explicit isolated source commission; files: feature017 evidence.md; verify: exact reviewed source proposal/plan heads and accepted bounds, with no operational grant inferred.
+- [ ] T012O [O] Implement separately typed static-v2 plan, read-only plan preflight and deterministic measured finalization; files: scripts/workload_factory_binding_runtime/hosted/**, bootstrap.py, workflow.py, github_bootstrap/**, tests/runtime_binding/test_hosted_finalization.py; verify: H01/H02/H04, exact four late fields, no prediction/dummy hashes/v1 change, protected phase only, independent complete-byte final authority and unchanged full proof admission.
+- [ ] T012P [O] Implement bounded actual enrollment/issuance and host credential boundaries; files: scripts/workload_factory_binding_runtime/hosted/**, custody.py, tests/runtime_binding/test_hosted_issuance.py; verify: H06/H07, actual protocol/crypto positives, wrong key/role/nonce/scope/expiry and worker IMDS/resolver/signing denials, no Key Vault Ed25519/HSM or process-isolated MI claim, independent retirement.
+- [ ] T012Q [O] Implement current provider/protection/source/hold/issuer/guest/state readback adapters; files: scripts/workload_factory_binding_runtime/hosted/**, config.py, tests/runtime_binding/test_hosted_readback.py; verify: H08/H09 independent observed-fact mutations, required typed provider fields and branch type, actual provenance, bounded current deadlines and no copied-candidate or atomic-main guarantee.
+- [ ] T012R [O] Connect selected host agents/controller ingress and immutable inert worker launch under separate protected staging grant; files: scripts/workload_factory_binding_runtime/hosted/**, launch.py, supervisor.py, CLI/workflow opt-in integration and tests/runtime_binding/test_hosted_launch.py; verify: H03/H07, registration acknowledged before one start, authenticated exact host/unit/generation, no preflight effects/worker control identity/default activation, bounded status-only reconciliation.
+- [ ] T012S [O] Implement staging lease, immutable final takeover and independent scheduler/janitor/audit integration; files: scripts/workload_factory_binding_runtime/hosted/**, lifecycle.py, state.py, tests/runtime_binding/test_hosted_lifecycle.py; verify: H05/H11 fault at every boundary, no cleanup gap/renewal/reset/replacement launch, unchanged retained/shared generations and explicit external-watchdog/conditional-infrastructure retirement gate.
+- [ ] T012T [O] Integrate future actual qualification/cleanup clients and separately versioned protected report source; files: scripts/workload_factory_binding_runtime/hosted/**, evidence.py, CLI, tests/runtime_binding/test_hosted_evidence.py; verify: H10/H12 owning proof/replay and crypto-sensitive barriers, no offline-suite substitution or fixture report relabeling, actual-case/source/issuance/cleanup requirements, no consumer/human/domain acceptance.
+- [ ] T012U [O] Extend isolated conformance and operator source runbook; files: tests/runtime_binding/test_hosted_*.py, matrix_contract.py, feature017 quickstart/evidence; verify: all H01-H12 groups, independent positives/mutations, actual local process/TLS/owning proof/cleanup, all old nodes retained and zero missing/skipped/deselected matrix cases; no live credentials/dispatch in gates.
+- [ ] T012V [O] Review, qualify/publish source candidates for actual owner acceptance and refreshed T013 handoff; files: feature017 evidence/selections/scoped-authority, factory governance evidence; verify: pinned ordered gates, exact-head CI/local Codex review per owner preference, real source decision/cleanup and remaining operational selections/authority explicitly ungranted.
+
 ### Operational owner gates — not granted
 
 - [ ] T013 [O] Obtain operational selections and scoped setup/dispatch authorization; files: specs/017-protected-runtime-qualification/evidence.md, operational-inputs.md, scoped-authorization.md, t013-decision-record.md, bootstrap-authentication-plan.md; verify: all operational-input categories have approved non-secret references and independent readback. This is an owner/operator act.
@@ -74,7 +95,8 @@ T012L's actual source acceptance and T012M's bounded handoff are recorded in
 
 T001 -> T002/T003 -> T004/T005 -> T006/T007/T008 -> T009/T010/T011 -> T012 ->
 T012B -> T012C/T012D -> T012E -> T012F -> T012G -> T012H/T012I ->
-T012J -> T012K -> T012L -> T012M -> T013 -> T014 -> T015. US1 is the smallest useful slice. No parallel-agent
+T012J -> T012K -> T012L -> T012M -> proposed T012N -> T012O/T012P/T012Q ->
+T012R -> T012S/T012T -> T012U -> T012V -> T013 -> T014 -> T015. US1 is the smallest useful slice. No parallel-agent
 implementation is required. Factory governance and consumer handoff duplicate
 no implementation list. Future paths are proposed; reconcile them against
 reviewed code during commissioned implementation without widening scope.

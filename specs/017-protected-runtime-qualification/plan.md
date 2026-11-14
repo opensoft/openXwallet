@@ -275,3 +275,23 @@ and relying-party policy, App effective scope/originator/reviewers, protection,
 initialized retained stores and independent cleanup/readback, and an explicit
 main-update coordination or bounded-residual-exposure decision. Every setup/dispatch
 stage stays NOT GRANTED; no source acceptance or CI result supplies that authority.
+
+
+## Proposed hosting/issuance source planning
+
+The user commissioned preparation of factory change
+`add-protected-runtime-hosting-issuance` and this feature's
+[hosting/issuance plan](hosting-issuance-plan.md), using the recommended
+[T013 design basis](hosting-issuance-selections.md). This does not ratify or
+commission the new source profile. Proposed T012N-V in tasks.md stay unchecked.
+
+Research found a material remaining source prerequisite: static-v1 commits
+composition/policy digests derived from actual run/process data. The proposed
+versioned plan-only preflight, protected staging lease and measured finalization
+resolve that dependency without predicting IDs/hashes or weakening full admission.
+[Research](hosting-issuance-research.md), [model](hosting-issuance-model.md),
+[internal interfaces](contracts/hosting-issuance.md) and
+[acceptance matrix](hosting-issuance-acceptance.md) define the future source slice.
+Current v1/default, neutral pins/APIs, runtime/tests/workflows remain unchanged.
+T001/T013/T014/T015 and every setup/dispatch stage remain ungranted; feedback is
+deferred and neither historical blocked write is replayed.
