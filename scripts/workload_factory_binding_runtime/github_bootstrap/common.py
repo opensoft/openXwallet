@@ -6,7 +6,7 @@ import time
 from workload_factory_binding.evidence import BindingError, canonical, integer, require
 from . import ERROR
 
-NUMBER = re.compile(r"[1-9][0-9]{0,15}\Z")
+NUMBER = re.compile(r"[1-9]\d{0,15}\Z", flags=re.ASCII)
 SHA = re.compile(r"[0-9a-f]{40}\Z")
 
 def number(value):
@@ -60,3 +60,8 @@ class Decision:
         require(integer(expiry), ERROR)
         self.deadline = min(self.deadline, expiry)
         self.now()
+
+    def remaining(self):
+        """Remaining seconds for nested bounded I/O, without extending this decision."""
+        self.now()
+        return min(self.deadline - self.last, self.end - self.last_mono)

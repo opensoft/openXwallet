@@ -5,7 +5,7 @@ from workload_factory_binding.evidence import (BindingError, canonical, digest,
 from ..bootstrap import BootstrapBindings, BootstrapReadback, selection_digest, selection_document, validate_dispatch_context
 from ..config import _configuration, _handle
 from ..workflow import WorkflowBindings, OperationReadback
-from . import ERROR, PROFILE
+from . import ERROR, PROFILE, USER_AGENT
 from .common import Decision, closed, document
 from .https import Https, Response
 
@@ -58,7 +58,7 @@ class ReadinessClient:
             token = self.token_client.acquire(environment, decision=decision)
             raw = canonical({"profile": PROFILE, "context": asdict(context), "token": token})
             response = self.transport.exchange("POST", self.endpoint,
-                headers={"Content-Type": "application/json", "Accept": "application/json", "Accept-Encoding": "identity"},
+                headers={"Content-Type": "application/json", "Accept": "application/json", "User-Agent": USER_AGENT, "Accept-Encoding": "identity"},
                 body=raw, decision=decision)
             decision.now()
             require(type(response) is Response and response.status == 200, ERROR)
@@ -112,17 +112,21 @@ class Session:
         validate_dispatch_context(context)
         self.client, self.context, self.environment = client, context, environment
         self.bootstrap_principal, self.operation_principal = bootstrap_principal, operation_principal
+        self.deadline = deadline
         self.value = self._read(deadline)
         self.raw = canonical(self.value["configuration"])
 
     def _read(self, deadline):
         try:
+            require(integer(deadline), ERROR)
+            deadline = min(deadline, self.deadline)
             value = self.client.read(self.context, environment=self.environment, deadline=deadline)
             validate_response(value, self.context, bootstrap_principal=self.bootstrap_principal,
                 operation_principal=self.operation_principal, now=self.client.clock(), deadline=deadline)
             if hasattr(self, "value"):
                 require(value["configuration"] == self.value["configuration"]
                         and value["bootstrap"]["operation_grant_ref"] == self.value["bootstrap"]["operation_grant_ref"], ERROR)
+            self.deadline = min(self.deadline, deadline, value["bootstrap"]["expires_at"], value["operation"]["expires_at"])
             return value
         except Exception:
             raise BindingError(ERROR) from None

@@ -126,12 +126,15 @@ def row(g):
 def test_dispatch_is_durably_consumed_before_one_fixed_version_request(g):
     g.send.hook = lambda: (len(row(g)) == 1 and row(g)[0][-1] is None) or pytest.fail("dispatch not reserved")
     assert dispatch(g) == "789"
-    assert len(g.send.sent) == 1 and row(g)[0][-1] == "789"
+    assert len(g.send.sent) == 1
+    assert row(g)[0][-1] == "789"
     (method, url), args = g.send.sent[0]
-    assert method == "POST" and url == API + "/repos/opensoft/openXwallet/actions/workflows/1234/dispatches"
+    assert method == "POST"
+    assert url == API + "/repos/opensoft/openXwallet/actions/workflows/1234/dispatches"
     assert args["headers"]["X-GitHub-Api-Version"] == VERSION == "2026-03-10"
     request = json.loads(args["body"])
-    assert set(request) == {"ref", "inputs"} and request["ref"] == "main"
+    assert set(request) == {"ref", "inputs"}
+    assert request["ref"] == "main"
     assert set(request["inputs"]) == {"accepted_commit", "selection_digest", "preauthorization_ref"}
     assert "return_run_details" not in request
     assert row(g)[0][3:5] == ("88", "77")
@@ -154,7 +157,9 @@ def test_ambiguous_dispatch_never_retries_or_rebinds_after_restart(g, failure):
                 "string-id": b'{"workflow_run_id":"789"}', "oversize": b"x" * 65537}.get(failure, b"{}")
         g.send.response = Response(status, body)
     with pytest.raises(BindingError, match="^" + ERROR + "$"): dispatch(g)
-    assert len(row(g)) == 1 and row(g)[0][-1] is None and len(g.send.sent) == 1
+    assert len(row(g)) == 1
+    assert row(g)[0][-1] is None
+    assert len(g.send.sent) == 1
     g.journal = g.open()
     with pytest.raises(BindingError): correlate(g)
     assert not g.reads.calls  # A valid token/public run cannot manufacture lost correlation.
@@ -180,8 +185,11 @@ def test_reserved_winner_rechecks_after_blocking_work_and_sends_zero(g, boundary
             if len(calls) == 2: change()
             return SourceReadback("principal:source-reader", g.source, g.now, g.now + 20)
         broker.read_source = source
-    with pytest.raises(BindingError): broker.dispatch(g.approval.ref, decision=g.decision())
-    assert len(row(g)) == 1 and row(g)[0][-1] is None and not g.send.sent
+    use = g.decision()
+    with pytest.raises(BindingError): broker.dispatch(g.approval.ref, decision=use)
+    assert len(row(g)) == 1
+    assert row(g)[0][-1] is None
+    assert not g.send.sent
 
 
 def test_concurrent_brokers_have_exactly_one_durable_winner(g):
@@ -189,7 +197,8 @@ def test_concurrent_brokers_have_exactly_one_durable_winner(g):
         try: return dispatch(g)
         except BindingError: return "refused"
     with ThreadPoolExecutor(max_workers=8) as pool: results = list(pool.map(attempt, range(8)))
-    assert results.count("789") == 1 and results.count("refused") == 7
+    assert results.count("789") == 1
+    assert results.count("refused") == 7
     assert len(g.send.sent) == len(row(g)) == 1
 
 
@@ -205,7 +214,8 @@ def test_process_crash_before_io_stays_consumed_after_restart(g):
     finally:
         if process.is_alive(): process.kill();process.join(timeout=2)
         process.close()
-    assert len(row(g)) == 1 and row(g)[0][-1] is None
+    assert len(row(g)) == 1
+    assert row(g)[0][-1] is None
     with pytest.raises(BindingError): dispatch(g)
     assert not g.send.sent
 
@@ -238,9 +248,12 @@ def test_expired_business_refusal_retains_clock_highwater(g):
 def test_independent_run_api_and_signed_identity_corroborate_both_phases(g):
     dispatch(g)
     pre = correlate(g)
-    assert pre.phase == "preflight" and pre.run_id == "789" and pre.valid_until <= g.now + 10
+    assert pre.phase == "preflight"
+    assert pre.run_id == "789"
+    assert pre.valid_until <= g.now + 10
     post = correlate(g, "protected")
-    assert post.phase == "protected" and g.w.c.h.calls == 0
+    assert post.phase == "protected"
+    assert g.w.c.h.calls == 0
     assert len(g.reads.calls) == 7
     assert all(method == "GET" and url.startswith(API + "/repos/opensoft/openXwallet/") for method, url, _ in g.reads.calls)
     assert all(a["headers"]["Authorization"] == "Bearer reader-credential-canary" for _, _, a in g.reads.calls)
@@ -334,7 +347,9 @@ def test_dispatch_cancellation_after_reservation_is_not_a_retry_grant(g):
     def cancelled(): raise KeyboardInterrupt
     g.send.hook = cancelled
     with pytest.raises(KeyboardInterrupt): dispatch(g)
-    assert len(row(g)) == 1 and row(g)[0][-1] is None and not g.send.sent
+    assert len(row(g)) == 1
+    assert row(g)[0][-1] is None
+    assert not g.send.sent
     g.send.hook = None
     with pytest.raises(BindingError): dispatch(g)
     assert not g.send.sent
@@ -352,7 +367,8 @@ def test_provider_read_budget_is_shared_by_helpers_in_one_decision(g):
     use = g.decision()
     provider = ProviderReader(credential=lambda deadline: "reader-only", transport=g.reads)
     for _ in range(4): provider.decision("opensoft/openXwallet", use).run("789")
-    with pytest.raises(BindingError): provider.decision("opensoft/openXwallet", use).run("789")
+    final_reader = provider.decision("opensoft/openXwallet", use)
+    with pytest.raises(BindingError): final_reader.run("789")
     assert len(g.reads.calls) == 4
 
 
@@ -367,8 +383,10 @@ def test_source_readback_cannot_be_stale_or_self_reported(g, change):
     elif change == "floating-time": value = replace(value, observed_at=float(g.now))
     else: value = {"sha": g.source, "approved": True}
     broker.read_source = lambda deadline: value
-    with pytest.raises(BindingError): broker.dispatch(g.approval.ref, decision=g.decision())
-    assert not row(g) and not g.send.sent
+    use = g.decision()
+    with pytest.raises(BindingError): broker.dispatch(g.approval.ref, decision=use)
+    assert not row(g)
+    assert not g.send.sent
 
 
 @pytest.mark.parametrize("field", ["scope", "request"])
@@ -379,3 +397,166 @@ def test_persisted_scope_and_dispatch_bytes_cannot_diverge_from_approval(g, fiel
     with pytest.raises(BindingError): correlate(g)
     assert not g.reads.calls
     assert len(row(g)) == 1
+
+
+@pytest.mark.parametrize("suffix", ["; python3 worker.py preflight", "\npython3 worker.py preflight", " && python3 worker.py preflight", " | python3 worker.py preflight"])
+def test_phase_command_requires_complete_exact_match_not_prefix_and_last_word(g, suffix):
+    reusable = yaml.load(g.graph.reusable, Loader=yaml.BaseLoader)
+    reusable["jobs"]["admission"]["steps"][-1]["run"] += suffix
+    raw = yaml.safe_dump(reusable).encode()
+    selected = json.loads(g.approval.selection)
+    selected["configuration"]["sources"]["reusable_workflow"]["digest"] = byte_digest(raw)
+    approved = replace(g.approval, selection=canonical(selected))
+    graph = replace(g.graph, reusable=raw)
+    with pytest.raises(BindingError): validate_graph(graph, approved)
+
+@pytest.mark.parametrize("change", ["guard", "phase-order", "action-order", "admit-id", "cleanup-if", "timeout-zero"])
+def test_exact_job_phase_and_step_structure_is_required_after_hash_approval(g, change):
+    reusable = yaml.load(g.graph.reusable, Loader=yaml.BaseLoader)
+    admission = reusable["jobs"]["admission"]
+    protected = reusable["jobs"]["protected-qualification"]
+    if change == "guard": protected["if"] = "${{ always() }}"
+    elif change == "phase-order": protected["steps"][3], protected["steps"][4] = protected["steps"][4], protected["steps"][3]
+    elif change == "action-order": admission["steps"][0], admission["steps"][1] = admission["steps"][1], admission["steps"][0]
+    elif change == "admit-id": admission["steps"][-1]["id"] = "different"
+    elif change == "cleanup-if": del protected["steps"][-1]["if"]
+    else: admission["timeout-minutes"] = "0"
+    raw = yaml.safe_dump(reusable).encode()
+    selected = json.loads(g.approval.selection)
+    selected["configuration"]["sources"]["reusable_workflow"]["digest"] = byte_digest(raw)
+    approved = replace(g.approval, selection=canonical(selected))
+    graph = replace(g.graph, reusable=raw)
+    with pytest.raises(BindingError): validate_graph(graph, approved)
+
+@pytest.mark.parametrize("caller,called,ref", [("bare", "full", None), ("short", "full", REF), ("bare", "short", REF), ("short", "short", REF)])
+def test_documented_rest_path_forms_map_only_to_selected_main_and_sha(g, caller, called, ref):
+    dispatch(g)
+    if caller == "short": g.run["path"] = CALLER + "@main"
+    reference = g.run["referenced_workflows"][0]
+    if called == "short": reference["path"] = "opensoft/openXwallet/" + REUSABLE + "@main"
+    if ref is not None: reference["ref"] = ref
+    assert correlate(g).run_id == "789"
+
+@pytest.mark.parametrize("change", ["short-no-ref", "short-tag-ref", "full-conflicting-ref", "foreign-path", "caller-tag", "caller-case", "caller-extra-suffix"])
+def test_rest_wire_mapping_refuses_ambiguous_or_changed_source(g, change):
+    dispatch(g)
+    reference = g.run["referenced_workflows"][0]
+    if change.startswith("short"):
+        reference["path"] = "opensoft/openXwallet/" + REUSABLE + "@main"
+        if change == "short-tag-ref": reference["ref"] = "refs/tags/main"
+    elif change == "full-conflicting-ref": reference["ref"] = "refs/tags/main"
+    elif change == "foreign-path": reference["path"] = "foreign/openXwallet/" + REUSABLE + "@main"
+    elif change == "caller-tag": g.run["path"] = CALLER + "@refs/tags/main"
+    elif change == "caller-case": g.run["path"] = CALLER.replace("workflows", "Workflows")
+    else: g.run["path"] = CALLER + "@main@other"
+    with pytest.raises(BindingError): correlate(g)
+
+
+def test_expired_reservation_never_resolves_credential_after_journal_returns(g):
+    broker, use, credentials = g.broker(), g.decision(), []
+    original = broker.journal.reserve
+    def delayed(approval, request, **arguments):
+        original(approval, request, **arguments)
+        g.now += 11
+    broker.journal.reserve = delayed
+    def credential(deadline):
+        credentials.append(deadline)
+        return "unused-fixture-credential"
+    broker.credential = credential
+    with pytest.raises(BindingError): broker.dispatch(g.approval.ref, decision=use)
+    assert not credentials
+    assert not g.send.sent
+    assert len(row(g)) == 1
+    assert row(g)[0][-1] is None
+
+
+def test_late_journal_commit_refuses_success_but_retains_correlated_consumption(g):
+    broker, use, budgets = g.broker(), g.decision(), []
+    original = broker.journal.record_run
+    def delayed(approval, run_id, **arguments):
+        budgets.append(arguments["budget"])
+        original(approval, run_id, **arguments)
+        g.now += 3
+    broker.journal.record_run = delayed
+    g.send.hook = lambda: setattr(g, "now", g.now + 8)
+    with pytest.raises(BindingError): broker.dispatch(g.approval.ref, decision=use)
+    assert 0 < budgets[0] <= 2
+    assert g.now >= use.deadline
+    assert row(g)[0][-1] == "789"
+    assert len(g.send.sent) == 1
+    with pytest.raises(BindingError): dispatch(g)
+    assert len(g.send.sent) == 1
+
+
+def test_journal_lock_wait_honors_remaining_caller_budget(g):
+    import time
+    lock = sqlite3.connect(g.root / DATABASE, isolation_level=None)
+    lock.execute("BEGIN IMMEDIATE")
+    try:
+        started = time.monotonic()
+        with pytest.raises(BindingError): g.journal.read(g.approval, budget=0.05)
+        assert time.monotonic() - started < 1
+    finally:
+        lock.execute("ROLLBACK")
+        lock.close()
+
+@pytest.mark.parametrize("component", ["reader", "broker"])
+@pytest.mark.parametrize("include_agent", [True, False])
+def test_actual_rest_wire_requires_fixed_user_agent(g, tmp_path, monkeypatch, component, include_agent):
+    from .test_github_bootstrap_identity import loopback
+    from workload_factory_binding_runtime.github_bootstrap import USER_AGENT
+    from workload_factory_binding_runtime.github_bootstrap import provider as reader_module
+    from workload_factory_binding_runtime.github_bootstrap import broker as broker_module
+    with loopback(tmp_path, post=lambda raw: canonical({"workflow_run_id": 789}), require_user_agent=True) as (tls, endpoint, requests):
+        origin = endpoint.rsplit("/", 1)[0]
+        class SelectedTransport:
+            def exchange(self, *arguments, headers, **keywords):
+                selected = dict(headers)
+                if not include_agent: selected.pop("User-Agent")
+                return tls.exchange(*arguments, headers=selected, **keywords)
+        if component == "reader":
+            monkeypatch.setattr(reader_module, "API", origin)
+            provider = ProviderReader(credential=lambda deadline: "fixture-reader-only", transport=SelectedTransport())
+            reads = provider.decision("opensoft/openXwallet", g.decision())
+            operation = lambda: reads.run("789")
+        else:
+            monkeypatch.setattr(broker_module, "API", origin)
+            broker = g.broker()
+            broker.transport = SelectedTransport()
+            use = g.decision()
+            operation = lambda: broker.dispatch(g.approval.ref, decision=use)
+        if include_agent:
+            assert operation() is not None
+        else:
+            with pytest.raises(BindingError): operation()
+        assert len(requests) == 1
+        assert requests[0][1].get("User-Agent") == (USER_AGENT if include_agent else None)
+
+
+def test_concurrent_commit_can_remove_delete_journal_before_sidecar_stat(g, monkeypatch):
+    dispatch(g)
+    database = g.journal.directory / DATABASE
+    sidecar = g.journal.directory / (DATABASE + "-journal")
+    other = sqlite3.connect(database, isolation_level=None)
+    committed = []
+    original = Path.lstat
+    try:
+        other.execute("BEGIN IMMEDIATE")
+        other.execute("UPDATE metadata SET highwater=highwater+1")
+        assert sidecar.exists()
+        def concurrent_commit(path, *args, **kwargs):
+            if path == sidecar and not committed:
+                other.execute("COMMIT")
+                committed.append(True)
+            return original(path, *args, **kwargs)
+        monkeypatch.setattr(Path, "lstat", concurrent_commit)
+        # Another client finishes its normal DELETE-journal transaction exactly
+        # before this reader measures the sidecar. It must not look like damage.
+        g.now += 1
+        assert g.journal.read(g.approval) == "789"
+        assert committed == [True]
+        assert not sidecar.exists()
+    finally:
+        if other.in_transaction:
+            other.rollback()
+        other.close()

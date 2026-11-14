@@ -72,9 +72,11 @@ def test_opt_in_admission_uses_distinct_intrinsic_phase_routes_and_fresh_authori
     dispatch(g)
     selected, pairs = bindings(g)
     assert admit_github(g.context, bindings=selected, phase="preflight", environment=ENV).run_id == "789"
-    assert pairs[0][1].calls and not pairs[1][1].calls
+    assert pairs[0][1].calls
+    assert not pairs[1][1].calls
     assert admit_github(g.context, bindings=selected, phase="protected-admission", environment=ENV).run_id == "789"
-    assert pairs[1][1].calls and g.w.c.h.calls == 0
+    assert pairs[1][1].calls
+    assert g.w.c.h.calls == 0
     # A still-valid identity is never sufficient after current operator revocation.
     g.approval = replace(g.approval, revoked=True)
     with pytest.raises(BindingError): admit_github(g.context, bindings=selected, phase="preflight", environment=ENV)
@@ -125,7 +127,9 @@ def test_actual_cli_new_protected_phase_still_refuses_before_token_access(tmp_pa
         ACTIONS_ID_TOKEN_REQUEST_URL="https://127.0.0.1:9/forbidden", ACTIONS_ID_TOKEN_REQUEST_TOKEN="private-capability-canary")
     result = subprocess.run([sys.executable, "-I", "-B", str(ROOT / "scripts/prepare-protected-runtime.py"), "--phase", "protected-admission"],
         cwd=tmp_path, env=env, capture_output=True, text=True, timeout=10)
-    assert result.returncode == 2 and result.stdout == "" and result.stderr.strip() == "workflow-operational-host-unselected"
+    assert result.returncode == 2
+    assert result.stdout == ""
+    assert result.stderr.strip() == "workflow-operational-host-unselected"
     assert not output.exists()
 
 
@@ -152,7 +156,8 @@ def test_github_correlated_owning_proof_replay_and_independent_cleanup(g, k, req
         selected, pairs = bindings(g, replace(g.w.bindings, runtime_trust=c.trust, lifecycle=janitor.life,
             read_scheduler=lambda ref, deadline: selected_scheduler))
         admitted = admit_github(g.context, bindings=selected, phase="protected-admission", environment=ENV)
-        assert admitted.config_digest == digest(c.config) and c.h.calls == 0
+        assert admitted.config_digest == digest(c.config)
+        assert c.h.calls == 0
         # A signed worker-context token is denied by the same positive controller.
         worker_request = canonical({"profile": PROFILE, "context": asdict(g.context),
             "token": g.token("protected", job_workflow_ref="opensoft/openXwallet/.github/workflows/worker.yml@refs/heads/main")})
@@ -185,7 +190,8 @@ def test_github_correlated_owning_proof_replay_and_independent_cleanup(g, k, req
             process = multiprocessing.get_context("fork").Process(target=runner)
             process.start()
             try:
-                assert parent.poll(8) and parent.recv_bytes() == b"proof-complete"
+                assert parent.poll(8)
+                assert parent.recv_bytes() == b"proof-complete"
                 process.kill();process.join(timeout=4);assert not process.is_alive()
                 k.c.h.now = janitor.plan.expires_at;janitor.clock.value = janitor.plan.expires_at
                 end = time.monotonic() + 5
@@ -202,7 +208,8 @@ def test_github_correlated_owning_proof_replay_and_independent_cleanup(g, k, req
             result = one_use(run)
             from openwallet_runtime.proof import verify_proof
             proof = verify_proof(result["proof"], expected_digest=k.c.h.challenge.digest, binding=k.c.h.binding, now=k.c.h.now)
-            assert proof.subject_ref == k.c.h.binding.subject_ref and result["human_approval"] is False
+            assert proof.subject_ref == k.c.h.binding.subject_ref
+            assert result["human_approval"] is False
             if outcome == "failure": raise RuntimeError("after-proof")
             if outcome == "cancel": raise KeyboardInterrupt()
             return result
@@ -220,7 +227,8 @@ def test_github_correlated_owning_proof_replay_and_independent_cleanup(g, k, req
     assert_removed(janitor)
     assert (janitor.root / "shared").read_bytes() == retained["shared"]
     with sqlite3.connect(k.c.h.ledger.path) as db: assert db.execute("SELECT count(*) FROM reservations").fetchone() == (1,)
-    assert len(row(g)) == 1 and row(g)[0][-1] == "789"
+    assert len(row(g)) == 1
+    assert row(g)[0][-1] == "789"
 
 
 def test_actual_tls_readiness_authenticates_signed_identity_and_denies_worker(g, tmp_path):
@@ -234,8 +242,67 @@ def test_actual_tls_readiness_authenticates_signed_identity_and_denies_worker(g,
             audience=g.approval.policy("789", "preflight").audience, transport=token), clock=lambda: g.now, transport=transport)
         session = Session(client, context=g.context, environment=ENV, deadline=g.now + 10,
             bootstrap_principal="principal:bootstrap", operation_principal="principal:operation-reader")
-        assert session.value["bootstrap"]["run_id"] == "789" and len(requests) == 1
+        assert session.value["bootstrap"]["run_id"] == "789"
+        assert len(requests) == 1
         token.response = Response(200, canonical({"value": g.token(job_workflow_ref="opensoft/openXwallet/.github/workflows/worker.yml@refs/heads/main")}))
         with pytest.raises(BindingError):
             client.read(g.context, environment=ENV, deadline=g.now + 10)
-        assert len(requests) == 2 and g.w.c.h.calls == 0
+        assert len(requests) == 2
+        assert g.w.c.h.calls == 0
+
+
+
+def test_session_retains_outer_deadline_across_bootstrap_refresh(g):
+    dispatch(g)
+    selected, pairs = bindings(g)
+    client, transport, _, _ = pairs[0]
+    start = g.now
+    caller_deadlines, transport_deadlines, replies = [], [], []
+    original_read, original_exchange = client.read, transport.exchange
+    def advance(seconds):
+        g.now += seconds
+        g.w.c.h.now += seconds
+    def exchange(*arguments, **keywords):
+        transport_deadlines.append(keywords["decision"].deadline)
+        if len(transport_deadlines) == 2: advance(3)
+        return original_exchange(*arguments, **keywords)
+    transport.exchange = exchange
+    def read(context, *, environment, deadline):
+        caller_deadlines.append(deadline)
+        value = original_read(context, environment=environment, deadline=deadline)
+        replies.append(g.now)
+        if len(replies) == 1: advance(8)
+        return value
+    client.read = read
+    with pytest.raises(BindingError): admit_github(g.context, bindings=selected, phase="preflight", environment=ENV)
+    assert caller_deadlines == [start + 10, start + 10]
+    assert transport_deadlines == [start + 10, start + 10]
+    assert replies == [start]
+    assert len(g.reads.calls) == 3
+    assert g.w.c.h.calls == 0
+
+
+def test_session_retains_earliest_readback_expiry_and_stops_before_new_token(g):
+    dispatch(g)
+    _, pairs = bindings(g)
+    client, _, token, endpoint = pairs[0]
+    original = endpoint.materialize
+    def short(correlated, deadline):
+        value = original(correlated, deadline=deadline)
+        for name in ("bootstrap", "operation"):
+            value[name]["expires_at"] = min(value[name]["expires_at"], g.now + 4)
+        return value
+    endpoint.materialize = short
+    start = g.now
+    session = Session(client, context=g.context, environment=ENV, deadline=start + 10,
+        bootstrap_principal="principal:bootstrap", operation_principal="principal:operation-reader")
+    assert session.deadline == start + 4
+    g.now += 2
+    g.w.c.h.now += 2
+    session._read(start + 60)
+    assert session.deadline == start + 4
+    calls = len(token.calls)
+    g.now += 2
+    g.w.c.h.now += 2
+    with pytest.raises(BindingError): session._read(start + 60)
+    assert len(token.calls) == calls

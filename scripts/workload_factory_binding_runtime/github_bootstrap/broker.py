@@ -1,7 +1,7 @@
 """One separately authorized request attempt, with durable pre-I/O consumption."""
 from dataclasses import dataclass
 from workload_factory_binding.evidence import BindingError, canonical, integer, reference, require
-from . import ERROR
+from . import ERROR, USER_AGENT
 from .approval import Approval
 from .common import document, number
 from .https import Https, Response
@@ -47,7 +47,8 @@ class DispatchBroker:
                 decision.clip(min(current.expires_at, current.valid_until))
             checkpoint()
             request = approval.request
-            self.journal.reserve(approval, request)
+            self.journal.reserve(approval, request, budget=decision.remaining())
+            decision.now()
             # Any exception from this point retains the consumed attempt, including cancellation.
             credential = self.credential(deadline=decision.deadline)
             require(reference(credential) and len(credential) <= 8192, ERROR)
@@ -55,7 +56,7 @@ class DispatchBroker:
             response = self.transport.exchange("POST", API + "/repos/" + approval.configuration["launch"]["repository"]
                 + "/actions/workflows/" + approval.workflow_id + "/dispatches", headers={
                 "Authorization": "Bearer " + credential, "Accept": "application/vnd.github+json",
-                "Content-Type": "application/json", "Accept-Encoding": "identity", "X-GitHub-Api-Version": VERSION},
+                "Content-Type": "application/json", "User-Agent": USER_AGENT, "Accept-Encoding": "identity", "X-GitHub-Api-Version": VERSION},
                 body=canonical(request), decision=decision, before_send=checkpoint)
             decision.now()
             require(type(response) is Response and response.status == 200, ERROR)
@@ -64,7 +65,8 @@ class DispatchBroker:
                     and number(str(value["workflow_run_id"])), ERROR)
             checkpoint()
             run_id = str(value["workflow_run_id"])
-            self.journal.record_run(approval, run_id)
+            self.journal.record_run(approval, run_id, budget=decision.remaining())
+            decision.now()
             return run_id  # Response URLs are deliberately never used or retained.
         except Exception:
             raise BindingError(ERROR) from None

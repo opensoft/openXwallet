@@ -8,6 +8,8 @@ from .approval import Approval
 from .graph import validate_graph
 from .identity import BootstrapVerifier
 
+MAIN_SUFFIX = "@main"
+
 @dataclass(frozen=True, repr=False)
 class Correlation:
     approval: Approval
@@ -21,7 +23,7 @@ def _run_binding(run, approval, run_id):
             and type(run.get("run_attempt")) is int and run["run_attempt"] == 1
             and type(run.get("workflow_id")) is int and str(run["workflow_id"]) == approval.workflow_id
             and run.get("head_sha") == launch["sha"] and run.get("head_branch") == "main"
-            and run.get("path") == CALLER and run.get("event") == "workflow_dispatch"
+            and run.get("path") in (CALLER, CALLER + MAIN_SUFFIX) and run.get("event") == "workflow_dispatch"
             and run.get("status") == "in_progress"
             and type(run.get("repository")) is dict
             and run["repository"].get("full_name") == launch["repository"]
@@ -37,14 +39,34 @@ def _run_binding(run, approval, run_id):
             and str(run[k]["id"]) == approval.broker_actor_id for k in ("actor", "triggering_actor")), ERROR)
     referenced = run.get("referenced_workflows")
     require(type(referenced) is list and 0 < len(referenced) <= 32, ERROR)
+    prefix = launch["repository"] + "/" + REUSABLE
     matching = [r for r in referenced if type(r) is dict
-        and r.get("path") == launch["repository"] + "/" + REUSABLE + "@" + REF]
-    require(len(matching) == 1 and matching[0].get("sha") == launch["job_workflow_sha"], ERROR)
+                and r.get("path") in (prefix + "@" + REF, prefix + MAIN_SUFFIX)]
+    require(len(matching) == 1, ERROR)
+    called = matching[0]
+    # Explicit REST wire forms map to selected main; arbitrary suffixes/casing do not.
+    require(called.get("sha") == launch["job_workflow_sha"]
+            and ("ref" not in called or called["ref"] == REF)
+            and (called["path"] != prefix + MAIN_SUFFIX or called.get("ref") == REF), ERROR)
     return (run["id"], run["run_attempt"], run["workflow_id"], run["head_sha"], run["head_branch"],
-        run["path"], run["event"], run["status"], run["repository"]["id"], run["repository"]["full_name"],
+        CALLER, run["event"], run["status"], run["repository"]["id"], run["repository"]["full_name"],
         run["repository"]["owner"]["id"], run["repository"]["owner"]["login"],
         run["head_repository"]["id"], run["head_repository"]["full_name"],
-        run["actor"]["id"], run["triggering_actor"]["id"], matching[0]["path"], matching[0]["sha"])
+        run["actor"]["id"], run["triggering_actor"]["id"], prefix + "@" + REF, called["sha"])
+
+def _approved_reviews(reviews, config, approval):
+    relevant = []
+    for review in reviews:
+        require(type(review) is dict and type(review.get("environments")) is list, ERROR)
+        for env in review["environments"]:
+            require(type(env) is dict, ERROR)
+            if str(env.get("id")) == config["protection"]["environment_id"]:
+                require(type(env.get("id")) is int and env.get("name") == config["launch"]["environment"], ERROR)
+                relevant.append(review)
+    require(relevant and all(x.get("state") == "approved" and type(x.get("user")) is dict
+        and type(x["user"].get("id")) is int and x["user"].get("type") == "User"
+        and str(x["user"]["id"]) in approval.approved_reviewer_user_ids
+        and str(x["user"]["id"]) != approval.initiating_user_id for x in relevant), ERROR)
 
 class Controller:
     """Authenticated operator capabilities are constructor dependencies, never request fields.
@@ -67,7 +89,7 @@ class Controller:
             require(type(approval) is Approval and approval.ref == ref and approval.observed_at >= before, ERROR)
             approval.current(decision.now())
             decision.clip(min(approval.valid_until, approval.expires_at))
-            run_id = self.journal.read(approval)
+            run_id = self.journal.read(approval, budget=decision.remaining())
             require(run_id is not None and context == approval.context(run_id), ERROR)
             policy = approval.policy(run_id, self.phase)
             identity = self.verifier.verify(token, policy, now=decision.now())
@@ -86,18 +108,7 @@ class Controller:
                     and type(eligible[0].get("run_id")) is int and str(eligible[0]["run_id"]) == run_id, ERROR)
             if self.phase == "protected":
                 reviews = reads.reviews(run_id)
-                relevant = []
-                for review in reviews:
-                    require(type(review) is dict and type(review.get("environments")) is list, ERROR)
-                    for env in review["environments"]:
-                        require(type(env) is dict, ERROR)
-                        if str(env.get("id")) == c["protection"]["environment_id"]:
-                            require(type(env.get("id")) is int and env.get("name") == launch["environment"], ERROR)
-                            relevant.append(review)
-                require(relevant and all(x.get("state") == "approved" and type(x.get("user")) is dict
-                    and type(x["user"].get("id")) is int and x["user"].get("type") == "User"
-                    and str(x["user"]["id"]) in approval.approved_reviewer_user_ids
-                    and str(x["user"]["id"]) != approval.initiating_user_id for x in relevant), ERROR)
+                _approved_reviews(reviews, c, approval)
             before = decision.now()
             environment = self.read_environment(launch["environment"], deadline=decision.deadline)
             require(type(environment) is EnvironmentReadback and environment.exists is True
@@ -124,7 +135,7 @@ class Controller:
                     and current.observed_at >= before, ERROR)
             current.current(decision.now())
             decision.clip(min(current.valid_until, current.expires_at))
-            require(self.journal.read(current) == correlation.run_id, ERROR)
+            require(self.journal.read(current, budget=decision.remaining()) == correlation.run_id, ERROR)
             decision.now()
             return Correlation(current, correlation.run_id, self.phase, decision.deadline)
         except Exception:

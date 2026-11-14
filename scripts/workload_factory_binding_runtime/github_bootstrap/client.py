@@ -1,7 +1,7 @@
 """In-memory token request against one independently selected job endpoint."""
 from urllib.parse import urlsplit, parse_qsl, urlencode, urlunsplit
 from workload_factory_binding.evidence import BindingError, reference, require
-from . import ERROR
+from . import ERROR, USER_AGENT
 from .common import document
 from .https import Https, Response
 
@@ -24,7 +24,7 @@ class TokenClient:
             require(reference(credential) and len(credential) <= 8192, ERROR)
             response = self.transport.exchange("GET", self.url, headers={
                 "Authorization": "Bearer " + credential, "Accept": "application/json",
-                "Accept-Encoding": "identity"}, decision=decision)
+                "User-Agent": USER_AGENT, "Accept-Encoding": "identity"}, decision=decision)
             decision.now()
             require(type(response) is Response and response.status == 200, ERROR)
             value = document(response.body, 24576)

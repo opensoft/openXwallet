@@ -9,9 +9,30 @@ from urllib.parse import urlsplit
 
 LIMIT = 1048576
 
+def read_response(connection):
+    response = connection.getresponse()
+    headers = response.getheaders()
+    if (len(headers) > 64 or sum(len(k) + len(v) for k, v in headers) > 32768
+            or response.getheader("Content-Encoding", "identity") != "identity"):
+        raise ValueError
+    lengths = response.headers.get_all("Content-Length", [])
+    encodings = response.headers.get_all("Transfer-Encoding", [])
+    if (len(lengths) > 1 or len(encodings) > 1 or (lengths and encodings)
+            or (encodings and encodings != ["chunked"])
+            or (lengths and (not lengths[0].isascii() or not lengths[0].isdigit()
+                or len(lengths[0]) > 7 or int(lengths[0]) > LIMIT))):
+        raise ValueError
+    body = response.read(LIMIT + 1)
+    if (lengths and len(body) != int(lengths[0])) or not 0 < len(body) <= LIMIT:
+        raise ValueError
+    print(json.dumps({"status": response.status, "headers": headers,
+                      "body": base64.b64encode(body).decode("ascii")}), flush=True)
+
 def main():
     connection = None
     try:
+        # This private stdin is the parent-created anonymous pipe in Https.exchange,
+        # not a listener or worker request. The child has no ambient credentials.
         raw = sys.stdin.buffer.readline(196609)
         value = json.loads(raw)
         url = urlsplit(value["url"])
@@ -34,25 +55,9 @@ def main():
             raise ValueError
         connection.request(value["method"], url.path + ("?" + url.query if url.query else ""),
             body=base64.b64decode(value["body"]), headers=value["headers"])
-        response = connection.getresponse()
-        headers = response.getheaders()
-        if (len(headers) > 64 or sum(len(k) + len(v) for k, v in headers) > 32768
-                or response.getheader("Content-Encoding", "identity") != "identity"):
-            raise ValueError
-        lengths = response.headers.get_all("Content-Length", [])
-        encodings = response.headers.get_all("Transfer-Encoding", [])
-        if (len(lengths) > 1 or len(encodings) > 1 or (lengths and encodings)
-                or (encodings and encodings != ["chunked"])
-                or (lengths and (not lengths[0].isascii() or not lengths[0].isdigit()
-                    or len(lengths[0]) > 7 or int(lengths[0]) > LIMIT))):
-            raise ValueError
-        body = response.read(LIMIT + 1)
-        if (lengths and len(body) != int(lengths[0])) or not 0 < len(body) <= LIMIT:
-            raise ValueError
-        print(json.dumps({"status": response.status, "headers": headers,
-                          "body": base64.b64encode(body).decode("ascii")}), flush=True)
+        read_response(connection)
         return 0
-    except BaseException:
+    except Exception:
         print('{"error":"github-bootstrap-refused"}', flush=True)
         return 2
     finally:

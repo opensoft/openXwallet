@@ -2,6 +2,7 @@
 from contextlib import closing, contextmanager
 from dataclasses import dataclass
 import os
+import math
 from pathlib import Path
 import sqlite3
 import stat
@@ -34,10 +35,12 @@ def _files(directory):
                 and (is_dir or info.st_nlink == 1), ERROR)
     for suffix in ("-journal", "-wal", "-shm"):
         file = directory / (DATABASE + suffix)
-        if file.exists() or file.is_symlink():
+        try:
             info = file.lstat()
-            require(suffix == "-journal" and stat.S_ISREG(info.st_mode) and info.st_nlink == 1
-                    and info.st_uid == os.geteuid() and not stat.S_IMODE(info.st_mode) & 0o077, ERROR)
+        except FileNotFoundError:
+            continue  # SQLite can unlink its DELETE journal during a concurrent commit.
+        require(suffix == "-journal" and stat.S_ISREG(info.st_mode) and info.st_nlink == 1
+                and info.st_uid == os.geteuid() and not stat.S_IMODE(info.st_mode) & 0o077, ERROR)
     return folder.st_dev, folder.st_ino, db.st_dev, db.st_ino
 
 
@@ -68,17 +71,20 @@ class Journal:
         require(type(identity) is JournalIdentity and callable(clock), ERROR)
         self.directory, self.identity, self.clock = Path(directory).absolute(), identity, clock
         with self._transaction():
-            pass
+            pass  # Startup validates the existing store and durably observes its current clock.
 
     @contextmanager
-    def _transaction(self):
+    def _transaction(self, *, budget=3):
+        require(type(budget) in (int, float) and math.isfinite(budget) and 0 < budget <= 10, ERROR)
+        end = time.monotonic() + min(3, budget)
         db = None
         try:
             require(_files(self.directory) == (self.identity.directory_device, self.identity.directory_inode,
                 self.identity.database_device, self.identity.database_inode), ERROR)
+            remaining = end - time.monotonic()
+            require(remaining > 0, ERROR)
             db = sqlite3.connect((self.directory / DATABASE).as_uri() + "?mode=rw", uri=True,
-                                 isolation_level=None, timeout=2)
-            end = time.monotonic() + 3
+                                 isolation_level=None, timeout=min(2, remaining))
             db.set_progress_handler(lambda: int(time.monotonic() >= end), 1000)
             db.execute("PRAGMA synchronous=FULL")
             require(db.execute("PRAGMA journal_mode").fetchone() == ("delete",)
@@ -113,26 +119,26 @@ class Journal:
             if db is not None:
                 db.close()
 
-    def reserve(self, approval, request):
+    def reserve(self, approval, request, *, budget=3):
         require(type(approval) is Approval and type(request) is dict, ERROR)
-        with self._transaction() as (db, now):
+        with self._transaction(budget=budget) as (db, now):
             approval.current(now)
             require(request == approval.request, ERROR)
             db.execute("INSERT INTO attempts VALUES (?, ?, ?, ?, ?, NULL, ?)", (approval.ref,
                 approval.commitment, canonical(request).decode(), approval.initiating_user_id,
                 approval.broker_actor_id, canonical(approval.journal_scope).decode()))
 
-    def record_run(self, approval, run_id):
+    def record_run(self, approval, run_id, *, budget=3):
         require(number(run_id), ERROR)
-        with self._transaction() as (db, now):
+        with self._transaction(budget=budget) as (db, now):
             approval.current(now)
             require(db.execute("UPDATE attempts SET run_id=? WHERE ref=? AND commitment=? AND run_id IS NULL AND request=? AND scope=?",
                 (run_id, approval.ref, approval.commitment, canonical(approval.request).decode(),
                  canonical(approval.journal_scope).decode())).rowcount == 1, ERROR)
 
-    def read(self, approval):
+    def read(self, approval, *, budget=3):
         require(type(approval) is Approval, ERROR)
-        with self._transaction() as (db, now):
+        with self._transaction(budget=budget) as (db, now):
             approval.current(now)
             rows = db.execute("SELECT commitment, initiating_user, broker_actor, run_id, request, scope FROM attempts WHERE ref=?",
                               (approval.ref,)).fetchall()

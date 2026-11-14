@@ -1,9 +1,11 @@
 """Fixed-version, authenticated bounded reads; response URLs never select requests."""
 from workload_factory_binding.evidence import BindingError, reference, require
-from . import ERROR
+from . import ERROR, USER_AGENT
 from .broker import API, VERSION
 from .common import document, number
 from .https import Https, Response
+
+RUNS_PATH = "/actions/runs/"
 
 class ProviderReader:
     def __init__(self, *, credential, transport=None):
@@ -29,7 +31,7 @@ class _Reads:
             require(reference(token) and len(token) <= 8192, ERROR)
             response = self.reader.transport.exchange("GET", API + "/repos/" + self.repository + suffix,
                 headers={"Authorization": "Bearer " + token, "Accept": "application/vnd.github+json",
-                    "Accept-Encoding": "identity", "X-GitHub-Api-Version": VERSION}, decision=self.use)
+                    "User-Agent": USER_AGENT, "Accept-Encoding": "identity", "X-GitHub-Api-Version": VERSION}, decision=self.use)
             self.use.now()
             require(type(response) is Response and response.status == 200, ERROR)
             return document(response.body, 1048576)
@@ -38,13 +40,13 @@ class _Reads:
 
     def run(self, run_id):
         require(number(run_id), ERROR)
-        return self._get("/actions/runs/" + run_id)
+        return self._get(RUNS_PATH + run_id)
 
     def jobs(self, run_id, attempt):
         require(number(run_id) and number(attempt), ERROR)
         result, total = [], None
         for page in (1, 2):
-            value = self._get("/actions/runs/" + run_id + "/attempts/" + attempt + "/jobs?per_page=100&page=" + str(page))
+            value = self._get(RUNS_PATH + run_id + "/attempts/" + attempt + "/jobs?per_page=100&page=" + str(page))
             require(type(value) is dict and type(value.get("total_count")) is int
                     and 0 < value["total_count"] <= 200 and type(value.get("jobs")) is list
                     and 0 < len(value["jobs"]) <= 100, ERROR)
@@ -61,6 +63,6 @@ class _Reads:
 
     def reviews(self, run_id):
         require(number(run_id), ERROR)
-        value = self._get("/actions/runs/" + run_id + "/approvals")
+        value = self._get(RUNS_PATH + run_id + "/approvals")
         require(type(value) is list and 0 < len(value) <= 100, ERROR)
         return value
