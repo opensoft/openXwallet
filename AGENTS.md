@@ -67,8 +67,13 @@ ownership, validation, versioning, and release constraints.
   OIDC was subsequently source-ratified in factory #1314 at 94bf0f43704f
   with adapter #64 at ff9bd72278a5, landed as 3432baf6d929 and a352ebc7ed22
   with matching ratified trees. The owner commissioned isolated T012H-K.
-  Candidate implementation is not automatically source-accepted; T012L/M
-  and T013-T015 remain separate. No token mint, setup or dispatch is commissioned.
+  Brett subsequently source-ratified adapter #65 at ab34ff4ec4fe and directed
+  landing when green, then T012M completion and T013 refresh. It merged normally
+  as 366533bed77293b096b0a7dbda61399ff5dbafe5 with equal ratified/merged tree
+  669a1b431f17d360fcf827a749a756e863ec9ed8. T012L is accepted and T012M's handoff
+  reconciles the source; actual hosting/issuance, subjects, source-update control
+  and every operational decision remain T013 gates. T001/T013-T015 stay unchecked.
+  No token mint, setup or dispatch is commissioned.
   Default operational bindings continue to refuse before outputs/OIDC.
   Production hosting stays unselected; no setup/dispatch is authorized.
   Deployed supervisor, custody, state, lifecycle and operation stay

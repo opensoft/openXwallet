@@ -1,9 +1,9 @@
 # Real GitHub bootstrap authentication source proposal
 
-Status: source design accepted in #1314/#64; isolated T012H–K implementation candidate; no operational authority
+Status: design #1314/#64 and isolated implementation #65 source accepted; T012M handoff complete; no operational authority
 Date: 2026-11-14
 Factory owner: `openspec/changes/add-github-bootstrap-authentication/`
-Sole implementation list: feature 017 tasks T012G-M; T012G records actual acceptance/commissioning, T012L/M remain pending
+Sole implementation list: feature 017 tasks T012G-M; source acceptance through T012L and T012M handoff recorded; T013 remains open
 
 ## Accepted preparation baseline
 
@@ -16,7 +16,7 @@ exact-head checks passed and no review threads/requested changes were present.
 The owner record is on [#63](https://github.com/opensoft/openXwallet/pull/63#issuecomment-6878228159).
 Its ten Markdown files and this subsequent source proposal supply no operation.
 
-## Recommended decision
+## Accepted design decision (preparation text)
 
 The factory proposal recommends purpose-specific GitHub OIDC identity in the
 future admission job, paired with independent broker/API run correlation. This
@@ -49,7 +49,7 @@ identity; see [permissions](https://docs.github.com/en/actions/how-tos/secure-yo
 Documentation is not actual claim observation. The immutable-ID prefix previously
 read from repository settings is not an approved complete subject.
 
-## Planned source slice and required controls
+## Accepted preparation source slice and required controls
 
 The existing feature plan and T012G-M own future implementation. Planned relative
 areas are `scripts/workload_factory_binding_runtime/github_bootstrap/`, the existing
@@ -97,8 +97,14 @@ historical blocked write is replayed.
 ## Subsequent source acceptance and bounded realization
 
 Brett source-ratified factory #1314 at `94bf0f43704f` and adapter #64 at
-`ff9bd72278a5`, directed ordered landing, and explicitly commissioned isolated
-T012H–K. [Evidence](evidence.md#2026-11-14-github-bootstrap-source-ratification-and-isolated-commission)
-records exact accepted/merge/tree identities. The preceding proposal text is its
-accepted preparation baseline; it is not evidence that this subsequent implementation
-candidate is accepted, deployed or selected. See the current [plan](plan.md).
+`ff9bd72278a5`, directed ordered landing, and commissioned isolated T012H–K.
+He then source-ratified implementation #65 at `ab34ff4ec4fe`, directed landing
+when green and commissioned T012M/T013 preparation. #65 merged as
+`366533bed77293b096b0a7dbda61399ff5dbafe5`, with equal ratified/merged tree.
+The [owner/landing record](evidence.md#2026-11-14-65-source-acceptance-and-t012m-handoff) closes T012L; the current [plan](plan.md)
+and [authentication handoff](bootstrap-authentication-plan.md) describe accepted
+source and remaining operational integration. The preceding preparation text is
+retained as the accepted design baseline; its future/commissioning language does
+not reopen accepted T012G–L or imply an unimplemented bootstrap adapter. T012M
+reconciles the source while T001/T013–T015 and all operational stages remain open.
+No live token, deployment, credential, setup or dispatch authority is supplied.
