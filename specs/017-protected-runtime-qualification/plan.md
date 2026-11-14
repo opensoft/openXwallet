@@ -2,7 +2,7 @@
 
 **Branch**: `017-protected-runtime-qualification` | **Date**: 2026-11-12
 **Spec**: [spec.md](spec.md)
-**State**: T002–T012B source accepted/landed; T013 refreshed selections/authorization draft; operation unauthorized
+**State**: T002–T012F source accepted/landed; T013 decision/authentication preparation; operation unauthorized
 
 Bootstrap amendment `fix-protected-runtime-dispatch-bootstrap` was source
 accepted and landed in factory #1311 / adapter #60. The static dispatch selection
@@ -164,7 +164,7 @@ file before its port, racing the positive custody connection. The owned fixture
 now publishes atomically, with deterministic paused/failed publication regressions.
 No production API, gate expectation, readiness deadline or retry policy changes.
 
-## Commissioned portable bootstrap authority slice
+## Historical portable bootstrap authority commission (superseded by source landing)
 
 Brett commissioned the eight-hour portable reference authority and isolated
 wallet flow on 2026-11-14. Factory governance is
@@ -176,6 +176,19 @@ fixture control-plane observations. An authenticated client feeds unchanged
 bootstrap/admission and the owning wallet proof with independent cleanup.
 Real GitHub authentication and deployed administrative/OS isolation are not
 claimed. No neutral API/pin or production CLI activation is introduced.
-Candidate source acceptance and all setup/dispatch remain separate; T013–T015
-and human/domain gates remain unmarked. The adapter candidate stacks on #61
-until that documentation PR lands; this commission does not merge it.
+At that candidate stage, source acceptance and setup/dispatch were separate.
+The later owner instruction explicitly ratified and landed #1312/#61/#62,
+superseding the original no-merge/stacking limitation. T013–T015 and human/domain
+gates remain unmarked; source landing grants no setup or dispatch.
+
+
+## T013 preparation after portable-reference landing
+
+The owner source-ratified factory #1312 and adapter #61/#62, landed in order
+with matching accepted trees. See [source/landing evidence](evidence.md#2026-11-14-source-ratification-and-ordered-landing),
+[T013 decisions](t013-decision-record.md) and
+[actual GitHub authentication preparation](bootstrap-authentication-plan.md).
+These documents propose the remaining source/target decisions; they do not
+implement an operational profile or select/deploy services. No source/test, pin,
+workflow, grant or provider configuration changes in this preparation. T013 stays
+unchecked and every setup/dispatch stage remains NOT GRANTED.

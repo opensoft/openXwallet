@@ -1199,3 +1199,38 @@ files; runtime/tests/workflows/locks/pins are unchanged. T001/T013/T014/T015 rem
 unmarked. No new runtime suite was rerun for documentation-only changes and no
 fixture process/key/state tree was created. Final readback still has zero
 protected workflow runs and no adapter merge-triggered Actions run.
+
+
+## 2026-11-14 source ratification and ordered landing
+
+Brett Heap explicitly ratified the three exact heads below **for source acceptance
+only**, directed their landing in order when green, and commissioned T013
+preparation. The instruction keeps setup/dispatch unauthorized, feedback deferred,
+and both historical blocked writes unreplayed. Source ratification is recorded
+on [factory #1312](https://github.com/opensoft/openXfactory/pull/1312#issuecomment-6877063524),
+[adapter #61](https://github.com/opensoft/openXwallet/pull/61#issuecomment-6877063887)
+and [adapter #62](https://github.com/opensoft/openXwallet/pull/62#issuecomment-6877064249).
+
+| Source | Ratified head | Accepted merge | Ratified and merged tree |
+| --- | --- | --- | --- |
+| [openXfactory #1312](https://github.com/opensoft/openXfactory/pull/1312) | `b741ae396bc0c75622b69af6052b8cbacf9c57d2` | `6604b55b980cba0c507f1e9c5de9b715282b5c35` | `7e81f953d94c7178dff745a7d601a0bbbf65fa07` |
+| [openXwallet #61](https://github.com/opensoft/openXwallet/pull/61) | `caa56dc001f677350edf620508e287d5c1862e53` | `6171f5f5c53cc44c809b3b9419cefe77367207a5` | `83342f410be05f12cf9f7c9df43de99c8e3159dc` |
+| [openXwallet #62](https://github.com/opensoft/openXwallet/pull/62) | `62b270127e7407bef76c90ce4038d03f912d40a6` | `425606899116c4e7fe5d3c6fe3382c058081336b` | `16702109fe422966e4cfc2adf2aa58b6679102d1` |
+
+Landings occurred in order at 12:11:09, 12:11:38 and 12:13:07 UTC on 2026-11-14.
+Every merged tree was read back and equals its ratified tree. All runnable
+exact-head source checks passed; no review threads were present. Factory #1312
+used the documented standing self-authored-PR approval exception, because author
+and authenticated user were both `brettheap` and only human approval was missing.
+This was not reviewer approval and changed no check or repository rule. Both
+adapter PRs merged normally. GitHub Codex was explicitly requested and
+usage-limit-refused; corrected local expert-panel evidence remains distinct from
+a completed connector review.
+
+The portable authority is accepted **only as an isolated reference**. Its fixed
+fixture profile, loopback service and simulated signed controller observations
+are not actual GitHub authentication, deployed independence, human approval or
+an operational host selection. Existing operational bindings still refuse before
+environment outputs/OIDC. Workflow/entrypoint bytes and dependency pins did not
+change in these three PRs. No release, consumer lock/pin promotion or live receipt
+is supplied by this source acceptance.

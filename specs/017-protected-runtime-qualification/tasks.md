@@ -1,6 +1,6 @@
 # Tasks: Protected Machine Runtime Qualification
 
-Status: sole executable implementation list; T002–T012B landed; T013 refreshed preparation
+Status: sole executable implementation list; T002–T012F source accepted and landed; T013 decision preparation
 Commission: 2026-11-13 verify #1311 post-merge CI and refresh T013 after paired
 source-only ratification/landing of #1311/#60. Setup and dispatch stay unauthorized.
 See [evidence](evidence.md), [selections](operational-inputs.md),
@@ -45,7 +45,7 @@ Independent acceptance: one bounded owning proof; no approval/apply operation.
 - [x] T012D [O] Implement bounded loopback mTLS authority/client with independent signed fixture context; files: scripts/workload_factory_binding_runtime/reference_authority/**, tests/runtime_binding/test_authority_transport.py; verify: actual peer roles/server identity, signed source/context/freshness checks, forged/worker denial, bounded safe errors, fresh bootstrap/operation clients and no operational CLI activation.
 - [x] T012E [O] Connect isolated authority to existing admission/owning wallet/cleanup; files: tests/runtime_binding/authority_fixture.py, tests/runtime_binding/test_authority_flow.py; verify: static selection before run observation, full actual-run admission, owning cryptographic proof and replay refusal, restart/revocation/cancellation/runner-death cleanup with retained state and shared resources.
 - [x] T012F [O] Qualify/publish paired source candidates; files: tests/runtime_binding/matrix_contract.py, feature017 evidence and reference-authority runbook, factory proposal evidence/ledger; verify: substantive fixed matrix/complete gates, local expert and Codex review attempts, actual cleanup and CI; source-only acceptance remains separate.
-- [ ] T013 [O] Obtain operational selections and scoped setup/dispatch authorization; files: specs/017-protected-runtime-qualification/evidence.md; verify: all operational-input categories have approved non-secret references and independent readback. This is an owner/operator act.
+- [ ] T013 [O] Obtain operational selections and scoped setup/dispatch authorization; files: specs/017-protected-runtime-qualification/evidence.md, operational-inputs.md, scoped-authorization.md, t013-decision-record.md, bootstrap-authentication-plan.md; verify: all operational-input categories have approved non-secret references and independent readback. This is an owner/operator act.
 - [ ] T014 [O] Execute real protected machine qualification at accepted sources; files: specs/017-protected-runtime-qualification/evidence.md; verify: P01/deployed G02/G03/L01, real issuer/independence/confinement and fresh cancellation/cleanup; missing facts stay blocked/not-performed.
 - [ ] T015 [O] Deliver accepted machine-only receipt to codeXfactory 058 T002; files: specs/017-protected-runtime-qualification/evidence.md; verify: owner acceptance names evidence/pins; human/domain gates remain separate.
 
@@ -56,3 +56,11 @@ T012B -> T012C/T012D -> T012E -> T012F -> T013 -> T014 -> T015. US1 is the small
 implementation is required. Factory governance and consumer handoff duplicate
 no implementation list. Future paths are proposed; reconcile them against
 reviewed code during commissioned implementation without widening scope.
+
+
+T013 preparation on 2026-11-14 records exact owner source ratifications and
+ordered equal-tree landings, refreshed read-only provider configuration, proposed
+operational decisions and remaining real-GitHub authentication/issuance source
+gates. This preparation is complete as a reviewable packet; T013 itself and
+T001/T014/T015 remain owner-controlled and unchecked. No duplicate implementation
+list or operational authorization is added.

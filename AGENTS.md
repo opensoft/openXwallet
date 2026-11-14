@@ -53,11 +53,13 @@ ownership, validation, versioning, and release constraints.
   verified in feature 017 evidence.md. T013's refreshed selection/authority draft
   names the missing bootstrap authentication/atomicity, hosting, principals and
   exact scope decisions; owner/operational checkboxes remain unmarked.
-  The next commissioned candidate implements portable reference bootstrap
-  authority and an isolated owning-wallet flow under factory change
-  add-portable-bootstrap-authority. Feature 017 tasks T012C-F and
-  portable-authority.md record this source/fixture-only slice; it is not
-  ratified or operationally qualified.
+  Brett source-ratified factory #1312 at b741ae396bc0, adapter #61 at
+  caa56dc001f6 and adapter #62 at 62b270127e74, then directed ordered landing
+  and T013 preparation. They landed with matching accepted trees as
+  6604b55b980c, 6171f5f5c53c and 425606899116. The accepted portable authority
+  remains fixture-only, not an operational hosting/authentication selection.
+  Feature 017 t013-decision-record.md and bootstrap-authentication-plan.md
+  prepare source/target decisions; T013 and all setup/dispatch gates stay open.
   Default operational bindings continue to refuse before outputs/OIDC.
   Production hosting stays unselected; no setup/dispatch is authorized.
   Deployed supervisor, custody, state, lifecycle and operation stay

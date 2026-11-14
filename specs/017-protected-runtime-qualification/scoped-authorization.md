@@ -1,7 +1,7 @@
 # T013 Scoped Authorization Draft
 
-Status: refreshed for owner/operator decision; setup/dispatch NOT GRANTED
-Updated: 2026-11-13
+Status: prepared after portable-reference source landing; every operational stage NOT GRANTED
+Updated: 2026-11-14
 Selections: [operational inputs](operational-inputs.md)
 Accepted bootstrap source: [bootstrap record](workflow-bootstrap.md)
 
@@ -13,10 +13,17 @@ baselines are factory `f2fb60f04c8229f4343e25a0155418f2f737d73a` and adapter
 Factory post-merge source CI is verified in the [selection packet](operational-inputs.md).
 This resolves the earlier source-input circularity; it grants no operation.
 
-The current instruction authorizes verification and this documentation refresh.
+The 2026-11-14 instruction ratifies factory #1312 and adapter #61/#62 for
+source acceptance only and authorizes ordered landing plus T013 preparation.
+The [source acceptance record](evidence.md#2026-11-14-source-ratification-and-ordered-landing)
+names the exact heads, merges and equal trees. The
+[T013 decision packet](t013-decision-record.md) separates proposed selections,
+source prerequisites, setup and dispatch decisions. The
+[authentication preparation](bootstrap-authentication-plan.md) is a future
+source design option, not a selected operational integration.
 It explicitly keeps setup and dispatch unauthorized. All operative stages below
-are **NOT GRANTED**. Portable reference services remain the prior source/isolated
-route, with actual hosting/authentication integrations and administration unselected.
+are **NOT GRANTED**. Portable reference services are now source accepted in isolation; actual
+hosting/authentication integrations and administration remain unselected.
 The current CLI still refuses before environment outputs/OIDC.
 
 ## Decision record to complete
@@ -67,13 +74,20 @@ the existing `copilot` environment and current provider configuration.
    complete static selection under `openxfactory-dispatch-selection-internal-v1`
    and one preauthorization. Use only manual inputs `accepted_commit`,
    `selection_digest`, `preauthorization_ref` at the exact accepted workflow
-   source. No PR/fork trigger, floating source, second dispatch, automatic retry
+   source. A future separately source-approved broker must first durably reserve/
+   consume the dispatch attempt against the selected preauthorization under an
+   atomic compare-and-set; only that winner may send one request. A crash before
+   I/O or lost response leaves pending/indeterminate scope, never an automatic
+   reset/retry. The reference authority alone does not implement this operational
+   dispatch phase. No PR/fork trigger, floating source, second dispatch, automatic retry
    or token-for-discovery is covered. Reconcile exact source if `main` has moved.
    Bootstrap authentication must work before environment selection/OIDC; an
    unverified worker context or prior job output cannot authorize this stage.
 3. **Actual run/attempt authority — NOT GRANTED.** After GitHub assigns the
-   run, the independent authority authenticates it, atomically consumes/binds
-   preauthorization and approves the final full runtime config/grant for the
+   run, the independent authority authenticates/corroborates it and binds the
+   already-reserved dispatch scope to the actual run/attempt, without freeing or
+   reissuing that attempt. It atomically binds the runtime preauthorization and
+   approves the final full runtime config/grant for the
    exact selection/source/repository/case/run/attempt. Independently register and
    read back that full-config-bound run plan, active lease and cleanup generation
    scope before admission can return readiness. Static commitment omits
