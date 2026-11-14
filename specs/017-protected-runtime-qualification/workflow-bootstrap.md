@@ -1,17 +1,29 @@
 # T013 Dispatch Bootstrap Source Prerequisite
 
-Status: isolated source candidate commissioned; paired source acceptance pending
+Status: source accepted and landed #1311/#60; operational hosting/authority pending
 Prepared: 2026-11-13
 Scope: source preparation; no protected dispatch or operational authority
 
-## Commissioned candidate implementation
+## Accepted implementation and landing
+
+Brett ratified factory #1311 at `6dadf188a0afa22e3c205561299f6045a9c95359`
+with adapter #60 at `78e7bbeabca250073d5896154ccc99bb163116cc` for source
+acceptance only. Factory merged first as
+`f2fb60f04c8229f4343e25a0155418f2f737d73a`, then adapter as
+`61fbe41f7e08e831e0b15c2c97ea6ff386f587f3`. Both trees exactly match their
+ratified heads. Factory post-merge CI is verified in the
+[operational selection packet](operational-inputs.md). This resolves the earlier
+input circularity at source; actual authenticated bootstrap clients, atomic
+authority consumption, operational selections and setup/dispatch remain gated.
+
+## Source implementation
 
 Brett subsequently commissioned this fix through the factory/adapter process,
 with setup and dispatch still unauthorized. The new factory change is
 `opensoft/openXfactory`, `openspec/changes/fix-protected-runtime-dispatch-bootstrap/`.
 It preserves the accepted baseline/origin and hands off to feature 017 T012B.
 
-The candidate implements `bootstrap.py`: closed static selection document with
+The accepted source implements `bootstrap.py`: closed static selection document with
 profile `openxfactory-dispatch-selection-internal-v1`, exactly `profile` and
 `configuration`, with only launch run ID/attempt omitted. All other runtime
 fields remain committed. Full runtime validation still requires both run fields.
@@ -30,10 +42,11 @@ Internal `WorkflowContext.config_digest` and operation grants keep their full
 run-bound meaning. Each preflight, including after environment approval, repeats
 independent bootstrap/admission. No approval is passed through a job output.
 
-The candidate resolves the circular input contract; it supplies no operational
-clients, authorization or protected receipt promotion. The historical finding
-and proposed reasoning below remain provenance. Source review and exact-head
-isolated evidence are recorded in [evidence](evidence.md).
+The accepted source resolves the circular input contract; it supplies no
+operational clients, authorization or protected receipt promotion. Source review
+and exact-head isolated evidence are recorded in [evidence](evidence.md).
+The remaining sections preserve the historical finding and proposed reasoning
+before acceptance; current source/operational status is recorded above.
 
 ## Verified mismatch at accepted #59
 
@@ -97,7 +110,7 @@ readback. Changed/expired selections and attempts require fresh independent
 authority. No discovery dispatch, ID prediction, input mutation, prior-run reuse
 or omission/zeroing of run fields is an acceptable workaround.
 
-## Source ownership and review handoff
+## Historical proposed ownership and review handoff
 
 The amendment belongs first in `opensoft/openXfactory`'s canonical
 `prepare-protected-runtime-qualification` change, including origin/ratification
@@ -114,6 +127,7 @@ hard runner death. Live hosting/readback/qualify/cleanup clients and protected
 receipt scope require separate source review too. These are review criteria,
 not a second executable task list.
 
-The T013 packet and [authorization draft](scoped-authorization.md) remain
-nonoperative until this source dependency and all actual selections are resolved.
+This source dependency is resolved by #1311/#60. The T013 packet and
+[authorization draft](scoped-authorization.md) remain nonoperative until actual
+hosting/client source, operational selections and separate authority are accepted.
 Feedback remains deferred; neither historical blocked write may be replayed.

@@ -47,8 +47,13 @@ ownership, validation, versioning, and release constraints.
   The subsequent instruction commissions isolated T012B implementation under
   factory change fix-protected-runtime-dispatch-bootstrap. Static dispatch
   selection and independently authenticated actual-run bootstrap preserve full
-  runtime config/grant admission. New candidate acceptance remains separate;
-  default operational bindings continue to refuse before outputs/OIDC.
+  runtime config/grant admission. Brett source-ratified factory #1311 at
+  6dadf188a0af with adapter #60 at 78e7bbeabca2. They landed as f2fb60f04c82
+  and 61fbe41f7e08 with matching ratified trees. Factory post-merge source CI is
+  verified in feature 017 evidence.md. T013's refreshed selection/authority draft
+  names the missing bootstrap authentication/atomicity, hosting, principals and
+  exact scope decisions; owner/operational checkboxes remain unmarked.
+  Default operational bindings continue to refuse before outputs/OIDC.
   Production hosting stays unselected; no setup/dispatch is authorized.
   Deployed supervisor, custody, state, lifecycle and operation stay
   separately gated. The factory owns the grammar.

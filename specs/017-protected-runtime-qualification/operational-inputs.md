@@ -1,109 +1,153 @@
 # T013 Operational Selection Packet
 
-Status: prepared; operational selections incomplete; no setup/dispatch authority
-Prepared: 2026-11-13
+Status: refreshed preparation; operational selections incomplete; setup/dispatch NOT GRANTED
+Updated: 2026-11-13
 Governance: `opensoft/openXfactory`, `prepare-protected-runtime-qualification`
+Bootstrap amendment: `fix-protected-runtime-dispatch-bootstrap`
 Implementation list: [feature 017 tasks](tasks.md); T013 remains an owner act
 Decision draft: [scoped authorization](scoped-authorization.md)
-Source prerequisite: [dispatch bootstrap proposal](workflow-bootstrap.md)
+Accepted bootstrap and hosting gates: [bootstrap record](workflow-bootstrap.md)
 
-## Verified source and repository facts
+## Accepted source baselines
 
-Brett ratified [#59](https://github.com/opensoft/openXwallet/pull/59) at
-`948ea81d7cdce35f5d006c747680a6b9fde37a29` for source acceptance only. All
-runnable checks passed at that head, it was clean/mergeable, and no unresolved
-review thread remained. It merged normally on 2026-11-13 at 22:10:25 UTC as
-`9e1d75d46dfd6f170e27cbe7701f34288428ee6f`, tree
-`43ac0bd082850da53c54d392c44de069aeeab0b2`, identical to the ratified tree.
-No administrative bypass was used. No Actions run was returned for the merge
-commit at preparation time; PR checks are not described as post-merge CI.
+Brett ratified factory #1311 at `6dadf188a0afa22e3c205561299f6045a9c95359`
+with adapter #60 at `78e7bbeabca250073d5896154ccc99bb163116cc` for source
+acceptance only. Both merged after all runnable exact-head checks passed and no
+unresolved review thread remained. Each merged tree equals its ratified tree:
 
-Read-only GitHub API inspection on 2026-11-13 established:
+| Source | Accepted merge | Tree | Landing |
+| --- | --- | --- | --- |
+| [openXfactory #1311](https://github.com/opensoft/openXfactory/pull/1311) | `f2fb60f04c8229f4343e25a0155418f2f737d73a` | `6e7bbe32e25e4c18692600677b819d41787e072f` | 2026-11-13 23:20:57 UTC; standing self-authored-PR approval exception |
+| [openXwallet #60](https://github.com/opensoft/openXwallet/pull/60) | `61fbe41f7e08e831e0b15c2c97ea6ff386f587f3` | `b990b7694f8a635d399e1bf4ca7100083f00f0f1` | 2026-11-13 23:21:59 UTC; normal merge |
 
-| Fact | Observed value | Meaning |
-| --- | --- | --- |
-| Qualification repository | `opensoft/openXwallet`, public, default branch `main` | Current T012 source hardcodes this repository; it is not a codeXfactory workflow |
-| Repository ID | `1347887821` | Immutable launch identity candidate; requires fresh operational readback |
-| Owner ID | `638385` (`opensoft`) | Immutable owner identity candidate |
-| Current authenticated account | `brettheap`, user ID `1513478` | Readback only; does not select dispatcher or reviewer |
-| Existing environments | Only `copilot`, ID `20677426348` | No eligible protected environment is currently selected |
-| Existing `copilot` protection | Empty protection rules; admin bypass enabled; no deployment branch policy | Ineligible under the accepted profile; preserve it |
-| Default workflow token permissions | `read`; PR review approval disabled | Repository default only; job-specific permissions still require readback |
+Factory post-merge CI is verified at the exact merge above: all 5 observed main-triggered Actions runs passed, including [pytest-suite 43526439944](https://github.com/opensoft/openXfactory/actions/runs/43526439944). Its pytest result was **10391 passed, 6 skipped, 338 deselected, 9 warnings, 745 subtests passed**. The JUnit guard recorded `selected=11142`, `passed=11136`, `skipped=6`, `failures=0`, `errors=0`; its named freshness check passed. This is independently observed main CI, not a reuse of the PR run. Main Sonar reported `neutral` / `Quality Gate not computed`; the source PR quality gate is a separate result.
 
-The accepted caller is `.github/workflows/protected-runtime-qualification.yml`;
-the local reusable is
-`.github/workflows/protected-runtime-qualification-run.yml`, both at the same
-immutable source commit. At the merge their respective file digests are:
-
-- Caller: `sha256:a307585baaefa5430e4253663b547d0c73fb4b1d516d8808415db9e3d3daa713`.
-- Reusable: `sha256:6d0473d9cedd1768174b30887affc13346af84a542c688570109b439951ea579`.
-- CLI `scripts/prepare-protected-runtime.py`: `sha256:a822458b97b7a8df144be1c94f6b638c654b969b345776a6dc7dc17d87fd434c`.
+Adapter source qualification remains the retained 1,348 local passes and 1,046
+native network-none passes, all zero failures/errors/skips. Hosted adapter CI
+passed 1,345 general cases with three documented shallow-history skips and all
+1,046 required conformance cases without skips; dedicated full-history carve
+(84) and neutrality/pruning (60) suites passed. No main-triggered adapter run
+was returned during this refresh. These are source/fixture results. GitHub Codex
+review was explicitly requested and quota-refused; the nine-role local review
+remains the review evidence, not a completed connector review.
 
 The adapter's neutral pin remains assembly
 `b0af7c2ce53d63786a08a20aa3602a6f90345606`, code
-`72313daab1f229c049cb90998931564c1904dbbc`. The separately selected portable
-registry/custody integration source is owning code
+`72313daab1f229c049cb90998931564c1904dbbc`. Separately selected portable
+registry/custody integration code remains
 `bb0e9dae89a771b05f6c235d0a77237288b95c85`; it does not replace that pin.
-These are source facts, not a completed deployment manifest. Final source roles,
-relative paths and content digests must include the separately reviewed hosting
-and bootstrap integrations; do not freeze the merge as their future source.
+No source acceptance here selects a deployment, image, service, credential or
+runtime configuration. Final sources must include later accepted hosting clients.
 
-## Proposed operational shape and missing selections
+## Accepted workflow content and dispatch interface
 
-Retain Brett's prior selection of portable reference services, qualified in
-isolation. Propose a dedicated disposable **nonproduction** pilot deployment,
-with GitHub-hosted orchestration and independently administered Linux runtime
-components. The provider, deployment target, credential issuance and administrative
-boundaries are unselected. Do not infer Azure, an AKS cluster, an existing bench,
-a production namespace or permission to deploy from the architecture proposal.
+At adapter merge `61fbe41f7e08e831e0b15c2c97ea6ff386f587f3`:
 
-| Category | Prepared proposal / accepted constraint | Still required for operational completion |
+| Relative path | Content SHA-256 |
+| --- | --- |
+| `.github/workflows/protected-runtime-qualification.yml` | `03951b10405b3d81b394db1a1915586f3e475b8337351d140e00d51340916bf8` |
+| `.github/workflows/protected-runtime-qualification-run.yml` | `ae525cd1ba76296684fb0b5eb15f56bf4cf796d112c88e8d0563c55774dce84b` |
+| `scripts/prepare-protected-runtime.py` | `8dbc140a6dcdd6f06d808c2b9215c5c17dbc235e597987c3e9171ea21e900f63` |
+| `scripts/workload_factory_binding_runtime/bootstrap.py` | `5d8548ffde04a6b4771d2b878ac4d4af5b5c423999f2df1e38ca71515dde6458` |
+
+The manual caller/local reusable take exactly `accepted_commit`,
+`selection_digest`, `preauthorization_ref`. The static profile is
+`openxfactory-dispatch-selection-internal-v1`; its closed document contains
+`profile` and `configuration`, committing every runtime field except launch
+run ID/attempt. The full runtime profile
+`openxfactory-protected-runtime-internal-v1` still requires both assigned fields
+and an independently approved full `config_digest`. The old dispatch digest/grant
+inputs are refused. No static digest or configuration is approved by this packet.
+
+Fresh independent bootstrap must bind selected source, repository, case,
+preauthorization, actual run/attempt, full config digest and operation grant.
+Existing environment/protection, source, authorization, scheduler and active
+lease checks follow, bounded by the earliest deadline. Bootstrap/admission repeat
+after environment approval. Actual authentication and atomic preauthorization
+consumption remain hosting qualification requirements. No worker hash, output
+or boolean can stand in for either.
+
+The earlier input circularity is resolved in accepted source. The default
+operational factory still refuses `workflow-operational-host-unselected` before
+environment outputs/OIDC. Qualify/cleanup clients and protected-machine receipt
+promotion require separate source integration/review before any operative run.
+
+## Fresh repository and protection readback
+
+Read-only GitHub API inspection on 2026-11-13 established the following. These
+observations must be reacquired for an eventual operational decision/use:
+
+| Fact | Observed value | Operational meaning |
 | --- | --- | --- |
-| Scope | Machine possession prerequisite for codeXfactory feature 058 T002 | Exact case ID and operational owner; consumer acceptance remains separate |
-| Profile and dependencies | Factory-owned `openxfactory-protected-runtime-internal-v1`; fixed reviewed dependency lock | Accepted immutable factory profile, adapter, wallet contracts/code, worker, supervisor, caller and reusable source manifest; dependency/composition digests |
-| Environment | Proposed new `wallet-mfa-pilot-qa`; exact `refs/heads/main` deployment restriction | Owner selection of name, authorized setup, actual environment ID and full effective protection readback |
-| Review/dispatch | 1–6 distinct User/Team reviewer IDs; prevent self-review; admin bypass disabled | Independent eligible reviewer and dispatcher identities, memberships and effective permissions; Brett cannot approve his own initiated run under this profile |
-| Workflow | Manual caller/local reusable at the same accepted commit; no PR/fork execution | Reviewed bootstrap amendment and final exact workflow/source claims; reconcile any later `main` movement |
-| Issuer | `https://token.actions.githubusercontent.com`; discovery `/.well-known/openid-configuration`; JWKS `/.well-known/jwks` on that origin | Explicit audience and configured subject/claim policy; authenticated current issuer/protection/source measurements |
-| Subject proposal | Environment-bound subject for the selected qualification repo/environment | Verify the actual GitHub subject customization and exact emitted claims; do not assume a default subject or mint a token for discovery |
-| Host and measurement | Disposable nonproduction Linux runtime; immutable accepted launch sources | Exact provider/account/tenant/host or cluster/namespace identities, image/source measurement, bounded channel and OS/network confinement policies |
-| Supervisor | Independent administration; worker cannot read keys/policy or modify observations/source | Named administrator/principal/key/policy refs and actual worker denial; same-user fixture results are insufficient |
-| Gate and custody | Only the confined approved gate holds narrow owning signer access; one bounded proof | Exact deployed gate identity, credential issuance policy and trusted custody principal; valid direct worker signing denial |
-| Current records/challenge/registry | Portable owning APIs; trusted authenticated loaders | Non-secret service/principal/credential refs and trust digests for each actual service; current authority/policy/challenge readback |
-| State | Private explicitly initialized replay store; no silent startup reset | Store/initialization/retention/recovery references, receipt, access-denial readback and active-scope recovery policy |
-| Lifecycle | Run-scoped lease plus independent scheduler/janitor/readback | Registered plan, generation/ownership allowlist, lease/cleanup/receipt-retention refs, deadlines and separate administrative identities |
-| Operation | Setup, bootstrap dispatch and actual run/attempt authority are separate | Approved resource allowlist, budget/window, actor/grant refs and final canonical config digest after actual run identity is known |
-| Evidence | Redacted exact-source/case/readback/cleanup receipts | Reviewed protected-machine receipt promotion and actual P01/deployed G02/G03/L01 qualification; T011 currently supports source/fixture scope only |
+| Qualification repository | `opensoft/openXwallet`, public; default `main`; ID `1347887821` | Accepted caller is here; it is not a codeXfactory workflow |
+| Owner | `opensoft`, ID `638385` | Exact immutable identity binding |
+| Authenticated account | `brettheap`, User ID `1513478` | Readback only; no dispatcher/reviewer appointment |
+| Environment inventory | Only `copilot`, ID `20677426348` | Preserve it; no pilot environment selected/created |
+| `copilot` protection | No rules, admin bypass enabled, no deployment branch policy | Ineligible under the accepted protection profile |
+| Default workflow token | `read`; PR review approval disabled | Job-specific effective permissions remain separate readback |
+| OIDC subject settings | `use_default: true`, `use_immutable_subject: true` | Record actual provider settings; do not assume a name-only subject |
+| OIDC configured prefix | `repo:opensoft@638385/openXwallet@1347887821` | Exact full environment/workflow subject still needs selection/corroboration |
+| Protected qualification workflow runs | `0` | No protected qualification has been dispatched |
 
-Every service role (`records`, `challenge`, `registry`, `custody`, `supervisor`,
-`worker_channel`, `janitor`) needs a service reference, principal reference,
-credential reference and trust digest. Environment, authorization, scheduler and
-cleanup readback clients also need independently authenticated identities. Merely
-assigning different identifier strings does not prove administrative separation.
-No service reference is an executable resolver or worker-selected URL.
+OIDC settings came from the read-only repository
+`actions/oidc/customization/sub` endpoint. This reads configuration; it does not
+mint or observe a workload token. Do not derive an approved complete `sub` or
+audience from the prefix alone, alter the provider settings, or create federation
+to make a guessed subject work. Later acceptance must corroborate exact actual
+claims under separately approved authority. The
+[GitHub OIDC API](https://docs.github.com/en/rest/actions/oidc#get-the-customization-template-for-an-oidc-subject-claim-for-a-repository)
+documents the configuration-read endpoint.
 
-## Blocking source prerequisite and decision order
+## Operational selection matrix
 
-The accepted #59 dispatch digest includes the not-yet-known run ID/attempt.
-[The bootstrap amendment](workflow-bootstrap.md) records the verified circularity
-and its isolated source candidate under factory PR #1311. The candidate migrates
-to a distinct static selection plus independently bound actual-run full digest;
-paired exact-head source acceptance remains pending. Operational bindings still
-refuse `workflow-operational-host-unselected`; qualify/cleanup clients and
-protected-machine receipt support are not supplied by #59. Filling selection
-rows cannot make this workflow executable.
+Retain the earlier portable reference-service route, qualified in isolation.
+The proposed operational shape is a dedicated disposable **nonproduction** Linux
+deployment, with GitHub-hosted orchestration and independently administered
+runtime services. No provider, tenant, host/cluster/namespace or administration
+boundary has been selected. An existing bench or production target is not an
+implicit deployment choice.
 
-Select the actual nonproduction host, responsible administrators and distinct
-dispatcher/reviewer roles. Review/accept the paired bootstrap source candidates;
-actual hosting/authentication clients still require separate source integration
-and acceptance before operational setup authority. Then complete
-the [staged authorization record](scoped-authorization.md), obtain setup readback,
-and obtain a separate bounded dispatch/run decision. No task is duplicated here;
-feature 017 remains the sole implementation list.
+| Category | Accepted constraint / prepared proposal | Missing operator selection or acceptance |
+| --- | --- | --- |
+| Purpose | Machine possession prerequisite for codeXfactory feature 058 T002 | Exact case identifier and accountable owner; consumer acceptance separate |
+| Final source set | Accepted factory/bootstrap/adapter baselines above | All eight source roles, relative content paths/digests, dependencies, composition, deployed image/launch measurements and later hosting client source acceptance |
+| Environment | Proposed new `wallet-mfa-pilot-qa` in the exact qualification repository | Approved name and create scope; actual assigned ID and effective protection after authorized setup |
+| Reviewer/dispatcher | 1–6 distinct User/Team reviewer IDs; self-review prevented; admin bypass disabled; exact `refs/heads/main` restriction | Distinct eligible reviewer and dispatcher, membership/permission readback; Brett cannot approve his own initiated run |
+| Bootstrap authority | Independently approved static digest and authenticated current reader; atomic one-preauthorization/one-run-attempt binding | Administrator/principal/client/trust/credential refs, actual GitHub context authentication, authoritative atomic consumption/revocation and freshness/readback evidence |
+| Workload/issuer | Fixed GitHub issuer/discovery/JWKS; same-commit caller/reusable | Explicit audience, complete configured subject, exact claims/ref/source/measurement policy; preserve observed immutable prefix semantics |
+| Hosting/control plane | Nonproduction immutable accepted runtime; bounded authenticated worker channel | Exact provider/account/host or cluster/region/namespace IDs, network/OS policy and independent administrative ownership |
+| Supervisor | Worker cannot read keys/policy, alter observation or modify measured launch sources | Named administrator/principal/key/policy refs and actual OS/network/process denial evidence |
+| Gate/custody | Only the approved confined gate holds narrow signer capability; one bounded proof | Deployed gate/credential issuance/owning custody identities and valid direct worker-signing denial |
+| Services/current authority | Exactly records, challenge, registry, custody, supervisor, worker channel and janitor roles | Service/principal/credential refs and trust digests, actual current policy/challenge/record authentication and independent approval/readback clients |
+| State | Expected initialized private replay store; retained reservations; no silent reset | Storage/initialization/retention/recovery refs and receipt, access controls and active-scope recovery policy |
+| Lifecycle | Independent janitor/scheduler/readback services ready before dispatch; full-config-bound plan/lease registered after assigned run and before admission | Named independent principals, plan/lease/cleanup/receipt-retention refs, exact generation scope, deadlines and preservation allowlist |
+| Setup/dispatch authority | Separate target setup, one dispatch and actual run/attempt grant | Resource/action allowlist, budget/window/expiry, setup/dispatch actor and decision refs, preauthorization and independently approved static digest |
+| Actual run authority | Full config digest and `qualify-existing-resources` grant after assigned run/attempt | Actual run identity, fresh independently approved full config/grant, lease/scheduler/protection/source readback; no prediction or inherited rerun grant |
+| Qualification/receipt | Accepted source/fixture checks remain evidence within their scope | Real P01/deployed G02/G03/L01, live qualification/cleanup clients and protected-machine receipt source promotion; human/domain handoffs separate |
 
-No executable runtime JSON, grant, environment or provider resource is created by
-this packet. Missing selections remain explicit rather than invented handles,
-pending values inside runtime input, self-approval flags or fixture fallbacks.
-T013, T014 and T015 remain unchecked. Human broker enrollment/assurance and domain
-approval remain separate. Feedback stays deferred; neither historical blocked
-write was replayed.
+The bootstrap reader is a separately selected trusted hosting capability; this
+amendment does not add an eighth role to the runtime `services` grammar. Bootstrap,
+environment, authorization, scheduler and cleanup readback clients all need actual
+authentication and administration outside worker control. Different reference
+strings do not establish that separation. Only non-secret references belong here.
+
+## Decision sequence and remaining gates
+
+First select the nonproduction target, responsible administrators and distinct
+dispatcher/reviewer roles, then review the concrete hosting/authentication,
+qualification/cleanup and protected-receipt source integrations. Complete the
+[authorization draft](scoped-authorization.md) for that exact source and target.
+Authorize setup only through a separate explicit decision; created-resource
+identities and actual protection/readback are prerequisites for a later dispatch.
+
+After all rows and integrations are accepted, approve the static selection and
+preauthorization independently for one dispatch. Once assigned, independently
+bind the final full config and current grant to its exact run/attempt. A changed
+source/ref, time window or selection requires reconciliation; a rerun never
+inherits authority. If `main` has moved, reconcile its exact workflow SHA before
+dispatch. This packet emits no executable runtime configuration or grant.
+
+T013/T014/T015 remain unchecked. No environment, service, credential or provider
+resource is created/modified here. Source acceptance and post-merge CI do not
+authorize setup, dispatch, proof use, human approval or domain effects. Feedback
+stays deferred; neither historical blocked write was replayed.
