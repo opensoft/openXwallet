@@ -185,3 +185,16 @@ The source-ratified portable reference and preparation landings are recorded in
 owner/source prerequisites. They add no executable contract or operational
 profile and grant no setup, dispatch, proof use, deployed independence, protected
 receipt or human/domain acceptance.
+
+
+## Proposed actual bootstrap identity amendment (not current requirements)
+
+The new factory-owned `github-bootstrap-authentication` proposal recommends a
+purpose-specific admission identity before environment approval, explicitly
+amending the earlier no-preflight-OIDC expectation only after owner acceptance
+and commissioning. Its exact policy and scenarios live in the factory packet;
+[adapter planning/handoff](github-bootstrap-proposal.md) and T012G-M are proposed,
+not implemented or ratified. Existing proof identity/environment requirements,
+fixture profile, runtime service roles, inputs and neutral pins remain unchanged.
+T013 operational authority and actual source-update/host/subject selections remain
+separate; default bindings still refuse before outputs/OIDC today.

@@ -1234,3 +1234,22 @@ an operational host selection. Existing operational bindings still refuse before
 environment outputs/OIDC. Workflow/entrypoint bytes and dependency pins did not
 change in these three PRs. No release, consumer lock/pin promotion or live receipt
 is supplied by this source acceptance.
+
+
+## 2026-11-14 acceptance of T013 preparation and proposal commission
+
+Brett source-ratified adapter #63 at `54dd1e1d4dc68b377cfa45024eb2be96c13f8bcc` and directed landing
+when green, then preparation of the real GitHub bootstrap authentication proposal.
+It merged normally as `be41830acd16a197041e3aabb0281208b185d8ee` at 2026-11-14T13:49:16Z;
+independent provider tree `2f3b5745b779a4bf9bdf11590b097988f4e501d0` equals the ratified tree. All runnable
+exact-head source checks passed; no review threads/requested changes were present.
+Owner record: [#63 source ratification](https://github.com/opensoft/openXwallet/pull/63#issuecomment-6878228159).
+The instruction authorizes proposal preparation only, not the new admission-OIDC
+profile, its implementation, token mint, App/permission change, setup or dispatch.
+
+Factory change `add-github-bootstrap-authentication` and the
+[adapter proposal](github-bootstrap-proposal.md) prepare the next source decision.
+T012G-M are pending proposed source tasks, not an implementation commission.
+The earlier default/reference profile and no-output/OIDC refusal are unchanged.
+T001/T013/T014/T015 remain unchecked, feedback deferred, and neither historical
+blocked write is replayed.

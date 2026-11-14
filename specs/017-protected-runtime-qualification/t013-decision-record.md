@@ -4,6 +4,11 @@ Status: PREPARATION ONLY; no operational choice accepted; every setup/dispatch s
 Updated: 2026-11-14
 Governance: factory `prepare-protected-runtime-qualification`; adapter feature 017
 
+The subsequent [real GitHub authentication proposal](github-bootstrap-proposal.md)
+recommends a separate, explicit bootstrap-only admission OIDC amendment. It is
+unratified and unimplemented; no client/subject/provider trust or token request
+is selected by its preparation. The current default remains unchanged.
+
 ## What is now accepted
 
 Factory #1312, adapter preparation #61 and portable-authority #62 are source
@@ -29,7 +34,7 @@ in this packet. Missing IDs and secrets must not be filled from fixture material
 | Target shape | Dedicated disposable nonproduction Linux deployment; separate administration for trusted services and worker | PROPOSED; provider/parent IDs/region/host/namespace, owners, network boundaries, resource and spend ceilings are UNSELECTED; no existing bench or production cluster is implied |
 | Static approval | Independent operator-approved closed selection and one opaque preauthorization for the accepted case/window | UNSELECTED; no static digest, time window, preauthorization or operation grant is issued |
 | GitHub correlation | Future trusted dispatch broker records provider-returned run ID, independent read-only controller corroborates exact run/attempt | DESIGN OPTION, not implemented/selected; details and fail-closed conditions in authentication plan |
-| Pre-OIDC admission client | Independently issued narrowly scoped client identity outside worker custody | UNSELECTED SOURCE GATE; dispatch correlation does not authenticate this client or select a credential delivery mechanism |
+| Admission client | Proposed bootstrap-only OIDC amendment, or independently issued client identity if strict no-preflight-OIDC is retained | UNSELECTED SOURCE GATE; new mode needs owner acceptance/commissioning and actual subject/token-request/worker-exclusion qualification; no stored credential or alternative host is selected |
 | Wallet/authority services | Accepted owning registry/custody source plus existing seven runtime roles; separate bootstrap/approval/readback capabilities | UNSELECTED service/admin/credential/trust/image refs; reference process names or separate keys prove no deployed isolation |
 | Replay and authority stores | Explicitly provisioned private retained stores, independently retained initialization receipts; no reset of active scopes | UNSELECTED parent/storage/initialization/retention/recovery refs; backup rollback protection is not claimed |
 | Janitor/audit | Independent service owners, exact-generation run cleanup, retained/shared preservation, expiry after runner death | UNSELECTED owners, scheduler/lease/plan/retention refs and deployment evidence |
