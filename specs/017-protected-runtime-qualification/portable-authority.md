@@ -82,3 +82,33 @@ intended refusal; integrated replay checks the underlying ledger refusal while t
 lease is still active, before cleanup can mask it. The corrected focused suite
 passes all 78 tests. Final full-suite, isolated-matrix and hosted-CI evidence is
 recorded separately; snippet analysis does not substitute for hosted review.
+
+## Local qualification result
+
+The corrected implementation at adapter source head `0acd4ee5a843115ea294dbe0e50909f20ca18ad9`
+passed 78 focused tests, the complete 1,426-test adapter suite, and the committed
+1,124-test native isolated conformance matrix. Every selected test passed; there
+were zero skips, failures or errors. The matrix ran with a private loopback-only
+network namespace, dropped capabilities/groups, no privilege regain and read-only
+source mounts. B01/B02/B03 substantive anchors all passed.
+
+Both dependency pins remain unchanged. The ordered pin, syntax, plain/strict
+validator gates pass, as do all five pinned strict adapter OpenSpec items. Factory
+candidate [#1312](https://github.com/opensoft/openXfactory/pull/1312) passes strict
+new-packet/proposal-support/DAG/ledger checks and 640 focused governance tests plus
+338 subtests. Factory whole-corpus validation has125passing items and the existing
+`add-chain-attestation` scenario-delta failure; this candidate does not change or
+claim to resolve that accepted baseline exception.
+
+All four runtime modules and five new fixture/test modules return zero local
+Sonar snippet issues, with reviewed byte digests retained in private evidence.
+The nine-role panel findings were corrected and rechecked by affected reviewers.
+This is local evidence; hosted exact-head CI and completed GitHub Codex review
+remain separate receipts.
+
+Cleanup audits verified 61 local recorded process generations had no matching
+live process, no authority helper remained, and all four integrated fixtures
+removed run files while preserving shared and retained state. Both disposable
+native containers were absent. Fixture keys and temporary trees were then removed
+from the four owned evidence subdirectories after reports were retained. This
+cleanup does not remove the source checkouts or persistent unrelated bench data.
