@@ -89,6 +89,9 @@ ownership, validation, versioning, and release constraints.
   Static-v2 plan-only preflight/protected staging/finalization is a material new
   source decision; preserve v1/default and all neutral APIs/pins. No implementation,
   token acquisition, setup or dispatch is commissioned by this planning request.
+  The subsequent publication instruction authorizes gate resolution, both candidate
+  PRs, hosted CI and local Codex review, then presentation of v2 for ratification.
+  It supplies no v2 acceptance, implementation commission or operational grant.
   Existing offline entrypoints stay unchanged.
 - Accepted baseline: 016-factory-workload-binding; source decision:
   specs/016-factory-workload-binding/source-acceptance.md and plan.md.

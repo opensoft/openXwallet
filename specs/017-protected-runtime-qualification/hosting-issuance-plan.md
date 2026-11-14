@@ -189,7 +189,9 @@ counts/fingerprints/anchors under review. Required native conformance permits ze
 missing/deselected/skipped/non-passing cases. Source, CI, live readback, deployment,
 protected qualification and owner/human/domain acceptance remain distinct.
 
-Proposal preparation uses pinned OpenSpec and document/source consistency checks.
+Proposal/publication verification uses `python3 scripts/validate-openspec-cli-pin.py --all`
+in each consuming repository, in its default pinned-artifact form, plus document/source
+consistency checks. Raw CLI diagnostics are not the adjudicated corpus verdict.
 No runtime/provisioning implementation, token request, dispatch or live qualification
 is performed now. T001/T013/T014/T015 and every operational stage remain ungranted;
 feedback stays deferred and neither historical blocked write is replayed.

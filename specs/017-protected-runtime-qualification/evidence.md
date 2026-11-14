@@ -1610,11 +1610,52 @@ provider provenance, role credential limits and staged/final cleanup ownership.
 The API read-budget finding is resolved with explicit per-group budgets under one
 parent deadline and a complete positive acceptance control.
 
-The factory full corpus remains 128 passed/one pre-existing chain-attestation
-failure; both involved source files equal its base HEAD. Its new proposal ledger
-row must be generated with the actual publication PR number before publication.
-Two unchanged baseline factory README links target absent files; no new link is
-broken. These are recorded publication limitations, not a claim of green full CI.
-No candidate PR, hosted CI or hosted connector review is created by this local
-preparation. Source owner acceptance and explicit isolated commissioning are the
-next implementation gate; no operational authority is issued.
+The initial raw factory diagnostic returned 128 passed/one pre-existing chain-
+attestation finding; calling it a publication blocker was incorrect. The governed
+corpus command `python3 scripts/validate-openspec-cli-pin.py --all`, in its default
+pinned-artifact form, passes with zero undispositioned failures and the existing
+ratified chain-attestation exception explicitly reported. It is an adjudicated
+pass with one accepted exception, not a clean raw corpus. Neither the frozen
+packet nor its existing disposition is changed. Factory [PR #1317](https://github.com/opensoft/openXfactory/pull/1317) supplied
+the actual number; its single new ledger row was generated through the sanctioned
+seeder with `--moved-by '#1317'`, and the ledger consistency gate passes. Two unchanged baseline factory README
+links target absent files; no new link is broken. No candidate PR, hosted CI or
+hosted connector review was created by the initial preparation.
+
+The subsequent user instruction commissions publication-gate resolution, both
+candidate PRs, hosted CI and local Codex review, then presentation for v2
+ratification. Local review continues the owner's preference; no hosted connector
+review is requested or claimed. Source owner acceptance and explicit isolated
+commissioning remain the next implementation gate; no operational authority is
+issued. Setup/dispatch remain unauthorized and feedback deferred.
+
+
+Publication local qualification passed the two scoped initializations, both pins,
+syntax, plain/strict validator, **1,641 full tests with zero failures/errors/skips**,
+and the default pinned-artifact OpenSpec corpus entrypoint (five items, clean).
+The first full attempt had 1,639 passes/two neutrality failures because the test
+invocation placed fixtures outside its TMPDIR allowed root. No source workaround
+was made. Both exact cases passed with corrected nesting; the complete corrected
+run then passed all 1,641. The superseded attempt is not final acceptance.
+
+Independent cleanup audited 38 process generations,
+16 retained/shared preservation records and
+8 consumed correlated dispatch journals across the
+initial, focused and qualified local fixture roots. No matching process or
+attributable helper remained. Retained fixture evidence is private; actual
+operational cleanup/setup/dispatch was neither requested nor performed. All 116
+recorded runtime/test/workflow/contract inputs remain unchanged. Factory metadata/
+ledger checks and 501 focused tests plus four subtests pass.
+
+The coordinator and nine local expert roles reviewed architecture, performance,
+security, QA, static/quality, API/integration, integrity, reliability and simplicity
+with no actionable material findings. Final published-head/CI/PR-thread closure
+will be recorded on the candidate PRs; no hosted Codex connector review is claimed.
+T012N-V and T001/T013/T014/T015 stay unchecked; source acceptance/commissioning
+and every operational stage remain separate owner acts.
+
+Private publication qualification artifact SHA-256 values:
+
+- `qualified-full.xml`: `4e14da05181dd5ca1491c9b02d1bb5b3baed19b6d5fa95f71afe56a6466ba51e`
+- `cleanup-audit-final.json`: `ad03bfd1239c37aacecbb5799e1363e936360a48c0cbdaa3f4bddda670653246`
+- `source-boundaries.json`: `494f5d6798f94cfd58013427c2bd2541ad8592805cfbddf23a937449b21dfd4b`

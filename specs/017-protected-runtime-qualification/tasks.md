@@ -1,7 +1,7 @@
 # Tasks: Protected Machine Runtime Qualification
 
 Status: sole implementation list; T012G–M source handoff accepted; T012N-V hosting/finalization source tasks proposed only; operation unauthorized
-Current commission: 2026-11-14 prepare the factory-governed hosting/issuance source proposal and Speckit plan using recommended T013 choices; no source implementation or setup/dispatch is commissioned.
+Current commission: 2026-11-14 resolve publication gates, open factory/adapter candidates, run hosted CI and local Codex review, then present v2 for ratification. The recommended T013 basis remains planning only; no v2 source implementation or setup/dispatch is commissioned.
 Prior commission: 2026-11-13 verify #1311 post-merge CI and refresh T013 after paired
 source-only ratification/landing of #1311/#60. Setup and dispatch stay unauthorized.
 See [evidence](evidence.md), [selections](operational-inputs.md),
