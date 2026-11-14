@@ -1358,3 +1358,96 @@ Retained private verification artifact digests (disposable fixture bodies remove
 - `qualified-matrix.log`: `583a83fba6f4bd5168d04dec65e038e1cfca5713a29738413ee4358c65399f0a`
 - `qualified-runtime-inputs.json`: `92495f3131914872d70d4f1bdc146aad091566a397220d352c14e073f3583edb`
 - `cleanup-audit.json`: `d94fe22ede1f9dc2e5fb5a3fd0f6a62e95f537d8c241745d0631be4bbd18203e`
+
+
+## 2026-11-14 T012L local review and revised source qualification
+
+The owner commissioned publication, ordinary hosted source CI, local Codex review,
+resolution of findings and presentation for source ratification. The owner explicitly
+chose local Codex review for this candidate, waiving the hosted `@codex review`
+request. [Adapter #65](https://github.com/opensoft/openXwallet/pull/65) contains
+T012H–K implementation and these review corrections over accepted #64. The governing
+factory #1314 is already accepted; no additional factory grammar change is needed.
+T012L stays unchecked until actual owner source acceptance; T012M and T001/T013–T015
+remain unchecked. This publication supplies no owner ratification or merge authority.
+
+The local review uses the coordinator, nine standard expert roles and one additional
+GitHub Actions/OIDC expert. The corrected source checkpoint is
+`d0ff4e5d0ba4d144b6cb8f2b38f401b0d73ce11c`. Runtime/test/workflow bytes are bound by a
+21-file SHA-256 manifest; the subsequent qualification-record commit changes
+feature documentation only. Review found and corrected:
+
+- The workflow parser accepted a command prefix and final phase word. It now
+  checks the complete command, exact job guards, closed fields and fixed step order.
+- GitHub REST requests lacked User-Agent. All four source clients now send the
+  fixed internal User-Agent; actual loopback TLS positive/missing-header controls
+  exercise the wire behavior.
+- Documented GitHub caller/reusable path representations refused unnecessarily.
+  Explicit selected-main variants now map to one binding, with exact SHA and ref
+  agreement and no generic path/case/suffix normalization.
+- Journal work could finish after a Decision cutoff. Reservation/recording receive
+  remaining I/O budgets, and immediate post-return checks refuse before credentials
+  or successful return while preserving consumed/correlated state.
+- Session fresh reads lost the original cutoff. They now retain the enclosing
+  epoch deadline and earliest accepted readback expiry. Each read retains its own
+  existing monotonic Decision bound; there is no new cumulative monotonic promise.
+- The signature-negative control failed canonical decoding before crypto. It now
+  flips decoded signature bytes and canonically re-encodes them; a verify spy and
+  deliberate no-op crypto mutation establish that the negative reaches verification.
+- A normal concurrent SQLite commit could unlink a DELETE sidecar between exists
+  and lstat. Direct lstat tolerates only FileNotFoundError while preserving unsafe
+  sidecar checks. A real second-connection commit regression fails with the exact
+  old implementation and passes with the correction.
+
+The original 38 valid hosted quality findings and a subsequent local duplicate-literal
+warning were corrected. Actual local Sonar snippet analysis of nine runtime modules
+and three test modules reports zero issues. Two initial S8703 findings were independently
+assessed as false positives by security and static experts: the private helper receives
+trusted constructor-selected endpoints from its parent over an anonymous pipe, has no
+ambient credential, exposes no listener, validates TLS and follows no redirect. This
+assessment depends on trusted hosting; worker-controlled endpoints or ambient identity
+would require a new review. No analyzer rule or quality gate is disabled. Fresh hosted
+analysis and issue disposition remain distinct from these local results.
+
+Revised qualification, with the accepted clean owning code selected explicitly:
+
+- Scoped submodule initialization, both pin verifiers, syntax gate, plain and strict
+  adapter validation pass; five pinned adapter OpenSpec items and the strict governing
+  factory change pass.
+- Full regression: **1,641 passed, zero failures/errors/skips**.
+- Mandatory native network-none matrix: **1,339 passed, zero missing, deselected,
+  skipped or non-passing cases**. All 1,307 previously published nodes remain;
+  32 substantive review regressions extend only the three new bootstrap modules.
+  All 215 GitHub-bootstrap cases independently pass in the QA review.
+- QA mutations fail as expected: two signature controls fail under no-op crypto,
+  nine graph controls fail under the legacy validator, and the concurrent-sidecar
+  control fails under the exact initial stat implementation. No mutation changes
+  committed runtime code.
+- All 21 runtime/test/workflow input hashes remain unchanged through final qualification.
+  Neutral pins, protected-proof verification and existing offline entrypoints remain
+  unchanged. First-pass qualification was superseded when closure found the final
+  source corrections; no interrupted or superseded run is counted as final acceptance.
+- Independent cleanup audited 61 recorded process generations, 28 integrated
+  retained/shared-resource preservation records and 12 consumed correlated dispatch
+  journals. No attributable helper remained; both disposable matrix containers were
+  absent. Seven exact coordinator-owned fixture roots were removed after audit;
+  JUnit/log/manifest/review receipts remain private. Reviewer fixture cleanup is
+  independently recorded in each final receipt. Bench start times and accepted
+  owning source remain unchanged.
+
+Both protected qualification workflows still have zero runs. Provider observations,
+identity tokens and dispatch remain fixtures; no real bootstrap token was requested
+and no actual protected dispatch was made. Hosting/authenticated callbacks, actual
+subjects and provider behavior, worker/admin exclusion, App scope, source-update controls,
+operational grants and live qualification remain T013/P01 obligations. Default bindings
+still refuse before token access/outputs. Setup/dispatch remain NOT GRANTED, feedback
+stays deferred, and neither historical blocked write was replayed.
+
+Retained private artifact SHA-256 values:
+
+- `qualified-full.xml`: `4b8e3bd2c8ed983d0bf76533e02dde3482619c311665db20c0eebf991fe364e7`
+- `qualified-matrix.xml`: `2329a162b5f21550c8f13aabea17eccf4a7aeb60e43d9fcf7b3346468df9ceb4`
+- `reviewed-runtime-inputs.json`: `d73b793951958667db3791832660b1dea77de60dd04ba0979cf91ee5fda8cc52`
+- `cleanup-audit-final.json`: `43a4d2ca97af48c45a28904129451688f1820274e0aed14a5644046fb190d7bb`
+- `fixture-removal-final.json`: `7406b286ef67894265719338e3a3cae35512595adade42794fe21098311f6773`
+- `static-sonar-closure-final.json`: `e358e2a190d90b2c46dfbfc9f1e87176ee019909221d4f4eca3d3fa6d841bcbd`
