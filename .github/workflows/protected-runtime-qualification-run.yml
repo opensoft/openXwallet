@@ -24,8 +24,11 @@ jobs:
     if: ${{ github.repository == 'opensoft/openXwallet' && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && github.workflow_ref == 'opensoft/openXwallet/.github/workflows/protected-runtime-qualification.yml@refs/heads/main' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
+    # Bootstrap-only identity capability. The unselected entrypoint still refuses
+    # before requesting a token. Proof identity/environment policy is unchanged.
     permissions:
       contents: read
+      id-token: write
     outputs:
       ready: ${{ steps.admit.outputs.ready }}
       environment: ${{ steps.admit.outputs.environment }}
@@ -68,7 +71,7 @@ jobs:
         run: |
           pip install --only-binary :all: --require-hashes -r requirements-workload-binding.lock
       - name: Repeat fresh admission after protected-environment approval
-        run: python3 -I -B scripts/prepare-protected-runtime.py --phase preflight
+        run: python3 -I -B scripts/prepare-protected-runtime.py --phase protected-admission
       - name: Require separately reviewed live hosting and machine evidence
         run: python3 -I -B scripts/prepare-protected-runtime.py --phase qualify
       - name: Require independent cleanup and readback

@@ -2,7 +2,7 @@
 
 **Branch**: `017-protected-runtime-qualification` | **Date**: 2026-11-12
 **Spec**: [spec.md](spec.md)
-**State**: T002–T012F source accepted/landed; T013 decision/authentication preparation; operation unauthorized
+**State**: T002–T012G source decision recorded; isolated T012H–K candidate; operation unauthorized
 
 Bootstrap amendment `fix-protected-runtime-dispatch-bootstrap` was source
 accepted and landed in factory #1311 / adapter #60. The static dispatch selection
@@ -194,24 +194,62 @@ workflow, grant or provider configuration changes in this preparation. T013 stay
 unchecked and every setup/dispatch stage remains NOT GRANTED.
 
 
-## Proposed actual GitHub bootstrap source slice (not commissioned)
+## Source-accepted GitHub bootstrap design and isolated realization
 
-Factory change `add-github-bootstrap-authentication` and
-[adapter proposal](github-bootstrap-proposal.md) recommend a new opt-in internal
-bootstrap profile. The owner must first accept the explicit bootstrap-only
-admission OIDC amendment, distinct verifier/audiences/phase policy, controlled
-orchestration/worker boundary and failure bounds. Reuse fixed issuer transport;
-keep the protected-proof verifier/environment requirement unchanged. Expected
-future modules live under `scripts/workload_factory_binding_runtime/github_bootstrap/`;
-workflow/entrypoint edits and `test_github_bootstrap*.py` follow only after source
-commissioning. No code, workflow or dependency is modified in this proposal.
+Factory #1314 / adapter #64 were source-ratified and landed with matching accepted
+trees, followed by explicit isolated T012H–K commissioning. T012G is recorded in
+[evidence](evidence.md). The new candidate is not automatically source-accepted.
 
-The planned sequence is T012G owner decision -> T012H verifier/client and T012I
-journal/controller -> T012J purpose/phase integration -> T012K isolated negative
-matrix -> T012L source review/ratification -> T012M independent T013 handoff.
-Durable attempt reservation precedes any future external I/O. The actual returned
-run/attempt must agree with signed identity, independent journal and provider
-readback. No dispatch retry/reset, phase/audience fallback or proof-policy
-relaxation is allowed. Main-update exposure and actual subject/credential/target
-selection stay unapproved. This is preparation, not an implementation commission
-or a grant to mint tokens, setup or dispatch.
+The opt-in `github_bootstrap/` package contains a separate RSA bootstrap verifier,
+exact selected job-token request client, bounded HTTPS child, initialized private
+dispatch journal, broker, fixed-version read-only provider adapter, accepted-graph
+checks, controller and readiness session. Trusted constructors select endpoints,
+clocks, CA policy and independently authenticated authority/materialization
+capabilities; types/labels do not establish deployed isolation. No listener,
+credential issuer, App provisioning or operational resolver is supplied.
+
+The helper places credentials only on anonymous pipes, sanitizes the child
+environment, verifies TLS chain/hostname, bounds resolver/connect to five seconds
+and total I/O to ten, refuses redirects/retries and reaps on cancellation/failure.
+The broker reserves before credential resolution or dispatch I/O, and rechecks
+source plus fresh approval/window/revocation after TLS immediately before send.
+Ambiguity/crash/cancellation stays consumed. Journal initialization is explicit,
+never a runtime recovery/reset path; inode/schema/private-file/high-water checks
+retain the trusted-host/backup-rollback limits of the accepted design. Explicit
+case/window/source/actor scope and exact dispatch bytes are retained beside their
+commitment; subsequent binding/readback verifies both retained projections.
+
+Correlation requires signed purpose/phase identity, independently approved static
+scope and consumed returned run ID, fixed-version API run/attempt/reusable-source/
+actor/job facts, current environment protection and eligible human review. A final
+run read repeats selected source/attempt checks without comparing unrelated mutable
+display fields. At most four GitHub reads occur per controller decision; two job
+pages can exhaust a protected-phase decision before final corroboration, which
+refuses rather than exceeding the budget. Missing `referenced_workflows`, exact
+path/SHA or documented facts refuse; no provider field is synthesized. Actual
+provider behavior/complete subject values remain unqualified.
+
+The caller retains exactly three inputs and the existing seven runtime roles. The
+reusable admission job gains bootstrap-only token-request capability in source;
+the protected job invokes a distinct `protected-admission` phase after environment
+approval. Qualify/cleanup remain unperformed handoffs. Default operational bindings
+remain unselected and refuse before outputs or token access. Request permission
+is not audience-limited; this source edit grants no live token mint or dispatch.
+
+Tests use actual local RSA/TLS with deterministic provider doubles, single-claim
+proof barriers, concurrent/crashed/expired/revoked broker cases, changed actual
+source/attempt and human/App review negatives. The owning integration verifies one
+proof, replay refusal and independent cleanup after success/failure/cancel/runner
+death, preserving journal/replay/shared state. Source-only evidence cannot clear
+T013/P01 deployed worker exclusion, administrator separation or live acceptance.
+
+T012L source review/ratification and T012M handoff remain pending. T001/T013–T015
+remain owner-controlled and unchecked. Main-update coordination/residual exposure,
+actual credentials/subjects/target and setup/dispatch remain unselected/ungranted.
+
+The source route currently supports only the first run attempt. Actual provider
+claim/schema/complete-subject behavior and authenticated bounded implementations
+of trusted approval/source/environment/materialization callbacks remain separately
+selected hosting inputs. Constructor types and callback labels do not authenticate
+a deployment; callbacks must obtain actual current facts and honor passed deadlines.
+The source adapter's post-call checks do not preempt an arbitrary hung callback.

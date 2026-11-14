@@ -64,8 +64,11 @@ ownership, validation, versioning, and release constraints.
   normally as be41830acd16 with matching tree. Current proposal preparation
   uses factory change add-github-bootstrap-authentication and feature017
   github-bootstrap-proposal.md plus proposed T012G-M. Bootstrap-only admission
-  OIDC is an explicit unratified policy amendment; no implementation, token
-  mint, workflow permission edit, setup or dispatch is commissioned.
+  OIDC was subsequently source-ratified in factory #1314 at 94bf0f43704f
+  with adapter #64 at ff9bd72278a5, landed as 3432baf6d929 and a352ebc7ed22
+  with matching ratified trees. The owner commissioned isolated T012H-K.
+  Candidate implementation is not automatically source-accepted; T012L/M
+  and T013-T015 remain separate. No token mint, setup or dispatch is commissioned.
   Default operational bindings continue to refuse before outputs/OIDC.
   Production hosting stays unselected; no setup/dispatch is authorized.
   Deployed supervisor, custody, state, lifecycle and operation stay

@@ -233,3 +233,37 @@ def operational_bindings():
     be separately selected/reviewed in T013/T014. No production service selected.
     """
     raise BindingError("workflow-operational-host-unselected")
+
+
+@dataclass(frozen=True, repr=False)
+class GithubWorkflowBindings:
+    """Explicit trusted hosting selection; no environment/file/plugin activation."""
+    workflow: WorkflowBindings
+    preflight_client: object
+    protected_client: object
+    bootstrap_principal: str
+    operation_principal: str
+
+
+def admit_github(context, *, bindings, phase, environment):
+    """Opt-in source composition, with distinct immutable controller routes per phase."""
+    from dataclasses import replace
+    from .bootstrap import bootstrap
+    from .github_bootstrap.session import ReadinessClient, Session
+    require(type(bindings) is GithubWorkflowBindings and type(bindings.workflow) is WorkflowBindings
+            and phase in ("preflight", "protected-admission"), "workflow-admission-refused")
+    client = bindings.preflight_client if phase == "preflight" else bindings.protected_client
+    require(type(client) is ReadinessClient and type(bindings.preflight_client) is ReadinessClient
+            and type(bindings.protected_client) is ReadinessClient
+            and bindings.preflight_client.endpoint != bindings.protected_client.endpoint,
+            "workflow-admission-refused")
+    before = bindings.workflow.runtime_trust.clock()
+    require(integer(before), "workflow-admission-refused")
+    session = Session(client, context=context, environment=environment, deadline=before + 10,
+        bootstrap_principal=bindings.bootstrap_principal, operation_principal=bindings.operation_principal)
+    admitted = bootstrap(context, bindings=session.bindings(bindings.workflow))
+    final = session._read(min(before + 10, admitted.valid_until))
+    now = bindings.workflow.runtime_trust.clock()
+    end = min(admitted.valid_until, final["bootstrap"]["expires_at"], final["operation"]["expires_at"])
+    require(integer(now) and before <= now < end, "workflow-admission-refused")
+    return replace(admitted, valid_until=end)

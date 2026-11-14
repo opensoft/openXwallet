@@ -241,12 +241,12 @@ def test_workflow_has_manual_caller_and_same_commit_local_reusable_claim_binding
         "OPENXWALLET_PREAUTHORIZATION_REF": "${{ inputs.preauthorization_ref }}"}
 
 
-def test_environment_and_oidc_exist_only_after_read_only_admission():
+def test_environment_follows_admission_and_oidc_is_job_scoped():
     jobs = load_workflow(REUSABLE)["jobs"]
     assert set(jobs) == {"admission", "protected-qualification"}
     before, protected = jobs["admission"], jobs["protected-qualification"]
     assert before["if"] == "${{ github.repository == 'opensoft/openXwallet' && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main' && github.workflow_ref == 'opensoft/openXwallet/.github/workflows/protected-runtime-qualification.yml@refs/heads/main' }}"
-    assert before["permissions"] == {"contents": "read"}
+    assert before["permissions"] == {"contents": "read", "id-token": "write"}
     assert "environment" not in before
     assert before["outputs"]["ready"] == "${{ steps.admit.outputs.ready }}"
     assert protected["needs"] == "admission"
@@ -274,7 +274,7 @@ def test_checkout_action_dependencies_and_workflow_inputs_never_float_or_execute
 def test_protected_job_rechecks_after_approval_and_has_independent_cleanup_handoff():
     steps = load_workflow(REUSABLE)["jobs"]["protected-qualification"]["steps"]
     commands = [s for s in steps if "scripts/prepare-protected-runtime.py" in s.get("run", "")]
-    assert [s["run"].split()[-1] for s in commands] == ["preflight", "qualify", "cleanup"]
+    assert [s["run"].split()[-1] for s in commands] == ["protected-admission", "qualify", "cleanup"]
     assert commands[-1]["if"] == "${{ always() }}"
     assert all("upload-artifact" not in s.get("uses", "") for s in steps)
 

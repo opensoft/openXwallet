@@ -1,9 +1,9 @@
 # Real GitHub bootstrap authentication source proposal
 
-Status: PROPOSED; no new profile acceptance, implementation, token request or operation commissioned
+Status: source design accepted in #1314/#64; isolated T012H–K implementation candidate; no operational authority
 Date: 2026-11-14
 Factory owner: `openspec/changes/add-github-bootstrap-authentication/`
-Sole implementation list: feature 017 tasks T012G-M, all pending owner acceptance/commissioning
+Sole implementation list: feature 017 tasks T012G-M; T012G records actual acceptance/commissioning, T012L/M remain pending
 
 ## Accepted preparation baseline
 
@@ -93,3 +93,12 @@ one-dispatch decisions. Broker App identity cannot hide the originating human
 from independent-review checks. Environment approval is not domain human consent.
 T001/T013/T014/T015 remain unchecked. Feedback stays deferred and neither
 historical blocked write is replayed.
+
+## Subsequent source acceptance and bounded realization
+
+Brett source-ratified factory #1314 at `94bf0f43704f` and adapter #64 at
+`ff9bd72278a5`, directed ordered landing, and explicitly commissioned isolated
+T012H–K. [Evidence](evidence.md#2026-11-14-github-bootstrap-source-ratification-and-isolated-commission)
+records exact accepted/merge/tree identities. The preceding proposal text is its
+accepted preparation baseline; it is not evidence that this subsequent implementation
+candidate is accepted, deployed or selected. See the current [plan](plan.md).
