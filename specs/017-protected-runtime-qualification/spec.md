@@ -157,3 +157,19 @@ grant. Full runtime validation and fresh protection/grant/scheduler/lease
 admission remain mandatory with the earliest deadline. Worker input or a hash
 cannot approve itself. Explicit input migration and as-built boundaries are in
 [workflow bootstrap](workflow-bootstrap.md). No setup/dispatch is authorized.
+
+## Commissioned portable bootstrap authority slice
+
+Brett commissioned the eight-hour portable reference authority and isolated
+wallet flow on 2026-11-14. Factory governance is
+`openspec/changes/add-portable-bootstrap-authority/`; feature017 T012C–T012F
+are the sole implementation tasks. The slice adds explicit durable authority
+initialization, immutable static approvals, atomic one-run/attempt binding,
+revocation/restart refusal, certificate-authenticated loopback roles and signed
+fixture control-plane observations. An authenticated client feeds unchanged
+bootstrap/admission and the owning wallet proof with independent cleanup.
+Real GitHub authentication and deployed administrative/OS isolation are not
+claimed. No neutral API/pin or production CLI activation is introduced.
+Candidate source acceptance and all setup/dispatch remain separate; T013–T015
+and human/domain gates remain unmarked. The adapter candidate stacks on #61
+until that documentation PR lands; this commission does not merge it.
