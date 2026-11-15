@@ -92,6 +92,12 @@ ownership, validation, versioning, and release constraints.
   The subsequent publication instruction authorizes gate resolution, both candidate
   PRs, hosted CI and local Codex review, then presentation of v2 for ratification.
   It supplies no v2 acceptance, implementation commission or operational grant.
+  Brett subsequently source-ratified factory #1317 at 943e33fdafdc with adapter
+  #67 at db7de85f709e, directed ordered landing and commissioned only T012O in
+  isolation. Factory merged as 4496ee860587d2c557c9f7dd124d9d0029bd89a8; adapter
+  merged as 02d902a4b19d9855780aad5996964686e7452929. Isolated hosted/ source is an
+  implementation candidate, not live hosting or an operational binding. T012P-V,
+  setup/dispatch, issuance/provider setup and live acceptance remain separate.
   Existing offline entrypoints stay unchanged.
 - Accepted baseline: 016-factory-workload-binding; source decision:
   specs/016-factory-workload-binding/source-acceptance.md and plan.md.

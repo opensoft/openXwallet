@@ -46,8 +46,8 @@ def _members(value):
     return set(value)
 
 
-def _policy(policy, now):
-    require(type(policy) is dict and set(policy) == POLICY_FIELDS
+def _policy_body(policy, now, fields):
+    require(type(policy) is dict and set(policy) == fields
             and type(policy["schema_version"]) is int and policy["schema_version"] == 1
             and policy["profile"] == "openxfactory-workload-binding-candidate-v0"
             and reference(policy["policy_ref"]) and integer(policy["revision"])
@@ -63,7 +63,8 @@ def _policy(policy, now):
     for key in ("sha", "workflow_sha", "job_workflow_sha"):
         require(len(claims[key]) == 40 and all(c in "0123456789abcdef" for c in claims[key]),
                 "invalid-workload-policy")
-    require(valid_digest(policy["composition_digest"]), "invalid-policy")
+    if "composition_digest" in fields:
+        require(valid_digest(policy["composition_digest"]), "invalid-policy")
     binding = policy["binding"]
     require(type(binding) is dict
             and set(binding) == set(BINDING_REFS) | {"binding_revision", "public_key_digest"}
@@ -98,6 +99,15 @@ def _policy(policy, now):
             and integer(wallet.get("policy_version")) and wallet["policy_version"] > 0
             and _time(wallet.get("created_at")) <= now
             and _time(custody.get("declared_at")) <= now, "wallet-mismatch")
+
+
+def _policy(policy, now):
+    _policy_body(policy, now, POLICY_FIELDS)
+
+
+def _policy_template(policy, now):
+    """Internal v2 template shape; never an executable proof-policy route."""
+    _policy_body(policy, now, POLICY_FIELDS - {"composition_digest"})
 
 
 def _wallet_public_key(encoded):

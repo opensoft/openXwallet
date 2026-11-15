@@ -64,7 +64,9 @@ The existing canonical validator and neutral source pin are unchanged.
 
 ## Document index
 
-- Feature017 [hosting/issuance source plan (draft)](specs/017-protected-runtime-qualification/hosting-issuance-plan.md), [research](specs/017-protected-runtime-qualification/hosting-issuance-research.md), [model](specs/017-protected-runtime-qualification/hosting-issuance-model.md), [internal interfaces](specs/017-protected-runtime-qualification/contracts/hosting-issuance.md), [selection basis](specs/017-protected-runtime-qualification/hosting-issuance-selections.md) and [acceptance matrix](specs/017-protected-runtime-qualification/hosting-issuance-acceptance.md). No implementation/setup/dispatch authorization.
+- [T012O isolated hosted finalization](specs/017-protected-runtime-qualification/hosting-finalization-implementation.md).
+
+- Feature017 [source-accepted hosting/issuance plan](specs/017-protected-runtime-qualification/hosting-issuance-plan.md), [research](specs/017-protected-runtime-qualification/hosting-issuance-research.md), [model](specs/017-protected-runtime-qualification/hosting-issuance-model.md), [internal interfaces](specs/017-protected-runtime-qualification/contracts/hosting-issuance.md), [selection basis](specs/017-protected-runtime-qualification/hosting-issuance-selections.md) and [acceptance matrix](specs/017-protected-runtime-qualification/hosting-issuance-acceptance.md). Only T012O isolated implementation/testing is commissioned; actual hosting/setup/dispatch remain unauthorized.
 
 - [`docs/openxwallet-cutover-runbook.md`](docs/openxwallet-cutover-runbook.md) —
   the ordered, reversible procedure that created this repository, with a rollback

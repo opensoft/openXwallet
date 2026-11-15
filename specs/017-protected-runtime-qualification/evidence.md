@@ -1659,3 +1659,93 @@ Private publication qualification artifact SHA-256 values:
 - `qualified-full.xml`: `4e14da05181dd5ca1491c9b02d1bb5b3baed19b6d5fa95f71afe56a6466ba51e`
 - `cleanup-audit-final.json`: `ad03bfd1239c37aacecbb5799e1363e936360a48c0cbdaa3f4bddda670653246`
 - `source-boundaries.json`: `494f5d6798f94cfd58013427c2bd2541ad8592805cfbddf23a937449b21dfd4b`
+
+
+## 2026-11-14 v2 source acceptance, ordered landing and isolated T012O
+
+Brett Heap explicitly source-ratified factory #1317 at
+`943e33fdafdc3d155045b96be4b4c24d28937c42` with adapter #67 at
+`db7de85f709e5bb62df374fbde52ca263184502f`, then directed landing when green and
+implementation/testing of T012O in isolation. Actual owner records:
+[factory](https://github.com/opensoft/openXfactory/pull/1317#issuecomment-6887396615),
+[adapter](https://github.com/opensoft/openXwallet/pull/67#issuecomment-6887396953).
+T012N's source decision/narrow commissioning is recorded; T012P-V and every
+operational gate remain separate. The agent does not tick T001/T013/T014/T015.
+
+Factory landed first as `4496ee860587d2c557c9f7dd124d9d0029bd89a8`, using the
+standing self-authored-PR missing-approval exception after all14 runnable checks
+and exact-head local expert review passed. The authenticated actor and PR author
+were both brettheap. Main had separately advanced to
+`d4fdef49e96d6178c9da58327d5b956833c7b5df` for Sonar remediation, so whole-tree
+equality with the ratified head is not claimed. All seven v2 packet files remain
+byte-identical; the exact README addition and generated ledger row are preserved
+in the integrated main tree. No unrelated main change was reverted or rewritten.
+Adapter then merged normally as `02d902a4b19d9855780aad5996964686e7452929`, with
+equal accepted/merged tree `a1f6d8c0140e7668c34a45486a1c3ac7e56452ca`, after all8
+runnable checks passed. Source CI/merge readback is not live qualification.
+
+T012O is implemented in the explicit hosted/ source package; see
+[implementation and bounded reconciliation](hosting-finalization-implementation.md).
+The static-v2 plan exists before assigned run/process values; preflight returns
+only environment/plan readiness. Actual kernel generation/artifact measurements
+feed canonical composition, policy and full configuration reconstruction. A
+separate accepting authority independently reloads the approved plan, observes the
+actual process, checks its own clock and compares complete bytes. The coordinator
+rechecks after acceptance. `admit_finalized` retains unchanged full configuration,
+operation-grant and lifecycle admission. No launch/issuer/listener/default activation
+is added. Actual provider/guest/issuance/staging/takeover clients remain future work.
+
+Final source qualification passes both pins, syntax, plain/strict validation, the
+default pinned-artifact OpenSpec corpus entrypoint, **1,764 full tests with zero
+failures/errors/skips**, and **1,462 mandatory offline cases with zero missing,
+deselected, skipped or non-passing nodes**. All old matrix counts/fingerprints/
+anchors remain; 123 new H01/H02/H04 nodes are added. Real RSA phase verification,
+actual controlled process measurements and an owning-wallet proof/verifier are
+exercised. Coupled policy/audience and independently reapproved wrong-source/graph
+mutations cannot widen the fixed profile. No runtime result is a protected receipt.
+
+The running bench's unshare capability was unavailable; no source or guard was
+weakened. Native qualification used the previously reviewed disposable-container
+route, network none, source read-only, private fixture mount only writable, then
+the same privilege-dropping isolation wrapper. Earlier qualification attempts are
+superseded by the final full/matrix receipts; no failed attempt is final acceptance.
+
+Final qualified/reproduction cleanup audited 152 recorded
+process generations, 16 preservation records and
+8 consumed journals. Across all scoped
+attempts the totals are 546 generations,
+48 retained/shared preservation records and
+24 consumed journals. No matching live
+generation or attributable helper remained. All three disposable containers were
+absent; ten exact private fixture roots were removed only after audit, with absence
+verified. Logs/JUnit/manifests/readback/audit receipts remain private. Existing
+benches, unrelated worktrees and owning source/pins remain. Both protected
+workflows still have zero runs. Feedback stays deferred; neither historical blocked
+write nor any denied optional/private write is replayed.
+
+Self-review reproduced a late mutable-stage-snapshot alias that could mask a
+generation change after the last measurement. Canonical snapshot capture now
+precedes further callbacks; the reproduction refuses after the fix and is included
+in the final full/native runs. Other closed findings cover copied bindings,
+source drift during protection readback, independent authority clocks, coupled
+audience/policy and reapproved source/graph substitutions. Superseded runs do not
+qualify the final source.
+
+Factory post-merge run43663946312 has a successful pytest job but failed
+sonar-analysis/SonarCloud quality checks. Verified project key is
+`opensoft_openxFactory`; new_security_rating is3 (C), required1, while new coverage
+88.1% passes its80% condition. The v2 factory PR changed no Python implementation
+files. This is an unresolved factory-main quality-gate result, not a claim of
+green integrated main. No gate threshold, finding status or disposition is changed.
+See [post-merge run](https://github.com/opensoft/openXfactory/actions/runs/43663946312).
+The green ratified-head PR checks and isolated T012O qualification remain separate.
+
+Private final artifact SHA-256 values:
+
+- `qualified-full.xml`: `1cc6e4525521f024fa0e5d12758b52866f95e8bd83fefd1522546c5854474eb2`
+- `native-final-qualified.log`: `37017a292fac3a4d7633ab2e7e69d48f10f68768c32345baccef7a35f8586872`
+- `qualified-source-inputs.json`: `07d4218021fffabb925091b2010dbe913089896086fa5de4d11d9ab38ee7ddaf`
+- `cleanup-audit-final.json`: `956240503d949d79e65207e0fd125c75a1fa9b522e418e6646ec6864ac79d81a`
+- `cleanup-summary.json`: `2c231d0174d1771233552fd6899262d9a53ec1fa9123ecccf9a5602b545fb0af`
+- `fixture-removal-final.json`: `78964367be8c3ba675c15fe43bbbfbc7a0e334ae42805d0ad3cf09c229c649c1`
+- `factory-quality-gate.json`: `29ff659293cbdb850f83c1e7c5f4331376e28e98598871f3e37775423082541a`
