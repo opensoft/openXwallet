@@ -29,7 +29,9 @@ authority.policy_digest. The policy template omits only composition_digest. Root
 relative measurement paths and exact executable/artifact hashes, non-root UID,
 empty capabilities, host/incarnation/boot/launch and cleanup scope are static.
 Staging acknowledgements are snapshotted canonically before further I/O so reused
-mutable callback data cannot hide generation drift. No dummy hash, generic patch,
+mutable callback data cannot hide generation drift. Measurement is compared with
+the detached acknowledged generation captured before callbacks, as well as the
+subsequent acknowledgement snapshot. No dummy hash, generic patch,
 predicted PID or mutable whole-object omission is
 used. Actual argv/cwd/executable, PID/start, boot, UID/capabilities and file bytes
 are measured before canonical composition -> policy -> configuration derivation.
@@ -73,7 +75,7 @@ covers real kernel/process/artifact measurements, independently recomputed bytes
 policy/configuration/generation mutation, clock/deadline/error privacy, drift after
 acceptance and an actual owning wallet proof verified through unchanged APIs.
 
-The mandatory offline matrix adds 123 reviewed nodes and H01/H02/H04 anchors.
+The mandatory offline matrix adds 125 reviewed nodes and H01/H02/H04 anchors.
 All prior nodes, fingerprints and acceptance groups remain. The full matrix
 continues to reject missing, deselected, skipped and non-passing cases in a
 loopback-only network namespace. Source/fixture results are not protected receipts.

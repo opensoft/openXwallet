@@ -1749,3 +1749,57 @@ Private final artifact SHA-256 values:
 - `cleanup-summary.json`: `2c231d0174d1771233552fd6899262d9a53ec1fa9123ecccf9a5602b545fb0af`
 - `fixture-removal-final.json`: `78964367be8c3ba675c15fe43bbbfbc7a0e334ae42805d0ad3cf09c229c649c1`
 - `factory-quality-gate.json`: `29ff659293cbdb850f83c1e7c5f4331376e28e98598871f3e37775423082541a`
+
+## 2026-11-14: T012O publication review and isolated requalification
+
+Brett authorized the T012O candidate PR, hosted CI and local Codex review after
+factory main Sonar repair, followed by presentation for source ratification.
+No new source acceptance, T012P-V commission or operational grant is inferred.
+The initial 1,764/1,462 receipts above remain dated evidence for their original
+source; the changed source is requalified below rather than inheriting them.
+
+Local review identified a second mutable-acknowledgement edge: observer callbacks
+could temporarily change the live stage generation from acknowledged A to measured
+B and restore A for the final read. Both PID and invocation witnesses first failed
+with DID NOT RAISE on the original implementation. Measurement now compares with
+the detached pre-I/O acknowledgement, preserving the full initial/final snapshot
+check. Both witnesses and the unchanged real-process positive pass after repair.
+
+The review also found shape-negative tests refusing on a stale template commitment.
+Those cases now refresh that commitment unless it is the specific subject of the
+negative. The relative-path witness updates both coupled path references. A task-
+only in-memory mutation of the non-root UID guard now causes its negative test to
+fail with DID NOT RAISE, establishing that the intended guard is exercised. No
+mutation helper is committed or used by CI. A dictionary-comprehension cleanup
+removes the connected preview's minor measurement finding without changing parsing.
+
+All **1,766 full-suite tests** and **1,464 mandatory native cases** pass, with
+zero failures/errors/skips and zero missing/deselected/non-passing matrix cases.
+The hosted module has 125 nodes; the two additions retain all 123 previous node
+identities. All other module counts, fingerprints and anchors are unchanged.
+Both pins, YAML syntax, plain/strict adapter validation and default pinned-artifact
+OpenSpec corpus validation pass in the required order. Native qualification uses
+the running bench image with external networking disabled, source read-only and
+only the task fixture directory writable, followed by the unchanged privilege-
+dropping wrapper. No failed bootstrap or diagnostic attempt is acceptance evidence.
+
+Cleanup audits account for 214 additional fixture process generations, 16
+retained/shared preservation records and eight consumed dispatch journals. No
+matching live generation or attributable helper remains. Native and diagnostic
+disposable containers are absent. Existing benches, source pins and unrelated
+worktrees are preserved. Both protected workflows remain at zero runs.
+
+Connected preview reports a false positive on the imported Decision exact-type
+guard: actual successful authority/finalization paths demonstrate that guard
+accepting its intended class. The exact-type check stays intact; no suppression,
+status disposition or weaker type check is introduced. Hosted full-project
+analysis remains an independent publication gate. PR CI and final local review
+receipts will be attached to the exact published head before ratification.
+
+Qualification receipt hashes (private artifacts, not runtime receipts):
+- `qualified-full.xml`: `cab91c6b26e14843a7c3607517f071f969d272f623f6715381d8a7add0b0261b`
+- `native-qualified.log`: `d4f0fb26cd5a5132e347c1522fef52b0384c7e2c4f8720e0a745ddb93a88b5a2`
+- `ordered-gates.json`: `d47b60ff2cff7599a113cca3b5707e1ed283a05bcdd2eb4c0e536bdb1a1757d3`
+- `review-corpus-change.json`: `a53d9feb09adf31090d4712097da067bc8ddf3c024045ce1a36a8d347212f625`
+- `cleanup-audit-final.json`: `e9bd90c624f7208cf0f80ec5a8fa08224fb01589efed0c119abe0273483974e1`
+- `qualified-source-inputs.json`: `c9e903946131e0fd6834c8754727786397aae49e4edc5a9580da471356108775`

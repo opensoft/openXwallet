@@ -177,6 +177,7 @@ def test_static_plan_commits_before_any_run_or_process(v):
 @pytest.mark.parametrize("group", ["sources", "dependency_digest", "issuer", "launch", "protection", "authority", "services", "state", "lifecycle", "case_ref", "expires_at"])
 def test_no_additional_static_field_can_be_omitted(v, group):
     plan = deepcopy(v.plan); del plan["configuration_template"][group]
+    plan["staging_policy"]["template_digest"] = template_digest(plan)
     with pytest.raises(BindingError): validate_plan(canonical(plan), approved_digest=digest(plan), now=v.h.now)
 
 
@@ -186,6 +187,7 @@ def test_exact_four_late_fields_must_be_absent_not_placeholders(v, member, place
     plan = deepcopy(v.plan); c = plan["configuration_template"]
     target = c["launch"] if member.startswith("run_") else c["authority"] if member == "policy_digest" else c
     target[member] = placeholder
+    plan["staging_policy"]["template_digest"] = template_digest(plan)
     with pytest.raises(BindingError): validate_plan(canonical(plan), approved_digest=digest(plan), now=v.h.now)
 
 
@@ -197,11 +199,15 @@ def test_closed_versioned_plan_rejects_unapproved_shape_or_algorithm(v, change):
     elif change == "derivation": p["derivation_rules"] = "eval:candidate"
     elif change == "policy": p["policy_template"]["claims"]["sha"] = "c" * 40
     elif change == "template": p["staging_policy"]["template_digest"] = "sha256:" + "f" * 64
-    elif change == "root-path": p["measurement_plan"]["worker"]["path"] = "../worker.py"
+    elif change == "root-path":
+        p["measurement_plan"]["worker"]["path"] = "../worker.py"
+        p["measurement_plan"]["artifacts"]["worker"]["path"] = "../worker.py"
     elif change == "root-uid": p["measurement_plan"]["uid"] = 0
     elif change == "capabilities": p["measurement_plan"]["capabilities"] = ["CAP_SYS_ADMIN"]
     elif change == "status-count": p["staging_policy"]["max_status_reads"] = 7
     else: p["staging_policy"]["status_window_seconds"] = 61
+    if change != "template":
+        p["staging_policy"]["template_digest"] = template_digest(p)
     with pytest.raises(BindingError): validate_plan(canonical(p), approved_digest=digest(p), now=v.h.now)
 
 
@@ -452,5 +458,24 @@ def test_late_mutation_of_reused_stage_snapshot_cannot_mask_generation_drift(v):
         if calls == 11:
             v.stage.generation["pid"] += 1
     v.hooks["facts"] = changed
+    with pytest.raises(BindingError): v.finalize()
+    assert v.h.calls == 0
+
+
+@pytest.mark.parametrize("member", ["pid", "invocation_ref"])
+def test_callback_mutation_cannot_replace_the_frozen_acknowledged_generation(v, member):
+    v.start()
+    measured = deepcopy(v.stage.generation)
+    acknowledged = deepcopy(measured)
+    acknowledged[member] = measured[member] + 1 if member == "pid" else "invocation:other"
+    def restore_acknowledgement():
+        v.stage.generation.clear(); v.stage.generation.update(acknowledged)
+    def substitute_measured_generation():
+        v.stage.generation.clear(); v.stage.generation.update(measured)
+    # Each authoritative read acknowledges A. A reused callback dictionary briefly
+    # changes to measured B, then returns to A before the next stage read.
+    v.hooks["stage"] = restore_acknowledgement
+    v.hooks["principal:launch-observer"] = substitute_measured_generation
+    v.hooks["principal:authority-observer"] = substitute_measured_generation
     with pytest.raises(BindingError): v.finalize()
     assert v.h.calls == 0

@@ -56,7 +56,8 @@ def measure(plan, context, bindings, observation, *, decision):
     require(Path("/proc/sys/kernel/random/boot_id").read_text().strip() == observation.boot_id, ERROR)
     process = observation.process
     status = Path("/proc") / str(process.pid) / "status"
-    fields = dict(line.split(":", 1) for line in status.read_text().splitlines() if ":" in line)
+    fields = {key: value for line in status.read_text().splitlines()
+              if ":" in line for key, value in [line.split(":", 1)]}
     require([int(n) for n in fields["Uid"].split()] == [m["uid"]] * 4
             and all(int(fields[k].strip(), 16) == 0 for k in ("CapInh", "CapPrm", "CapEff", "CapAmb")), ERROR)
     for attr, field in (("executable", "executable"), ("worker", "worker"),

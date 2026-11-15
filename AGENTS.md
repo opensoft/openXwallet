@@ -99,6 +99,9 @@ ownership, validation, versioning, and release constraints.
   implementation candidate, not live hosting or an operational binding. T012P-V,
   setup/dispatch, issuance/provider setup and live acceptance remain separate.
   Existing offline entrypoints stay unchanged.
+  The subsequent instruction authorizes T012O candidate publication, hosted CI and
+  local Codex review after factory main Sonar repair; owner source ratification
+  and operational grants remain separate.
 - Accepted baseline: 016-factory-workload-binding; source decision:
   specs/016-factory-workload-binding/source-acceptance.md and plan.md.
 - Existing adapter governing baseline: THIS repository's

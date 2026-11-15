@@ -82,7 +82,7 @@ def _derive(context, token, bindings, *, decision):
     observed = read_current(bindings.measurement.observe, s["launch_ref"], kind=LaunchObservation, decision=decision)
     _handle(observed.invocation_ref)
     raw, policy, generation = measure(plan, context, bindings.measurement, observed, decision=decision)
-    require(canonical(stage.generation) == canonical(generation), ERROR)
+    require(canonical(initial["generation"]) == canonical(generation), ERROR)
     # Recheck revocation/source/hold/protection after blocking kernel/file reads.
     current = current_plan(context, token, bindings.plan, phase="protected", decision=decision)
     require(current.raw == plan.raw, ERROR)
