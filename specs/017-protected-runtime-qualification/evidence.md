@@ -2113,3 +2113,21 @@ fixture/scratch directory remains; redacted receipts are retained.
 
 - `final-document-gates.json`: `89270cdc9c473545b25fa7ad5987ecb84964a24882f5ab48450065cc1529924d`
 - `final-document-cleanup.json`: `5089bc6d7326687587f0f2d95ed7357a0de14cbff33869b46fe35855c6ce462d`
+
+## 2026-11-15: Governed protection-read correction and T012Q publication
+
+The user commissioned the bounded correction, paired publication, CI and local
+Codex review, with no source ratification/landing or operations. Factory #1322
+proposes finalization-only six-observation/18-protection/28-total allocation while
+preserving ordinary3/13. The caller and independent authority share one ledger,
+per-member correlation high-water and earliest expiry; original clocks remain
+binding. ProviderReader enforces four total reads before credential/I/O. All six
+fresh protection reads and independent complete-byte recomputation remain.
+
+Test-first allocation collection refused before implementation. Then 61 allocation
+and flow cases passed; final 318 focused allocation/readback/finalization cases
+pass, including actual mTLS/process/file positives, independent six-position drift,
+unchanged admission, owning proof/replay refusal and default-budget refusal.
+Factory focused code-surface/target-release/sequencing suite: 538 passed. The
+original factory packet is unchanged. Full/native and exact-head CI/local expert
+review remain in progress; no hosted Codex review is claimed.

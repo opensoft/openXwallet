@@ -69,6 +69,7 @@ class GithubReadbacks:
     def environment(self,name,*,decision):
         try:
             require(type(name) is str and re.fullmatch(r"[A-Za-z0-9_-]{1,100}",name),ERROR)
+            ReadBudget(decision).begin_protection()
             before=decision.now();path="/environments/"+quote(name,safe="")
             env=self.get(path,"protection",decision)
             require(type(env) is dict and env.get("name")==name and env.get("can_admins_bypass") is False,ERROR)

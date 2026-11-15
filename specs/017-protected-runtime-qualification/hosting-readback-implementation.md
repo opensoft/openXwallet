@@ -66,26 +66,29 @@ excess guest permission, outage or changed/lost initialized state refuses.
 Repository identity in an environment projection is the selected request scope;
 the independent run correlation corroborates the actual repository ID.
 
-## Required downstream composition decision
+## Governed composition correction candidate
 
-The accepted T012O finalizer calls `current_plan()` repeatedly while deriving and
-independently rechecking complete configuration bytes. A fresh environment
-readback needs an environment GET and a branch-policy GET. Repeating that reader
-under one Decision exceeds the accepted three protection reads. The Q regression
-`test_repeated_finalization_protection_reads_refuse_instead_of_resetting_budget`
-requires refusal at the fourth attempted read, with the count remaining three
-and no owning proof.
+The baseline safely refused repeated protection reads at D7's three-read limit.
+Factory PR [#1322](https://github.com/opensoft/openXfactory/pull/1322), change
+`fix-hosted-protection-read-budget`, proposes a finalization-only allocation:
+six current observations, eighteen protection and twenty-eight aggregate GitHub
+reads. Ordinary admission/correlation remains three/thirteen. The independent
+authority joins the caller's ledger; both original clocks, earliest expiry, all
+group/snapshot counts and four total correlation reads remain binding. A seventh
+observation and a fifth shared correlation request refuse before credential/I/O.
+No budget upgrade, stale reuse, dropped check, retry or default activation occurs.
 
-The new adapters and current protected correlation/preflight paths qualify
-individually; complete v2 finalization with these fresh direct readers is blocked
-by this composition constraint. This candidate does not raise the budget, reset
-it, silently reuse stale protection, or claim full hosting integration. A governed
-factory/adapter design decision and owner source acceptance are required before
-that downstream wiring. T012R-V remain uncommissioned.
+The [feature amendment](hosting-readback-budget-amendment.md) records the source
+plan and authority. All 318 focused readback/finalization/allocation cases pass,
+including six real mTLS observations, independent actual process/file measurement,
+unchanged full admission, owning Ed25519 proof and replay refusal. Full/native
+requalification, CI and local expert Codex review are publication gates in progress.
+This is an unratified source candidate; T012R-V remain uncommissioned.
 
 ## Isolated verification and limits
 
-The new 160-node source corpus passes. Independently mutable authenticated fixture
+The baseline 160-node readback corpus passes; the allocation correction adds
+33 nodes without removing any baseline identity. Independently mutable authenticated fixture
 facts are changed while the approved candidate remains fixed. Positives exercise
 actual TLS/mTLS, server pins, RSA public-key construction, OS process/file
 measurement, initialized SQLite inspection, kernel-authenticated credential ports,
@@ -98,7 +101,8 @@ current typed private record alone does not establish an unqualified provider
 or guest fact. No live service credential, setup, dispatch, hold change, resource
 installation, token issuance or provider retirement is performed. Coordinated
 holds do not guarantee atomic main pinning or malicious-administrator resistance.
-All 2,043 full-suite tests and 1,741 mandatory native matrix nodes pass, with zero
+The baseline before the allocation correction passed 2,043 full-suite tests and
+1,741 mandatory native matrix nodes, with zero
 failures/errors/skips. The native run uses UID 1000, no capabilities, no new
 privileges, read-only source and loopback-only networking. H08/H09 anchor 78/32
 nodes. All prior 1,581 matrix identities and anchors remain unchanged.

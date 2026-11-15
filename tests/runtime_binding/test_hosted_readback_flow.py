@@ -186,11 +186,12 @@ def test_v2_revocation_after_environment_read_is_currently_observed(v,rb):
 
 
 def test_repeated_finalization_protection_reads_refuse_instead_of_resetting_budget(v,rb):
-    readers,seen=plan_readers(v,rb);v.start()
-    v.bindings=replace(v.bindings,plan=replace(v.bindings.plan,**readers))
-    v.authority=FinalAuthority(replace(v.authority_bindings,plan=replace(v.authority_bindings.plan,**readers)))
-    with pytest.raises(BindingError):v.finalize()
-    use=seen[0]
+    from workload_factory_binding_runtime.hosted.admission import current_plan
+    from workload_factory_binding_runtime.github_bootstrap.common import Decision
+    readers,seen=plan_readers(v,rb);bindings=replace(v.protected,**readers)
+    use=Decision(clock=bindings.clock,monotonic=bindings.monotonic)
+    current_plan(v.context,v.token,bindings,phase="protected",decision=use)
+    with pytest.raises(BindingError):current_plan(v.context,v.token,bindings,phase="protected",decision=use)
     assert ReadBudget(use).count("protection")==3
     assert sum("/deployment-branch-policies" in path for _,path in rb.calls)==1
     assert v.h.calls==0
@@ -221,3 +222,68 @@ def test_current_protected_readbacks_gate_existing_owning_proof_and_replay(g,rb,
     _owning_run(k,directory,before_proof=before_proof,perform=perform)
     assert ReadBudget(retained["decision"]).github_requests==12
     assert len(row(g))==1
+
+
+def current_finalizer(v,rb):
+    readers,seen=plan_readers(v,rb);v.start()
+    v.bindings=replace(v.bindings,plan=replace(v.bindings.plan,**readers))
+    v.authority=FinalAuthority(replace(v.authority_bindings,plan=replace(v.authority_bindings.plan,**readers)))
+    return seen
+
+
+def test_six_fresh_protection_observations_finish_actual_finalization(v,rb):
+    seen=current_finalizer(v,rb);result=v.finalize()
+    assert result.binding.plan_digest==v.selected.digest
+    assert result.configuration and result.policy and v.h.calls==0
+    members=set(seen);assert len(members)==2
+    states=[ReadBudget(item).state for item in members];assert states[0] is states[1]
+    assert ReadBudget(seen[0]).count("protection")==12
+    assert ReadBudget(seen[0]).count("private")==12
+    assert sum("/deployment-branch-policies" in path for _,path in rb.calls)==6
+
+
+@pytest.mark.parametrize("position",range(1,7))
+def test_each_finalization_protection_observation_is_fresh_and_independent(v,rb,position):
+    seen=current_finalizer(v,rb);original=deepcopy(v.plan);calls=0
+    def change(method,path):
+        nonlocal calls
+        if "/deployment-branch-policies" in path:
+            calls+=1
+            if calls==position:rb.policies["branch_policies"][0]["type"]="tag"
+    rb.hook=change
+    with pytest.raises(BindingError):v.finalize()
+    assert calls==position and v.plan==original and v.h.calls==0
+
+
+def test_current_finalization_reaches_unchanged_admission_and_owning_proof(v,rb):
+    import json
+    from workload_factory_binding_runtime.hosted.finalization import admit_finalized
+    current_finalizer(v,rb);result=v.finalize();c,h,w=v.c,v.h,v.w
+    c.config.clear(); c.config.update(json.loads(result.configuration)); h.policy = json.loads(result.policy)
+    h.claims.update(c.config["launch"])
+    h.artifacts, h.configuration = dict(v.launch.artifacts), v.launch.expected_configuration(v.projection)
+    h.reset_evidence(); c.reselect_policy()
+    life = w.lease_fixture
+    life.plan = replace(life.plan, scope=replace(life.plan.scope, config_digest=result.binding.config_digest))
+    life.janitor.plan = life.plan
+    for ref, managed in life.managed.items():
+        if managed.resource.retention == "run": life.managed[ref] = replace(managed, owner_scope_digest=digest(asdict(life.plan.scope)))
+    life.life = life.make()
+    w.bindings = replace(w.bindings, runtime_trust=c.trust, lifecycle=life.life)
+    w.authorization = replace(w.authorization, config_digest=result.binding.config_digest)
+    w.scheduler = replace(w.scheduler, plan_digest=life.plan.digest)
+    context = replace(w.context, config_digest=result.binding.config_digest)
+    admission = admit_finalized(result, context, bindings=w.bindings)
+    assert admission.config_digest == result.binding.config_digest
+    from factory_binding.test_owner_integration import owner_source
+    owner_source()
+    from openwallet_runtime.proof import TrustedKeyBinding, create_proof, verify_proof
+    h.binding = TrustedKeyBinding(**asdict(h.binding))
+    bridge = c.make(create_proof=create_proof)
+    proof = bridge.sign(h.challenge.id, h.request, h.token, h.observation)
+    assert verify_proof(proof["proof"], expected_digest=h.challenge.digest, binding=h.binding, now=h.now).subject_ref == h.binding.subject_ref
+    assert proof["human_approval"] is False
+    assert h.calls == 1
+
+    with pytest.raises(BindingError):bridge.sign(h.challenge.id,h.request,h.token,h.observation)
+    assert h.calls==1

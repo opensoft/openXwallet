@@ -18,29 +18,82 @@ LIMITS={"protection":3,"source":4,"control":2,"arm":24,"key":3,"private":12}
 JSON_TYPE="application/json"
 
 
+def _ledger(decision, *, finalization=False):
+    return {"counts": {name: 0 for name in LIMITS}, "members": {decision: 0},
+            "finalization": finalization, "protection_observations": 0}
+
+
+def start_finalization(decision):
+    """Trusted operation entrypoint only; never a field in worker input."""
+    require(type(decision) is Decision and not hasattr(decision, "_hosted_reads")
+            and decision.api_requests == 0, ERROR)
+    decision.now()
+    decision._hosted_reads = _ledger(decision, finalization=True)
+    ReadBudget(decision).check()
+
+
 class ReadBudget:
-    def __init__(self,decision):
-        require(type(decision) is Decision,ERROR)
-        self.decision=decision
-        if not hasattr(decision,"_hosted_reads"):
-            decision._hosted_reads={"counts":{name:0 for name in LIMITS},"correlation":0}
-        self.state=decision._hosted_reads;self.check()
+    def __init__(self, decision):
+        require(type(decision) is Decision, ERROR)
+        self.decision = decision
+        if not hasattr(decision, "_hosted_reads"):
+            decision._hosted_reads = _ledger(decision)
+        self.state = decision._hosted_reads
+        self.check()
 
     def check(self):
-        self.decision.now();correlation=self.decision.api_requests
-        require(integer(correlation) and self.state["correlation"]<=correlation<=4,ERROR)
-        self.state["correlation"]=correlation
-        require(self.github_requests<=13,ERROR)
+        members = self.state["members"]
+        require(self.decision in members and 1 <= len(members) <= 2, ERROR)
+        for member, highwater in tuple(members.items()):
+            member.now()
+            count = member.api_requests
+            require(integer(count) and highwater <= count <= 4, ERROR)
+            members[member] = count
+        require(sum(members.values()) <= 4, ERROR)
+        expiry = min(member.deadline for member in members)
+        for member in members:
+            member.clip(expiry)
+        require(self.github_requests <= (28 if self.state["finalization"] else 13), ERROR)
 
     @property
     def github_requests(self):
-        return self.decision.api_requests+sum(self.state["counts"][k] for k in ("protection","source","control"))
+        return sum(member.api_requests for member in self.state["members"]) + sum(
+            self.state["counts"][name] for name in ("protection", "source", "control"))
 
-    def consume(self,group):
-        self.check();require(group in LIMITS and self.state["counts"][group]<LIMITS[group],ERROR)
-        self.state["counts"][group]+=1;self.check()
+    def join(self, independent):
+        """Keep an independent clock/observer, sharing consumed enclosing authority."""
+        self.check()
+        require(type(independent) is Decision and not hasattr(independent, "_hosted_reads")
+                and independent.api_requests == 0 and len(self.state["members"]) == 1, ERROR)
+        remaining = min(member.remaining() for member in self.state["members"])
+        independent.now()
+        independent.end = min(independent.end, independent.last_mono + remaining)
+        self.state["members"][independent] = 0
+        independent._hosted_reads = self.state
+        ReadBudget(independent).check()
 
-    def count(self,group):return self.state["counts"][group]
+    def consume_correlation(self):
+        self.check()
+        require(sum(self.state["members"].values()) < 4, ERROR)
+        self.decision.api_requests += 1
+        self.check()
+
+    def begin_protection(self):
+        self.check()
+        if self.state["finalization"]:
+            require(self.state["protection_observations"] < 6, ERROR)
+        self.state["protection_observations"] += 1
+
+    def consume(self, group):
+        self.check()
+        require(group in LIMITS, ERROR)
+        limit = 18 if group == "protection" and self.state["finalization"] else LIMITS[group]
+        require(self.state["counts"][group] < limit, ERROR)
+        self.state["counts"][group] += 1
+        self.check()
+
+    def count(self, group):
+        return self.state["counts"][group]
 
 
 @dataclass(frozen=True,repr=False)

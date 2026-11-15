@@ -191,3 +191,11 @@ trust-anchor and identity-brokering compositions) stays in openxFactory.
    `contract_bundle_version` holds the tag's value ("The adapter's tag value
    (Recommended)"). `xwallet-v1.0` is tagged at the adapter rebuild's merge
    commit by `split-openwallet-neutral-core` task 5.8, an operator act.
+
+## Current bounded source continuation
+
+Brett commissioned the T012Q protection-read correction under factory change
+fix-hosted-protection-read-budget (#1322), paired publication, CI and local Codex
+review. The proposed finalizer-only six-observation/18-protection/28-total ledger
+retains default3/13 and all original clocks/current checks. Source ratification and
+landing remain separate; T012R-V and setup/dispatch are uncommissioned.
