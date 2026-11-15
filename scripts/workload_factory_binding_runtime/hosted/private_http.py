@@ -7,7 +7,7 @@ import selectors
 import subprocess
 import sys
 from urllib.parse import urlsplit
-from workload_factory_binding.evidence import BindingError,byte_digest,canonical,require
+from workload_factory_binding.evidence import BindingError,byte_digest,canonical,require,valid_digest
 from ..custody import _read
 from ..github_bootstrap.common import document
 from .nonces import ERROR
@@ -18,9 +18,11 @@ class Response:
     body:bytes
 
 class PrivateHttps:
-    def __init__(self,*,ca_file=None,certificate=None,private_key=None,fixture_origin=None):
+    def __init__(self,*,ca_file=None,certificate=None,private_key=None,fixture_origin=None,observation_origin=None,server_certificate_digest=None):
         require((certificate is None)==(private_key is None),ERROR)
         self.ca,self.cert,self.key=ca_file,certificate,private_key
+        self.observation_origin,self.server_certificate_digest=observation_origin,server_certificate_digest
+        require(observation_origin is None or fixture_origin is None,ERROR)
         self.fixture_origin=fixture_origin
         self.fixture_args=[]
         if fixture_origin is not None:
@@ -28,6 +30,12 @@ class PrivateHttps:
             require(all(v is not None for v in (ca_file,certificate,private_key)) and type(port) is int
                 and 1<=port<=65535 and fixture_origin=="https://127.0.0.1:"+str(port),ERROR)
             self.fixture_args=["--fixture-port",str(port)]
+        if observation_origin is not None:
+            selected=urlsplit(observation_origin)
+            require(selected.scheme=="https" and selected.hostname and selected.username is None and selected.password is None
+                and not selected.path and not selected.query and not selected.fragment and valid_digest(server_certificate_digest)
+                and all(v is not None for v in (ca_file,certificate,private_key)),ERROR)
+            self.fixture_args=["--observation-origin",observation_origin]
 
     def materials(self):
         return tuple(byte_digest(_read(p,private=i==2)) if p is not None else None
@@ -43,12 +51,13 @@ class PrivateHttps:
                 and type(body) is bytes and len(body)<=65536 and type(headers) is dict and len(headers)<=12
                 and all(type(x) is str and 0<len(x)<=16384 and all(32<=ord(c)<127 for c in x)
                         for pair in headers.items() for x in pair),ERROR)
+            if self.observation_origin is not None:require("https://"+u.netloc==self.observation_origin and method=="POST" and u.path=="/readback" and not u.query,ERROR)
             if self.fixture_origin is not None:require("https://"+u.netloc==self.fixture_origin,ERROR)
             materials=self.materials();decision.now();remaining=decision.remaining();require(remaining>0,ERROR)
             process=subprocess.Popen([sys.executable,"-I","-B",str(Path(__file__).with_name("_credential_io.py")),method,url,*self.fixture_args],
                 stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,
                 env={"PATH":os.defpath,"LANG":"C.UTF-8"})
-            message={"headers":headers,"body":base64.b64encode(body).decode(),
+            message={"server_pin":self.server_certificate_digest,"headers":headers,"body":base64.b64encode(body).decode(),
                 "seconds":remaining,"ca":self.ca,"certificate":self.cert,"key":self.key}
             process.stdin.write(canonical(message)+b"\n");process.stdin.flush()
             with selectors.DefaultSelector() as selector:

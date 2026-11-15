@@ -59,7 +59,8 @@ class PlanAdmission:
 
 def read_current(callback, *args, kind, decision):
     before = decision.now()
-    result = callback(*args, deadline=decision.deadline)
+    from .readback import DecisionRead
+    result = callback(*args, decision=decision) if type(callback) is DecisionRead else callback(*args, deadline=decision.deadline)
     now = decision.now()
     require(type(result) is kind and integer(result.observed_at) and integer(result.expires_at)
             and before <= result.observed_at <= now < result.expires_at <= result.observed_at + 60, ERROR)
