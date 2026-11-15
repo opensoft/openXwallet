@@ -192,10 +192,23 @@ trust-anchor and identity-brokering compositions) stays in openxFactory.
    (Recommended)"). `xwallet-v1.0` is tagged at the adapter rebuild's merge
    commit by `split-openwallet-neutral-core` task 5.8, an operator act.
 
-## Current bounded source continuation
+## Historical T012Q continuation (superseded below)
 
 Brett commissioned the T012Q protection-read correction under factory change
 fix-hosted-protection-read-budget (#1322), paired publication, CI and local Codex
 review. The proposed finalizer-only six-observation/18-protection/28-total ledger
 retains default3/13 and all original clocks/current checks. Source ratification and
 landing remain separate; T012R-V and setup/dispatch are uncommissioned.
+
+## Current T012R isolated continuation
+
+Brett source-ratified #1322 e813051af8c0 with #70 f6956e324e37 and commissioned
+ordered landing then T012R only in isolation. Normal merges 54f720b6df81 and
+27843096189a retain accepted trees. Feature017 hosting-launch-implementation.md
+records the bounded source plan; tasks.md remains the sole executable list.
+T012S-V, setup/dispatch and live acceptance remain unauthorized.
+
+T012R's isolated candidate now passes 69 new launch cases, 2,163 full tests and
+1,861 mandatory native nodes; its as-built boundary and limits are recorded in
+hosting-launch-implementation.md. No source ratification or T012S-V commission is
+inferred. Default bindings remain refusing; setup/dispatch remain unauthorized.

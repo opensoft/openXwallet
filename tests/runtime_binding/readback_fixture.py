@@ -107,7 +107,9 @@ def rb(tmp_path,request):
         digest({k:s.arm[ids[k]]["properties"] for k in ("nic","subnet","nsg")}))
     servers=[]
     def private_facts(operation):
-        if operation=="plan":return deepcopy(s.planfacts)
+        if operation=="stage-grant":return deepcopy(s.stage_grant)
+        if operation=="stage-lease":return document(s.stage_lease_path.read_bytes())
+        if operation=="plan":return document(s.plan_fact_path.read_bytes()) if hasattr(s,"plan_fact_path") else deepcopy(s.planfacts)
         if operation=="hold":return deepcopy(s.hold)
         if operation=="issuer":return deepcopy(s.issuer)
         if operation=="initialization":return deepcopy(s.initial)

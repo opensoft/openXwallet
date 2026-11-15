@@ -18,10 +18,12 @@ class Response:
     body:bytes
 
 class PrivateHttps:
-    def __init__(self,*,ca_file=None,certificate=None,private_key=None,fixture_origin=None,observation_origin=None,server_certificate_digest=None):
+    def __init__(self,*,ca_file=None,certificate=None,private_key=None,fixture_origin=None,observation_origin=None,server_certificate_digest=None,agent_origin=None,admission_origin=None):
         require((certificate is None)==(private_key is None),ERROR)
         self.ca,self.cert,self.key=ca_file,certificate,private_key
         self.observation_origin,self.server_certificate_digest=observation_origin,server_certificate_digest
+        self.agent_origin,self.admission_origin=agent_origin,admission_origin
+        require(sum(x is not None for x in (fixture_origin,observation_origin,agent_origin,admission_origin))<=1,ERROR)
         require(observation_origin is None or fixture_origin is None,ERROR)
         self.fixture_origin=fixture_origin
         self.fixture_args=[]
@@ -36,6 +38,15 @@ class PrivateHttps:
                 and not selected.path and not selected.query and not selected.fragment and valid_digest(server_certificate_digest)
                 and all(v is not None for v in (ca_file,certificate,private_key)),ERROR)
             self.fixture_args=["--observation-origin",observation_origin]
+
+        for origin,flag,private in ((agent_origin,"--agent-origin",True),(admission_origin,"--admission-origin",False)):
+            if origin is None:continue
+            selected=urlsplit(origin)
+            require(selected.scheme=="https" and selected.hostname and not selected.path and not selected.query
+                and not selected.fragment and selected.username is None and selected.password is None,ERROR)
+            if private:require(valid_digest(server_certificate_digest) and all(x is not None for x in (ca_file,certificate,private_key)),ERROR)
+            else:require(certificate is None and private_key is None and (server_certificate_digest is None or valid_digest(server_certificate_digest)),ERROR)
+            self.fixture_args=[flag,origin]
 
     def materials(self):
         return tuple(byte_digest(_read(p,private=i==2)) if p is not None else None
@@ -52,6 +63,9 @@ class PrivateHttps:
                 and all(type(x) is str and 0<len(x)<=16384 and all(32<=ord(c)<127 for c in x)
                         for pair in headers.items() for x in pair),ERROR)
             if self.observation_origin is not None:require("https://"+u.netloc==self.observation_origin and method=="POST" and u.path=="/readback" and not u.query,ERROR)
+            for origin,paths in ((self.agent_origin,("/stage/register","/stage/start","/stage/status")),
+                                 (self.admission_origin,("/v2/plan","/v2/protected"))):
+                if origin is not None:require("https://"+u.netloc==origin and method=="POST" and u.path in paths and not u.query,ERROR)
             if self.fixture_origin is not None:require("https://"+u.netloc==self.fixture_origin,ERROR)
             materials=self.materials();decision.now();remaining=decision.remaining();require(remaining>0,ERROR)
             process=subprocess.Popen([sys.executable,"-I","-B",str(Path(__file__).with_name("_credential_io.py")),method,url,*self.fixture_args],

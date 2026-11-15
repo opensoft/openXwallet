@@ -11,7 +11,7 @@ def child_generations(tmp_path,monkeypatch):
         def __init__(self,*args,**kwargs):
             super().__init__(*args,**kwargs)
             command=self.args
-            if isinstance(command,(list,tuple)) and any(str(x).endswith(("/hosted/_credential_io.py","/credential_worker.py","/readback_worker.py","/fixture_role.py")) for x in command):
+            if isinstance(command,(list,tuple)) and any(str(x).endswith(("/hosted/_credential_io.py","/credential_worker.py","/readback_worker.py","/fixture_role.py","/hosted/_launch_exec.py","/stage_crash_role.py")) for x in command):
                 fields=(Path("/proc")/str(self.pid)/"stat").read_text().rsplit(")",1)[1].split()
                 records.append({"pid":self.pid,"start_time":fields[19]})
     monkeypatch.setattr(subprocess,"Popen",Tracked)

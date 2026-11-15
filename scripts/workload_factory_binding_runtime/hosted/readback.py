@@ -173,7 +173,7 @@ class ObservationClient:
 
     def read(self,operation,reference,*,decision):
         try:
-            require(operation in ("hold","guest","issuer","state","initialization","plan","capability")
+            require(operation in ("hold","guest","issuer","state","initialization","plan","capability","stage-grant","stage-lease")
                 and digest(self.scope.record())==self.scope_digest
                 and self.endpoint_binding==(self.origin,self.principal,self.transport.server_certificate_digest,self.transport.materials())
                 and self.transport.observation_origin==self.origin,ERROR);_handle(reference)
