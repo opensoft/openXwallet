@@ -82,10 +82,22 @@ class DeploymentReader:
                         and all(type(v) is str and re.fullmatch(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",v) for v in entry.values()),ERROR)
             model={k:v for k,v in p.items() if k!="instanceView"};require(digest(model)==s.model_digest,ERROR)
             storage=p.get("storageProfile");require(type(storage) is dict and storage.get("imageReference")=={"id":s.image_id}
-                and type(storage.get("osDisk")) is dict and storage["osDisk"].get("managedDisk")=={"id":s.disk_ids[0]}
+                and type(storage.get("osDisk")) is dict and type(storage["osDisk"].get("managedDisk")) is dict
+                and storage["osDisk"]["managedDisk"].get("id")==s.disk_ids[0]
                 and type(storage.get("dataDisks")) is list,ERROR)
+            managed=storage["osDisk"]["managedDisk"]
+            require("storageAccountType" not in managed or (type(managed["storageAccountType"]) is str
+                and re.fullmatch(r"[A-Za-z0-9_]{1,64}",managed["storageAccountType"])),ERROR)
+            network_profile=p.get("networkProfile")
             require(tuple(x["managedDisk"]["id"] for x in storage["dataDisks"])==s.disk_ids[1:]
-                and p.get("networkProfile")=={"networkInterfaces":[{"id":s.nic_id}]},ERROR)
+                and type(network_profile) is dict and type(network_profile.get("networkInterfaces")) is list
+                and len(network_profile["networkInterfaces"])==1,ERROR)
+            link=network_profile["networkInterfaces"][0]
+            require(type(link) is dict and link.get("id")==s.nic_id,ERROR)
+            if "properties" in link:
+                extra=link["properties"]
+                require(type(extra) is dict and ("primary" not in extra or type(extra["primary"]) is bool)
+                    and ("deleteOption" not in extra or extra["deleteOption"] in ("Delete","Detach")),ERROR)
             image=self.get(s.image_id,"images",decision);disks=[self.get(v,"disks",decision) for v in s.disk_ids]
             require(all(x.get("managedBy")==s.vm_id and x["properties"].get("diskState")=="Attached" for x in disks),ERROR)
             store={"image":image["properties"],"disks":[x["properties"] for x in disks]}

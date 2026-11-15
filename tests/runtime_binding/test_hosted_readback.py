@@ -361,3 +361,49 @@ def test_public_key_metadata_is_bounded_before_crypto_construction(rb,part):
     rb.keydata["key"][part]="A"*800000;reader=rb.issuer_reader();use=rb.use()
     with pytest.raises(BindingError):reader.read("issuance:fixture",decision=use)
     assert not any(method=="POST" for method,path in rb.calls)
+
+
+@pytest.mark.parametrize("change",["wall","monotonic","regression"])
+def test_actual_tls_shared_correlation_refuses_before_application_data(rb,change):
+    from workload_factory_binding_runtime.hosted.readback import start_finalization
+    from workload_factory_binding_runtime.github_bootstrap.provider import ProviderReader
+    from workload_factory_binding_runtime.github_bootstrap.https import Response
+    from types import SimpleNamespace
+    peer=SimpleNamespace(now=rb.now,mono=0.)
+    root=Decision(clock=lambda:peer.now,monotonic=lambda:peer.mono);start_finalization(root)
+    own=rb.use();ReadBudget(root).join(own);transport=rb.routed()
+    class ActualTransport:
+        def exchange(self,*args,**kwargs):
+            check=kwargs["before_send"]
+            def expired():
+                if change=="wall":peer.now+=10
+                elif change=="monotonic":peer.mono+=10
+                else:peer.now-=1
+                check()
+            kwargs["before_send"]=expired
+            reply=transport.exchange(*args,**kwargs);return Response(reply.status,reply.body)
+    selected=ProviderReader(credential=lambda **_:"token:fixture",transport=ActualTransport())
+    with pytest.raises(BindingError):selected.decision("opensoft/openXwallet",own).run("789")
+    assert rb.calls==[]
+
+
+@pytest.mark.parametrize("field",["disk-storage-type","nic-primary","nic-delete-option"])
+def test_approved_provider_reference_metadata_is_retained_and_drift_refuses(rb,field):
+    reader=rb.deployment_reader();vm=rb.arm[rb.ids["vm"]]["properties"]
+    assert vm["storageProfile"]["osDisk"]["managedDisk"]["storageAccountType"]=="Standard_LRS"
+    assert vm["networkProfile"]["networkInterfaces"][0]["properties"]=={"primary":True,"deleteOption":"Detach"}
+    reader.read(decision=rb.use())
+    if field=="disk-storage-type":vm["storageProfile"]["osDisk"]["managedDisk"]["storageAccountType"]="Premium_LRS"
+    else:vm["networkProfile"]["networkInterfaces"][0]["properties"][{"nic-primary":"primary","nic-delete-option":"deleteOption"}[field]]=False if field=="nic-primary" else "Delete"
+    with pytest.raises(BindingError):reader.read(decision=rb.use())
+
+
+@pytest.mark.parametrize("field",["disk-storage-type","nic-primary","nic-delete-option"])
+def test_approved_model_hash_cannot_replace_typed_reference_metadata(rb,field):
+    vm=rb.arm[rb.ids["vm"]]["properties"]
+    if field=="disk-storage-type":vm["storageProfile"]["osDisk"]["managedDisk"]["storageAccountType"]=True
+    else:vm["networkProfile"]["networkInterfaces"][0]["properties"][{"nic-primary":"primary","nic-delete-option":"deleteOption"}[field]]="true" if field=="nic-primary" else True
+    selection=replace(rb.deployment,model_digest=digest({k:v for k,v in vm.items() if k!="instanceView"}))
+    from workload_factory_binding_runtime.hosted.platform_readback import DeploymentReader
+    reader=DeploymentReader(selection=selection,reader=rb.reader,principal_ref="principal:arm-reader")
+    with pytest.raises(BindingError):reader.read(decision=rb.use())

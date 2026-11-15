@@ -90,3 +90,32 @@ def test_correlation_reader_refuses_fifth_shared_request_before_credential_or_io
     with pytest.raises(BindingError):reads.run("789")
     assert len(calls)==len(credentials)==4-spent
     assert root.api_requests+own.api_requests==4
+
+
+@pytest.mark.parametrize("initiator",[0,1])
+@pytest.mark.parametrize("change",["wall-expiry","wall-regression","monotonic-expiry","monotonic-regression"])
+def test_joined_peer_clock_refuses_after_tls_before_application_send(initiator,change):
+    from workload_factory_binding_runtime.github_bootstrap.provider import ProviderReader
+    from workload_factory_binding_runtime.github_bootstrap.https import Response
+    state,root,other_state,own=pair();peer=(other_state,state)[initiator];sent=[]
+    class Transport:
+        def exchange(self,*args,**kwargs):
+            if change=="wall-expiry":peer.now+=10
+            elif change=="wall-regression":peer.now-=1
+            elif change=="monotonic-expiry":peer.mono+=10
+            else:peer.mono=-1
+            kwargs["before_send"]()
+            sent.append(True);return Response(200,b"{}")
+    reader=ProviderReader(credential=lambda **_:"token:fixture",transport=Transport())
+    with pytest.raises(BindingError):reader.decision("opensoft/openXwallet",(root,own)[initiator]).run("789")
+    assert sent==[]
+
+
+def test_ordinary_provider_transport_contract_is_unchanged_without_hosted_ledger():
+    from workload_factory_binding_runtime.github_bootstrap.provider import ProviderReader
+    from workload_factory_binding_runtime.github_bootstrap.https import Response
+    class Transport:
+        def exchange(self,method,url,*,headers,decision):return Response(200,b"{}")
+    use=decision(clock());reader=ProviderReader(credential=lambda **_:"token:fixture",transport=Transport())
+    assert reader.decision("opensoft/openXwallet",use).run("789")=={}
+    assert not hasattr(use,"_hosted_reads")

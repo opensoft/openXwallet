@@ -93,8 +93,8 @@ def rb(tmp_path,request):
         "nic":VMROOT+"Microsoft.Network/networkInterfaces/nic-001","subnet":VMROOT+"Microsoft.Network/virtualNetworks/vnet-001/subnets/worker",
         "nsg":VMROOT+"Microsoft.Network/networkSecurityGroups/worker"};s.ids=ids
     vmprops={"vmId":s.guest_expected["incarnation_id"],"provisioningState":"Succeeded","hardwareProfile":{"vmSize":"fixture-size"},
-        "storageProfile":{"imageReference":{"id":ids["image"]},"osDisk":{"managedDisk":{"id":ids["disk"]}},"dataDisks":[]},
-        "networkProfile":{"networkInterfaces":[{"id":ids["nic"]}]},"instanceView":{"statuses":[{"code":"PowerState/running"}]}}
+        "storageProfile":{"imageReference":{"id":ids["image"]},"osDisk":{"managedDisk":{"id":ids["disk"],"storageAccountType":"Standard_LRS"}},"dataDisks":[]},
+        "networkProfile":{"networkInterfaces":[{"id":ids["nic"],"properties":{"primary":True,"deleteOption":"Detach"}}]},"instanceView":{"statuses":[{"code":"PowerState/running"}]}}
     def model(id,props,**extra):return {"id":id,"properties":{"provisioningState":"Succeeded",**props},**extra}
     s.arm={ids["vm"]:model(ids["vm"],vmprops,identity={"type":"None"}),ids["image"]:model(ids["image"],{"storageProfile":{"osDisk":{"osType":"Linux","osState":"Generalized"}}}),
         ids["disk"]:model(ids["disk"],{"diskState":"Attached","encryption":{"type":"EncryptionAtRestWithPlatformKey"}},managedBy=ids["vm"]),

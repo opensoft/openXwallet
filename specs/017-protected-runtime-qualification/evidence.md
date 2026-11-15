@@ -2131,3 +2131,17 @@ unchanged admission, owning proof/replay refusal and default-budget refusal.
 Factory focused code-surface/target-release/sequencing suite: 538 passed. The
 original factory packet is unchanged. Full/native and exact-head CI/local expert
 review remain in progress; no hosted Codex review is claimed.
+
+### Local panel corrections
+
+Nine-role local review found two substantive issues: (1) correlation's hosted
+ledger lacked the after-TLS/before-GO shared checkpoint; (2) approved ARM disk/NIC
+reference metadata was refused by minimal-object equality. Both are corrected.
+Hosted correlation now supplies the shared checkpoint while ordinary transport
+signature stays unchanged. Real TLS tests expire/regress the joined peer and
+require zero application requests. The ARM fixture includes documented storage
+and NIC metadata, with typed-link checks and unchanged complete-model digest;
+approved metadata positives and independent metadata drift/type negatives pass.
+Focused TLS/correlation controls: 15 passed; ARM controls: 22 passed. Earlier
+full/native runs were explicitly superseded/interrupted before source correction;
+they are not completed qualification. Fresh corrected qualification follows.
