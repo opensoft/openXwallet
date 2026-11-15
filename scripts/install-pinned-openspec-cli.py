@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-# VENDORED from opensoft/openxFactory@44d8fbaf7d977668973dcd116040c9405416c2ea (#754); do not edit here.
-# Everything below this header block is byte-identical to that repository's
-# `scripts/install-pinned-openspec-cli.py`. Drift check (exact commands) and re-vendoring: docs/openspec-cli-pin.md.
+# VENDORED from opensoft/openXfactory@4e7f06ddac55ff46bfa4e8714eabf4d3d4964829; do not edit here.
+# Everything below this header block is byte-identical to the provider.
+# Source: scripts/install-pinned-openspec-cli.py. Current provenance: docs/openspec-cli-pin.md.
 """Install the PINNED OpenSpec CLI and put it on PATH. Judge nothing.
 
 WHAT THIS IS, AND WHAT IT IS NOT. This is an INSTALLER. A green exit means
@@ -53,17 +53,25 @@ validates in the same process and wrong here: a binary that vanishes when this
 script exits is a binary no later step can run. So the install goes to a named
 directory that persists — `--cache-dir`, defaulting to the verifier's own
 `default_cache_root()` so a developer's installs are shared with it rather than
-duplicated beside it — and only the FETCH workspace is emptied, at the START of
-each run rather than the end. That order matters: `fetch_artifact` requires
-exactly one tarball in its destination and refuses an ambiguous fetch, so a
-tarball left behind by a PREVIOUS pin version would turn the next run after a
-bump into `pin-unresolvable`. Emptying first makes the workspace as clean as a
-temporary directory while keeping the path stable.
+duplicated beside it. Each invocation gets a unique private FETCH workspace
+that is retained as evidence. It never empties a shared .fetch directory.
+Invalid or incomplete cache generations are retained and bypassed in favour of
+a fresh exclusive generation, so concurrent installers do not delete each
+other's files. Only a verified generation can be reused.
 
 THE TARBALL IS RE-VERIFIED ON EVERY RUN regardless of the cache — that is
 `resolve_pinned`'s property, not this file's, and it is the reason a persistent
 install directory is not a trust shortcut: only the INSTALL is reused, and only
 from a directory named and stamped with the verified content address.
+
+AND SO IS THE DEPENDENCY CLOSURE, since 2026-09-08. The install this script
+performs now runs `npm ci` through the lockfile
+`contracts/openspec-cli-pin.yaml` names, so the `openspec` this job puts on
+`$GITHUB_PATH` runs over the SAME pinned tree the gate's own run does — the two
+were previously free to resolve nine caret ranges differently on the same day.
+Nothing about that is implemented here: `pinned_lockfile` and `verify_lockfile`
+are the verifier's, called below, and the lockfile's digest is written in this
+file exactly as often as the version and the integrity are, which is never.
 
 Exit codes:
   0  the pinned artifact verified, installed, and reported the pinned version
@@ -81,7 +89,6 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import os
-import shutil
 import sys
 from pathlib import Path
 
@@ -148,25 +155,27 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
 
     try:
-        pin = verifier.read_pin(
-            Path(args.pin) if args.pin else verifier.PIN_PATH)
+        verifier.authorize_cli_sources(args)
+        args.npm = verifier.trusted_npm_executable(args.npm)
+        pin_path = Path(args.pin)
+        pin = verifier.read_pin(pin_path)
         version = verifier.pinned_version(pin)
         integrity, shasum = verifier.pinned_integrity(pin)
         package = verifier.pinned_package(pin)
         binary = verifier.pinned_binary(pin)
+        lockfile, lockfile_integrity, lockfile_packages = (
+            verifier.pinned_lockfile(pin, pin_path))
+        lockfile_bytes = verifier.verify_lockfile(
+            lockfile, lockfile_integrity, lockfile_packages, package, integrity)
 
         cache_root = (Path(args.cache_dir).expanduser() if args.cache_dir
                       else verifier.default_cache_root())
-        # Emptied at the START of the run and left in place at the end — see the
-        # module docstring. `.fetch` sits beside the install prefixes rather than
-        # above them so that ONE `--cache-dir` names everything this run writes.
-        workspace = cache_root / ".fetch"
-        shutil.rmtree(workspace, ignore_errors=True)
-        workspace.mkdir(parents=True, exist_ok=True)
+        # A unique retained fetch workspace preserves active runs and evidence.
+        workspace = verifier.retained_fetch_workspace(cache_root)
 
         executable = verifier.resolve_pinned(
             package, version, integrity, shasum, binary, workspace, cache_root,
-            npm=args.npm)
+            lockfile_bytes, lockfile_integrity, npm=args.npm)
         reported = verifier.assert_reported_version(executable, version)
     except verifier.PinRefusal as exc:
         # Printed VERBATIM, trailer and all. This script adds no wording of its
@@ -178,8 +187,11 @@ def main(argv: list[str] | None = None) -> int:
 
     print(f"install-pinned-openspec-cli: {package}@{reported} verified against "
           f"its content address (integrity {integrity[:23]}…) and installed at "
-          f"{executable}. THIS IS AN INSTALL AND NOT A VERDICT: no delta was "
-          f"read and no corpus was validated.", file=sys.stderr)
+          f"{executable}, over the pinned dependency closure "
+          f"{lockfile.name} ({lockfile_packages} packages, lockfile_integrity "
+          f"{lockfile_integrity[:23]}…, installed with `npm ci "
+          f"--ignore-scripts`). THIS IS AN INSTALL AND NOT A VERDICT: no delta "
+          f"was read and no corpus was validated.", file=sys.stderr)
 
     github_path = os.environ.get("GITHUB_PATH")
     if github_path:
