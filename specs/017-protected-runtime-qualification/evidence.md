@@ -1659,3 +1659,215 @@ Private publication qualification artifact SHA-256 values:
 - `qualified-full.xml`: `4e14da05181dd5ca1491c9b02d1bb5b3baed19b6d5fa95f71afe56a6466ba51e`
 - `cleanup-audit-final.json`: `ad03bfd1239c37aacecbb5799e1363e936360a48c0cbdaa3f4bddda670653246`
 - `source-boundaries.json`: `494f5d6798f94cfd58013427c2bd2541ad8592805cfbddf23a937449b21dfd4b`
+
+
+## 2026-11-14 v2 source acceptance, ordered landing and isolated T012O
+
+Brett Heap explicitly source-ratified factory #1317 at
+`943e33fdafdc3d155045b96be4b4c24d28937c42` with adapter #67 at
+`db7de85f709e5bb62df374fbde52ca263184502f`, then directed landing when green and
+implementation/testing of T012O in isolation. Actual owner records:
+[factory](https://github.com/opensoft/openXfactory/pull/1317#issuecomment-6887396615),
+[adapter](https://github.com/opensoft/openXwallet/pull/67#issuecomment-6887396953).
+T012N's source decision/narrow commissioning is recorded; T012P-V and every
+operational gate remain separate. The agent does not tick T001/T013/T014/T015.
+
+Factory landed first as `4496ee860587d2c557c9f7dd124d9d0029bd89a8`, using the
+standing self-authored-PR missing-approval exception after all14 runnable checks
+and exact-head local expert review passed. The authenticated actor and PR author
+were both brettheap. Main had separately advanced to
+`d4fdef49e96d6178c9da58327d5b956833c7b5df` for Sonar remediation, so whole-tree
+equality with the ratified head is not claimed. All seven v2 packet files remain
+byte-identical; the exact README addition and generated ledger row are preserved
+in the integrated main tree. No unrelated main change was reverted or rewritten.
+Adapter then merged normally as `02d902a4b19d9855780aad5996964686e7452929`, with
+equal accepted/merged tree `a1f6d8c0140e7668c34a45486a1c3ac7e56452ca`, after all8
+runnable checks passed. Source CI/merge readback is not live qualification.
+
+T012O is implemented in the explicit hosted/ source package; see
+[implementation and bounded reconciliation](hosting-finalization-implementation.md).
+The static-v2 plan exists before assigned run/process values; preflight returns
+only environment/plan readiness. Actual kernel generation/artifact measurements
+feed canonical composition, policy and full configuration reconstruction. A
+separate accepting authority independently reloads the approved plan, observes the
+actual process, checks its own clock and compares complete bytes. The coordinator
+rechecks after acceptance. `admit_finalized` retains unchanged full configuration,
+operation-grant and lifecycle admission. No launch/issuer/listener/default activation
+is added. Actual provider/guest/issuance/staging/takeover clients remain future work.
+
+Final source qualification passes both pins, syntax, plain/strict validation, the
+default pinned-artifact OpenSpec corpus entrypoint, **1,764 full tests with zero
+failures/errors/skips**, and **1,462 mandatory offline cases with zero missing,
+deselected, skipped or non-passing nodes**. All old matrix counts/fingerprints/
+anchors remain; 123 new H01/H02/H04 nodes are added. Real RSA phase verification,
+actual controlled process measurements and an owning-wallet proof/verifier are
+exercised. Coupled policy/audience and independently reapproved wrong-source/graph
+mutations cannot widen the fixed profile. No runtime result is a protected receipt.
+
+The running bench's unshare capability was unavailable; no source or guard was
+weakened. Native qualification used the previously reviewed disposable-container
+route, network none, source read-only, private fixture mount only writable, then
+the same privilege-dropping isolation wrapper. Earlier qualification attempts are
+superseded by the final full/matrix receipts; no failed attempt is final acceptance.
+
+Final qualified/reproduction cleanup audited 152 recorded
+process generations, 16 preservation records and
+8 consumed journals. Across all scoped
+attempts the totals are 546 generations,
+48 retained/shared preservation records and
+24 consumed journals. No matching live
+generation or attributable helper remained. All three disposable containers were
+absent; ten exact private fixture roots were removed only after audit, with absence
+verified. Logs/JUnit/manifests/readback/audit receipts remain private. Existing
+benches, unrelated worktrees and owning source/pins remain. Both protected
+workflows still have zero runs. Feedback stays deferred; neither historical blocked
+write nor any denied optional/private write is replayed.
+
+Self-review reproduced a late mutable-stage-snapshot alias that could mask a
+generation change after the last measurement. Canonical snapshot capture now
+precedes further callbacks; the reproduction refuses after the fix and is included
+in the final full/native runs. Other closed findings cover copied bindings,
+source drift during protection readback, independent authority clocks, coupled
+audience/policy and reapproved source/graph substitutions. Superseded runs do not
+qualify the final source.
+
+Factory post-merge run43663946312 has a successful pytest job but failed
+sonar-analysis/SonarCloud quality checks. Verified project key is
+`opensoft_openxFactory`; new_security_rating is3 (C), required1, while new coverage
+88.1% passes its80% condition. The v2 factory PR changed no Python implementation
+files. At that checkpoint this was an unresolved factory-main quality-gate result,
+not a claim of green integrated main. No gate threshold, finding status or disposition is changed.
+See [post-merge run](https://github.com/opensoft/openXfactory/actions/runs/43663946312).
+The green ratified-head PR checks and isolated T012O qualification remain separate.
+
+Private final artifact SHA-256 values:
+
+- `qualified-full.xml`: `1cc6e4525521f024fa0e5d12758b52866f95e8bd83fefd1522546c5854474eb2`
+- `native-final-qualified.log`: `37017a292fac3a4d7633ab2e7e69d48f10f68768c32345baccef7a35f8586872`
+- `qualified-source-inputs.json`: `07d4218021fffabb925091b2010dbe913089896086fa5de4d11d9ab38ee7ddaf`
+- `cleanup-audit-final.json`: `956240503d949d79e65207e0fd125c75a1fa9b522e418e6646ec6864ac79d81a`
+- `cleanup-summary.json`: `2c231d0174d1771233552fd6899262d9a53ec1fa9123ecccf9a5602b545fb0af`
+- `fixture-removal-final.json`: `78964367be8c3ba675c15fe43bbbfbc7a0e334ae42805d0ad3cf09c229c649c1`
+- `factory-quality-gate.json`: `29ff659293cbdb850f83c1e7c5f4331376e28e98598871f3e37775423082541a`
+
+## 2026-11-14: T012O publication review and isolated requalification
+
+Brett authorized the T012O candidate PR, hosted CI and local Codex review after
+factory main Sonar repair, followed by presentation for source ratification.
+No new source acceptance, T012P-V commission or operational grant is inferred.
+The initial 1,764/1,462 receipts above remain dated evidence for their original
+source; the changed source is requalified below rather than inheriting them.
+
+Local review identified a second mutable-acknowledgement edge: observer callbacks
+could temporarily change the live stage generation from acknowledged A to measured
+B and restore A for the final read. Both PID and invocation witnesses first failed
+with DID NOT RAISE on the original implementation. Measurement now compares with
+the detached pre-I/O acknowledgement, preserving the full initial/final snapshot
+check. Both witnesses and the unchanged real-process positive pass after repair.
+
+The review also found shape-negative tests refusing on a stale template commitment.
+Those cases now refresh that commitment unless it is the specific subject of the
+negative. The relative-path witness updates both coupled path references. A task-
+only in-memory mutation of the non-root UID guard now causes its negative test to
+fail with DID NOT RAISE, establishing that the intended guard is exercised. No
+mutation helper is committed or used by CI. A dictionary-comprehension cleanup
+removes the connected preview's minor measurement finding without changing parsing.
+
+All **1,766 full-suite tests** and **1,464 mandatory native cases** pass, with
+zero failures/errors/skips and zero missing/deselected/non-passing matrix cases.
+The hosted module has 125 nodes; the two additions retain all 123 previous node
+identities. All other module counts, fingerprints and anchors are unchanged.
+Both pins, YAML syntax, plain/strict adapter validation and default pinned-artifact
+OpenSpec corpus validation pass in the required order. Native qualification uses
+the running bench image with external networking disabled, source read-only and
+only the task fixture directory writable, followed by the unchanged privilege-
+dropping wrapper. No failed bootstrap or diagnostic attempt is acceptance evidence.
+
+Cleanup audits account for 214 additional fixture process generations, 16
+retained/shared preservation records and eight consumed dispatch journals. No
+matching live generation or attributable helper remains. Native and diagnostic
+disposable containers are absent. Existing benches, source pins and unrelated
+worktrees are preserved. Both protected workflows remain at zero runs.
+
+Connected preview reports a false positive on the imported Decision exact-type
+guard: actual successful authority/finalization paths demonstrate that guard
+accepting its intended class. The exact-type check stays intact; no suppression,
+status disposition or weaker type check is introduced. Hosted full-project
+analysis remains an independent publication gate. PR CI and final local review
+receipts will be attached to the exact published head before ratification.
+
+Qualification receipt hashes (private artifacts, not runtime receipts):
+- `qualified-full.xml`: `cab91c6b26e14843a7c3607517f071f969d272f623f6715381d8a7add0b0261b`
+- `native-qualified.log`: `d4f0fb26cd5a5132e347c1522fef52b0384c7e2c4f8720e0a745ddb93a88b5a2`
+- `ordered-gates.json`: `d47b60ff2cff7599a113cca3b5707e1ed283a05bcdd2eb4c0e536bdb1a1757d3`
+- `review-corpus-change.json`: `a53d9feb09adf31090d4712097da067bc8ddf3c024045ce1a36a8d347212f625`
+- `cleanup-audit-final.json`: `e9bd90c624f7208cf0f80ec5a8fa08224fb01589efed0c119abe0273483974e1`
+- `qualified-source-inputs.json`: `c9e903946131e0fd6834c8754727786397aae49e4edc5a9580da471356108775`
+
+## 2026-11-14: factory main repair qualifies T012O publication dependency
+
+The existing governed Sonar feature 044 repaired the two new-period flows in
+factory PR #1318, source 7a8e70323b73fdf2f2526ebe3c56dbb3930f4ac3. Its own
+exact-head Codex review completed without findings and its required CI passed;
+the owning workstream landed it as 5d04859eb42e6b8684fa2825d20a8ed21652b93b.
+No competing repair or unrelated checkout mutation was introduced here.
+
+Actual main [run 43669723808](https://github.com/opensoft/openXfactory/actions/runs/43669723808)
+passes both the complete pytest job and sonar-analysis. Its complete suite reports
+10,570 tests and 807 subtests passed, six expected skips and 338 existing PostgreSQL
+deselections, with zero failures/errors. All four other main workflows pass.
+Sonar analysis 94982bc0-f624-44c6-8e8c-3d06049cf90c explicitly names that merged
+revision and changes the gate from red to green: A reliability/security/
+maintainability, 88.6 percent new-code coverage, 0.2 percent duplication and
+100 percent reviewed hotspots. The same six thresholds and manual baseline
+2026-09-09T23:37:08+0000 remain; ignoredConditions is false. Both former blockers
+are CLOSED/FIXED, and the unresolved new-period vulnerability query returns zero.
+Older baseline debt remains separately recorded by the owning feature.
+
+All seven files from the ratified v2 factory packet at 943e33fdafdc remain byte-
+identical in this merged repair. This current source CI/gate readback resolves
+the earlier publication dependency; it supplies no operational permission.
+
+The nine-expert local Codex panel and coordinator closed the T012O source review
+at c737e1897bda61a8374aaa4b35b5ab8e627b47a9 with no unresolved actionable finding.
+The final publication reconciliation changes only this evidence record; all nine
+qualified source/test hashes are unchanged. Hosted CI and actual published-head
+review receipts remain required before presentation for source ratification.
+Source acceptance, T012P-V commission, setup, dispatch and live acceptance stay
+separate. Feedback remains deferred and neither blocked write is replayed.
+
+Readback receipt hashes (private artifacts):
+- `factory-main-quality-gate.json`: `272ea392e420398e68793ceb781f091278c298dd984e242048f94374b8fc7b02`
+- `factory-main-repaired-issues.json`: `06bcd1522c5a0fc9e6b6d8ed5dbe738cfea0d81c1229615a7ec8ea4df894194f`
+- `factory-main-new-vulnerabilities.json`: `0220a40f358e8db1eb1e2d41f96ab5469e26511d768fbf3d1854031fdda867da`
+- `factory-ratified-v2-preservation.json`: `3f9cb4789dd89c5e12fe7b1b17ba211e1a3e4c1aee4daf88dd563bfb4a6b879a`
+- `local-codex-review.json`: `ac8a22e1abdffcf1c9b66c06233fdf22b5585884e6283cbcdcd94d6334d63a96`
+- `fixture-removal-final.json`: `d69c5c179e2c352acc787f9171b450ac536cb280f6f48ca20b33d93b166c4b6e`
+
+## 2026-11-14: hosted analysis assertion reconciliation
+
+The first PR #68 analysis at 4dc5dcaaed168ac6844f3b1df97212dc7e25091e passes
+the Sonar quality gate and does not reproduce the local preview's Decision
+exact-type false positive. Its nine new S9073 test readability findings are
+repaired by splitting composite assertions. Every condition remains asserted;
+production source, fixture behavior, all 125 node identities, matrix counts
+and fingerprints are unchanged. The complete affected module passes 125 tests
+with zero failures/errors/skips after this test-only repair. The prior full/native
+receipts remain bound to their recorded checkpoint; fresh hosted full-suite and
+mandatory matrix evidence must qualify the updated published head. This adds
+no suppression, issue disposition, source acceptance or operational authority.
+
+The revised assertion source also passes the full ordered local gates: 1,766
+full-suite tests and 1,464 mandatory native cases, zero failures/errors/skips
+and zero missing/deselected/non-passing matrix nodes. The eight other qualified
+inputs are byte-identical. Cleanup audits account for 212 additional fixture
+generations, 16 preservation records and 8 consumed journals, with no
+matching live generation or attributable helper. The disposable native container
+is absent. This qualification supersedes no failed result and grants no operation.
+
+Revised-source private qualification receipt hashes:
+- `assertion-full.xml`: `6804067f922a7b8f96de8d76e7edd15e43388a4e1b4456ed34d1759eb9931a69`
+- `native-assertion-qualified.log`: `a4eb6142964daaba041196697804c7fce0bf5a279276d1acbf869f81d6142d2d`
+- `assertion-ordered-gates.json`: `d47b60ff2cff7599a113cca3b5707e1ed283a05bcdd2eb4c0e536bdb1a1757d3`
+- `assertion-qualified-source-inputs.json`: `cf8e09446b8dd3bf5b2ccc8175ab02834554a4b52a23618b7e30e8d46c462906`
+- `cleanup-audit-assertion.json`: `f4a89e48e6a4cacfd15dee72bc76a7e85e2fc7692b6b19ea1cdff96aa1fc9615`

@@ -1,7 +1,7 @@
 # Tasks: Protected Machine Runtime Qualification
 
-Status: sole implementation list; T012G–M source handoff accepted; T012N-V hosting/finalization source tasks proposed only; operation unauthorized
-Current commission: 2026-11-14 resolve publication gates, open factory/adapter candidates, run hosted CI and local Codex review, then present v2 for ratification. The recommended T013 basis remains planning only; no v2 source implementation or setup/dispatch is commissioned.
+Status: sole implementation list; T012N source acceptance recorded; T012O isolated implementation candidate complete; T012P-V uncommissioned; operation unauthorized
+Current commission: Brett Heap source-ratified #1317 at 943e33fdafdc with #67 at db7de85f709e, directed ordered landing, then implementation/testing of T012O in isolation only. Setup/dispatch and T012P-V remain uncommissioned. The subsequent instruction authorizes the T012O candidate PR, hosted CI and local Codex review after factory main Sonar repair, followed by presentation for source ratification.
 Prior commission: 2026-11-13 verify #1311 post-merge CI and refresh T013 after paired
 source-only ratification/landing of #1311/#60. Setup and dispatch stay unauthorized.
 See [evidence](evidence.md), [selections](operational-inputs.md),
@@ -64,19 +64,20 @@ T012L's actual source acceptance and T012M's bounded handoff are recorded in
 - [x] T012L [O] Review, qualify and present paired source candidates for owner ratification; files: specs/017-protected-runtime-qualification/evidence.md; verify: full ordered gates, isolated matrix, exact-head hosted CI, local expert review receipts (hosted Codex request waived by the owner for this candidate), no unresolved source findings and actual owner acceptance; no operational grants or pin promotion.
 - [x] T012M [O] Reconcile the accepted source and hand off actual selection/authorization obligations to T013; files: specs/017-protected-runtime-qualification/operational-inputs.md, scoped-authorization.md, t013-decision-record.md; verify: main-update residual-exposure/control, actual subjects/target/identities/protection/issuance/state/cleanup remain operator decisions; setup/dispatch NOT GRANTED and T013/T014/T015 unchecked.
 
-### Proposed hosting/issuance source work — not ratified or commissioned
+### Hosting/issuance source work — design accepted; T012O commissioned in isolation
 
 Factory owner: `add-protected-runtime-hosting-issuance`. The user commissioned
 proposal/plan preparation using the T013 recommendations, not implementation or
 operational authority. [Hosting plan](hosting-issuance-plan.md), [research](hosting-issuance-research.md),
 [model](hosting-issuance-model.md), [interfaces](contracts/hosting-issuance.md),
 [selection basis](hosting-issuance-selections.md) and [acceptance](hosting-issuance-acceptance.md)
-are draft inputs. They expose the run/process-digest precommit dependency and
-propose explicit v2 plan-only preflight/protected staging/finalization, rather than
-silently changing accepted v1. No proposed checkbox is completed by preparation.
+were source-accepted in #1317/#67. They expose the run/process-digest precommit
+dependency and define explicit v2 plan-only preflight/protected staging/finalization.
+Only T012O implementation/testing was then commissioned in isolation. Preparation
+alone completed no checkbox; the actual source decision and qualification do.
 
-- [ ] T012N [O] Obtain actual owner acceptance of the factory-owned static-v2/phase/finalization, hosting/issuance/admin/software-custody/failure model and explicit isolated source commission; files: feature017 evidence.md; verify: exact reviewed source proposal/plan heads and accepted bounds, with no operational grant inferred.
-- [ ] T012O [O] Implement separately typed static-v2 plan, read-only plan preflight and deterministic measured finalization; files: scripts/workload_factory_binding_runtime/hosted/**, bootstrap.py, workflow.py, github_bootstrap/**, tests/runtime_binding/test_hosted_finalization.py; verify: H01/H02/H04, exact four late fields, no prediction/dummy hashes/v1 change, protected phase only, independent complete-byte final authority and unchanged full proof admission.
+- [x] T012N [O] Obtain actual owner acceptance of the factory-owned static-v2/phase/finalization, hosting/issuance/admin/software-custody/failure model and explicit isolated source commission; files: feature017 evidence.md; verify: exact reviewed source proposal/plan heads and accepted bounds, with no operational grant inferred. GIVEN by the actual owner record for #1317/#67 and the explicit T012O-only isolation commission; no T012P-V commission is inferred.
+- [x] T012O [O] Implement separately typed static-v2 plan, read-only plan preflight and deterministic measured finalization; files: scripts/workload_factory_binding_runtime/hosted/**, bootstrap.py, workflow.py, github_bootstrap/**, tests/runtime_binding/test_hosted_finalization.py; verify: H01/H02/H04, exact four late fields, no prediction/dummy hashes/v1 change, protected phase only, independent complete-byte final authority and unchanged full proof admission. ISOLATED CANDIDATE COMPLETE: 125 new H01/H02/H04 nodes, 1,766 full tests and 1,464 mandatory offline cases pass with zero failures/errors/skips; see hosting-finalization-implementation.md and evidence.md. No live hosting or T012P-V completion is claimed.
 - [ ] T012P [O] Implement bounded actual enrollment/issuance and host credential boundaries; files: scripts/workload_factory_binding_runtime/hosted/**, custody.py, tests/runtime_binding/test_hosted_issuance.py; verify: H06/H07, actual protocol/crypto positives, wrong key/role/nonce/scope/expiry and worker IMDS/resolver/signing denials, no Key Vault Ed25519/HSM or process-isolated MI claim, independent retirement.
 - [ ] T012Q [O] Implement current provider/protection/source/hold/issuer/guest/state readback adapters; files: scripts/workload_factory_binding_runtime/hosted/**, config.py, tests/runtime_binding/test_hosted_readback.py; verify: H08/H09 independent observed-fact mutations, required typed provider fields and branch type, actual provenance, bounded current deadlines and no copied-candidate or atomic-main guarantee.
 - [ ] T012R [O] Connect selected host agents/controller ingress and immutable inert worker launch under separate protected staging grant; files: scripts/workload_factory_binding_runtime/hosted/**, launch.py, supervisor.py, CLI/workflow opt-in integration and tests/runtime_binding/test_hosted_launch.py; verify: H03/H07, registration acknowledged before one start, authenticated exact host/unit/generation, no preflight effects/worker control identity/default activation, bounded status-only reconciliation.
@@ -95,7 +96,7 @@ silently changing accepted v1. No proposed checkbox is completed by preparation.
 
 T001 -> T002/T003 -> T004/T005 -> T006/T007/T008 -> T009/T010/T011 -> T012 ->
 T012B -> T012C/T012D -> T012E -> T012F -> T012G -> T012H/T012I ->
-T012J -> T012K -> T012L -> T012M -> proposed T012N -> T012O/T012P/T012Q ->
+T012J -> T012K -> T012L -> T012M -> T012N -> T012O/T012P/T012Q ->
 T012R -> T012S/T012T -> T012U -> T012V -> T013 -> T014 -> T015. US1 is the smallest useful slice. No parallel-agent
 implementation is required. Factory governance and consumer handoff duplicate
 no implementation list. Future paths are proposed; reconcile them against

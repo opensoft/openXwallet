@@ -126,16 +126,17 @@ def _references(value, fields):
         _handle(item)
 
 
-def _configuration(value, *, run_bound=True):
+def _configuration_shape(value, *, run_bound, finalized):
     # False is exclusively the distinct static selection grammar. Runtime
     # validate_config always uses the default and requires both actual run fields.
-    _object(value, "profile revision not_before expires_at case_ref sources dependency_digest composition_digest issuer launch protection authority services state lifecycle")
+    fields = "profile revision not_before expires_at case_ref sources dependency_digest issuer launch protection authority services state lifecycle"
+    _object(value, fields + (" composition_digest" if finalized else ""))
     require(value["profile"] == PROFILE and integer(value["revision"]) and value["revision"] > 0
             and integer(value["not_before"]) and integer(value["expires_at"])
             and value["not_before"] < value["expires_at"], "invalid-runtime-config")
     _handle(value["case_ref"])
     _sources(value["sources"])
-    for name in ("dependency_digest", "composition_digest"):
+    for name in (("dependency_digest", "composition_digest") if finalized else ("dependency_digest",)):
         require(valid_digest(value[name]), "invalid-runtime-config")
     issuer = value["issuer"]
     _object(issuer, "issuer discovery jwks audience")
@@ -144,14 +145,25 @@ def _configuration(value, *, run_bound=True):
     _launch(value["launch"], value["sources"], run_bound=run_bound)
     _protection(value["protection"], value["launch"])
     authority = value["authority"]
-    _object(authority, "policy_ref policy_revision policy_digest subject_ref wallet_ref key_ref custody_ref grant_ref")
+    _object(authority, "policy_ref policy_revision subject_ref wallet_ref key_ref custody_ref grant_ref"
+            + (" policy_digest" if finalized else ""))
     require(integer(authority["policy_revision"]) and authority["policy_revision"] > 0
-            and valid_digest(authority["policy_digest"]), "invalid-runtime-config")
+            and (not finalized or valid_digest(authority["policy_digest"])), "invalid-runtime-config")
     for name in ("policy_ref", "subject_ref", "wallet_ref", "key_ref", "custody_ref", "grant_ref"):
         _handle(authority[name])
     _services(value["services"])
     _references(value["state"], "store_ref initialization_ref retention_ref recovery_ref")
     _references(value["lifecycle"], "lease_ref cleanup_ref receipt_retention_ref")
+
+
+def _configuration(value, *, run_bound=True):
+    # Existing v1 routes always require both measured digests.
+    _configuration_shape(value, run_bound=run_bound, finalized=True)
+
+
+def _configuration_template(value):
+    # V2 omits exactly two run fields and two measured hashes, without sentinels.
+    _configuration_shape(value, run_bound=False, finalized=False)
 
 
 def _freeze(value):
