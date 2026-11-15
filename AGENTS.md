@@ -109,6 +109,10 @@ ownership, validation, versioning, and release constraints.
   The subsequent instruction commissions T012P PR publication, hosted CI and local
   Codex expert review, followed by presentation for owner source ratification.
   PR #69 remains a source candidate; no operational grant is inferred.
+  Brett subsequently source-ratified #69 at b73a7d06695e. It merged normally
+  as 7bd884106eea5f0ed4b99a35da70d613ccbfd0d2 with equal accepted/merged tree.
+  Only T012Q readback implementation/testing is now commissioned in isolation.
+  T012R-V, setup/dispatch and live qualification remain uncommissioned.
 - Accepted baseline: 016-factory-workload-binding; source decision:
   specs/016-factory-workload-binding/source-acceptance.md and plan.md.
 - Existing adapter governing baseline: THIS repository's
@@ -187,3 +191,11 @@ trust-anchor and identity-brokering compositions) stays in openxFactory.
    `contract_bundle_version` holds the tag's value ("The adapter's tag value
    (Recommended)"). `xwallet-v1.0` is tagged at the adapter rebuild's merge
    commit by `split-openwallet-neutral-core` task 5.8, an operator act.
+
+## Current bounded source continuation
+
+Brett commissioned the T012Q protection-read correction under factory change
+fix-hosted-protection-read-budget (#1322), paired publication, CI and local Codex
+review. The proposed finalizer-only six-observation/18-protection/28-total ledger
+retains default3/13 and all original clocks/current checks. Source ratification and
+landing remain separate; T012R-V and setup/dispatch are uncommissioned.

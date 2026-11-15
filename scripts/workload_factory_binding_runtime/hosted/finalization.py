@@ -10,6 +10,7 @@ from ..github_bootstrap.common import Decision, document
 from . import ERROR
 from .admission import PlanBindings, current_plan, read_current
 from .measurement import MeasurementBindings, LaunchObservation, measure
+from .readback import ReadBudget, start_finalization
 
 
 @dataclass(frozen=True, repr=False)
@@ -110,9 +111,11 @@ class FinalAuthority:
             own = Decision(clock=self.bindings.plan.clock, monotonic=self.bindings.plan.monotonic,
                            deadline=decision.deadline)
             own.end = min(own.end, own.last_mono + remaining)
+            ReadBudget(decision).join(own)
             plan, actual, actual_policy, generation = _derive(context, token, self.bindings, decision=own)
             require(type(configuration) is bytes and type(policy) is bytes
                     and configuration == actual and policy == actual_policy, ERROR)
+            ReadBudget(own).check()
             now = own.now()
             decision.clip(own.deadline)
             config = document(actual, 16384)
@@ -130,6 +133,7 @@ def finalize(context, token, *, bindings, authority):
                 and authority.bindings.measurement.principal_ref != bindings.measurement.principal_ref
                 and authority.bindings.authority_principal == bindings.authority_principal, ERROR)
         decision = Decision(clock=bindings.plan.clock, monotonic=bindings.plan.monotonic)
+        start_finalization(decision)
         plan, configuration, policy, generation = _derive(context, token, bindings, decision=decision)
         accepted = authority.approve(context, token, configuration=configuration, policy=policy, decision=decision)
         require(type(accepted) is FinalizationBinding and accepted.principal_ref == bindings.authority_principal
@@ -148,6 +152,7 @@ def finalize(context, token, *, bindings, authority):
         require(fresh_plan.raw == plan.raw and fresh_config == configuration and fresh_policy == policy
                 and fresh_generation == generation, ERROR)
         decision.now()
+        ReadBudget(decision).check()
         return FinalizedPlan(configuration, policy, accepted)
     except Exception:
         raise BindingError(ERROR) from None

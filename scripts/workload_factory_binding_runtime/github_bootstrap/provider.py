@@ -25,14 +25,25 @@ class _Reads:
         try:
             require(self.use.api_requests < 4, ERROR)
             self.count += 1
-            self.use.api_requests += 1
+            shared = None
+            if hasattr(self.use, "_hosted_reads"):
+                from ..hosted.readback import ReadBudget
+                shared = ReadBudget(self.use)
+                shared.consume_correlation()
+            else:
+                self.use.api_requests += 1
             token = self.reader.credential(deadline=self.use.deadline)
             self.use.now()
+            if shared is not None:
+                shared.check()
             require(reference(token) and len(token) <= 8192, ERROR)
+            send_check = {"before_send": shared.check} if shared is not None else {}
             response = self.reader.transport.exchange("GET", API + "/repos/" + self.repository + suffix,
                 headers={"Authorization": "Bearer " + token, "Accept": "application/vnd.github+json",
-                    "User-Agent": USER_AGENT, "Accept-Encoding": "identity", "X-GitHub-Api-Version": VERSION}, decision=self.use)
+                    "User-Agent": USER_AGENT, "Accept-Encoding": "identity", "X-GitHub-Api-Version": VERSION}, decision=self.use, **send_check)
             self.use.now()
+            if shared is not None:
+                shared.check()
             require(type(response) is Response and response.status == 200, ERROR)
             return document(response.body, 1048576)
         except Exception:

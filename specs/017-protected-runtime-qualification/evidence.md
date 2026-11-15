@@ -2047,3 +2047,157 @@ Route qualification private receipt SHA-256:
 - `sonar-gate-corrected.json`: `711bff82f9a73c0fb9c1cbf5de00c3bb08d95b2c7e0abd31827f9712f3782e17`
 
 Route requalification cleanup audits 757 additional recorded fixture generations, 16 preservation records and 8 consumed journals. No matching live generation or attributable helper remains. All three exact route fixture roots are removed after audit and the disposable native namespace is absent. Earlier UID/kernel fixture state remains removed; no live provider retirement or operational authority is inferred.
+
+## 2026-11-15: #69 source acceptance and isolated T012Q commission
+
+Brett source-ratified #69 at b73a7d06695e and commissioned only T012Q in isolation. [Actual owner record](https://github.com/opensoft/openXwallet/pull/69#issuecomment-6894503254). All eight runnable exact-head checks pass and the local nine-expert panel/coordinator has no unresolved source finding. Normal merge 7bd884106eea5f0ed4b99a35da70d613ccbfd0d2 retains accepted tree 7b3b00e5c4b8c35c667541fc7187b9a97befaa8b; no administrative override or rule change was used. The accepted T012P worktree is preserved; T012Q has a separate linked feature017 worktree. No source acceptance, setup/dispatch or T012R-V commission is inferred for this new implementation.
+
+## 2026-11-15: T012Q isolated current-readback candidate
+
+The new adapters obtain independently authenticated current source/protection/control,
+selected ARM/key metadata, hold/issuer/guest and existing-state observations under
+one enclosing Decision. Private requests send no candidate facts. Missing typed
+provider fields, branch type, stale/mutated observations, wrong peer/pin and
+exhausted budgets refuse. No default activation, workflow, pin or neutral contract
+changes. See [implementation and limits](hosting-readback-implementation.md).
+
+Test-first progression: missing adapter collection refused; shared-budget controls
+then passed; component/flow integration exposed a fixture-name collision and a
+missing closed run-read route, both corrected. Final 160 new cases pass. The
+ordered contract pin, neutral pin, syntax, validator, strict validator, full pytest
+and default pinned OpenSpec whole-corpus gates pass. Full pytest: **2,043 passed,
+0 failures/errors/skips**. Mandatory exact-identity matrix: **1,741 passed,
+0 failures/errors/skips**, native UID 1000/no capabilities/no new privileges,
+read-only source and loopback-only networking. H08/H09 anchor 78/32 nodes; all
+1,581 accepted base matrix identities/counts/fingerprints/anchors are preserved.
+The owning source remains clean at bb0e9dae89a771b05f6c235d0a77237288b95c85.
+
+The composed protected reader uses 12 GitHub reads (including four correlation
+reads); selected deployment/issuer/guest/state use the same Decision. Actual owning
+Ed25519 proof and replay refusal pass. A separate regression proves full v2
+finalization currently refuses repeated fresh protection reads at the accepted
+three-read limit, before any proof. This is a downstream factory/adapter design
+blocker, not permission to reset counters, relax freshness or raise the 13-read
+aggregate limit. Resolve it through the governed process before full hosting
+wiring/T012R; that later task remains uncommissioned.
+
+Cleanup checks 38 ownership process generations, 120 hosted generations,
+3439 credential/guest helper generations, 16 preservation records and
+8 retained consumed journals. No matching live generation or attributable helper
+remains; native container absent. Ten exact Q fixture roots are removed only after
+audit, retaining scoped redacted receipts. Both protected workflow run totals
+remain zero. This is a local candidate; no Q PR/hosted CI/review or new expert panel
+is claimed. Source acceptance and live provider/host qualification remain separate.
+Setup/dispatch remain unauthorized; feedback deferred; no blocked/denied write
+is replayed.
+
+Private receipts under `t012q-isolated-20261115` (SHA-256):
+
+- `bounded.xml`: `4e256330158de0375143eb6008c30e52fa6b9a07ead90203feb9a2ac738ece10`
+- `final-full.xml`: `06042abd14e8e32f6b15954080861d727eea3e638f6d5b1c01d5eb3347a67b46`
+- `native-matrix.xml`: `6b04c52b21686ad7c6f2b49f757fa822ab7c87a43c2b8b956362073193725e50`
+- `native-final.log`: `af3c264870fc08630d031d23f80becda5e241a83ea42f367e529d88f2c81ce8d`
+- `final-ordered-gates.json`: `d47b60ff2cff7599a113cca3b5707e1ed283a05bcdd2eb4c0e536bdb1a1757d3`
+- `qualified-source-inputs.json`: `52d4c651e9e73ceb710020cfbbb9f038e9c802d178ad02b1842f37cf86820052`
+- `matrix-preservation.json`: `9f73c4c54f4fe24860c12c619e11c62dd71a771af08fa7173415d14067d539cb`
+- `cleanup-audit-final.json`: `ae2d1d04038c8b1b08cc727b1704309d668f6722110b5fecf5b8e5e34b981139`
+- `fixture-removal-final.json`: `09086f2273fe5db7bb8231d837d3a0c42ed76b3070473ae5cdfd59dc488a41b2`
+- `protected-workflow-counts.json`: `55ab61d23336ac849aebc23653c7a34ee01e6f329a3be8867505445266500dc6`
+- `local-source-inspection.json`: `a710a483a5e8a293b4836b0d36ca0c0a6da615bf7b960f8b22308149f3d2600b`
+- `qualification-summary.json`: `905b09f085db55abcbdf08ed2df92ed38804c2f96de43c42983d36f21093b3f1`
+
+Final documentation syntax/plain/strict/default pinned OpenSpec gates also pass.
+Their validator self-tests left 100 task-local scratch roots and one Node compile
+cache, all checked and removed within the exact Q evidence directory. No scoped
+fixture/scratch directory remains; redacted receipts are retained.
+
+- `final-document-gates.json`: `89270cdc9c473545b25fa7ad5987ecb84964a24882f5ab48450065cc1529924d`
+- `final-document-cleanup.json`: `5089bc6d7326687587f0f2d95ed7357a0de14cbff33869b46fe35855c6ce462d`
+
+## 2026-11-15: Governed protection-read correction and T012Q publication
+
+The user commissioned the bounded correction, paired publication, CI and local
+Codex review, with no source ratification/landing or operations. Factory #1322
+proposes finalization-only six-observation/18-protection/28-total allocation while
+preserving ordinary3/13. The caller and independent authority share one ledger,
+per-member correlation high-water and earliest expiry; original clocks remain
+binding. ProviderReader enforces four total reads before credential/I/O. All six
+fresh protection reads and independent complete-byte recomputation remain.
+
+Test-first allocation collection refused before implementation. Then 61 allocation
+and flow cases passed; final 318 focused allocation/readback/finalization cases
+pass, including actual mTLS/process/file positives, independent six-position drift,
+unchanged admission, owning proof/replay refusal and default-budget refusal.
+Factory focused code-surface/target-release/sequencing suite: 538 passed. The
+original factory packet is unchanged. Full/native and exact-head CI/local expert
+review remain in progress; no hosted Codex review is claimed.
+
+### Local panel corrections
+
+Nine-role local review found two substantive issues: (1) correlation's hosted
+ledger lacked the after-TLS/before-GO shared checkpoint; (2) approved ARM disk/NIC
+reference metadata was refused by minimal-object equality. Both are corrected.
+Hosted correlation now supplies the shared checkpoint while ordinary transport
+signature stays unchanged. Real TLS tests expire/regress the joined peer and
+require zero application requests. The ARM fixture includes documented storage
+and NIC metadata, with typed-link checks and unchanged complete-model digest;
+approved metadata positives and independent metadata drift/type negatives pass.
+Focused TLS/correlation controls: 15 passed; ARM controls: 22 passed. Earlier
+full/native runs were explicitly superseded/interrupted before source correction;
+they are not completed qualification. Fresh corrected qualification follows.
+
+### Final corrected source qualification and review
+
+At source head cfaa57cae6570b1adf40fa9048c64ed49324c933 all seven ordered local
+gates pass: contract/neutral pins, syntax, validator/plain+strict, full pytest and
+default content-addressed pinned OpenSpec whole-corpus validation. Full: **2,094
+passed, zero failures/errors/skips**. Mandatory native: **1,792 passed, zero
+failures/errors/skips**, native UID1000/no capabilities/no new privileges, read-only
+source and loopback-only networking. H08/H09/H10 anchor 87/40/34 nodes. All 1,581
+accepted base matrix identities/fingerprints/anchors and prior Q identities remain.
+The source head also passed every runnable adapter hosted check; Sourcery is
+quota-skipped, not counted as review. Final documentation exact-head CI remains
+separate and is recorded on PR #70; factory CI/review lives on #1322.
+
+Nine delegated local Codex expert roles plus independent coordinator inspected
+the entire paired diff. Architecture/security/reliability found the shared
+post-TLS checkpoint gap; API review found approved ARM metadata rejection. Both
+P2s were fixed and all nine roles closed at the corrected source head with zero
+remaining actionable findings. [Adapter review record](https://github.com/opensoft/openXwallet/pull/70#issuecomment-6896143770)
+and [factory review record](https://github.com/opensoft/openXfactory/pull/1322#issuecomment-6896144305).
+No hosted Codex review is claimed. Final documentation retains the exact 15
+tested/reviewed production/test input hashes; final coordinator checks and hosted
+statuses are posted on the PRs before owner presentation.
+
+Cleanup audits 49 ownership process generations, 263 hosted generations and
+3,341 credential/guest helper generations, 24 preservation records and 12 consumed
+journals. No matching live generation/helper remains. Disposable native namespaces
+are absent and eleven exact publication fixture roots are removed. Both protected
+workflow histories remain zero. Original baseline evidence is untouched. No source
+ratification, landing, T012R-V, setup/dispatch or live provider qualification is
+inferred. Feedback remains deferred and no blocked/denied write is replayed.
+
+Private publication receipts (SHA-256):
+
+- `integrated.xml`: `2d4038319ef898eaee124e0f3fec5c787016aec17acfe9cf9c951bcf7e911369`
+- `factory-local.xml`: `f218a4afaa0943c0d96e39268bf589fd492b2822c161261783076b5ac30a4002`
+- `tls-focused.xml`: `d7a4c0cfb22436711d1bd617e09056824d1b44bda163586dfbf1cca1a0f9dd07`
+- `arm-focused.xml`: `075a081c57ec9ef8832ba53cfa819f333297db3fdfcb2fa12bd7d0939fcc5d88`
+- `corrected-full.xml`: `7c2d44cd3b8650078c37ae61e15ddbaf3cd6114e0830bb115c7c5bba6b79a5d4`
+- `native-corrected-matrix.xml`: `478eff1aff767a1cfd11ffef58ce6d5809cf3d5228e4ce4164925234a580e294`
+- `native-corrected.log`: `50c482b88df79c9c36d260247021ac396191b56a60775b90e49df426dc0a5517`
+- `corrected-ordered-gates.json`: `d47b60ff2cff7599a113cca3b5707e1ed283a05bcdd2eb4c0e536bdb1a1757d3`
+- `qualified-source-inputs.json`: `d394fc4d1c7040c25c78ba9c537aa548a11f24e553692251e9541a37dabd8eab`
+- `matrix-change-final.json`: `ce49ebfeecac12bdb3f80cee0c1c8ad433365d3755213266af67d2ac76f9c018`
+- `local-codex-review.json`: `2b5138cf1052bba285a189e04b885bcf9d690095dd3f272d938d08875569b8e5`
+- `cleanup-audit-corrected.json`: `737da99d07f3e46fc3c0e9857329b0c31243fb9143a01bad4e5aa270d2c28a84`
+- `fixture-removal-corrected.json`: `def63398aa0e4608ff3266040d4750fc9d90f107cf67576701a679638f1badf4`
+- `qualification-summary-corrected.json`: `da658c806e93aa9991597249cdb153a224a0a1221d3b89be7a9e0a7ae64867ff`
+- `protected-workflow-counts.json`: `8109e667671c1ac1c64ec13ccc5f87461ecfe91446138d9091355f966c7c97af`
+
+Final documentation syntax/plain/strict/default pinned OpenSpec gates pass. The
+exact task-local documents scratch root is removed afterward; no scoped fixture
+or scratch directory remains.
+
+- `final-document-gates.json`: `8e705062e9caf08fd3c3cc07c11af945aa4de5c9573d8b504661a5dc5ddc828a`
+- `document-cleanup.json`: `76501def3d963810d31237cb8666101347d030a5b35120816a3ea1bbeaa91c3f`
