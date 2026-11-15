@@ -18,9 +18,9 @@ LIMITS={"protection":3,"source":4,"control":2,"arm":24,"key":3,"private":12}
 JSON_TYPE="application/json"
 
 
-def _ledger(decision, *, finalization=False):
+def _ledger(decision, *, finalization=False, staging=False):
     return {"counts": {name: 0 for name in LIMITS}, "members": {decision: 0},
-            "finalization": finalization, "protection_observations": 0}
+            "finalization": finalization, "staging": staging, "stage_observations": 0, "protection_observations": 0}
 
 
 def start_finalization(decision):
@@ -29,6 +29,15 @@ def start_finalization(decision):
             and decision.api_requests == 0, ERROR)
     decision.now()
     decision._hosted_reads = _ledger(decision, finalization=True)
+    ReadBudget(decision).check()
+
+
+def start_staging(decision):
+    """Trusted protected-stage entry; one original decision, never a late upgrade."""
+    require(type(decision) is Decision and not hasattr(decision, "_hosted_reads")
+            and decision.api_requests == 0, ERROR)
+    decision.now()
+    decision._hosted_reads = _ledger(decision, staging=True)
     ReadBudget(decision).check()
 
 
@@ -43,17 +52,18 @@ class ReadBudget:
 
     def check(self):
         members = self.state["members"]
-        require(self.decision in members and 1 <= len(members) <= 2, ERROR)
+        require(self.decision in members and 1 <= len(members) <= (1 if self.state["staging"] else 2), ERROR)
+        correlation_limit = 8 if self.state["staging"] else 4
         for member, highwater in tuple(members.items()):
             member.now()
             count = member.api_requests
-            require(integer(count) and highwater <= count <= 4, ERROR)
+            require(integer(count) and highwater <= count <= correlation_limit, ERROR)
             members[member] = count
-        require(sum(members.values()) <= 4, ERROR)
+        require(sum(members.values()) <= correlation_limit, ERROR)
         expiry = min(member.deadline for member in members)
         for member in members:
             member.clip(expiry)
-        require(self.github_requests <= (28 if self.state["finalization"] else 13), ERROR)
+        require(self.github_requests <= (26 if self.state["staging"] else (28 if self.state["finalization"] else 13)), ERROR)
 
     @property
     def github_requests(self):
@@ -63,6 +73,7 @@ class ReadBudget:
     def join(self, independent):
         """Keep an independent clock/observer, sharing consumed enclosing authority."""
         self.check()
+        require(not self.state["staging"], ERROR)
         require(type(independent) is Decision and not hasattr(independent, "_hosted_reads")
                 and independent.api_requests == 0 and len(self.state["members"]) == 1, ERROR)
         remaining = min(member.remaining() for member in self.state["members"])
@@ -74,12 +85,19 @@ class ReadBudget:
 
     def consume_correlation(self):
         self.check()
-        require(sum(self.state["members"].values()) < 4, ERROR)
+        require(sum(self.state["members"].values()) < (8 if self.state["staging"] else 4), ERROR)
         self.decision.api_requests += 1
         self.check()
 
+    def begin_staging_observation(self):
+        self.check()
+        require(self.state["staging"] and self.state["stage_observations"] < 2, ERROR)
+        self.state["stage_observations"] += 1
+
     def begin_protection(self):
         self.check()
+        if self.state["staging"]:
+            require(self.state["protection_observations"] < 2, ERROR)
         if self.state["finalization"]:
             require(self.state["protection_observations"] < 6, ERROR)
         self.state["protection_observations"] += 1
@@ -87,7 +105,8 @@ class ReadBudget:
     def consume(self, group):
         self.check()
         require(group in LIMITS, ERROR)
-        limit = 18 if group == "protection" and self.state["finalization"] else LIMITS[group]
+        limit = ({"protection": 6, "source": 8, "control": 4, "private": 16}.get(group, LIMITS[group])
+                 if self.state["staging"] else (18 if group == "protection" and self.state["finalization"] else LIMITS[group]))
         require(self.state["counts"][group] < limit, ERROR)
         self.state["counts"][group] += 1
         self.check()

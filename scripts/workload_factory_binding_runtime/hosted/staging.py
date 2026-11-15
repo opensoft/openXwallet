@@ -81,6 +81,7 @@ class StageCorrelator:
     def correlate(self,context,token,bindings,*,phase,decision):
         require(type(bindings) is PlanBindings and canonical(self.policy.record())==self.policy_raw,ERROR)
         plan=selected_plan(context,token,bindings,phase=phase,decision=decision)
+        if phase=="protected":ReadBudget(decision).begin_staging_observation()
         scope=scope_of(plan,context,self.policy);c=plan.value()["configuration_template"];launch=c["launch"]
         hold=self.hold_current(plan,decision=decision);identifier=self.github.begin_control(hold.data()["control_id"],decision=decision)
         source=self.github.begin_source(context.source_commit,decision=decision);validate_plan_graph(source.graph,plan)

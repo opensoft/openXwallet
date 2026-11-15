@@ -23,7 +23,9 @@ class _Reads:
 
     def _get(self, suffix):
         try:
-            require(self.use.api_requests < 4, ERROR)
+            require(self.count < 4, ERROR)
+            if not hasattr(self.use, "_hosted_reads"):
+                require(self.use.api_requests < 4, ERROR)
             self.count += 1
             shared = None
             if hasattr(self.use, "_hosted_reads"):

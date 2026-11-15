@@ -12,7 +12,7 @@ import platform
 import stat
 
 # Linux v6.6 arch/x86/entry/syscalls/syscall_64.tbl; reject x32/foreign ABIs.
-DENIED=(56,57,58,109,112,435,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,62,90,91,92,93,94,101,132,
+DENIED=(129,297,141,142,144,203,251,256,279,440,448,56,57,58,109,112,435,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,62,90,91,92,93,94,101,132,
         155,165,166,188,189,190,197,198,199,200,234,235,248,249,250,260,261,268,272,
         280,288,298,299,304,307,308,310,311,321,424,425,426,427,428,429,430,431,432,438,442,452)
 
@@ -63,6 +63,15 @@ def install(*,files,directories,execute):
     # Keep PDEATHSIG immutable after installation; read-only prctl queries remain.
     instructions.extend(((0x15,0,4,157),(0x20,0,0,16),(0x15,0,1,1),
                          (0x06,0,0,0x50000|errno.EPERM),(0x20,0,0,0)))
+    # Inherited pipes must not acquire asynchronous signal recipients/control.
+    for syscall,commands in ((72,(8,10,15)),(16,(0x5452,0x8901,0x8902))):
+        instructions.extend(((0x15,0,8,syscall),(0x20,0,0,24)))
+        for command in commands:instructions.extend(((0x15,0,1,command),(0x06,0,0,0x50000|errno.EPERM)))
+        instructions.append((0x20,0,0,0))
+    # Resource limits may only be read for self; never target another process.
+    instructions.extend(((0x15,0,8,302),(0x20,0,0,16),(0x15,0,3,0),
+                         (0x20,0,0,32),(0x15,0,1,0),(0x20,0,0,36),
+                         (0x15,1,0,0),(0x06,0,0,0x50000|errno.EPERM),(0x20,0,0,0)))
     for number in DENIED:instructions.extend(((0x15,0,1,number),(0x06,0,0,0x50000|errno.EPERM)))
     instructions.append((0x06,0,0,0x7fff0000))
     array=(Filter*len(instructions))(*(Filter(*row) for row in instructions));program=Program(len(array),array)

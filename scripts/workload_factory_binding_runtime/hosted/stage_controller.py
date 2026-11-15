@@ -5,7 +5,7 @@ from ..github_bootstrap.common import Decision
 from .admission import PlanBindings,selected_plan
 from .staging import StageAuthority,StageCorrelator,scope_of
 from .stage_store import StageStore,ERROR
-from .readback import ReadBudget
+from .readback import ReadBudget,start_staging
 
 
 @dataclass(frozen=True,repr=False)
@@ -14,6 +14,10 @@ class StageAdmission:
     phase:str
     case_ref:str
     plan_digest:str
+    accepted_commit:str
+    source_commit:str
+    run_id:str
+    run_attempt:str
     environment:str
     launch_ref:str
     state:str
@@ -36,7 +40,8 @@ class StageController:
     def _admission(self,plan,phase,state,decision):
         value=plan.value();decision.now()
         return StageAdmission("openxfactory-hosted-admission-internal-v2",phase,value["configuration_template"]["case_ref"],
-            plan.digest,value["configuration_template"]["launch"]["environment"],value["staging_policy"]["launch_ref"],state,decision.deadline)
+            plan.digest,self.context.accepted_commit,self.context.source_commit,self.context.run_id,self.context.run_attempt,
+            value["configuration_template"]["launch"]["environment"],value["staging_policy"]["launch_ref"],state,decision.deadline)
 
     def handle(self,phase,inputs,token,*,decision):
         try:
@@ -47,6 +52,7 @@ class StageController:
             scope=scope_of(plan,self.context,self.correlator.policy)
             grant=None;status_counted=False
             if phase=="protected":
+                start_staging(decision)
                 if self.store.known(scope["launch_ref"],scope,decision=decision):
                     self.store.status_read(scope["launch_ref"],decision=decision);status_counted=True
                 grant=self.authority.launch_grant(scope,decision=decision)
@@ -74,6 +80,9 @@ class StageController:
             # Request result confers no acknowledgement: read independent mTLS facts.
             self.register_cleanup(scope,unit,deadline=decision.deadline)
             lease=self.authority.acknowledged(scope,unit,decision=decision);self.store.bind_lease(ref,lease,decision=decision)
+            # Complete refresh after registration, before request deadline serialization.
+            refreshed,refreshed_scope=self.correlator.correlate(self.context,token,bindings,phase=phase,decision=decision)
+            require(refreshed.raw==plan.raw and canonical(refreshed_scope)==canonical(scope),ERROR)
             self.store.transition(ref,"registered","start-consumed",decision=decision)
             def still_current():
                 self.authority.launch_grant(scope,decision=decision)

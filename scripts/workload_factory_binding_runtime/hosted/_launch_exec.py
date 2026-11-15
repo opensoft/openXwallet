@@ -13,8 +13,15 @@ def main():
     try:
         value=json.loads(sys.stdin.buffer.readline(65537))
         require(type(value) is dict and set(value)==set("files directories execute argv uid gid parent_pid".split()))
-        argv=value["argv"];require(type(argv) is list and len(argv)==5 and argv[1:3]==["-I","-B"]
-            and all(type(x) is str and 0<len(x)<=4096 for x in argv) and argv[0] in value["execute"])
+        executable=str(Path(sys.executable).resolve(strict=True))
+        argv=value["argv"]
+        require(type(argv) is list and len(argv)==5 and all(type(x) is str and 0<len(x)<=4096 for x in argv))
+        require(argv[:3]==[executable,"-I","-B"] and executable in value["execute"])
+        worker,configuration=(Path(raw) for raw in argv[3:])
+        require(all(path.is_absolute() and path.resolve(strict=True)==path and path.is_file()
+                    and str(path) in value["files"] for path in (worker,configuration)))
+        # The pipe selects measured files, never an executable or Python options.
+        command=[executable,"-I","-B",str(worker),str(configuration)]
         uid,gid=value["uid"],value["gid"];require(type(uid) is int and uid>0 and type(gid) is int and gid>0)
         if os.geteuid()==0:os.setgroups([]);os.setgid(gid);os.setuid(uid)
         require(os.geteuid()==uid and os.getegid()==gid and set(os.getgroups())<={gid})
@@ -25,7 +32,7 @@ def main():
         class Data(ctypes.Structure):_fields_=[("effective",ctypes.c_uint32),("permitted",ctypes.c_uint32),("inheritable",ctypes.c_uint32)]
         require(libc.capset(ctypes.byref(Header(0x20080522,0)),ctypes.byref((Data*2)()))==0)
         install(files=value["files"],directories=value["directories"],execute=value["execute"])
-        os.execve(argv[0],argv,{"PATH":os.defpath,"LANG":"C.UTF-8"})
+        os.execve(executable,command,{"PATH":os.defpath,"LANG":"C.UTF-8"})
     except Exception:return 2
     return 2
 

@@ -1,13 +1,10 @@
 """Fixed intrinsic public admission/private host routes; selected source endpoints."""
-from dataclasses import asdict
 import secrets
 import re
 from workload_factory_binding.evidence import BindingError,canonical,digest,integer,require,valid_digest
 from ..config import _handle
 from .private_http import PrivateHttps,Response
-from ..github_bootstrap.common import document,Decision
-from ..github_bootstrap.client import TokenClient
-from ..github_bootstrap.identity import BOOTSTRAP_AUDIENCE
+from ..github_bootstrap.common import document
 from .readback import ReadBudget
 from .stage_store import ERROR
 from .stage_controller import StageAdmission
@@ -93,11 +90,14 @@ class AdmissionClient:
         self.binding=(channel,phase,self.path)
 
     def read(self,context,token,*,decision):
+        from ..bootstrap import validate_dispatch_context
+        validate_dispatch_context(context)
         require(self.binding==(self.channel,self.phase,self.path),ERROR)
         inputs={k:getattr(context,k) for k in ("accepted_commit","selection_digest","preauthorization_ref")}
         value=self.channel.call(self.path,inputs,decision=decision,token=token)
         require(set(value)==set(StageAdmission.__dataclass_fields__) and value["profile"]=="openxfactory-hosted-admission-internal-v2"
             and value["phase"]==self.phase and value["plan_digest"]==context.selection_digest
+            and all(value[k]==getattr(context,k) for k in ("accepted_commit","source_commit","run_id","run_attempt"))
             and value["state"] in (("plan-ready",) if self.phase=="preflight" else ("registered","start-consumed","running","reserved","indeterminate","refused","stopped"))
             and integer(value["valid_until"]) and decision.now()<value["valid_until"]<=decision.deadline,ERROR)
         _handle(value["case_ref"]);_handle(value["launch_ref"])

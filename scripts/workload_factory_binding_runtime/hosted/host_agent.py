@@ -16,6 +16,21 @@ from .staging import StagePolicy,StageAuthority,scope_of
 KIND="reference-posix-session-v1"
 
 
+def await_ready(stream,decision):
+    """Bound the entire readiness frame; readable is not a complete line."""
+    fd=stream.fileno();blocking=os.get_blocking(fd);os.set_blocking(fd,False)
+    end=time.monotonic()+min(2,decision.remaining());value=b"";expected=b"ready\n"
+    try:
+        while value!=expected:
+            remaining=min(end-time.monotonic(),decision.remaining())
+            require(remaining>0 and select.select([fd],[],[],remaining)[0],ERROR)
+            try:chunk=os.read(fd,len(expected)-len(value))
+            except BlockingIOError:continue
+            require(chunk,ERROR);value+=chunk;require(expected.startswith(value),ERROR)
+        decision.now()
+    finally:os.set_blocking(fd,blocking)
+
+
 def loader_for(executable):
     with Path(executable).open("rb") as stream:
         header=stream.read(64);require(header[:6]==b"\x7fELF\x02\x01",ERROR)
@@ -175,7 +190,7 @@ class HostAgent:
             # its pipe until original authority/source are current again.
             self.current(decision,unit);self.worker.check(decision)
             process.stdin.write(canonical(self.worker.message())+b"\n");process.stdin.flush()
-            require(select.select([process.stdout],[],[],min(2,decision.remaining()))[0] and process.stdout.readline(64)==b"ready\n",ERROR)
+            await_ready(process.stdout,decision)
             captured=ProcessLaunch.capture(process,executable=self.worker.paths["executable"],executable_digest=self.worker.m["executable_digest"],
                 worker=self.worker.paths["worker"],configuration_file=self.worker.paths["configuration"],cwd=self.worker.paths["cwd"],artifacts=self.worker.artifacts)
             generation=self.worker.observe(captured.pid,captured.start_time,unit,decision)

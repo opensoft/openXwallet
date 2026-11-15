@@ -23,6 +23,7 @@ from .test_github_bootstrap_correlation import g,configuration,c,l,w
 from .test_hosted_readback_flow import plan_readers
 from .readback_fixture import rb
 from .hosted_fixture import child_generations
+from .worker_runtime import system_runtime
 from factory_binding.test_owner_integration import make_pki
 
 ROOT=Path(__file__).resolve().parents[2]
@@ -31,11 +32,19 @@ ROOT=Path(__file__).resolve().parents[2]
 @pytest.fixture
 def stage(v,g,rb,tmp_path,request):
     result=SimpleNamespace(v=v,g=g,rb=rb,tmp=tmp_path,events=[])
-    roots=dict(v.roots);roots['root:runtime']=Path(sys.base_prefix).resolve()
-    loader=loader_for(v.executable)
+    executable,runtime=system_runtime()
+    roots=dict(v.roots);roots['root:python']=executable.parent;roots['root:runtime']=runtime[0].parent
+    v.executable=executable
+    loader=loader_for(executable)
     if not any(loader.is_relative_to(root) for root in roots.values()):roots['root:loader']=loader.parent
-    runtime=(Path(sys.base_prefix).resolve()/'lib',)
     plan=deepcopy(v.plan);m=plan['measurement_plan']
+    m['executable']={'root_ref':'root:python','path':executable.name};m['executable_digest']=byte_digest(executable.read_bytes())
+    mode=getattr(request,'param',None)
+    assert mode in (None,'partial-ready')
+    if mode=='partial-ready':
+        v.paths['worker'].write_text("import sys,time\nsys.stdout.write('r');sys.stdout.flush();time.sleep(30)\n")
+        m['artifacts']['worker']['digest']=byte_digest(v.paths['worker'].read_bytes())
+        plan['configuration_template']['sources']['worker']['digest']=m['artifacts']['worker']['digest']
     for role,name in [('host_agent','host_agent.py'),('launch_helper','_launch_exec.py'),('sandbox','worker_sandbox.py')]:
         path=ROOT/'scripts/workload_factory_binding_runtime/hosted'/name
         m['artifacts'][role]={'root_ref':'root:code','path':path.relative_to(ROOT).as_posix(),'digest':byte_digest(path.read_bytes())}
