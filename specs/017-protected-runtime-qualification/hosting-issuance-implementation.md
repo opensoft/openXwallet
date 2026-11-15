@@ -1,6 +1,6 @@
 # T012P isolated enrollment, issuance and host credential boundaries
 
-Status: isolated implementation candidate complete; source acceptance and live gates separate
+Status: published T012P candidate PR #69; owner source ratification and live gates separate
 Date: 2026-11-15 (America/La_Paz)
 
 Brett source-ratified #68 at 38b029b02a9b and commissioned only T012P in isolation.
@@ -68,13 +68,34 @@ it does not establish deployed VM/IMDS/admin isolation or protected acceptance.
 
 ## Qualified source checkpoint
 
-The final source adds 86 measured nodes: 49 issuance, 26 enrollment and 11 kernel
-credential-port cases. All 1,852 full-suite tests and 1,550 mandatory native cases
+The final source adds 96 measured nodes: 49 issuance, 26 enrollment and 21 kernel
+credential-port cases. All 1,862 full-suite tests and 1,560 mandatory native cases
 pass without failures/errors/skips; old matrix identities/fingerprints remain.
-H06/H07 have 32/18 anchored nodes. The separate kernel fixture passes 11 checks.
+H06/H07 have 32/28 anchored nodes. The separate kernel fixture passes 11 checks.
 Source and private receipt hashes, exact #68 acceptance/landing, earlier failed
 diagnostics and cleanup readback are recorded in evidence.md. A provider-outage regression first returned a refusal; it now returns unavailable,
 so an outage cannot qualify as an authenticated denial. No failed or earlier
-checkpoint qualifies this final source. This candidate is not published
-or source-ratified; actual service identities/provider facts/host safeguards,
+checkpoint qualifies this final source. This candidate is published in #69 and is not source-ratified; actual service identities/provider facts/host safeguards,
 T012Q-V and every operational setup/dispatch gate remain separate.
+
+## Publication review corrections
+
+The local nine-expert Codex panel found and closed two defects. Kernel credentials
+authenticate the request sender but do not bind the reader of an inherited socket.
+Each requester now creates a fresh private reply socketpair after untrusted
+descriptor inheritance and transfers only its send endpoint with SCM_RIGHTS. The
+broker validates that capability and returns credentials exclusively through it;
+the shared request channel receives no reply. Missing, extra, malformed and
+truncated descriptors close without capability execution.
+
+An outer finally also closes the reply on BaseException cancellation. Tests retain
+the interruption traceback and assert descriptor count plus reader EOF, preventing
+garbage collection from concealing the leak. The passive-reader regression retains
+an authorized issuer positive while the inherited request endpoint receives no
+credential. Existing explicit worker denial and outage distinctions remain.
+
+Hosted-analysis refinements move only nonsecret method/URL routing to trusted
+parent-selected process arguments. Headers, body and TLS references remain on the
+anonymous pipe. TLS/framing guards, deadlines and reaping remain intact; test
+setup is outside exception assertions. No finding suppression, threshold change
+or manual finding disposition is introduced.

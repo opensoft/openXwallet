@@ -67,7 +67,8 @@ def enrollment(tmp_path, request):
         def log_message(self,*_):pass
         def do_POST(self):
             try:
-                n=int(self.headers.get("Content-Length","0"));assert 0<n<=16384
+                n=int(self.headers.get("Content-Length","0"))
+                if not 0<n<=16384:raise ValueError
                 raw=self.rfile.read(n)
                 if self.path=="/enroll":value=s.authority.enroll(raw,channel=self.connection,decision=d())
                 elif self.path=="/private" and hasattr(s,"delivery"):
@@ -208,7 +209,9 @@ def test_enrolled_certificate_uses_unchanged_owning_software_ed25519_custody(enr
         assert verify_proof(proof,expected_digest=h.challenge.digest,binding=binding,now=h.now).subject_ref==binding.subject_ref
         assert len(messages)==1
         worker=TLSClient(endpoint,ca_file=s.ca_file,certificate=s.worker_material[0],private_key=s.worker_material[1])
-        with pytest.raises(ProofError,match="^service-refused$"):RemoteSigner(worker,subject_ref=binding.subject_ref).sign(messages[0])
+        signer=RemoteSigner(worker, subject_ref=binding.subject_ref)
+        with pytest.raises(ProofError, match='^service-refused$'):
+            signer.sign(messages[0])
         assert value["role"]=="custody-gate"
     finally:
         server.shutdown();server.server_close();thread.join(timeout=5);assert not thread.is_alive()
@@ -241,14 +244,18 @@ def test_reader_enrollment_cannot_be_attached_to_broker_issuer(enrollment,provid
     s,p=enrollment,provider
     wrong=replace(s.authority.selection,role="reader")
     s.authority.selection=wrong
-    with pytest.raises(BindingError):RoleDelivery(enrollment=s.authority,issuer=p.issuer())
+    issuer=p.issuer()
+    with pytest.raises(BindingError):
+        RoleDelivery(enrollment=s.authority, issuer=issuer)
     assert p.calls==[]
 
 
 
 def test_same_role_from_another_enrollment_scope_cannot_receive_app_capability(enrollment,provider):
     from workload_factory_binding_runtime.hosted.issuance import RoleDelivery
-    with pytest.raises(BindingError):RoleDelivery(enrollment=enrollment.authority,issuer=provider.issuer())
+    issuer=provider.issuer()
+    with pytest.raises(BindingError):
+        RoleDelivery(enrollment=enrollment.authority, issuer=issuer)
 
 
 

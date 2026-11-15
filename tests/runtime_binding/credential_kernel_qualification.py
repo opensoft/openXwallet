@@ -111,9 +111,8 @@ def main():
                 server.close();client.close()
                 if worker is not None:worker.join(timeout=5);assert not worker.is_alive()
         for name in ('exposed-key-mutation-detected','writable-policy-mutation-detected','exposed-network-mutation-detected'):
-            try:assert checks[name]['status']=='denied'
-            except AssertionError:checks[name]['denial_probe_detected_exposure']=True
-            else:raise AssertionError('exposure incorrectly qualified')
+            if checks[name]['status']=='denied':raise AssertionError('exposure incorrectly qualified')
+            checks[name]['denial_probe_detected_exposure']=True
     finally:
         http.shutdown();http.server_close();thread.join(timeout=5);assert not thread.is_alive()
         for p in processes:

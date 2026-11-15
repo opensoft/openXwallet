@@ -145,8 +145,14 @@ def test_nonce_store_requires_explicit_initialization_and_persists_consumption(t
     ledger=NonceLedger(tmp_path/"nonces",identity=identity)
     ledger.reserve("issue:one","1"*64,digest({"request":1}),decision=decision(s))
     reopened=NonceLedger(tmp_path/"nonces",identity=identity)
-    with pytest.raises(BindingError): reopened.reserve("issue:one","2"*64,digest({"request":2}),decision=decision(s))
-    with pytest.raises(BindingError): reopened.reserve("issue:two","1"*64,digest({"request":2}),decision=decision(s))
+    commitment=digest({'request': 2})
+    request_decision=decision(s)
+    with pytest.raises(BindingError):
+        reopened.reserve('issue:one', '2' * 64, commitment, decision=request_decision)
+    commitment=digest({'request': 2})
+    request_decision=decision(s)
+    with pytest.raises(BindingError):
+        reopened.reserve('issue:two', '1' * 64, commitment, decision=request_decision)
     assert reopened.state("issue:one",decision=decision(s))["state"]=="consumed"
 
 
@@ -160,14 +166,18 @@ def test_real_rsa_app_jwt_exact_installation_and_returned_scope(provider):
     assert "credential" not in cap.readback()
     assert len(s.active)==1
     assert s.ledger.state(s.ref,decision=decision(s))["state"]=="issued"
-    with pytest.raises(BindingError):issue.issue(s.ref,s.nonce,decision=decision(s))
+    request_decision=decision(s)
+    with pytest.raises(BindingError):
+        issue.issue(s.ref, s.nonce, decision=request_decision)
     assert len(s.active)==1
 
 
 @pytest.mark.parametrize("change",["signature","key-version","app","installation","permissions","expired","expiry","repository","repo-id"])
 def test_independent_provider_mutations_refuse_without_widening_scope(provider,change):
     s=provider;s.changes[change]=True;issue=s.issuer()
-    with pytest.raises(BindingError,match="^"+ERROR+"$"):issue.issue(s.ref,s.nonce,decision=decision(s))
+    request_decision=decision(s)
+    with pytest.raises(BindingError, match='^' + ERROR + '$'):
+        issue.issue(s.ref, s.nonce, decision=request_decision)
     assert s.ledger.state(s.ref,decision=decision(s))["state"]!="issued"
     if change in ("signature","key-version"):assert s.api_requests==0
 
@@ -182,7 +192,9 @@ def test_current_approval_is_independent_of_request(provider,change):
     elif change=="selection":value=replace(value,selection_digest=digest({"wrong":True}))
     else:value=replace(value,expires_at=s.now)
     s.current=value
-    with pytest.raises(BindingError):issue.issue(s.ref,s.nonce,decision=decision(s))
+    request_decision=decision(s)
+    with pytest.raises(BindingError):
+        issue.issue(s.ref, s.nonce, decision=request_decision)
     assert s.calls==[]
 
 
@@ -198,13 +210,18 @@ def test_separate_retirement_observer_requires_actual_token_refusal(provider):
 @pytest.mark.parametrize("change",["still-active","retirement-outage"])
 def test_retirement_uncertainty_never_counts_as_cleanup(provider,change):
     s=provider;cap=s.issuer().issue(s.ref,s.nonce,decision=decision(s));s.changes[change]=True
-    with pytest.raises(BindingError):InstallationRetirer(writer=s.routed(),observer=s.routed()).retire(cap,decision=decision(s))
+    retirer=InstallationRetirer(writer=s.routed(), observer=s.routed())
+    request_decision=decision(s)
+    with pytest.raises(BindingError):
+        retirer.retire(cap, decision=request_decision)
     assert s.ledger.state(s.ref,decision=decision(s))["state"]!="retired"
 
 
 def test_reader_cannot_request_broker_actions_write(provider):
     s=provider;s.selection=replace(s.selection,role="reader");issue=s.issuer()
-    with pytest.raises(BindingError):issue.issue(s.ref,s.nonce,decision=decision(s))
+    request_decision=decision(s)
+    with pytest.raises(BindingError):
+        issue.issue(s.ref, s.nonce, decision=request_decision)
     assert not s.active
 
 
@@ -217,10 +234,14 @@ def test_lost_issuance_response_is_consumed_and_never_minted_again(provider):
             if url.endswith("/access_tokens"):raise TimeoutError("private-issuance-canary")
             return response
     issue.transport=Lost()
-    with pytest.raises(BindingError,match="^"+ERROR+"$"):issue.issue(s.ref,s.nonce,decision=decision(s))
+    request_decision=decision(s)
+    with pytest.raises(BindingError, match='^' + ERROR + '$'):
+        issue.issue(s.ref, s.nonce, decision=request_decision)
     assert len(s.active)==1
     assert s.ledger.state(s.ref,decision=decision(s))["state"]=="consumed"
-    with pytest.raises(BindingError):issue.issue(s.ref,s.nonce,decision=decision(s))
+    request_decision=decision(s)
+    with pytest.raises(BindingError):
+        issue.issue(s.ref, s.nonce, decision=request_decision)
     assert len(s.active)==1
 
 
@@ -232,8 +253,12 @@ def test_lost_retirement_response_reconciles_read_only_without_second_delete(pro
             if method=="DELETE":raise TimeoutError("private-retirement-canary")
             return response
     retire=InstallationRetirer(writer=Lost(),observer=s.routed())
-    with pytest.raises(BindingError):retire.retire(cap,decision=decision(s))
-    with pytest.raises(BindingError):retire.retire(cap,decision=decision(s))
+    request_decision=decision(s)
+    with pytest.raises(BindingError):
+        retire.retire(cap, decision=request_decision)
+    request_decision=decision(s)
+    with pytest.raises(BindingError):
+        retire.retire(cap, decision=request_decision)
     assert s.ledger.state(s.ref,decision=decision(s))["state"]=="retiring"
     assert retire.reconcile(cap,decision=decision(s))["state"]=="retired"
     assert sum(method=="DELETE" for method,path in s.calls)==1
@@ -243,7 +268,10 @@ def test_lost_retirement_response_reconciles_read_only_without_second_delete(pro
 def test_private_transport_material_is_checked_before_contact(provider,which,tmp_path):
     s=provider;bad=tmp_path/"missing"
     options={"ca_file":str(s.ca),"certificate":str(s.gate[0]),"private_key":str(s.gate[1]),which:str(bad)}
-    with pytest.raises(BindingError):PrivateHttps(**options).exchange("GET",s.endpoint+"/app",headers={},decision=decision(s))
+    transport=PrivateHttps(**options)
+    request_decision=decision(s)
+    with pytest.raises(BindingError):
+        transport.exchange('GET', s.endpoint + '/app', headers={}, decision=request_decision)
     assert s.calls==[]
 
 
@@ -257,13 +285,15 @@ def test_late_approval_change_before_provider_send_refuses(provider,change):
         else:s.current=IssuanceCurrent("principal:issuer-approval",issue.selection_digest,s.ref,s.nonce,False,s.now,s.now+30)
         return value
     issue.vault_credential=credential
-    with pytest.raises(BindingError):issue.issue(s.ref,s.nonce,decision=decision(s))
+    request_decision=decision(s)
+    with pytest.raises(BindingError):
+        issue.issue(s.ref, s.nonce, decision=request_decision)
     assert s.calls==[]
 
 
 
 def test_kernel_credential_capability_feeds_real_fixed_provider_flow(provider):
-    from workload_factory_binding_runtime.hosted.credential import CredentialBroker,KernelPrincipal,credential_channels
+    from workload_factory_binding_runtime.hosted.credential import CredentialBroker,KernelPrincipal,credential_channels,credential_request
     s=provider;issue=s.issuer();parent=decision(s);resolutions=[]
     def resolve(**_):resolutions.append(True);return b"fixture-vault-credential"
     service=CredentialBroker(principals=(KernelPrincipal.current("issuer"),),capabilities={"resolver":(("issuer",),resolve)})
@@ -271,8 +301,7 @@ def test_kernel_credential_capability_feeds_real_fixed_provider_flow(provider):
         assert deadline<=parent.deadline
         server,client=credential_channels();thread=Thread(target=lambda:service.serve_once(server,decision=parent));thread.start()
         try:
-            client.send(canonical({"role":"issuer","operation":"resolver"}));client.settimeout(3)
-            response=json.loads(client.recv(65537));assert response["status"]=="ok"
+            response=json.loads(credential_request(client,canonical({"role":"issuer","operation":"resolver"}),decision=parent));assert response["status"]=="ok"
             return base64.b64decode(response["value"]).decode()
         finally:server.close();client.close();thread.join(timeout=5);assert not thread.is_alive()
     issue.vault_credential=credential
@@ -293,7 +322,9 @@ def test_nonce_store_corruption_or_replacement_never_resets_consumption(tmp_path
     elif change=="symlink":database.rename(root/"retained.sqlite");database.symlink_to(root/"retained.sqlite")
     elif change=="hardlink":os.link(database,root/"extra-link")
     else:database.rename(root/"retained.sqlite")
-    with pytest.raises(BindingError):ledger.state("issuance:one",decision=decision(s))
+    request_decision=decision(s)
+    with pytest.raises(BindingError):
+        ledger.state('issuance:one', decision=request_decision)
     if change in ("identity","symlink","missing"):assert (root/"retained.sqlite").exists()
     else:assert database.exists()
 
@@ -319,7 +350,9 @@ def test_issued_credential_use_does_not_renew_earlier_authority(provider,change)
     elif change=="monotonic-expiry":s.mono+=11
     elif change=="revoked":s.current=IssuanceCurrent("principal:issuer-approval",issue.selection_digest,s.ref,s.nonce,False,s.now,s.now+30)
     else:InstallationRetirer(writer=s.routed(),observer=s.routed()).retire(cap,decision=decision(s))
-    with pytest.raises(BindingError):issue.resolve(s.ref,s.nonce,decision=decision(s))
+    request_decision=decision(s)
+    with pytest.raises(BindingError):
+        issue.resolve(s.ref, s.nonce, decision=request_decision)
 
 
 
@@ -342,10 +375,14 @@ def test_real_reader_roles_receive_only_their_exact_permissions(provider,role,ex
 def test_reader_returned_write_scope_is_refused_and_privately_retired(provider):
     s=provider;s.selection=replace(s.selection,role="reader");s.install_permissions={"actions":"read","metadata":"read"}
     issue=s.issuer()
-    with pytest.raises(BindingError):issue.issue(s.ref,s.nonce,decision=decision(s))
+    request_decision=decision(s)
+    with pytest.raises(BindingError):
+        issue.issue(s.ref, s.nonce, decision=request_decision)
     assert len(s.active)==1
     cap=issue.pending(s.ref);assert cap.expires_at is None
-    with pytest.raises(BindingError):issue.resolve(s.ref,s.nonce,decision=decision(s))
+    request_decision=decision(s)
+    with pytest.raises(BindingError):
+        issue.resolve(s.ref, s.nonce, decision=request_decision)
     assert InstallationRetirer(writer=s.routed(),observer=s.routed()).retire(cap,decision=decision(s))["state"]=="retired"
 
 
@@ -360,7 +397,9 @@ def test_returned_token_is_retained_for_cleanup_when_authority_changes_after_min
                 else:s.now+=11
             return result
     issue.transport=ChangeAfterMint()
-    with pytest.raises(BindingError):issue.issue(s.ref,s.nonce,decision=decision(s))
+    request_decision=decision(s)
+    with pytest.raises(BindingError):
+        issue.issue(s.ref, s.nonce, decision=request_decision)
     cap=issue.pending(s.ref)
     assert cap.expires_at is None
     assert InstallationRetirer(writer=s.routed(),observer=s.routed()).retire(cap,decision=decision(s))["state"]=="retired"
@@ -370,5 +409,7 @@ def test_returned_token_is_retained_for_cleanup_when_authority_changes_after_min
 
 def test_role_configuration_change_cannot_reuse_the_old_approval(provider):
     s=provider;issue=s.issuer();issue.selection=replace(issue.selection,role="reader")
-    with pytest.raises(BindingError):issue.issue(s.ref,s.nonce,decision=decision(s))
+    request_decision=decision(s)
+    with pytest.raises(BindingError):
+        issue.issue(s.ref, s.nonce, decision=request_decision)
     assert s.calls==[]

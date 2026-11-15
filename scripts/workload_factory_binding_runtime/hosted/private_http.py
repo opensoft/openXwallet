@@ -37,10 +37,10 @@ class PrivateHttps:
                 and all(type(x) is str and 0<len(x)<=16384 and all(32<=ord(c)<127 for c in x)
                         for pair in headers.items() for x in pair),ERROR)
             materials=self.materials();decision.now();remaining=decision.remaining();require(remaining>0,ERROR)
-            process=subprocess.Popen([sys.executable,"-I","-B",str(Path(__file__).with_name("_credential_io.py"))],
+            process=subprocess.Popen([sys.executable,"-I","-B",str(Path(__file__).with_name("_credential_io.py")),method,url],
                 stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,
                 env={"PATH":os.defpath,"LANG":"C.UTF-8"})
-            message={"method":method,"url":url,"headers":headers,"body":base64.b64encode(body).decode(),
+            message={"headers":headers,"body":base64.b64encode(body).decode(),
                 "seconds":remaining,"ca":self.ca,"certificate":self.cert,"key":self.key}
             process.stdin.write(canonical(message)+b"\n");process.stdin.flush()
             with selectors.DefaultSelector() as selector:

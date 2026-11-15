@@ -12,6 +12,8 @@ from ..github_bootstrap.broker import API,VERSION
 from ..workflow import REPOSITORY
 from .nonces import ERROR,NonceLedger
 from .private_http import Response
+BEARER = "Bearer "
+JSON_TYPE = "application/json"
 
 @dataclass(frozen=True,repr=False)
 class AppSelection:
@@ -101,15 +103,15 @@ class InstallationIssuer:
             credential=self.vault_credential(deadline=decision.deadline);check()
             require(type(credential) is str and 0<len(credential)<=8192 and all(32<ord(c)<127 for c in credential),ERROR)
             raw=self.transport.exchange("POST",self.selection.key_uri+"/sign?api-version=2025-07-01",
-                headers={"Authorization":"Bearer "+credential,"Content-Type":"application/json","Accept":"application/json","Accept-Encoding":"identity"},
+                headers={"Authorization":BEARER+credential,"Content-Type":JSON_TYPE,"Accept":JSON_TYPE,"Accept-Encoding":"identity"},
                 body=canonical({"alg":"RS256","value":encode64(hashlib.sha256(signing).digest())}),decision=decision,before_send=check)
             check();require(type(raw) is Response and raw.status==200,ERROR);signed=document(raw.body,65536)
             require(type(signed) is dict and signed.get("kid")==self.selection.key_uri,ERROR)
             signature=decode64(signed["value"]);self.selection.public_key.verify(signature,signing,padding.PKCS1v15(),hashes.SHA256())
             jwt=header+"."+claims+"."+encode64(signature)
             def request(method,path,bearer=jwt,body=b"",*,validate_after=True):
-                check();r=self.transport.exchange(method,API+path,headers={"Authorization":"Bearer "+bearer,
-                    "Accept":"application/vnd.github+json","Content-Type":"application/json","User-Agent":"openXwallet-hosted-issuer",
+                check();r=self.transport.exchange(method,API+path,headers={"Authorization":BEARER+bearer,
+                    "Accept":"application/vnd.github+json","Content-Type":JSON_TYPE,"User-Agent":"openXwallet-hosted-issuer",
                     "Accept-Encoding":"identity","X-GitHub-Api-Version":VERSION},body=body,decision=decision,before_send=check)
                 if validate_after:check()
                 require(type(r) is Response,ERROR);return r
@@ -133,7 +135,7 @@ class InstallationIssuer:
             check()
             self.ledger.transition(ref,("consumed",),"consumed",decision=decision,token_digest=byte_digest(token.encode()))
             require(value.get("repository_selection")=="selected" and value.get("permissions")==self.record["permissions"],ERROR)
-            expiry=value.get("expires_at");require(type(expiry) is str and re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z",expiry),ERROR)
+            expiry=value.get("expires_at");require(type(expiry) is str and re.fullmatch(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z",expiry,re.ASCII),ERROR)
             expiry=int(datetime.strptime(expiry,"%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc).timestamp())
             require(decision.now()<expiry<=decision.now()+3600,ERROR)
             r=request("GET","/installation/repositories?per_page=2&page=1",bearer=token)
@@ -173,7 +175,7 @@ class InstallationRetirer:
 
     def request(self,transport,method,cap,decision):
         return transport.exchange(method,API+("/installation/token" if method=="DELETE" else "/installation/repositories?per_page=2&page=1"),
-            headers={"Authorization":"Bearer "+cap.credential,"Accept":"application/vnd.github+json","Accept-Encoding":"identity",
+            headers={"Authorization":BEARER+cap.credential,"Accept":"application/vnd.github+json","Accept-Encoding":"identity",
                      "User-Agent":"openXwallet-hosted-retirement","X-GitHub-Api-Version":VERSION},decision=decision)
 
     def retire(self,capability,*,decision):

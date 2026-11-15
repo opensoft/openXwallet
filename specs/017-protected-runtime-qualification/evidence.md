@@ -1959,3 +1959,54 @@ preservation audits; the distinct-UID fixture required its fixture administrator
 for removal, as expected from its measured file boundary. All task disposable
 containers are absent. Both protected workflow IDs 417795073/417795071 retain
 zero runs. This does not retire any live provider resource or authorize setup.
+
+## 2026-11-15: T012P publication review and corrected-source qualification
+
+Brett authorized candidate publication, hosted CI and local Codex review, followed
+by presentation for source ratification. [PR #69](https://github.com/opensoft/openXwallet/pull/69)
+initially published b5a36b77faef. The earlier no-publication commission above
+records the preceding isolated task; this instruction supplies publication only,
+not source acceptance, T012Q-V commission or operational permission.
+
+The local nine-expert panel and coordinator identified and closed a P1 shared-
+request-endpoint credential reply leak and a P2 cancellation reply-descriptor leak.
+See hosting-issuance-implementation.md for the private reply-capability correction.
+Three cancellation witnesses first failed their retained-traceback FD counts; all
+now pass with immediate descriptor closure and EOF. Seven additional private-
+reply/malformed-descriptor cases and those three cancellation nodes retain all
+previous node identities. All 13 frozen source/test hashes reconcile with the
+reviewed correction. No actionable local source finding remains.
+
+Initial hosted checks passed except Sonar, which reported two private-stdin URL
+taint flows, complexity/literal warnings and test exception/assertion clarity.
+Source corrections preserve every guard and separate trusted nonsecret routing
+from anonymous-pipe credential payloads. No issue disposition, suppression, gate
+threshold, baseline or repository rule is changed. Fresh hosted analysis of the
+corrected published head remains separate from these local receipts.
+
+Final corrected-source ordered pin, syntax, plain/strict adapter and pinned
+OpenSpec gates pass. All 1,862 full-suite tests and 1,560 mandatory native cases
+pass with zero failures/errors/skips and no missing/deselected/non-passing matrix
+cases. The 96 added cases comprise 49 issuance, 26 enrollment and 21 credential
+nodes; H06/H07 anchor 32/28 nodes. The extra UID/kernel fixture passes 11 checks
+again on this source. Prior 93-node in-progress runs were deliberately interrupted
+after discovering the cancellation defect; they are diagnostics, not qualification
+of this final source. Earlier qualified checkpoints remain dated evidence only.
+
+Source ratification remains pending. Setup/dispatch stay unauthorized, feedback
+stays deferred, and neither blocked write is replayed. No live provider token,
+protected run or service setup is performed.
+
+Corrected-source private receipt SHA-256:
+- `final-full.xml`: `c3217ee5d6e92ca356524ca0e1430abfd710fb22e8c67acabaf964a81b974296`
+- `native-final-qualified.log`: `c1f3130b0ccb49df10a7418ad9e5e46ebc8960253637506a6972f394a57cecaa`
+- `final-ordered-gates.json`: `d47b60ff2cff7599a113cca3b5707e1ed283a05bcdd2eb4c0e536bdb1a1757d3`
+- `final-matrix-change.json`: `d8baaf8917beadb0c3f1c668bf9d17bf1c9e3b0a4909ec06785254ee5924c10e`
+- `final-source-inputs.json`: `910b92f2545270771a63a666a918a015e781ecf27ed0ed53ff850f797d475828`
+- `cancel-red.xml`: `056bce4e51608206ab7a9ea45ddf924b9872600a2eabe7ea2d43356d57ff6353`
+- `cancel-green.xml`: `08343319c612f466e655c5f3a1fb8b17a246ab5ba77cf8e3686ad3425c341287`
+- `kernel-qualification.json`: `a94c5b9e5695af0f0769a45fe00559a11f89a72c0d598ffd4b4a1644d6fdedea`
+- `local-codex-review.json`: `bd4fc3393a58cf3ffe7803ef852fddeae78bd9c10692854d0304081f3ae823b8`
+- `qa-final-review.json`: `c26088a3544766e2ea9b293d0ea4cae10280f79e0c2652d86f2e322c7054f47f`
+
+Final publication cleanup independently audits 1002 recorded fixture generations, 24 retained/shared preservation records and 12 consumed journals. No matching live generation or attributable helper remains. The eight reviewed/diagnostic fixture roots and two UID/kernel fixture roots are removed after audit; reviewer-owned roots were removed under their own recorded audits. No live provider retirement is inferred.

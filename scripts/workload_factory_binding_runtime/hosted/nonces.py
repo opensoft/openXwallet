@@ -9,6 +9,7 @@ import time
 from workload_factory_binding.evidence import BindingError, integer, require, valid_digest
 from ..config import _handle
 ERROR = "hosted-issuance-refused"
+DATABASE = "issuance.sqlite"
 class Unavailable(BindingError):
     """Safe internal outage marker; never treat as authenticated peer denial."""
     pass
@@ -21,11 +22,11 @@ SCHEMA = (
 def identity(directory):
     p=Path(directory).absolute()
     require(p.resolve()==p,ERROR)
-    a,b=p.lstat(),(p/"issuance.sqlite").lstat()
+    a,b=p.lstat(),(p/DATABASE).lstat()
     require(stat.S_ISDIR(a.st_mode) and stat.S_ISREG(b.st_mode) and b.st_nlink==1
             and all(x.st_uid==os.geteuid() and not x.st_mode&0o077 for x in (a,b)),ERROR)
     for suffix in ("-journal","-wal","-shm"):
-        x=p/("issuance.sqlite"+suffix)
+        x=p/(DATABASE+suffix)
         if x.exists() or x.is_symlink():
             s=x.lstat();require(suffix=="-journal" and stat.S_ISREG(s.st_mode)
                 and s.st_nlink==1 and s.st_uid==os.geteuid() and not s.st_mode&0o077,ERROR)
@@ -37,8 +38,8 @@ class NonceLedger:
     def initialize(cls,directory):
         try:
             p=Path(directory).absolute();p.mkdir(mode=0o700)
-            fd=os.open(p/"issuance.sqlite",os.O_CREAT|os.O_EXCL|os.O_WRONLY,0o600);os.close(fd)
-            with closing(sqlite3.connect(p/"issuance.sqlite")) as db,db:
+            fd=os.open(p/DATABASE,os.O_CREAT|os.O_EXCL|os.O_WRONLY,0o600);os.close(fd)
+            with closing(sqlite3.connect(p/DATABASE)) as db,db:
                 db.execute("PRAGMA synchronous=FULL")
                 for sql in SCHEMA:db.execute(sql)
                 db.execute("INSERT INTO metadata VALUES (1,0)")
@@ -58,7 +59,7 @@ class NonceLedger:
         db=None
         try:
             decision.now();require(identity(self.directory)==self.identity,ERROR)
-            db=sqlite3.connect((self.directory/"issuance.sqlite").as_uri()+"?mode=rw",uri=True,
+            db=sqlite3.connect((self.directory/DATABASE).as_uri()+"?mode=rw",uri=True,
                 timeout=min(2,decision.remaining()),isolation_level=None)
             end=time.monotonic()+min(2,decision.remaining());db.set_progress_handler(lambda:int(time.monotonic()>=end),100)
             db.execute("PRAGMA synchronous=FULL")
