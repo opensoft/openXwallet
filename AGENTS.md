@@ -78,6 +78,20 @@ ownership, validation, versioning, and release constraints.
   Production hosting stays unselected; no setup/dispatch is authorized.
   Deployed supervisor, custody, state, lifecycle and operation stay
   separately gated. The factory owns the grammar.
+  Brett subsequently source-ratified adapter #66 at c8050f9eb1ff; it landed
+  normally as 5498a9b27d7a61daf8f4088ce85906cb436a2033 with equal tree
+  e3664990f55b49bfb7629b864816900d6b429491.
+  The subsequent user instruction commissions only factory-governed hosting/issuance
+  proposal and Speckit plan preparation using the recommended T013 design basis.
+  Factory draft change: add-protected-runtime-hosting-issuance; feature017 subplan:
+  specs/017-protected-runtime-qualification/hosting-issuance-plan.md. Proposed
+  T012N-V are the sole future source tasks and stay unchecked/uncommissioned.
+  Static-v2 plan-only preflight/protected staging/finalization is a material new
+  source decision; preserve v1/default and all neutral APIs/pins. No implementation,
+  token acquisition, setup or dispatch is commissioned by this planning request.
+  The subsequent publication instruction authorizes gate resolution, both candidate
+  PRs, hosted CI and local Codex review, then presentation of v2 for ratification.
+  It supplies no v2 acceptance, implementation commission or operational grant.
   Existing offline entrypoints stay unchanged.
 - Accepted baseline: 016-factory-workload-binding; source decision:
   specs/016-factory-workload-binding/source-acceptance.md and plan.md.

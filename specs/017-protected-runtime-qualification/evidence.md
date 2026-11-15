@@ -1555,3 +1555,107 @@ Private verification artifact SHA-256 values:
 - `cleanup-audit-final.json`: `c4e8a7e086d426040a2178dd0082eb4d0f7c17d39281fd90437ec2edddcbbbb9`
 - `fixture-removal.json`: `8d9763edd5778e7f42156370db8424c8ba9e1d6366328e862fd3aeaf1fbccdcd`
 - `unchanged-runtime-baseline.json`: `063902907dc4cc2b495086aa87c5dc0026ceaef6c671a59b4ecb1a545104d68b`
+
+
+## 2026-11-14 #66 acceptance and hosting/issuance proposal preparation
+
+Brett Heap source-ratified adapter #66 at
+`c8050f9eb1ffbcdbc7fdba66a032ca9649f25ae0`. It merged normally as
+`5498a9b27d7a61daf8f4088ce85906cb436a2033`, with equal accepted/merged tree
+`e3664990f55b49bfb7629b864816900d6b429491`. The
+[owner record](https://github.com/opensoft/openXwallet/pull/66#issuecomment-6882506225)
+records source acceptance only. Its seven runnable checks and Sonar gate passed;
+local full qualification passed 1,641 cases without skips. Hosted full qualification
+passed 1,638 with three documented shallow-history skips, and mandatory conformance
+passed all 1,339 without skips. No merge-triggered CI or protected workflow run is
+inferred from those PR results.
+
+The subsequent user instruction commissions a factory-governed hosting/issuance
+source proposal and Speckit plan using the recommended T013 design basis. It does
+not commission implementation, appoint actors, approve actual operational inputs or
+authorize any setup/dispatch. The new factory draft is
+`add-protected-runtime-hosting-issuance`; this existing feature remains sole task
+owner through proposed, unchecked T012N-V. See
+[plan](hosting-issuance-plan.md), [research](hosting-issuance-research.md),
+[interfaces](contracts/hosting-issuance.md), [model](hosting-issuance-model.md),
+[selection basis](hosting-issuance-selections.md) and
+[acceptance controls](hosting-issuance-acceptance.md).
+
+Research identified a temporal commitment gap: static-v1 includes composition and
+policy digests that depend on the actual run/process. The draft proposes a separate
+static-v2 plan, read-only plan readiness, protected authorized staging, actual
+measurement and independently recomputed final configuration, followed by unchanged
+full admission. This material source decision requires later explicit owner
+acceptance and isolated implementation commissioning; it is not silently applied
+to accepted v1 or neutral APIs/pins. Hosting, actual issuance/provider/guest facts,
+credential isolation and external watchdog capabilities remain future source/live
+gates. No existing bench or Azure resource is selected by implication.
+
+Only documentation changes in this preparation. No runtime tests, workflow runs,
+provider writes, token requests or live qualification are performed. The private
+security research artifact write was denied with only “blocked by policy”; it was
+not retried or recreated. Findings returned in chat informed the separately
+authorized proposal/plan documents. Feedback stays deferred; neither historical
+blocked write nor the earlier optional PR-description update was replayed.
+
+
+Planning validation passes: all five adapter OpenSpec items, strict new governing
+factory change, factory code-surface/estate membership, proposal origin, sequenced-
+after and former-ID declaration sweep. No history-arrival verdict was inferred
+from a corpus-only former-ID run. New relative document links resolve and the
+portable feature pointer/frozen factory README record block remain unchanged.
+Only documentation/metadata changes; no runtime test suite is repeated for this
+planning-only preparation. API/security/runtime research closure addresses actual
+provider provenance, role credential limits and staged/final cleanup ownership.
+The API read-budget finding is resolved with explicit per-group budgets under one
+parent deadline and a complete positive acceptance control.
+
+The initial raw factory diagnostic returned 128 passed/one pre-existing chain-
+attestation finding; calling it a publication blocker was incorrect. The governed
+corpus command `python3 scripts/validate-openspec-cli-pin.py --all`, in its default
+pinned-artifact form, passes with zero undispositioned failures and the existing
+ratified chain-attestation exception explicitly reported. It is an adjudicated
+pass with one accepted exception, not a clean raw corpus. Neither the frozen
+packet nor its existing disposition is changed. Factory [PR #1317](https://github.com/opensoft/openXfactory/pull/1317) supplied
+the actual number; its single new ledger row was generated through the sanctioned
+seeder with `--moved-by '#1317'`, and the ledger consistency gate passes. Two unchanged baseline factory README
+links target absent files; no new link is broken. No candidate PR, hosted CI or
+hosted connector review was created by the initial preparation.
+
+The subsequent user instruction commissions publication-gate resolution, both
+candidate PRs, hosted CI and local Codex review, then presentation for v2
+ratification. Local review continues the owner's preference; no hosted connector
+review is requested or claimed. Source owner acceptance and explicit isolated
+commissioning remain the next implementation gate; no operational authority is
+issued. Setup/dispatch remain unauthorized and feedback deferred.
+
+
+Publication local qualification passed the two scoped initializations, both pins,
+syntax, plain/strict validator, **1,641 full tests with zero failures/errors/skips**,
+and the default pinned-artifact OpenSpec corpus entrypoint (five items, clean).
+The first full attempt had 1,639 passes/two neutrality failures because the test
+invocation placed fixtures outside its TMPDIR allowed root. No source workaround
+was made. Both exact cases passed with corrected nesting; the complete corrected
+run then passed all 1,641. The superseded attempt is not final acceptance.
+
+Independent cleanup audited 38 process generations,
+16 retained/shared preservation records and
+8 consumed correlated dispatch journals across the
+initial, focused and qualified local fixture roots. No matching process or
+attributable helper remained. Retained fixture evidence is private; actual
+operational cleanup/setup/dispatch was neither requested nor performed. All 116
+recorded runtime/test/workflow/contract inputs remain unchanged. Factory metadata/
+ledger checks and 501 focused tests plus four subtests pass.
+
+The coordinator and nine local expert roles reviewed architecture, performance,
+security, QA, static/quality, API/integration, integrity, reliability and simplicity
+with no actionable material findings. Final published-head/CI/PR-thread closure
+will be recorded on the candidate PRs; no hosted Codex connector review is claimed.
+T012N-V and T001/T013/T014/T015 stay unchecked; source acceptance/commissioning
+and every operational stage remain separate owner acts.
+
+Private publication qualification artifact SHA-256 values:
+
+- `qualified-full.xml`: `4e14da05181dd5ca1491c9b02d1bb5b3baed19b6d5fa95f71afe56a6466ba51e`
+- `cleanup-audit-final.json`: `ad03bfd1239c37aacecbb5799e1363e936360a48c0cbdaa3f4bddda670653246`
+- `source-boundaries.json`: `494f5d6798f94cfd58013427c2bd2541ad8592805cfbddf23a937449b21dfd4b`

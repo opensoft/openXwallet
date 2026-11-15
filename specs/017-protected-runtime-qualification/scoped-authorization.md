@@ -9,6 +9,15 @@ Brett source-ratified adapter #65 at `ab34ff4ec4fe27d56c8fd09c99614785c23e760f`,
 
 This closes T012L source acceptance and supplies T012M's handoff, with no operational selection or grant. The [selection packet](operational-inputs.md), [T013 decisions](t013-decision-record.md) and [authentication handoff](bootstrap-authentication-plan.md) identify remaining target/administration, client issuance, actual provider evidence and source-update choices. Accepted bootstrap-only preflight OIDC is separate from protected proof identity; it is not permission to request a live token. Default bindings still refuse before token access/outputs. Hosting and qualify/cleanup/receipt integration remain unselected.
 
+
+The subsequent planning commission uses the recommended T013 values as the
+[hosting/issuance design basis](hosting-issuance-selections.md). The new factory
+source proposal and [Speckit plan](hosting-issuance-plan.md) include an explicit
+static-v2/finalization prerequisite discovered in research; callbacks alone do not
+resolve unknown actual run/process digests. These are draft source proposals, not
+new operational selections, appointments or grants. T012N-V require source acceptance
+and commissioning first; T013 and all four operational stages remain ungranted.
+
 ## Decision record to complete
 
 Before setup, select intended target, final accepted source, administrators,
