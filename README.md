@@ -64,9 +64,10 @@ The existing canonical validator and neutral source pin are unchanged.
 
 ## Document index
 
-- [T012O isolated hosted finalization](specs/017-protected-runtime-qualification/hosting-finalization-implementation.md).
+- [Source-accepted T012O hosted finalization](specs/017-protected-runtime-qualification/hosting-finalization-implementation.md).
+- [T012P isolated enrollment, issuance and credential boundaries](specs/017-protected-runtime-qualification/hosting-issuance-implementation.md).
 
-- Feature017 [source-accepted hosting/issuance plan](specs/017-protected-runtime-qualification/hosting-issuance-plan.md), [research](specs/017-protected-runtime-qualification/hosting-issuance-research.md), [model](specs/017-protected-runtime-qualification/hosting-issuance-model.md), [internal interfaces](specs/017-protected-runtime-qualification/contracts/hosting-issuance.md), [selection basis](specs/017-protected-runtime-qualification/hosting-issuance-selections.md) and [acceptance matrix](specs/017-protected-runtime-qualification/hosting-issuance-acceptance.md). Only T012O isolated implementation/testing is commissioned; actual hosting/setup/dispatch remain unauthorized.
+- Feature017 [source-accepted hosting/issuance plan](specs/017-protected-runtime-qualification/hosting-issuance-plan.md), [research](specs/017-protected-runtime-qualification/hosting-issuance-research.md), [model](specs/017-protected-runtime-qualification/hosting-issuance-model.md), [internal interfaces](specs/017-protected-runtime-qualification/contracts/hosting-issuance.md), [selection basis](specs/017-protected-runtime-qualification/hosting-issuance-selections.md) and [acceptance matrix](specs/017-protected-runtime-qualification/hosting-issuance-acceptance.md). T012O is source accepted through #68; only T012P enrollment/issuance/credential-boundary implementation/testing is currently commissioned in isolation. Actual hosting/setup/dispatch remain unauthorized.
 
 - [`docs/openxwallet-cutover-runbook.md`](docs/openxwallet-cutover-runbook.md) —
   the ordered, reversible procedure that created this repository, with a rollback

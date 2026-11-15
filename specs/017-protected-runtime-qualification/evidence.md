@@ -1871,3 +1871,91 @@ Revised-source private qualification receipt hashes:
 - `assertion-ordered-gates.json`: `d47b60ff2cff7599a113cca3b5707e1ed283a05bcdd2eb4c0e536bdb1a1757d3`
 - `assertion-qualified-source-inputs.json`: `cf8e09446b8dd3bf5b2ccc8175ab02834554a4b52a23618b7e30e8d46c462906`
 - `cleanup-audit-assertion.json`: `f4a89e48e6a4cacfd15dee72bc76a7e85e2fc7692b6b19ea1cdff96aa1fc9615`
+
+## 2026-11-15: #68 source acceptance and isolated T012P candidate
+
+Brett source-ratified #68 at 38b029b02a9b and commissioned only T012P
+implementation/testing in isolation. [Actual owner record](https://github.com/opensoft/openXwallet/pull/68#issuecomment-6889412055).
+All eight runnable ratified-head checks pass and the nine-expert local source
+review has no unresolved finding. #68 merged normally as
+`4bae2b22f74e19a43d8413055142447319a41202` with equal accepted/merged tree
+`3294fa4502130c4e809316e9432fbc0e1febcd2b`. No administrative bypass or rule change was used.
+The accepted T012O worktree is preserved; T012P uses its own feature017 worktree.
+
+See [bounded T012P realization](hosting-issuance-implementation.md). The source
+contains exact-version RSA digest signing and verified App JWTs, fixed GitHub
+App/installation/token/repository/retirement operations, independently current
+approval, explicit durable one-attempt nonce state, and a non-renewing private
+credential-use seam. Returned one-hour provider expiry is distinct from the
+earlier local use deadline; a stolen provider bearer is not narrowed by a case.
+
+Enrollment verifies actual mTLS bootstrap identity, CSR proof, independently
+approved public fingerprint and complete host/source/UID/role/case/plan/issuer
+selection before nonce consumption. Issued short client certificates authenticate
+private role delivery. The App policy pins the complete enrollment digest, so
+a same-role certificate from another scope cannot be combined with it. Selected
+configuration cannot mutate under an old approval. An actual owning software
+Ed25519 proof is created and verified through unchanged registry/custody APIs
+using an enrolled certificate; no native Key Vault Ed25519/HSM assertion is made.
+
+Kernel per-message UID/PID/start credentials prevent an inherited descriptor from
+impersonating its creator. Independent positive/negative controls cover metadata
+resolver, key/sign, control and policy capabilities; exposure mutations and outage
+checks prevent false denial qualification. An extra disposable root-only fixture
+uses distinct UIDs and real file/connection denials, with deliberate exposure
+mutations detected. It is source/fixture evidence, not deployed host qualification.
+
+The final source passes the ordered pin, YAML, plain/strict adapter and pinned
+OpenSpec gates, **1,852 full-suite tests with zero failures/errors/skips**, and
+**1,550 mandatory native cases with zero missing/deselected/skipped/non-passing
+nodes**. There are 86 intentional new nodes across three modules. All previous
+module counts, fingerprints and H01/H02/H04 plus other anchors remain unchanged;
+new H06/H07 groups contain 32/18 substantive anchored nodes. The extra kernel
+fixture passes 11 checks. No live provider credentials or live token requests, protected dispatch
+or actual hosting setup are used by this qualification.
+
+Test-first failures include the absent protocol/nonce/enrollment/kernel ports and
+a real same-role/different-enrollment composition gap; each has a passing positive
+and refusal after implementation. Self-review also closed expired/changed
+authority after token mint: known returned tokens retain private cleanup handles;
+lost responses stay consumed/indeterminate, never retried or counted as retired.
+Revocation ambiguity permits read-only reconciliation of the same capability,
+without a second DELETE. Earlier 82-node/1,546-case and 85-node/1,549-case checkpoints are not final
+qualification of the later source. A final provider-outage regression first
+returned a generic refusal (403); the private delivery route now returns safe
+unavailable (503). The red and green witnesses are retained, and all gates above
+were rerun after that correction. Outage supplies no authenticated denial.
+
+Cleanup audits cover 2,617 recorded fixture generations,
+48 retained/shared preservation records and 24 consumed
+journals. No matching live generation or attributable helper remains. All task
+disposable containers are absent; source, benches, unrelated checkouts and pins
+are preserved. Source/fixture results supply no protected-machine report, actual
+provider/VM acceptance, human approval or domain acceptance.
+
+T012P is an isolated implementation candidate, not owner-accepted source. No new
+PR, hosted review or runtime activation is commissioned here. T012Q-V and
+T001/T013/T014/T015 remain unchecked/uncommissioned. Setup/dispatch remain
+unauthorized; feedback stays deferred and neither blocked write is replayed.
+
+Private qualification receipt SHA-256 (task-only artifacts):
+- `pr68-landing.json`: `26f7a85e64d8012b76fb7010285cf7742de5b6d5c1675949c15fb7b0b549a8e9`
+- `finish-full.xml`: `b8b2daabaa81f5358ba740f805157b527a0d92a6e4d24cd2de269663fe072b31`
+- `native-finish-qualified.log`: `0cfa290c9898b02c7ba85af6c4b586b5d954260cc0531513eeac05976365e198`
+- `finish-ordered-gates.json`: `d47b60ff2cff7599a113cca3b5707e1ed283a05bcdd2eb4c0e536bdb1a1757d3`
+- `finish-matrix-additions.json`: `02a3e46a6188ec5082a8b815552c8ed84254fdd073b50420f6eeaa4e48e792bb`
+- `finish-source-inputs.json`: `7273702d84c9f6a07ae14cb8f8861d83ff0dd4075e0b63d3f5c15801f09ee4e8`
+- `error-path-red.xml`: `7d40115bd6249c94d9f096c62e6ee016e8563511c9a24379bf7cde4fbfca2957`
+- `error-path-green.xml`: `4b125dd866238008375745ab8a42a5fc0c143402bd39995484a0aa6da05089ab`
+- `kernel-qualification.json`: `18fe1e5cb09cb55bc4f2864761b3107709974ca60519b727221f55ac003ff34c`
+- `cleanup-audit-final.json`: `131f7bf9085c02af8fc9f3dfd33aad38862fa361d3ce193f06fd916eee49a670`
+- `cleanup-audit-finish.json`: `e5a57414a0a03883fe2285a43e8cb1bec04599968f6e1df7955fce0ec106a7b7`
+- `cleanup-summary-finish.json`: `870adb436abe9b634cc2c8dd65f120b699356195a8b907377df66d49ab1e7a96`
+- `fixture-removal-finish.json`: `a884af52fe549ab91fa3f435376eeab3da561083192569d98bba7d6dbfc597cd`
+- `protected-workflow-counts-finish.json`: `572c60bb849fb4fca01d47690bd07d6fd5e23246a60a3af72d5f2c72472e45aa`
+
+Final cleanup removes all 20 exact task fixture roots only after generation and
+preservation audits; the distinct-UID fixture required its fixture administrator
+for removal, as expected from its measured file boundary. All task disposable
+containers are absent. Both protected workflow IDs 417795073/417795071 retain
+zero runs. This does not retire any live provider resource or authorize setup.
