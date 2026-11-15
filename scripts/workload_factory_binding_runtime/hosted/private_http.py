@@ -18,9 +18,16 @@ class Response:
     body:bytes
 
 class PrivateHttps:
-    def __init__(self,*,ca_file=None,certificate=None,private_key=None):
+    def __init__(self,*,ca_file=None,certificate=None,private_key=None,fixture_origin=None):
         require((certificate is None)==(private_key is None),ERROR)
         self.ca,self.cert,self.key=ca_file,certificate,private_key
+        self.fixture_origin=fixture_origin
+        self.fixture_args=[]
+        if fixture_origin is not None:
+            target=urlsplit(fixture_origin);port=target.port
+            require(all(v is not None for v in (ca_file,certificate,private_key)) and type(port) is int
+                and 1<=port<=65535 and fixture_origin=="https://127.0.0.1:"+str(port),ERROR)
+            self.fixture_args=["--fixture-port",str(port)]
 
     def materials(self):
         return tuple(byte_digest(_read(p,private=i==2)) if p is not None else None
@@ -36,8 +43,9 @@ class PrivateHttps:
                 and type(body) is bytes and len(body)<=65536 and type(headers) is dict and len(headers)<=12
                 and all(type(x) is str and 0<len(x)<=16384 and all(32<=ord(c)<127 for c in x)
                         for pair in headers.items() for x in pair),ERROR)
+            if self.fixture_origin is not None:require("https://"+u.netloc==self.fixture_origin,ERROR)
             materials=self.materials();decision.now();remaining=decision.remaining();require(remaining>0,ERROR)
-            process=subprocess.Popen([sys.executable,"-I","-B",str(Path(__file__).with_name("_credential_io.py")),method,url],
+            process=subprocess.Popen([sys.executable,"-I","-B",str(Path(__file__).with_name("_credential_io.py")),method,url,*self.fixture_args],
                 stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,
                 env={"PATH":os.defpath,"LANG":"C.UTF-8"})
             message={"headers":headers,"body":base64.b64encode(body).decode(),

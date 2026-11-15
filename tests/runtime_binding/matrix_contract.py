@@ -10,7 +10,7 @@ ROOTS = ("tests/runtime_binding", "tests/factory_binding/test_binding.py",
 MODULE_COUNTS = {
     'tests/runtime_binding/test_hosted_credentials.py': 21,
     'tests/runtime_binding/test_hosted_enrollment.py': 26,
-    'tests/runtime_binding/test_hosted_issuance.py': 49,
+    'tests/runtime_binding/test_hosted_issuance.py': 70,
 
     'tests/runtime_binding/test_hosted_finalization.py': 125,
     'tests/runtime_binding/test_github_bootstrap_workflow.py': 21,
@@ -45,7 +45,7 @@ MODULE_COUNTS = {
 MODULE_DIGESTS = {
     'tests/runtime_binding/test_hosted_credentials.py': '21af0e8ef086011fe427d53ef56577f15f8786e67be079178f0369d1b4a32e09',
     'tests/runtime_binding/test_hosted_enrollment.py': 'eb23f91b36ae600d32fd08331dc46b035b5e9a1a333e15e64333c8d52f5b26a7',
-    'tests/runtime_binding/test_hosted_issuance.py': 'c7b9d5b8384900e67f4b735d5dcbdb569d56cd3dfee0df29916fb71aeea11625',
+    'tests/runtime_binding/test_hosted_issuance.py': '74dc31ba5705000a78ee01cbcfcc6f5afc97d8a3c54e78bc8f686b16241ee537',
 
     'tests/runtime_binding/test_hosted_finalization.py': '9b3373dd10c946ef9c4ed3410be9224e331f0f9ef4d03442d628e395dbba1945',
     'tests/runtime_binding/test_github_bootstrap_workflow.py': 'a61755baf12ce6a42c76518c4c70fc9780f14cda0a63bbdd0a034ae278bc5f33',
@@ -89,7 +89,10 @@ CASES = {
         + _nodes("test_hosted_enrollment", "actual_csr_enrollment_and_mtls_role_delivery",
         "independent_enrollment_facts_are_required", "unsigned_or_substituted_csr_never_authenticates_itself",
         "same_role_from_another_enrollment_scope_cannot_receive_app_capability", "changed_enrollment_case_cannot_reuse_the_old_approval",
-        "enrolled_broker_receives_actual_narrow_app_token_over_mtls", "enrolled_certificate_uses_unchanged_owning_software_ed25519_custody"),
+        "enrolled_broker_receives_actual_narrow_app_token_over_mtls", "enrolled_certificate_uses_unchanged_owning_software_ed25519_custody")
+        + _nodes("test_hosted_issuance", "private_helper_rejects_unselected_production_routes",
+        "private_helper_reconstructs_literal_github_routes", "private_helper_reconstructs_exact_versioned_vault_sign_route",
+        "loopback_fixture_requires_selected_ca_and_client_material", "loopback_fixture_cannot_contact_another_origin"),
     "H07": _nodes("test_hosted_credentials", "kernel_authenticated_allowed_controller_and_worker_denial",
         "exposing_each_host_capability_breaks_denial_qualification", "outage_is_not_worker_denial",
         "passive_inherited_request_socket_cannot_read_issuer_reply", "malformed_reply_capability_is_closed_without_delivery",

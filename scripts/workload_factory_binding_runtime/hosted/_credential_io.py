@@ -6,22 +6,69 @@ Only TLS material references, headers and body cross its private anonymous stdin
 import base64
 import http.client
 import json
+import re
 import signal
 import ssl
 import sys
 from urllib.parse import urlsplit
 LIMIT=1048576
+LOOPBACK_HOST="127.0.0.1"
 
 
-def route():
-    method,url=sys.argv[1:]
+def github_path(method,path,query):
+    if method=="GET" and path=="/app" and not query:return "/app"
+    if method=="GET" and path=="/installation/repositories" and query=="per_page=2&page=1":
+        return "/installation/repositories?per_page=2&page=1"
+    if method=="DELETE" and path=="/installation/token" and not query:return "/installation/token"
+    match=re.fullmatch(r"/app/installations/([1-9]\d{0,15})(/access_tokens)?",path,re.ASCII)
+    if match and not query:
+        base="/app/installations/"+str(int(match[1]))
+        if method=="GET" and match[2] is None:return base
+        if method=="POST" and match[2]=="/access_tokens":return base+"/access_tokens"
+    raise ValueError
+
+
+def vault_path(method,path,query):
+    match=re.fullmatch(r"/keys/([A-Za-z0-9-]{1,127})/([0-9a-f]{32})/sign",path)
+    if method!="POST" or match is None or query!="api-version=2025-07-01":raise ValueError
+    return "/keys/"+match[1]+"/"+match[2]+"/sign?api-version=2025-07-01"
+
+
+def vault_route(method,target):
+    host=re.fullmatch(r"([a-z0-9-]{3,24})\.vault\.azure\.net",target.netloc)
+    if host is None:raise ValueError
+    return host[1]+".vault.azure.net",443,vault_path(method,target.path,target.query),False
+
+
+def parse_target(method,url):
     target=urlsplit(url)
     if (method not in ("GET","POST","DELETE") or len(url)>4096
             or not all(32<ord(c)<127 for c in url) or target.scheme!="https"
             or not target.hostname or target.username is not None or target.password is not None
             or target.fragment or not target.path.startswith("/")):
         raise ValueError
-    return method,target
+    return target
+
+
+def fixture_route(method,target):
+    if sys.argv[3]!="--fixture-port" or not sys.argv[4].isascii() or not sys.argv[4].isdigit():raise ValueError
+    port=int(sys.argv[4])
+    if not 1<=port<=65535 or target.netloc!=LOOPBACK_HOST+":"+str(port):raise ValueError
+    if method=="POST" and target.path in ("/enroll","/private") and not target.query:
+        return LOOPBACK_HOST,port,target.path,True
+    if method=="DELETE" and target.path=="/fixture/empty" and not target.query:
+        return LOOPBACK_HOST,port,"/fixture/empty",True
+    try:path=github_path(method,target.path,target.query)
+    except ValueError:path=vault_path(method,target.path,target.query)
+    return LOOPBACK_HOST,port,path,True
+
+
+def route():
+    method,url=sys.argv[1:3];target=parse_target(method,url)
+    if len(sys.argv)==5:return method,fixture_route(method,target)
+    if len(sys.argv)!=3:raise ValueError
+    if target.netloc=="api.github.com":return method,("api.github.com",443,github_path(method,target.path,target.query),False)
+    return method,vault_route(method,target)
 
 
 def tls_context(value):
@@ -62,14 +109,15 @@ def expired(_sig,_frame):raise TimeoutError
 def main():
     connection=None
     try:
-        method,target=route()
-        value=json.loads(sys.stdin.buffer.readline(196609));context=tls_context(value)
+        method,(host,port,path,fixture)=route()
+        value=json.loads(sys.stdin.buffer.readline(196609))
+        if fixture and any(value[k] is None for k in ("ca","certificate","key")):raise ValueError
+        context=tls_context(value)
         signal.signal(signal.SIGALRM,expired);signal.setitimer(signal.ITIMER_REAL,min(5,value["seconds"]))
-        connection=http.client.HTTPSConnection(target.hostname,target.port or 443,context=context,timeout=min(5,value["seconds"]))
+        connection=http.client.HTTPSConnection(host,port,context=context,timeout=min(5,value["seconds"]))
         connection.connect();signal.setitimer(signal.ITIMER_REAL,value["seconds"])
         print("READY",flush=True)
         if sys.stdin.buffer.readline(4)!=b"GO\n":raise ValueError
-        path=target.path+("?"+target.query if target.query else "")
         connection.request(method,path,body=base64.b64decode(value["body"],validate=True),headers=value["headers"])
         print(json.dumps(read_response(connection)),flush=True)
         return 0

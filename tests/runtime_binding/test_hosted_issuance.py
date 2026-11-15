@@ -98,7 +98,7 @@ def provider(tmp_path):
     server_instance.socket=ctx.wrap_socket(server_instance.socket,server_side=True)
     thread=Thread(target=server_instance.serve_forever,daemon=True);thread.start()
     s.endpoint="https://127.0.0.1:"+str(server_instance.server_port)
-    def transport(peer=gate): return PrivateHttps(ca_file=str(ca),certificate=str(peer[0]),private_key=str(peer[1]))
+    def transport(peer=gate): return PrivateHttps(ca_file=str(ca),certificate=str(peer[0]),private_key=str(peer[1]),fixture_origin=s.endpoint)
     s.transport=transport
     class Routed:
         def __init__(self): self.http=transport()
@@ -267,7 +267,7 @@ def test_lost_retirement_response_reconciles_read_only_without_second_delete(pro
 @pytest.mark.parametrize("which",["ca_file","certificate","private_key"])
 def test_private_transport_material_is_checked_before_contact(provider,which,tmp_path):
     s=provider;bad=tmp_path/"missing"
-    options={"ca_file":str(s.ca),"certificate":str(s.gate[0]),"private_key":str(s.gate[1]),which:str(bad)}
+    options={"ca_file":str(s.ca),"certificate":str(s.gate[0]),"private_key":str(s.gate[1]),"fixture_origin":s.endpoint,which:str(bad)}
     transport=PrivateHttps(**options)
     request_decision=decision(s)
     with pytest.raises(BindingError):
@@ -412,4 +412,57 @@ def test_role_configuration_change_cannot_reuse_the_old_approval(provider):
     request_decision=decision(s)
     with pytest.raises(BindingError):
         issue.issue(s.ref, s.nonce, decision=request_decision)
+    assert s.calls==[]
+
+
+@pytest.mark.parametrize("method,url",[
+    ("GET","https://example.com/app"),
+    ("GET","https://api.github.com.evil.example/app"),
+    ("GET","https://user@api.github.com/app"),
+    ("GET","https://api.github.com:444/app"),
+    ("GET","https://api.github.com/app#fragment"),
+    ("POST","https://api.github.com/app"),
+    ("GET","https://api.github.com/app?extra=true"),
+    ("GET","https://api.github.com/app/installations/088"),
+    ("POST","https://fixture-vault.vault.azure.net/keys/app-key/sign?api-version=2025-07-01"),
+    ("POST","https://fixture-vault.vault.azure.net:444/keys/app-key/"+"a"*32+"/sign?api-version=2025-07-01"),
+    ("GET","https://127.0.0.1:443/app"),
+])
+def test_private_helper_rejects_unselected_production_routes(monkeypatch,method,url):
+    import runpy
+    helper=Path(__file__).resolve().parents[2]/"scripts/workload_factory_binding_runtime/hosted/_credential_io.py"
+    functions=runpy.run_path(str(helper));route=functions["route"]
+    monkeypatch.setattr("sys.argv",["helper",method,url])
+    with pytest.raises(ValueError):route()
+
+
+@pytest.mark.parametrize("method,path",[
+    ("GET","/app"),("GET","/app/installations/88"),("POST","/app/installations/88/access_tokens"),
+    ("GET","/installation/repositories?per_page=2&page=1"),("DELETE","/installation/token"),
+])
+def test_private_helper_reconstructs_literal_github_routes(monkeypatch,method,path):
+    import runpy
+    helper=Path(__file__).resolve().parents[2]/"scripts/workload_factory_binding_runtime/hosted/_credential_io.py"
+    functions=runpy.run_path(str(helper));monkeypatch.setattr("sys.argv",["helper",method,"https://api.github.com"+path])
+    assert functions["route"]()==(method,("api.github.com",443,path,False))
+
+
+def test_private_helper_reconstructs_exact_versioned_vault_sign_route(monkeypatch):
+    import runpy
+    helper=Path(__file__).resolve().parents[2]/"scripts/workload_factory_binding_runtime/hosted/_credential_io.py"
+    functions=runpy.run_path(str(helper));path="/keys/app-key/"+"a"*32+"/sign?api-version=2025-07-01"
+    monkeypatch.setattr("sys.argv",["helper","POST","https://fixture-vault.vault.azure.net"+path])
+    assert functions["route"]()==("POST",("fixture-vault.vault.azure.net",443,path,False))
+
+
+@pytest.mark.parametrize("missing",["ca_file","certificate","private_key"])
+def test_loopback_fixture_requires_selected_ca_and_client_material(missing):
+    options={"ca_file":"selected-ca","certificate":"selected-cert","private_key":"selected-key","fixture_origin":"https://127.0.0.1:443"}
+    options[missing]=None
+    with pytest.raises(BindingError):PrivateHttps(**options)
+
+
+def test_loopback_fixture_cannot_contact_another_origin(provider):
+    s=provider;transport=s.transport();request_decision=decision(s)
+    with pytest.raises(BindingError):transport.exchange("GET","https://127.0.0.1:2/app",headers={},decision=request_decision)
     assert s.calls==[]

@@ -88,8 +88,8 @@ def enrollment(tmp_path, request):
     http.socket=ctx.wrap_socket(http.socket,server_side=True);thread=Thread(target=http.serve_forever,daemon=True);thread.start()
     s.ca_file,s.server_material,s.worker_material=ca_file,server,worker
     s.endpoint="https://127.0.0.1:"+str(http.server_port)
-    s.bootstrap=PrivateHttps(ca_file=str(ca_file),certificate=str(bootstrap[0]),private_key=str(bootstrap[1]))
-    s.worker=PrivateHttps(ca_file=str(ca_file),certificate=str(worker[0]),private_key=str(worker[1]))
+    s.bootstrap=PrivateHttps(ca_file=str(ca_file),certificate=str(bootstrap[0]),private_key=str(bootstrap[1]),fixture_origin=s.endpoint)
+    s.worker=PrivateHttps(ca_file=str(ca_file),certificate=str(worker[0]),private_key=str(worker[1]),fixture_origin=s.endpoint)
     def enroll(raw=None,client=None):return (client or s.bootstrap).exchange("POST",s.endpoint+"/enroll",headers={"Content-Type":"application/json"},body=canonical(s.raw if raw is None else raw),decision=d())
     s.enroll=enroll
     def enrolled():
@@ -97,7 +97,7 @@ def enrollment(tmp_path, request):
         value=json.loads(r.body);cert=x509.load_der_x509_certificate(decode64(value["certificate"]))
         cp=put(tmp_path/"issued"/"cert.pem",cert.public_bytes(serialization.Encoding.PEM))
         kp=put(tmp_path/"issued"/"key.pem",service_key.private_bytes(serialization.Encoding.PEM,serialization.PrivateFormat.PKCS8,serialization.NoEncryption()))
-        client=PrivateHttps(ca_file=str(ca_file),certificate=str(cp),private_key=str(kp));return value,cert,client
+        client=PrivateHttps(ca_file=str(ca_file),certificate=str(cp),private_key=str(kp),fixture_origin=s.endpoint);return value,cert,client
     s.enrolled=enrolled
     try:yield s
     finally:http.shutdown();http.server_close();thread.join(timeout=5);assert not thread.is_alive()

@@ -2010,3 +2010,40 @@ Corrected-source private receipt SHA-256:
 - `qa-final-review.json`: `c26088a3544766e2ea9b293d0ea4cae10280f79e0c2652d86f2e322c7054f47f`
 
 Final publication cleanup independently audits 1002 recorded fixture generations, 24 retained/shared preservation records and 12 consumed journals. No matching live generation or attributable helper remains. The eight reviewed/diagnostic fixture roots and two UID/kernel fixture roots are removed after audit; reviewer-owned roots were removed under their own recorded audits. No live provider retirement is inferred.
+
+## 2026-11-15: closed provider-route requalification
+
+At published 60d44ade20bc, all runnable hosted checks except Sonar passed; Sonar
+automatically cleared 38 initial findings and retained one command-line URL flow.
+The private helper now independently reconstructs closed literal GitHub routes,
+exact-version public Key Vault POST signing and explicitly selected bounded mTLS
+loopback fixture routes. Unknown production destinations cannot fall through to
+fixture mode. No manual finding disposition or suppression is used.
+
+The nine-expert local panel and coordinator reconciled all 13 new source/test
+hashes with no actionable source finding. All 117 focused T012P cases pass. Fresh
+ordered pin/syntax/plain-strict adapter/pinned OpenSpec gates, 1,883 full-suite tests
+and 1,581 mandatory native cases pass with zero failures/errors/skips and no missing,
+deselected or non-passing mandatory case. The 21 new route controls extend H06 to
+53 anchors; H07 retains 28. All earlier nodes/fingerprints/anchors remain. The
+previous 11-check supplemental UID/kernel qualification retains byte-identical
+credential/helper/fixture inputs; no unrelated kernel check was repeated. Earlier
+1,862/1,560 receipts remain valid only for their dated source checkpoint.
+
+Hosted checks of the corrected published head and owner source ratification remain
+separate. Setup/dispatch stay unauthorized; feedback remains deferred and neither
+blocked write is replayed. T012Q-V and all live provider/host gates remain separate.
+
+Route qualification private receipt SHA-256:
+- `route-full.xml`: `0dd56aa581f8c5963340d5cdd2d45d7c42975e502727cdbd628f82851782f599`
+- `native-route-qualified.log`: `65d478c224a19eff847448dcf243eeeae3c73b2d0d25090a53410e0d74577de1`
+- `route-ordered-gates.json`: `d47b60ff2cff7599a113cca3b5707e1ed283a05bcdd2eb4c0e536bdb1a1757d3`
+- `route-source-inputs.json`: `02b808cd44441ef1a0b8f2c47ad4a720e437edaaa9daa1547a3ce24017f98176`
+- `route-matrix-change.json`: `259da302a31eae61752c6a509e892d21e53d596aed841c732af1848d56567607`
+- `routes-focused.xml`: `c77f0edec897c5c8c07e1f374b3957ad3ccd4c2501796d7540d1aa03ebc3f022`
+- `local-codex-review-routes.json`: `cf3bde22c65f398dff796085176a9975d2b53dc2778e0ff31af1c6f906c40c66`
+- `qa-route-final-review.json`: `d97de8868c140a43509ff765c176ee87ba77e7eac81416ef4e8d05027a531ec5`
+- `sonar-issues-corrected.json`: `e90627aff72d08c8fc028f0c44c659e974326e65c223560ebaa7ae86a440bd62`
+- `sonar-gate-corrected.json`: `711bff82f9a73c0fb9c1cbf5de00c3bb08d95b2c7e0abd31827f9712f3782e17`
+
+Route requalification cleanup audits 757 additional recorded fixture generations, 16 preservation records and 8 consumed journals. No matching live generation or attributable helper remains. All three exact route fixture roots are removed after audit and the disposable native namespace is absent. Earlier UID/kernel fixture state remains removed; no live provider retirement or operational authority is inferred.

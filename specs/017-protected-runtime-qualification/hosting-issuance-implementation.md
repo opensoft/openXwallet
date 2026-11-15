@@ -68,10 +68,10 @@ it does not establish deployed VM/IMDS/admin isolation or protected acceptance.
 
 ## Qualified source checkpoint
 
-The final source adds 96 measured nodes: 49 issuance, 26 enrollment and 21 kernel
-credential-port cases. All 1,862 full-suite tests and 1,560 mandatory native cases
+The final source adds 117 measured nodes: 70 issuance, 26 enrollment and 21 kernel
+credential-port cases. All 1,883 full-suite tests and 1,581 mandatory native cases
 pass without failures/errors/skips; old matrix identities/fingerprints remain.
-H06/H07 have 32/28 anchored nodes. The separate kernel fixture passes 11 checks.
+H06/H07 have 53/28 anchored nodes. The separate kernel fixture passes 11 checks.
 Source and private receipt hashes, exact #68 acceptance/landing, earlier failed
 diagnostics and cleanup readback are recorded in evidence.md. A provider-outage regression first returned a refusal; it now returns unavailable,
 so an outage cannot qualify as an authenticated denial. No failed or earlier
@@ -99,3 +99,20 @@ parent-selected process arguments. Headers, body and TLS references remain on th
 anonymous pipe. TLS/framing guards, deadlines and reaping remain intact; test
 setup is outside exception assertions. No finding suppression, threshold change
 or manual finding disposition is introduced.
+
+## Closed provider routing
+
+The next hosted analysis cleared 38 of 39 initial findings and retained one
+command-line URL-to-connection flow. The helper now reconstructs only the closed
+GitHub App/installation operations at literal api.github.com:443 or exact-version
+POST signing in the public Key Vault namespace on port 443. It retains the
+independent complete issuer-selected key URI and RSA verification. Unsupported
+hosts, ports, methods, paths, queries, userinfo and fragments refuse before contact.
+
+Loopback routing requires explicit trusted fixture_origin construction, the exact
+canonical 127.0.0.1 origin/port, selected CA/client certificate/private key and closed
+fixture paths. It is never inferred from request URLs. Real TLS fixture positives
+and 21 independent route controls supplement existing enrollment/issuance tests.
+The factory grammar, owning APIs/pins and default operational entrypoints are
+unchanged. Fresh hosted analysis remains the publication gate; no suppression or
+manual finding disposition is substituted.
