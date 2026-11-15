@@ -57,3 +57,14 @@ Each of six independent late protection mutations refuses. Ordinary admission's
 three-read refusal remains a separate witness. Factory #1322 governance controls
 this correction; 538 focused factory code-surface/target-release/sequencing tests
 pass. Full/native requalification, CI and local expert review follow.
+
+## Corrected source qualification
+
+The corrected matrix is 1,792 required nodes with 211 Q cases; all 2,094 full
+tests and mandatory native nodes pass with zero failures/errors/skips. All nine
+local expert roles closed the two discovered P2s (shared post-TLS checkpoint and
+approved ARM reference metadata). No remaining actionable finding. Eleven exact
+fixture roots are removed after an independent generation/preservation/journal
+audit. Source hash, redacted JUnit/log and cleanup receipts are in evidence.md.
+The source head passed adapter CI; final documentation CI and factory's full-suite
+completion are tracked on #70/#1322. No owner ratification or landing is inferred.

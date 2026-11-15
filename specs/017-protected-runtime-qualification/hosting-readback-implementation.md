@@ -8,7 +8,8 @@ isolation. #69 landed normally as 7bd884106eea5f0ed4b99a35da70d613ccbfd0d2
 with the accepted tree unchanged. Factory
 `add-protected-runtime-hosting-issuance` governs this slice. Feature017
 `tasks.md` remains the sole executable list; factory tasks are handoff-only.
-This candidate has no source acceptance, publication or operational grant.
+This candidate is commissioned for publication and local review. Source acceptance,
+landing and every operational grant remain separate.
 
 ## Implemented boundary
 
@@ -47,7 +48,8 @@ URLs are never followed. Observation failures expose fixed safe errors.
 
 ## Bounds and freshness
 
-Existing correlation retains four reads and at most two job pages. Protection,
+For ordinary admission/correlation, the existing engine retains four reads and
+at most two job pages. Protection,
 source and hold/control allow three/four/two reads, respectively, with at most
 13 aggregate GitHub reads. The counter lives on the same parent Decision across
 new clients and callbacks; correlation high-water cannot regress. ARM/key/private
@@ -79,10 +81,13 @@ observation and a fifth shared correlation request refuse before credential/I/O.
 No budget upgrade, stale reuse, dropped check, retry or default activation occurs.
 
 The [feature amendment](hosting-readback-budget-amendment.md) records the source
-plan and authority. All 318 focused readback/finalization/allocation cases pass,
+plan and authority. All 318 initial focused readback/finalization/allocation cases pass,
 including six real mTLS observations, independent actual process/file measurement,
-unchanged full admission, owning Ed25519 proof and replay refusal. Full/native
-requalification, CI and local expert Codex review are publication gates in progress.
+unchanged full admission, owning Ed25519 proof and replay refusal. Corrected qualification passes 2,094 full tests and 1,792 mandatory native nodes
+with zero failures/errors/skips. Nine-role local Codex review closed both P2s
+(post-TLS shared checkpoint and approved ARM reference metadata) with no remaining
+actionable finding. The source head passed all runnable hosted checks; final
+documentation CI is a separate exact-head gate recorded on PR #70.
 This is an unratified source candidate; T012R-V remain uncommissioned.
 
 ## Isolated verification and limits
@@ -137,3 +142,27 @@ These document parser inputs and method shapes, not live qualification:
 Setup/dispatch remain unauthorized, feedback deferred, and neither blocked write
 nor the denied optional/private write is replayed. Pins, neutral contracts,
 provider policy and default activation remain unchanged.
+
+## Final corrected qualification and publication
+
+Adapter #70 implements this source candidate with factory #1322 governing its
+allocation amendment. The final matrix contains 211 Q cases (51 added after the
+initial Q checkpoint) and preserves all 1,581 accepted base identities and anchors.
+Full suite: 2,094 passed. Native mandatory matrix: 1,792 passed, H08/H09/H10
+87/40/34 anchors, zero failures/errors/skips. Native UID1000/no capabilities/no
+new privileges/read-only source/loopback-only boundary is unchanged.
+
+The corrected audit checks 49 ownership processes, 263 hosted generations and
+3,341 credential/guest helper generations, 24 preservation records and 12 consumed
+journals. No matching generation/helper remains; both disposable namespaces are
+absent. All eleven publication fixture roots are removed after audit. Redacted
+receipts remain outside fixtures. Earlier interrupted runs are superseded only,
+never successful qualification. Both protected workflow histories remain zero.
+
+Nine expert roles reviewed the complete pair and closed the two P2 fixes at
+cfaa57cae6570b1adf40fa9048c64ed49324c933. Final evidence changes only documentation;
+the 15 tested/reviewed source-input hashes remain unchanged. Final exact-head CI
+and review receipts are posted on the two PRs. Factory governance must land before
+the adapter only after later owner source ratification/landing authorization.
+Setup/dispatch and T012R-V remain unauthorized; feedback deferred; no blocked or
+denied optional/private write replayed.
