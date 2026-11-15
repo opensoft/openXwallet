@@ -1735,8 +1735,8 @@ Factory post-merge run43663946312 has a successful pytest job but failed
 sonar-analysis/SonarCloud quality checks. Verified project key is
 `opensoft_openxFactory`; new_security_rating is3 (C), required1, while new coverage
 88.1% passes its80% condition. The v2 factory PR changed no Python implementation
-files. This is an unresolved factory-main quality-gate result, not a claim of
-green integrated main. No gate threshold, finding status or disposition is changed.
+files. At that checkpoint this was an unresolved factory-main quality-gate result,
+not a claim of green integrated main. No gate threshold, finding status or disposition is changed.
 See [post-merge run](https://github.com/opensoft/openXfactory/actions/runs/43663946312).
 The green ratified-head PR checks and isolated T012O qualification remain separate.
 
@@ -1803,3 +1803,43 @@ Qualification receipt hashes (private artifacts, not runtime receipts):
 - `review-corpus-change.json`: `a53d9feb09adf31090d4712097da067bc8ddf3c024045ce1a36a8d347212f625`
 - `cleanup-audit-final.json`: `e9bd90c624f7208cf0f80ec5a8fa08224fb01589efed0c119abe0273483974e1`
 - `qualified-source-inputs.json`: `c9e903946131e0fd6834c8754727786397aae49e4edc5a9580da471356108775`
+
+## 2026-11-14: factory main repair qualifies T012O publication dependency
+
+The existing governed Sonar feature 044 repaired the two new-period flows in
+factory PR #1318, source 7a8e70323b73fdf2f2526ebe3c56dbb3930f4ac3. Its own
+exact-head Codex review completed without findings and its required CI passed;
+the owning workstream landed it as 5d04859eb42e6b8684fa2825d20a8ed21652b93b.
+No competing repair or unrelated checkout mutation was introduced here.
+
+Actual main [run 43669723808](https://github.com/opensoft/openXfactory/actions/runs/43669723808)
+passes both the complete pytest job and sonar-analysis. Its complete suite reports
+10,570 tests and 807 subtests passed, six expected skips and 338 existing PostgreSQL
+deselections, with zero failures/errors. All four other main workflows pass.
+Sonar analysis 94982bc0-f624-44c6-8e8c-3d06049cf90c explicitly names that merged
+revision and changes the gate from red to green: A reliability/security/
+maintainability, 88.6 percent new-code coverage, 0.2 percent duplication and
+100 percent reviewed hotspots. The same six thresholds and manual baseline
+2026-09-09T23:37:08+0000 remain; ignoredConditions is false. Both former blockers
+are CLOSED/FIXED, and the unresolved new-period vulnerability query returns zero.
+Older baseline debt remains separately recorded by the owning feature.
+
+All seven files from the ratified v2 factory packet at 943e33fdafdc remain byte-
+identical in this merged repair. This current source CI/gate readback resolves
+the earlier publication dependency; it supplies no operational permission.
+
+The nine-expert local Codex panel and coordinator closed the T012O source review
+at c737e1897bda61a8374aaa4b35b5ab8e627b47a9 with no unresolved actionable finding.
+The final publication reconciliation changes only this evidence record; all nine
+qualified source/test hashes are unchanged. Hosted CI and actual published-head
+review receipts remain required before presentation for source ratification.
+Source acceptance, T012P-V commission, setup, dispatch and live acceptance stay
+separate. Feedback remains deferred and neither blocked write is replayed.
+
+Readback receipt hashes (private artifacts):
+- `factory-main-quality-gate.json`: `272ea392e420398e68793ceb781f091278c298dd984e242048f94374b8fc7b02`
+- `factory-main-repaired-issues.json`: `06bcd1522c5a0fc9e6b6d8ed5dbe738cfea0d81c1229615a7ec8ea4df894194f`
+- `factory-main-new-vulnerabilities.json`: `0220a40f358e8db1eb1e2d41f96ab5469e26511d768fbf3d1854031fdda867da`
+- `factory-ratified-v2-preservation.json`: `3f9cb4789dd89c5e12fe7b1b17ba211e1a3e4c1aee4daf88dd563bfb4a6b879a`
+- `local-codex-review.json`: `ac8a22e1abdffcf1c9b66c06233fdf22b5585884e6283cbcdcd94d6334d63a96`
+- `fixture-removal-final.json`: `d69c5c179e2c352acc787f9171b450ac536cb280f6f48ca20b33d93b166c4b6e`
