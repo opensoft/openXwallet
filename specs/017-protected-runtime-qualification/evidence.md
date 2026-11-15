@@ -2201,3 +2201,96 @@ or scratch directory remains.
 
 - `final-document-gates.json`: `8e705062e9caf08fd3c3cc07c11af945aa4de5c9573d8b504661a5dc5ddc828a`
 - `document-cleanup.json`: `76501def3d963810d31237cb8666101347d030a5b35120816a3ea1bbeaa91c3f`
+
+## 2026-11-15: Paired source acceptance and T012R commission
+
+Brett source-ratified #1322 e813051af8c0 and #70 f6956e324e37, then directed
+ordered landing and T012R in isolation. Both exact heads were green/mergeable
+with zero unresolved review threads. Normal merges 54f720b6df81473473d48c7289c51faafccb1c9d
+and 27843096189ac6e168999832b821333a58392b4c preserve accepted trees
+5594ce2ca90ed76dcf4dc20aadd805fb2652811e and 4bb3cc4ec1799e7e0ca4e60f7e32a6099fdc992e.
+No administrative override/rule change. Actual owner records: [factory](https://github.com/opensoft/openXfactory/pull/1322#issuecomment-6896463055),
+[adapter](https://github.com/opensoft/openXwallet/pull/70#issuecomment-6896463382).
+The accepted Q worktree is preserved; R has a separate linked feature017 worktree.
+T012S-V and every operational gate remain uncommissioned. Feedback deferred; no
+blocked/denied write replayed.
+
+
+## 2026-11-15: T012R isolated host launch candidate
+
+The feature017 `017-hosted-launch` worktree starts from accepted adapter merge
+27843096189ac6e168999832b821333a58392b4c. The as-built source and explicit later
+boundaries are in hosting-launch-implementation.md. No neutral contract, pin,
+gitlink, workflow YAML, default activation, setup or dispatch is changed.
+
+The corrected frozen source passes 2,163 full tests, 1,861 mandatory native
+cases and all seven ordered repository gates; zero skips/failures/errors. The
+69 new launch nodes retain all 1,792 old mandatory identities/fingerprints and
+anchors. H03/H07 now anchor 64/33 substantive nodes. Actual TLS, manager/process,
+Landlock/seccomp and file observations qualify the bounded reference service.
+
+Earlier runs are superseded by the parent-death and post-helper checkpoint fixes:
+PDEATHSIG could be cleared through prctl. The final source blocks that option,
+retains read-only queries, verifies GID/supplementary groups, and reruns both
+complete suites. The manager crash positive observes SIGKILL, reaping and a
+consumed unpersisted start; response loss never triggers a replacement start.
+
+Private evidence: `t012r-isolated-20261115/qualification-summary.json`,
+`complete-full.xml`, `complete-native.xml`,
+`complete-ordered-gates.json`, `qualified-source-inputs.json`,
+`superseded-qualification.json` and cleanup-audit-final.json. Both protected
+workflow IDs 417795073/417795071 have zero runs on readback. Source publication,
+ratification, real host administration, T012S-V, setup/dispatch and live acceptance
+remain separate. Feedback stays deferred; neither blocked write is replayed.
+
+Cleanup audit: actual py-bench PID namespace; no matching recorded process or
+attributed helper remains. Verified 48 preservation records and 24 consumed
+dispatch journals, then removed exactly 25 task fixture roots. Retained native
+XML outside those roots; all three native containers are absent. Details and
+counts are in hosting-launch-implementation.md, cleanup-audit-final.json and
+fixture-removal-final.json. This does not assert T012S production cleanup.
+
+## 2026-11-15: Corrected T012R publication qualification
+
+The preceding isolated receipt describes the initial candidate only. Adapter #71
+and proposed factory #1326 incorporate the review corrections described in
+hosting-staging-refresh-amendment.md and hosting-launch-implementation.md. Corrected
+source passes 2,200 full tests, all 1,898 mandatory native cases, 140 focused rechecks
+and 538 factory checks; zero failures/errors/skips. All1,792 previous required node
+identities/fingerprints/anchors remain; 106 new nodes yield H03/H07 totals94/40.
+All seven ordered repository gates pass; the final OpenSpec invocation required a
+task-local npm cache after an inherited /root cache refused access. The original
+environment failure remains in the private ordered receipt.
+
+All nine local Codex specialists plus coordinator completed corrected-source review
+with no unresolved finding. Subsequent documentation preserves the 143 tested
+Python/workflow input hashes. Local review is distinct from hosted checks; no
+hosted connector review is claimed. Factory #1326's optional merge-master-approval
+bootstrap fails before candidate evaluation because floating Python3.x selects3.15
+and locked PyYAML6.0.3 has no compatible wheel. Effective required checks exclude
+that job; no rule, check or workflow was bypassed or changed to hide it.
+
+The proposed protected-stage26/private16 profile retains original clocks and
+ordinary/finalization allocations. Protected workflow YAML/pins/default refusal are
+unchanged; only ordinary pytest bootstrap changes. No ratification, landing,
+T012S-V, setup/dispatch or live qualification is inferred.
+
+Private corrected qualification receipts (SHA-256):
+
+- `resumed-full.xml`: `504c0df62ff58cbfe72f134cbe08c26ca9838b3845c495b82c3bf479f74a1cdc`
+- `resumed-native.xml`: `f7bdc86e265ed2fd8a7d3de167134d171979313657c3b06503b3e8e9cf10887e`
+- `resumed-ordered-gates.json`: `02e62d022a14f979c5b0b26a15c419381a568a4e6c8b231381c39cffdb55d552`
+- `qualified-source-inputs.json`: `74d6ab81f2faae0e30ab9dd619c234c3cdb90d1d4a104f3aab4dbd1b1f956c0e`
+- `resumed-focused.xml`: `02061781a6daf46d9affc10add3f99442df3cc75334794e7b91cf09ed20cc80a`
+- `factory-resumed.xml`: `bed5e5e79036ee646e9a2e57d3bec638219330be8efad8e6aa657be3e498208c`
+- `local-codex-review-current.json`: `87b931735cc4f6b936c724118d74d6f4726a79add75864c382026872762e780c`
+
+Publication cleanup was audited in py-bench's test PID namespace: 38 recorded
+process generations, 132 hosted generations, 9,022 credential/helper generations
+and three crash-window generations have no matching live instance. No attributed
+helper remains. The audit verifies 16 preservation records, eight consumed journals
+and 286 retained staging summaries. The exact task fixture roots are removed after
+audit; XML/source/review/audit receipts remain outside those roots. The disposable
+native container is absent; accepted checkouts and active benches remain intact.
+Both protected workflow histories (417795073/417795071) remain zero. This is
+isolated fixture cleanup, with no production cleanup/takeover claim.

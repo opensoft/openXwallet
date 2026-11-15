@@ -12,7 +12,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from workload_factory_binding.evidence import BindingError
 from workload_factory_binding_runtime.evidence import safe_error
 from workload_factory_binding_runtime.bootstrap import DispatchContext, bootstrap, validate_dispatch_context
-from workload_factory_binding_runtime.workflow import operational_bindings, GithubWorkflowBindings, admit_github
+from workload_factory_binding_runtime.workflow import operational_bindings, GithubWorkflowBindings, admit_github, HostedWorkflowBindings, admit_hosted
 
 
 def context_from_environment(environment, source_commit):
@@ -38,7 +38,9 @@ def main():
             # T012 prepares admission/job wiring. Live execution and independent
             # cleanup adapters remain gated; never substitute the offline suite.
             raise BindingError("workflow-live-qualification-not-performed")
-        if type(bindings) is GithubWorkflowBindings:
+        if type(bindings) is HostedWorkflowBindings:
+            admitted = admit_hosted(context, bindings=bindings, phase=args.phase, environment=os.environ)
+        elif type(bindings) is GithubWorkflowBindings:
             admitted = admit_github(context, bindings=bindings, phase=args.phase, environment=os.environ)
         elif args.phase == "preflight":
             admitted = bootstrap(context, bindings=bindings)

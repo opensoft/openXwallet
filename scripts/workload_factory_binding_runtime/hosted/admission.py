@@ -68,7 +68,7 @@ def read_current(callback, *args, kind, decision):
     return result
 
 
-def current_plan(context, token, bindings, *, phase, decision):
+def selected_plan(context, token, bindings, *, phase, decision):
     require(type(bindings) is PlanBindings and type(bindings.policy) is IdentityPolicy
             and type(bindings.verifier) is BootstrapVerifier and bindings.policy.phase == phase
             and bindings.policy.audience == BOOTSTRAP_AUDIENCE
@@ -98,6 +98,14 @@ def current_plan(context, token, bindings, *, phase, decision):
                     if k not in ({"environment", "sub"} if phase == "preflight" else set())), ERROR)
     worker = config["services"]["worker_channel"]["principal_ref"]
     require(worker not in (bindings.facts_principal, bindings.environment_principal), ERROR)
+    return plan
+
+
+def current_plan(context, token, bindings, *, phase, decision):
+    plan = selected_plan(context, token, bindings, phase=phase, decision=decision)
+    value = plan.value()
+    config = value["configuration_template"]
+    launch = {**config["launch"], "run_id": context.run_id, "run_attempt": context.run_attempt}
     facts = read_current(bindings.read_facts, context.preauthorization_ref, kind=PlanFacts, decision=decision)
     def validate_facts(facts):
         require(facts.principal_ref == bindings.facts_principal and facts.plan_digest == plan.digest

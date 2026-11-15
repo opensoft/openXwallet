@@ -267,3 +267,32 @@ def admit_github(context, *, bindings, phase, environment):
     end = min(admitted.valid_until, final["bootstrap"]["expires_at"], final["operation"]["expires_at"])
     require(integer(now) and before <= now < end, "workflow-admission-refused")
     return replace(admitted, valid_until=end)
+
+
+@dataclass(frozen=True,repr=False)
+class HostedWorkflowBindings:
+    """Explicit static-v2 selection; neither environment nor dispatch selects it."""
+    preflight_client:object
+    protected_client:object
+    token_client:object
+    clock:object
+    monotonic:object
+
+
+def admit_hosted(context,*,bindings,phase,environment):
+    from .github_bootstrap.common import Decision
+    from .github_bootstrap.client import TokenClient
+    from .github_bootstrap.identity import BOOTSTRAP_AUDIENCE
+    from .hosted.stage_client import AdmissionClient
+    require(type(bindings) is HostedWorkflowBindings and phase in ("preflight","protected-admission")
+        and type(bindings.token_client) is TokenClient and bindings.token_client.audience==BOOTSTRAP_AUDIENCE
+        and type(bindings.preflight_client) is AdmissionClient and type(bindings.protected_client) is AdmissionClient
+        and bindings.preflight_client.phase=="preflight" and bindings.protected_client.phase=="protected", "workflow-admission-refused")
+    from .bootstrap import validate_dispatch_context
+    validate_dispatch_context(context)
+    use=Decision(clock=bindings.clock,monotonic=bindings.monotonic)
+    token=bindings.token_client.acquire(environment,decision=use)
+    selected=bindings.preflight_client if phase=="preflight" else bindings.protected_client
+    result=selected.read(context,token,decision=use)
+    require(result.state==("plan-ready" if phase=="preflight" else "running"),"workflow-admission-refused")
+    use.now();return result

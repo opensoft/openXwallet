@@ -95,3 +95,23 @@ def validate_graph(source, approval):
         return True
     except Exception:
         raise BindingError(ERROR) from None
+
+
+def validate_plan_graph(source, plan):
+    """Same closed orchestration graph, explicitly selected static-v2 semantics.
+
+    No v2 object is cast to a v1 Approval. Intrinsic v2 admission routes select
+    plan/staging readiness; qualify/cleanup remain unperformed source handoffs.
+    """
+    from ..hosted.plan import StaticPlan
+    try:
+        require(type(plan) is StaticPlan and type(source) is GraphSource, ERROR)
+        config=plan.value()["configuration_template"]
+        require(source.commit==config["launch"]["sha"],ERROR)
+        for role,raw in (("caller_workflow",source.caller),("reusable_workflow",source.reusable)):
+            require(type(raw) is bytes and 0<len(raw)<=65536 and byte_digest(raw)==config["sources"][role]["digest"],ERROR)
+        caller,reusable=(yaml.load(raw,Loader=_Loader) for raw in (source.caller,source.reusable))
+        _interfaces(caller,reusable)
+        for name,job in reusable["jobs"].items():_job(name,job)
+        return True
+    except Exception:raise BindingError(ERROR) from None

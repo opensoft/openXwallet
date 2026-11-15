@@ -83,7 +83,15 @@ jobs:
       - name: Run offline suite including explicit owning-source qualification
         env:
           WALLET_BINDING_OWNER_CODE: ${{ runner.temp }}/wallet-binding-owner
-        run: python3 -m pytest tests/ -q -rs
+        # Source-test process only: do not grant a worker the runner's ambient
+        # sudo/docker groups. The runtime correctly refuses unselected groups.
+        shell: bash
+        run: |
+          sudo --preserve-env=WALLET_BINDING_OWNER_CODE,HOME,PATH \
+            setpriv --reuid "$(id -u)" --regid "$(id -g)" \
+              --clear-groups --bounding-set=-all --inh-caps=-all --ambient-caps=-all \
+              --no-new-privs \
+              "$(command -v python3)" -m pytest tests/ -q -rs
 
       # Source checkout/install above may use the network. The required matrix
       # itself has loopback only, including fork/exec and isolated Python helpers.

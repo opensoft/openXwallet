@@ -18,10 +18,13 @@ class Correlation:
     valid_until: int
 
 def _run_binding(run, approval, run_id):
-    launch = approval.configuration["launch"]
+    return run_binding(run, launch=approval.configuration["launch"], workflow_id=approval.workflow_id,
+                       broker_actor_id=approval.broker_actor_id, run_id=run_id)
+
+def run_binding(run, *, launch, workflow_id, broker_actor_id, run_id):
     require(type(run) is dict and type(run.get("id")) is int and str(run["id"]) == run_id
             and type(run.get("run_attempt")) is int and run["run_attempt"] == 1
-            and type(run.get("workflow_id")) is int and str(run["workflow_id"]) == approval.workflow_id
+            and type(run.get("workflow_id")) is int and str(run["workflow_id"]) == workflow_id
             and run.get("head_sha") == launch["sha"] and run.get("head_branch") == "main"
             and run.get("path") in (CALLER, CALLER + MAIN_SUFFIX) and run.get("event") == "workflow_dispatch"
             and run.get("status") == "in_progress"
@@ -36,7 +39,7 @@ def _run_binding(run, approval, run_id):
             and type(run["repository"]["owner"]["id"]) is int
             and str(run["repository"]["owner"]["id"]) == launch["repository_owner_id"]
             and all(type(run.get(k)) is dict and type(run[k].get("id")) is int
-            and str(run[k]["id"]) == approval.broker_actor_id for k in ("actor", "triggering_actor")), ERROR)
+            and str(run[k]["id"]) == broker_actor_id for k in ("actor", "triggering_actor")), ERROR)
     referenced = run.get("referenced_workflows")
     require(type(referenced) is list and 0 < len(referenced) <= 32, ERROR)
     prefix = launch["repository"] + "/" + REUSABLE
@@ -55,18 +58,22 @@ def _run_binding(run, approval, run_id):
         run["actor"]["id"], run["triggering_actor"]["id"], prefix + "@" + REF, called["sha"])
 
 def _approved_reviews(reviews, config, approval):
+    return approved_reviews(reviews, protection=config["protection"], environment=config["launch"]["environment"],
+                            reviewer_ids=approval.approved_reviewer_user_ids, initiating_user_id=approval.initiating_user_id)
+
+def approved_reviews(reviews, *, protection, environment, reviewer_ids, initiating_user_id):
     relevant = []
     for review in reviews:
         require(type(review) is dict and type(review.get("environments")) is list, ERROR)
         for env in review["environments"]:
             require(type(env) is dict, ERROR)
-            if str(env.get("id")) == config["protection"]["environment_id"]:
-                require(type(env.get("id")) is int and env.get("name") == config["launch"]["environment"], ERROR)
+            if str(env.get("id")) == protection["environment_id"]:
+                require(type(env.get("id")) is int and env.get("name") == environment, ERROR)
                 relevant.append(review)
     require(relevant and all(x.get("state") == "approved" and type(x.get("user")) is dict
         and type(x["user"].get("id")) is int and x["user"].get("type") == "User"
-        and str(x["user"]["id"]) in approval.approved_reviewer_user_ids
-        and str(x["user"]["id"]) != approval.initiating_user_id for x in relevant), ERROR)
+        and str(x["user"]["id"]) in reviewer_ids
+        and str(x["user"]["id"]) != initiating_user_id for x in relevant), ERROR)
 
 class Controller:
     """Authenticated operator capabilities are constructor dependencies, never request fields.
