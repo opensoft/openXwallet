@@ -1,6 +1,6 @@
 # T012R isolated host launch and admission boundary
 
-Status: isolated implementation candidate complete; unpublished and unratified
+Status: reviewed isolated implementation candidate in #71; paired factory #1326; unratified
 Date: 2026-11-15
 Factory owners: add-protected-runtime-hosting-issuance and fix-hosted-protection-read-budget
 Sole executable list: feature017 tasks.md, T012R
@@ -106,7 +106,7 @@ five-second connect timeout. They now use the remainder of the original maximum
 ten-second RPC; connect stays at most five seconds. A real delayed TLS response
 checks that correction. No deadline or ledger allocation is renewed.
 
-## Qualification receipt
+## Initial qualification receipt (superseded by publication review)
 
 The corrected frozen Python source passes all seven ordered repository gates:
 contract pin, neutral pin, syntax, plain validator, strict validator, full pytest,
@@ -140,7 +140,7 @@ provider/VM qualification remain T012S/T012T and later gates. This does not
 commission T012S-V, setup, dispatch, live credential enrollment or deployment.
 
 
-## Audited fixture cleanup
+## Initial audited fixture cleanup
 
 The audit ran in py-bench's actual test PID namespace. All 114 recorded owned
 process generations, 396 hosted generations, 15,990 credential/helper generations
@@ -155,3 +155,57 @@ were removed only after audit; private XML, source hashes, audit and removal
 receipts are retained outside those roots. The shared owner checkout, pinned CLI,
 accepted worktrees and active benches remain in place. This is isolated test
 resource cleanup, with no production scheduler/takeover qualification inferred.
+
+## Corrected publication qualification
+
+The paired candidate fixes six local/hosted findings: queued-signal and cross-process
+resource controls, a complete fresh source/hold/context correlation after durable
+cleanup acknowledgement, a whole-frame nonblocking READY deadline, actual run/source
+admission reply binding, and ordinary pytest ambient groups/tool-cache selection.
+The launcher also pins the current resolved interpreter and fixed interpreter flags;
+configuration/worker files must be selected canonical existing files. No suppression
+or reduced runtime isolation is used to address static findings.
+
+Factory #1326 proposes two complete protected staging observations sharing the
+original ten-second Decision: correlation8/protection6/source8/control4, total26,
+private16 (controller uses15). Each correlation reader retains its four-read cap.
+A third observation, joined/upgraded/reset ledger or authority renewal refuses.
+Ordinary3/13/private12 and finalization6/18/28/private12 remain unchanged. The second
+correlation runs after durable acknowledgement and before opening host start; the
+request carries the tighter authority expiry and retains its after-TLS grant/lease
+check. This profile is proposed source, awaiting paired owner ratification.
+
+Corrected full pytest passes 2,200 cases; the separate network-none, read-only-source
+native container passes all 1,898 required cases, with zero skips/failures/errors.
+All 1,792 previous required identities/fingerprints/anchors remain; the 106 launch
+nodes produce H03/H07 anchor totals 94/40. Focused rechecks pass 140 cases and factory
+budget/correlation checks pass 538. All seven ordered gates pass. The final pinned
+OpenSpec gate initially refused an inherited /root npm cache; its unchanged source
+and verified artifact pass with a task-local cache. The earlier result is retained.
+
+Nine local Codex specialists and the coordinator found no remaining actionable
+source issue. Code review covers wallet17cce0b0f9b2 and factory56a0e0510834; subsequent
+documentation commits are checked for identical tested runtime/test/workflow inputs.
+No hosted Codex connector review is claimed. Fresh hosted checks are recorded on
+the paired PRs independently of this isolated qualification.
+
+Current private receipts are retained in t012r-publication-20261115: resumed-full.xml,
+resumed-native.xml, resumed-ordered-gates.json, qualified-source-inputs.json,
+resumed-focused.xml, factory-resumed.xml and local-codex-review-current.json.
+The original t012r-isolated receipts describe only the earlier source.
+
+Only ordinary source-test pytest YAML changes to clear supplementary groups and
+select the immutable system interpreter for inert stdlib-only fixture workers.
+Protected workflow YAML, neutral APIs/pins, refusing defaults and operational
+authority remain unchanged. T012S-V, production cleanup ownership/takeover, actual
+provider/host enrollment, setup/dispatch and live qualification remain separate.
+
+Publication cleanup was audited in py-bench's test PID namespace: 38 recorded
+process generations, 132 hosted generations, 9,022 credential/helper generations
+and three crash-window generations have no matching live instance. No attributed
+helper remains. The audit verifies 16 preservation records, eight consumed journals
+and 286 retained staging summaries. The exact task fixture roots are removed after
+audit; XML/source/review/audit receipts remain outside those roots. The disposable
+native container is absent; accepted checkouts and active benches remain intact.
+Both protected workflow histories (417795073/417795071) remain zero. This is
+isolated fixture cleanup, with no production cleanup/takeover claim.

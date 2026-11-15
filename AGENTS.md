@@ -208,7 +208,14 @@ ordered landing then T012R only in isolation. Normal merges 54f720b6df81 and
 records the bounded source plan; tasks.md remains the sole executable list.
 T012S-V, setup/dispatch and live acceptance remain unauthorized.
 
-T012R's isolated candidate now passes 69 new launch cases, 2,163 full tests and
-1,861 mandatory native nodes; its as-built boundary and limits are recorded in
+T012R's reviewed isolated candidate now passes 106 new launch cases, 2,200 full tests and
+1,898 mandatory native nodes; its as-built boundary and limits are recorded in
 hosting-launch-implementation.md. No source ratification or T012S-V commission is
 inferred. Default bindings remain refusing; setup/dispatch remain unauthorized.
+
+The reviewed correction is paired with proposed factory #1326 (fix-hosted-staging-refresh-budget).
+Two complete protected-stage observations share one original Decision and bounded
+26-total/private16 allocation; ordinary and finalization allocations are unchanged.
+Adapter #71 changes the ordinary pytest privilege bootstrap only; protected workflow
+YAML, default refusal, neutral APIs and pins remain unchanged. Local review is complete;
+source ratification, landing and operational authority remain separate gates.

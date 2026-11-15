@@ -2249,3 +2249,48 @@ dispatch journals, then removed exactly 25 task fixture roots. Retained native
 XML outside those roots; all three native containers are absent. Details and
 counts are in hosting-launch-implementation.md, cleanup-audit-final.json and
 fixture-removal-final.json. This does not assert T012S production cleanup.
+
+## 2026-11-15: Corrected T012R publication qualification
+
+The preceding isolated receipt describes the initial candidate only. Adapter #71
+and proposed factory #1326 incorporate the review corrections described in
+hosting-staging-refresh-amendment.md and hosting-launch-implementation.md. Corrected
+source passes 2,200 full tests, all 1,898 mandatory native cases, 140 focused rechecks
+and 538 factory checks; zero failures/errors/skips. All1,792 previous required node
+identities/fingerprints/anchors remain; 106 new nodes yield H03/H07 totals94/40.
+All seven ordered repository gates pass; the final OpenSpec invocation required a
+task-local npm cache after an inherited /root cache refused access. The original
+environment failure remains in the private ordered receipt.
+
+All nine local Codex specialists plus coordinator completed corrected-source review
+with no unresolved finding. Subsequent documentation preserves the 143 tested
+Python/workflow input hashes. Local review is distinct from hosted checks; no
+hosted connector review is claimed. Factory #1326's optional merge-master-approval
+bootstrap fails before candidate evaluation because floating Python3.x selects3.15
+and locked PyYAML6.0.3 has no compatible wheel. Effective required checks exclude
+that job; no rule, check or workflow was bypassed or changed to hide it.
+
+The proposed protected-stage26/private16 profile retains original clocks and
+ordinary/finalization allocations. Protected workflow YAML/pins/default refusal are
+unchanged; only ordinary pytest bootstrap changes. No ratification, landing,
+T012S-V, setup/dispatch or live qualification is inferred.
+
+Private corrected qualification receipts (SHA-256):
+
+- `resumed-full.xml`: `504c0df62ff58cbfe72f134cbe08c26ca9838b3845c495b82c3bf479f74a1cdc`
+- `resumed-native.xml`: `f7bdc86e265ed2fd8a7d3de167134d171979313657c3b06503b3e8e9cf10887e`
+- `resumed-ordered-gates.json`: `02e62d022a14f979c5b0b26a15c419381a568a4e6c8b231381c39cffdb55d552`
+- `qualified-source-inputs.json`: `74d6ab81f2faae0e30ab9dd619c234c3cdb90d1d4a104f3aab4dbd1b1f956c0e`
+- `resumed-focused.xml`: `02061781a6daf46d9affc10add3f99442df3cc75334794e7b91cf09ed20cc80a`
+- `factory-resumed.xml`: `bed5e5e79036ee646e9a2e57d3bec638219330be8efad8e6aa657be3e498208c`
+- `local-codex-review-current.json`: `87b931735cc4f6b936c724118d74d6f4726a79add75864c382026872762e780c`
+
+Publication cleanup was audited in py-bench's test PID namespace: 38 recorded
+process generations, 132 hosted generations, 9,022 credential/helper generations
+and three crash-window generations have no matching live instance. No attributed
+helper remains. The audit verifies 16 preservation records, eight consumed journals
+and 286 retained staging summaries. The exact task fixture roots are removed after
+audit; XML/source/review/audit receipts remain outside those roots. The disposable
+native container is absent; accepted checkouts and active benches remain intact.
+Both protected workflow histories (417795073/417795071) remain zero. This is
+isolated fixture cleanup, with no production cleanup/takeover claim.

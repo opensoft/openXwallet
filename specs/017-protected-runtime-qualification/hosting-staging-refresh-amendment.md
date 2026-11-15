@@ -1,13 +1,13 @@
 # T012R protected staging review correction
 
-Status: proposed source amendment; implementation/review in progress
+Status: proposed source amendment; isolated implementation and local review complete
 Date: 2026-11-15
 Factory owner: fix-hosted-staging-refresh-budget
 Sole executable list: feature017 tasks.md, bounded T012R
 
 The owner commissioned publication, hosted CI, local Codex review and finding
 resolution before presentation for ratification. Adapter #71 at 14adfef712087
-is the reviewed source candidate. This authorizes isolated candidate corrections,
+is the initial reviewed source candidate, superseded by the corrected #71 head. This authorizes isolated candidate corrections,
 not source ratification, landing, setup/dispatch or T012S-V.
 
 ## Review findings and bounded plan
