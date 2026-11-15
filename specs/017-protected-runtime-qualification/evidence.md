@@ -1871,3 +1871,179 @@ Revised-source private qualification receipt hashes:
 - `assertion-ordered-gates.json`: `d47b60ff2cff7599a113cca3b5707e1ed283a05bcdd2eb4c0e536bdb1a1757d3`
 - `assertion-qualified-source-inputs.json`: `cf8e09446b8dd3bf5b2ccc8175ab02834554a4b52a23618b7e30e8d46c462906`
 - `cleanup-audit-assertion.json`: `f4a89e48e6a4cacfd15dee72bc76a7e85e2fc7692b6b19ea1cdff96aa1fc9615`
+
+## 2026-11-15: #68 source acceptance and isolated T012P candidate
+
+Brett source-ratified #68 at 38b029b02a9b and commissioned only T012P
+implementation/testing in isolation. [Actual owner record](https://github.com/opensoft/openXwallet/pull/68#issuecomment-6889412055).
+All eight runnable ratified-head checks pass and the nine-expert local source
+review has no unresolved finding. #68 merged normally as
+`4bae2b22f74e19a43d8413055142447319a41202` with equal accepted/merged tree
+`3294fa4502130c4e809316e9432fbc0e1febcd2b`. No administrative bypass or rule change was used.
+The accepted T012O worktree is preserved; T012P uses its own feature017 worktree.
+
+See [bounded T012P realization](hosting-issuance-implementation.md). The source
+contains exact-version RSA digest signing and verified App JWTs, fixed GitHub
+App/installation/token/repository/retirement operations, independently current
+approval, explicit durable one-attempt nonce state, and a non-renewing private
+credential-use seam. Returned one-hour provider expiry is distinct from the
+earlier local use deadline; a stolen provider bearer is not narrowed by a case.
+
+Enrollment verifies actual mTLS bootstrap identity, CSR proof, independently
+approved public fingerprint and complete host/source/UID/role/case/plan/issuer
+selection before nonce consumption. Issued short client certificates authenticate
+private role delivery. The App policy pins the complete enrollment digest, so
+a same-role certificate from another scope cannot be combined with it. Selected
+configuration cannot mutate under an old approval. An actual owning software
+Ed25519 proof is created and verified through unchanged registry/custody APIs
+using an enrolled certificate; no native Key Vault Ed25519/HSM assertion is made.
+
+Kernel per-message UID/PID/start credentials prevent an inherited descriptor from
+impersonating its creator. Independent positive/negative controls cover metadata
+resolver, key/sign, control and policy capabilities; exposure mutations and outage
+checks prevent false denial qualification. An extra disposable root-only fixture
+uses distinct UIDs and real file/connection denials, with deliberate exposure
+mutations detected. It is source/fixture evidence, not deployed host qualification.
+
+The final source passes the ordered pin, YAML, plain/strict adapter and pinned
+OpenSpec gates, **1,852 full-suite tests with zero failures/errors/skips**, and
+**1,550 mandatory native cases with zero missing/deselected/skipped/non-passing
+nodes**. There are 86 intentional new nodes across three modules. All previous
+module counts, fingerprints and H01/H02/H04 plus other anchors remain unchanged;
+new H06/H07 groups contain 32/18 substantive anchored nodes. The extra kernel
+fixture passes 11 checks. No live provider credentials or live token requests, protected dispatch
+or actual hosting setup are used by this qualification.
+
+Test-first failures include the absent protocol/nonce/enrollment/kernel ports and
+a real same-role/different-enrollment composition gap; each has a passing positive
+and refusal after implementation. Self-review also closed expired/changed
+authority after token mint: known returned tokens retain private cleanup handles;
+lost responses stay consumed/indeterminate, never retried or counted as retired.
+Revocation ambiguity permits read-only reconciliation of the same capability,
+without a second DELETE. Earlier 82-node/1,546-case and 85-node/1,549-case checkpoints are not final
+qualification of the later source. A final provider-outage regression first
+returned a generic refusal (403); the private delivery route now returns safe
+unavailable (503). The red and green witnesses are retained, and all gates above
+were rerun after that correction. Outage supplies no authenticated denial.
+
+Cleanup audits cover 2,617 recorded fixture generations,
+48 retained/shared preservation records and 24 consumed
+journals. No matching live generation or attributable helper remains. All task
+disposable containers are absent; source, benches, unrelated checkouts and pins
+are preserved. Source/fixture results supply no protected-machine report, actual
+provider/VM acceptance, human approval or domain acceptance.
+
+T012P is an isolated implementation candidate, not owner-accepted source. No new
+PR, hosted review or runtime activation is commissioned here. T012Q-V and
+T001/T013/T014/T015 remain unchecked/uncommissioned. Setup/dispatch remain
+unauthorized; feedback stays deferred and neither blocked write is replayed.
+
+Private qualification receipt SHA-256 (task-only artifacts):
+- `pr68-landing.json`: `26f7a85e64d8012b76fb7010285cf7742de5b6d5c1675949c15fb7b0b549a8e9`
+- `finish-full.xml`: `b8b2daabaa81f5358ba740f805157b527a0d92a6e4d24cd2de269663fe072b31`
+- `native-finish-qualified.log`: `0cfa290c9898b02c7ba85af6c4b586b5d954260cc0531513eeac05976365e198`
+- `finish-ordered-gates.json`: `d47b60ff2cff7599a113cca3b5707e1ed283a05bcdd2eb4c0e536bdb1a1757d3`
+- `finish-matrix-additions.json`: `02a3e46a6188ec5082a8b815552c8ed84254fdd073b50420f6eeaa4e48e792bb`
+- `finish-source-inputs.json`: `7273702d84c9f6a07ae14cb8f8861d83ff0dd4075e0b63d3f5c15801f09ee4e8`
+- `error-path-red.xml`: `7d40115bd6249c94d9f096c62e6ee016e8563511c9a24379bf7cde4fbfca2957`
+- `error-path-green.xml`: `4b125dd866238008375745ab8a42a5fc0c143402bd39995484a0aa6da05089ab`
+- `kernel-qualification.json`: `18fe1e5cb09cb55bc4f2864761b3107709974ca60519b727221f55ac003ff34c`
+- `cleanup-audit-final.json`: `131f7bf9085c02af8fc9f3dfd33aad38862fa361d3ce193f06fd916eee49a670`
+- `cleanup-audit-finish.json`: `e5a57414a0a03883fe2285a43e8cb1bec04599968f6e1df7955fce0ec106a7b7`
+- `cleanup-summary-finish.json`: `870adb436abe9b634cc2c8dd65f120b699356195a8b907377df66d49ab1e7a96`
+- `fixture-removal-finish.json`: `a884af52fe549ab91fa3f435376eeab3da561083192569d98bba7d6dbfc597cd`
+- `protected-workflow-counts-finish.json`: `572c60bb849fb4fca01d47690bd07d6fd5e23246a60a3af72d5f2c72472e45aa`
+
+Final cleanup removes all 20 exact task fixture roots only after generation and
+preservation audits; the distinct-UID fixture required its fixture administrator
+for removal, as expected from its measured file boundary. All task disposable
+containers are absent. Both protected workflow IDs 417795073/417795071 retain
+zero runs. This does not retire any live provider resource or authorize setup.
+
+## 2026-11-15: T012P publication review and corrected-source qualification
+
+Brett authorized candidate publication, hosted CI and local Codex review, followed
+by presentation for source ratification. [PR #69](https://github.com/opensoft/openXwallet/pull/69)
+initially published b5a36b77faef. The earlier no-publication commission above
+records the preceding isolated task; this instruction supplies publication only,
+not source acceptance, T012Q-V commission or operational permission.
+
+The local nine-expert panel and coordinator identified and closed a P1 shared-
+request-endpoint credential reply leak and a P2 cancellation reply-descriptor leak.
+See hosting-issuance-implementation.md for the private reply-capability correction.
+Three cancellation witnesses first failed their retained-traceback FD counts; all
+now pass with immediate descriptor closure and EOF. Seven additional private-
+reply/malformed-descriptor cases and those three cancellation nodes retain all
+previous node identities. All 13 frozen source/test hashes reconcile with the
+reviewed correction. No actionable local source finding remains.
+
+Initial hosted checks passed except Sonar, which reported two private-stdin URL
+taint flows, complexity/literal warnings and test exception/assertion clarity.
+Source corrections preserve every guard and separate trusted nonsecret routing
+from anonymous-pipe credential payloads. No issue disposition, suppression, gate
+threshold, baseline or repository rule is changed. Fresh hosted analysis of the
+corrected published head remains separate from these local receipts.
+
+Final corrected-source ordered pin, syntax, plain/strict adapter and pinned
+OpenSpec gates pass. All 1,862 full-suite tests and 1,560 mandatory native cases
+pass with zero failures/errors/skips and no missing/deselected/non-passing matrix
+cases. The 96 added cases comprise 49 issuance, 26 enrollment and 21 credential
+nodes; H06/H07 anchor 32/28 nodes. The extra UID/kernel fixture passes 11 checks
+again on this source. Prior 93-node in-progress runs were deliberately interrupted
+after discovering the cancellation defect; they are diagnostics, not qualification
+of this final source. Earlier qualified checkpoints remain dated evidence only.
+
+Source ratification remains pending. Setup/dispatch stay unauthorized, feedback
+stays deferred, and neither blocked write is replayed. No live provider token,
+protected run or service setup is performed.
+
+Corrected-source private receipt SHA-256:
+- `final-full.xml`: `c3217ee5d6e92ca356524ca0e1430abfd710fb22e8c67acabaf964a81b974296`
+- `native-final-qualified.log`: `c1f3130b0ccb49df10a7418ad9e5e46ebc8960253637506a6972f394a57cecaa`
+- `final-ordered-gates.json`: `d47b60ff2cff7599a113cca3b5707e1ed283a05bcdd2eb4c0e536bdb1a1757d3`
+- `final-matrix-change.json`: `d8baaf8917beadb0c3f1c668bf9d17bf1c9e3b0a4909ec06785254ee5924c10e`
+- `final-source-inputs.json`: `910b92f2545270771a63a666a918a015e781ecf27ed0ed53ff850f797d475828`
+- `cancel-red.xml`: `056bce4e51608206ab7a9ea45ddf924b9872600a2eabe7ea2d43356d57ff6353`
+- `cancel-green.xml`: `08343319c612f466e655c5f3a1fb8b17a246ab5ba77cf8e3686ad3425c341287`
+- `kernel-qualification.json`: `a94c5b9e5695af0f0769a45fe00559a11f89a72c0d598ffd4b4a1644d6fdedea`
+- `local-codex-review.json`: `bd4fc3393a58cf3ffe7803ef852fddeae78bd9c10692854d0304081f3ae823b8`
+- `qa-final-review.json`: `c26088a3544766e2ea9b293d0ea4cae10280f79e0c2652d86f2e322c7054f47f`
+
+Final publication cleanup independently audits 1002 recorded fixture generations, 24 retained/shared preservation records and 12 consumed journals. No matching live generation or attributable helper remains. The eight reviewed/diagnostic fixture roots and two UID/kernel fixture roots are removed after audit; reviewer-owned roots were removed under their own recorded audits. No live provider retirement is inferred.
+
+## 2026-11-15: closed provider-route requalification
+
+At published 60d44ade20bc, all runnable hosted checks except Sonar passed; Sonar
+automatically cleared 38 initial findings and retained one command-line URL flow.
+The private helper now independently reconstructs closed literal GitHub routes,
+exact-version public Key Vault POST signing and explicitly selected bounded mTLS
+loopback fixture routes. Unknown production destinations cannot fall through to
+fixture mode. No manual finding disposition or suppression is used.
+
+The nine-expert local panel and coordinator reconciled all 13 new source/test
+hashes with no actionable source finding. All 117 focused T012P cases pass. Fresh
+ordered pin/syntax/plain-strict adapter/pinned OpenSpec gates, 1,883 full-suite tests
+and 1,581 mandatory native cases pass with zero failures/errors/skips and no missing,
+deselected or non-passing mandatory case. The 21 new route controls extend H06 to
+53 anchors; H07 retains 28. All earlier nodes/fingerprints/anchors remain. The
+previous 11-check supplemental UID/kernel qualification retains byte-identical
+credential/helper/fixture inputs; no unrelated kernel check was repeated. Earlier
+1,862/1,560 receipts remain valid only for their dated source checkpoint.
+
+Hosted checks of the corrected published head and owner source ratification remain
+separate. Setup/dispatch stay unauthorized; feedback remains deferred and neither
+blocked write is replayed. T012Q-V and all live provider/host gates remain separate.
+
+Route qualification private receipt SHA-256:
+- `route-full.xml`: `0dd56aa581f8c5963340d5cdd2d45d7c42975e502727cdbd628f82851782f599`
+- `native-route-qualified.log`: `65d478c224a19eff847448dcf243eeeae3c73b2d0d25090a53410e0d74577de1`
+- `route-ordered-gates.json`: `d47b60ff2cff7599a113cca3b5707e1ed283a05bcdd2eb4c0e536bdb1a1757d3`
+- `route-source-inputs.json`: `02b808cd44441ef1a0b8f2c47ad4a720e437edaaa9daa1547a3ce24017f98176`
+- `route-matrix-change.json`: `259da302a31eae61752c6a509e892d21e53d596aed841c732af1848d56567607`
+- `routes-focused.xml`: `c77f0edec897c5c8c07e1f374b3957ad3ccd4c2501796d7540d1aa03ebc3f022`
+- `local-codex-review-routes.json`: `cf3bde22c65f398dff796085176a9975d2b53dc2778e0ff31af1c6f906c40c66`
+- `qa-route-final-review.json`: `d97de8868c140a43509ff765c176ee87ba77e7eac81416ef4e8d05027a531ec5`
+- `sonar-issues-corrected.json`: `e90627aff72d08c8fc028f0c44c659e974326e65c223560ebaa7ae86a440bd62`
+- `sonar-gate-corrected.json`: `711bff82f9a73c0fb9c1cbf5de00c3bb08d95b2c7e0abd31827f9712f3782e17`
+
+Route requalification cleanup audits 757 additional recorded fixture generations, 16 preservation records and 8 consumed journals. No matching live generation or attributable helper remains. All three exact route fixture roots are removed after audit and the disposable native namespace is absent. Earlier UID/kernel fixture state remains removed; no live provider retirement or operational authority is inferred.

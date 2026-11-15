@@ -102,6 +102,13 @@ ownership, validation, versioning, and release constraints.
   The subsequent instruction authorizes T012O candidate publication, hosted CI and
   local Codex review after factory main Sonar repair; owner source ratification
   and operational grants remain separate.
+  Brett subsequently source-ratified #68 at 38b029b02a9b; it merged normally as
+  4bae2b22f74e19a43d8413055142447319a41202 with the accepted tree. Only T012P
+  enrollment/issuance/host-credential source is commissioned in isolation.
+  T012Q-V, setup/dispatch and live qualification remain uncommissioned.
+  The subsequent instruction commissions T012P PR publication, hosted CI and local
+  Codex expert review, followed by presentation for owner source ratification.
+  PR #69 remains a source candidate; no operational grant is inferred.
 - Accepted baseline: 016-factory-workload-binding; source decision:
   specs/016-factory-workload-binding/source-acceptance.md and plan.md.
 - Existing adapter governing baseline: THIS repository's
