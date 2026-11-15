@@ -338,3 +338,16 @@ is not source ratification or implementation authority. No operational factory,
 listener, service unit, provider write, credential, setup or dispatch follows from
 this plan. Use only document/pinned-validator checks for preparation; later source
 qualification uses the reviewed [acceptance matrix](hosting-issuance-acceptance.md).
+
+## T012S source preparation only
+
+The staging lease and immutable final cleanup takeover subplan is
+[hosting-lifecycle-plan.md](hosting-lifecycle-plan.md);
+[hosting-lifecycle-acceptance.md](hosting-lifecycle-acceptance.md) defines H05/H11
+positives/faults. These are future isolated source tests, not deployment or dispatch
+instructions. Do not execute T012S tasks until the owner commissions implementation.
+Use the existing isolated gate procedure after implementation, measure new node
+identities before updating the matrix, and audit task-local process/credential/file
+generations before removing exact fixture roots. Every operational stage remains
+NOT GRANTED; live cleanup/automatic infrastructure expiry needs external-watchdog
+and actual conditional-retirement qualification.

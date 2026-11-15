@@ -14,6 +14,7 @@ ownership, validation, versioning, and release constraints.
 
 - Active feature: 017-protected-runtime-qualification; plan:
   specs/017-protected-runtime-qualification/plan.md.
+  Current bounded T012S subplan: specs/017-protected-runtime-qualification/hosting-lifecycle-plan.md.
 - Ratified factory composition: opensoft/openXfactory,
   openspec/changes/prepare-protected-runtime-qualification/.
   Feature 017 tasks.md is the sole implementation list. Brett Heap ratified
@@ -219,3 +220,16 @@ Two complete protected-stage observations share one original Decision and bounde
 Adapter #71 changes the ordinary pytest privilege bootstrap only; protected workflow
 YAML, default refusal, neutral APIs and pins remain unchanged. Local review is complete;
 source ratification, landing and operational authority remain separate gates.
+
+## Current T012S preparation (supersedes prior candidate status)
+
+Brett source-ratified factory #1326 dc159da61860 with adapter #71 74b4af51322b,
+then directed ordered landing and T012S preparation only. They merged in order
+as 0503c7bf36ea and 7042b295bc72; accepted packet blobs and adapter tree are verified.
+Feature017 hosting-lifecycle-plan.md and hosting-lifecycle-acceptance.md prepare
+H05/H11 staging lease, immutable same-generation final takeover and independent
+scheduler/janitor/audit. tasks.md remains the sole executable list. T012S and
+T012S01-T012S07 stay unchecked/uncommissioned for implementation. T012T-V,
+T001/T013-T015, setup/dispatch and live provider/host acceptance remain separate.
+No lifecycle initialization, scheduler activation or service restart is performed
+by this preparation. Feedback deferred; neither blocked/denied write replayed.

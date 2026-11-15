@@ -2294,3 +2294,70 @@ audit; XML/source/review/audit receipts remain outside those roots. The disposab
 native container is absent; accepted checkouts and active benches remain intact.
 Both protected workflow histories (417795073/417795071) remain zero. This is
 isolated fixture cleanup, with no production cleanup/takeover claim.
+
+## 2026-11-15: T012R paired source acceptance and ordered landing
+
+Brett Heap source-ratified factory #1326 at dc159da61860 with adapter #71 at
+74b4af51322b, then directed ordered landing when green and T012S preparation only.
+Owner source records: [factory](https://github.com/opensoft/openXfactory/pull/1326#issuecomment-6901804063)
+and [adapter](https://github.com/opensoft/openXwallet/pull/71#issuecomment-6901804798).
+All effective required exact-head checks and both Sonar gates pass; local nine-role
+Codex/coordinator review has no unresolved actionable finding or review thread.
+
+Factory merged first as 0503c7bf36ea47c5c2b492bdf24ca11eed87347d at 21:42:25Z.
+Actor and PR author are both brettheap, so the standing self-authored-PR exception
+was used for missing human approval only. Effective required checks passed. The
+optional merge-master-approval Python3.15/PyYAML bootstrap failure stays visible;
+no rule/check/workflow was changed to conceal it. The merge tree equals the
+predicted integration with main 5b636c767fcc; every accepted changed packet/ledger
+blob is byte-identical. Unrelated integrated main changes are not attributed to
+the ratified proposal.
+
+Adapter merged normally as 7042b295bc7229748e5b415e5f9ddb3f96a2467e at 21:43:07Z,
+without administrator override. Its whole tree equals the ratified head, including
+all 143 tested Python/workflow inputs. Accepted worktrees, owner checkout, pinned
+CLI and active benches are preserved. The prior R cleanup audit remains intact.
+
+Factory exact-merge main CI started in run 43765166319 and separate source jobs;
+completion is an independent gate and is not asserted by these merge receipts.
+The adapter has no new exact-merge run on the initial readback; PR CI is not
+relabelled as post-merge CI. T012S preparation stays source-only while this is
+verified. See PR CI evidence [factory](https://github.com/opensoft/openXfactory/pull/1326#issuecomment-6901736498)
+and [adapter](https://github.com/opensoft/openXwallet/pull/71#issuecomment-6901483414).
+
+## 2026-11-15: Bounded T012S preparation
+
+The separate 017-hosted-lifecycle-prep worktree starts at the accepted adapter
+merge. hosting-lifecycle-plan.md audits the existing stage store/controller/host
+and finalization/RunLifecycle/RunJanitor/replay interfaces, then defines a retained
+registration/takeover/action journal, independent scheduler/janitor/audit and
+actual same-generation stage-to-final responsibility without a gap or renewal.
+hosting-lifecycle-acceptance.md maps H05/H11 to twelve fault/control families.
+tasks.md alone contains T012S/T012S01-T012S07, all unchecked/uncommissioned for
+implementation; no second factory task list or neutral contract is created.
+
+This preparation runs no T012S test, lifecycle initialization, scheduler, provider
+operation, protected dispatch or service restart. No new case count is guessed.
+The existing 1,898 mandatory identities/fingerprints/anchors and accepted budgets
+are preserved. External-watchdog/conditional-infrastructure retirement, T012T-V,
+T001/T013-T015 and every operational authority remain separate. Feedback deferred;
+neither blocked/denied write replayed.
+
+Private landing/preparation receipts are retained in t012s-preparation-20261115:
+ordered-landing-verification.json, source-ratification records, exact-head CI/rules
+readbacks, merge receipts and scoped source-document verification. No runtime
+qualification of T012S is inferred.
+
+Preparation verification passes contract/neutral pins, syntax, plain/strict adapter
+validation and pinned default OpenSpec --all strict validation. Scoped review is
+in hosting-lifecycle-analysis.md. All task IDs remain unique; T012S plus its seven
+child tasks and T001/T012T-V/T013-T015 remain unchecked. All 143 tested runtime/test/
+workflow inputs are unchanged from accepted R; no new runtime tests were rerun or
+claimed for this document-only preparation. Temporary document cache/scratch is
+removed after verification; landing, source and review receipts remain retained.
+
+Preparation receipt SHA-256:
+
+- `ordered-landing-verification.json`: `8d22faccc88f454e1ee8b30d7023a7d93052aa77c226ed7029adf7bc37190c7f`
+- `preparation-document-gates.json`: `31d8f758c8149036948b9f2fe1ae1702c767e9f5a8b15a3310930e19ddce982a`
+- `preparation-scope-proof.json`: `c777707855f87109ab6b87382fdbec1688435340a4faee4cd6ee570344daff7a`

@@ -238,3 +238,14 @@ resolve that dependency without predicting IDs/hashes or weakening full admissio
 Current v1/default, neutral pins/APIs, runtime/tests/workflows remain unchanged.
 T001/T013/T014/T015 and every setup/dispatch stage remain ungranted; feedback is
 deferred and neither historical blocked write is replayed.
+
+## T012S preparation handoff (2026-11-15)
+
+Factory #1326 and adapter #71 are source accepted and landed in order. Current
+preparation resolves the next H05/H11 source continuation through
+[hosting-lifecycle-plan.md](hosting-lifecycle-plan.md) and its
+[acceptance design](hosting-lifecycle-acceptance.md). The scope remains immutable
+final-plan takeover without a cleanup gap, independent durable janitor/scheduler/
+audit and exact-generation preservation under the accepted hosting model. No new
+requirement changes neutral APIs/pins, authority limits or activation. T012S remains
+unimplemented/uncommissioned; T013 and every operational authority box stay open.

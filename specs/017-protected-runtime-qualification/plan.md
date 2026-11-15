@@ -2,7 +2,7 @@
 
 **Branch**: `017-protected-runtime-qualification` | **Date**: 2026-11-12
 **Spec**: [spec.md](spec.md)
-**State**: T002–T012L source accepted; T012M handoff complete; T013 preparation refreshed; operation unauthorized
+**State**: T012R source accepted through #1326/#71; T012S preparation only; implementation and operations unauthorized
 
 Bootstrap amendment `fix-protected-runtime-dispatch-bootstrap` was source
 accepted and landed in factory #1311 / adapter #60. The static dispatch selection
@@ -295,3 +295,13 @@ resolve that dependency without predicting IDs/hashes or weakening full admissio
 Current v1/default, neutral pins/APIs, runtime/tests/workflows remain unchanged.
 T001/T013/T014/T015 and every setup/dispatch stage remain ungranted; feedback is
 deferred and neither historical blocked write is replayed.
+
+## Current bounded T012S preparation
+
+Source-ratified factory #1326 / adapter #71 landed in order. The next bounded
+subplan is [staging lease/final cleanup takeover](hosting-lifecycle-plan.md), with
+[H05/H11 fault design](hosting-lifecycle-acceptance.md). Existing hosting model and
+internal interfaces remain the governing basis; no neutral/public contract changes.
+The only implementation list is tasks.md, T012S/T012S01-T012S07, all unchecked.
+Preparation is complete; isolated implementation and all operations need separate
+commissioning. No new T012S execution result is claimed.
