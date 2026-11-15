@@ -1843,3 +1843,31 @@ Readback receipt hashes (private artifacts):
 - `factory-ratified-v2-preservation.json`: `3f9cb4789dd89c5e12fe7b1b17ba211e1a3e4c1aee4daf88dd563bfb4a6b879a`
 - `local-codex-review.json`: `ac8a22e1abdffcf1c9b66c06233fdf22b5585884e6283cbcdcd94d6334d63a96`
 - `fixture-removal-final.json`: `d69c5c179e2c352acc787f9171b450ac536cb280f6f48ca20b33d93b166c4b6e`
+
+## 2026-11-14: hosted analysis assertion reconciliation
+
+The first PR #68 analysis at 4dc5dcaaed168ac6844f3b1df97212dc7e25091e passes
+the Sonar quality gate and does not reproduce the local preview's Decision
+exact-type false positive. Its nine new S9073 test readability findings are
+repaired by splitting composite assertions. Every condition remains asserted;
+production source, fixture behavior, all 125 node identities, matrix counts
+and fingerprints are unchanged. The complete affected module passes 125 tests
+with zero failures/errors/skips after this test-only repair. The prior full/native
+receipts remain bound to their recorded checkpoint; fresh hosted full-suite and
+mandatory matrix evidence must qualify the updated published head. This adds
+no suppression, issue disposition, source acceptance or operational authority.
+
+The revised assertion source also passes the full ordered local gates: 1,766
+full-suite tests and 1,464 mandatory native cases, zero failures/errors/skips
+and zero missing/deselected/non-passing matrix nodes. The eight other qualified
+inputs are byte-identical. Cleanup audits account for 212 additional fixture
+generations, 16 preservation records and 8 consumed journals, with no
+matching live generation or attributable helper. The disposable native container
+is absent. This qualification supersedes no failed result and grants no operation.
+
+Revised-source private qualification receipt hashes:
+- `assertion-full.xml`: `6804067f922a7b8f96de8d76e7edd15e43388a4e1b4456ed34d1759eb9931a69`
+- `native-assertion-qualified.log`: `a4eb6142964daaba041196697804c7fce0bf5a279276d1acbf869f81d6142d2d`
+- `assertion-ordered-gates.json`: `d47b60ff2cff7599a113cca3b5707e1ed283a05bcdd2eb4c0e536bdb1a1757d3`
+- `assertion-qualified-source-inputs.json`: `cf8e09446b8dd3bf5b2ccc8175ab02834554a4b52a23618b7e30e8d46c462906`
+- `cleanup-audit-assertion.json`: `f4a89e48e6a4cacfd15dee72bc76a7e85e2fc7692b6b19ea1cdff96aa1fc9615`

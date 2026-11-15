@@ -225,8 +225,10 @@ def test_signed_preflight_is_plan_only_and_has_no_effectful_ports(v):
     result = preflight(v.context, v.pre_token, bindings=v.preflight)
     assert result.plan_digest == v.selected.digest
     assert result.environment == v.plan["configuration_template"]["launch"]["environment"]
-    assert not hasattr(result, "config_digest") and not hasattr(result, "operation_grant_ref")
-    assert v.process is None and v.h.calls == 0
+    assert not hasattr(result, "config_digest")
+    assert not hasattr(result, "operation_grant_ref")
+    assert v.process is None
+    assert v.h.calls == 0
     assert {role for role, _, _ in v.calls} == {"facts", "environment"}
 
 
@@ -236,7 +238,8 @@ def test_each_independent_current_fact_is_required_before_plan_readiness(v, memb
     value = v.h.now + 1 if member == "observed_at" else v.h.now if member == "expires_at" else {} if member == "launch" else "ref:changed"
     v.facts = replace(v.facts, **{member: value})
     with pytest.raises(BindingError): preflight(v.context, v.pre_token, bindings=v.preflight)
-    assert v.process is None and v.h.calls == 0
+    assert v.process is None
+    assert v.h.calls == 0
 
 
 @pytest.mark.parametrize("change", ["wrong-phase", "wrong-audience", "wrong-key", "environment", "missing", "bypass", "branch", "source", "rerun"])
@@ -257,7 +260,8 @@ def test_preflight_requires_valid_purpose_identity_and_independent_existing_prot
     elif change == "source": context = replace(context, source_commit="c" * 40)
     else: context = replace(context, run_attempt="2")
     with pytest.raises(BindingError): preflight(context, token, bindings=bindings)
-    assert v.process is None and v.h.calls == 0
+    assert v.process is None
+    assert v.h.calls == 0
 
 
 def test_actual_generation_finalizes_complete_bytes_with_independent_recomputation(v):
@@ -330,7 +334,8 @@ def test_every_blocking_phase_retains_parent_deadline_and_redacts_failures(v, wh
         else: raise OSError("private-error-canary")
     v.hooks[where] = alter
     with pytest.raises(BindingError, match="^" + ERROR + "$") as caught: v.finalize()
-    assert "private-error-canary" not in str(caught.value) and v.h.calls == 0
+    assert "private-error-canary" not in str(caught.value)
+    assert v.h.calls == 0
 
 
 def test_v2_reaches_unchanged_full_admission_and_real_owning_proof(v):
@@ -358,7 +363,8 @@ def test_v2_reaches_unchanged_full_admission_and_real_owning_proof(v):
     bridge = c.make(create_proof=create_proof)
     proof = bridge.sign(h.challenge.id, h.request, h.token, h.observation)
     assert verify_proof(proof["proof"], expected_digest=h.challenge.digest, binding=h.binding, now=h.now).subject_ref == h.binding.subject_ref
-    assert proof["human_approval"] is False and h.calls == 1
+    assert proof["human_approval"] is False
+    assert h.calls == 1
 
 
 def test_finalization_does_not_replace_full_config_grant_or_cleanup_admission(v):
@@ -372,7 +378,8 @@ def test_source_hold_drift_during_environment_read_refuses_before_output(v):
         v.facts = replace(v.facts, state="revoked")
     v.hooks["environment"] = revoke
     with pytest.raises(BindingError): preflight(v.context, v.pre_token, bindings=v.preflight)
-    assert v.process is None and v.h.calls == 0
+    assert v.process is None
+    assert v.h.calls == 0
 
 
 @pytest.mark.parametrize("change", ["expired-clock", "authority-timeout", "private-error"])
@@ -422,7 +429,8 @@ def test_matching_signed_token_and_policy_cannot_replace_factory_bootstrap_purpo
     claims["aud"] = "urn:fixture:another-purpose"
     changed = replace(v.preflight, policy=replace(v.preflight.policy, audience=claims["aud"], expected=dict(v.preflight.policy.expected)))
     with pytest.raises(BindingError): preflight(v.context, jwt(v.h.issuer_key, claims), bindings=changed)
-    assert v.process is None and v.h.calls == 0
+    assert v.process is None
+    assert v.h.calls == 0
 
 
 @pytest.mark.parametrize("change", ["adapter-repository", "reusable-graph"])
@@ -446,7 +454,8 @@ def test_reapproval_cannot_replace_fixed_source_or_local_reusable_graph(v, chang
     claims = decode_object(decode64(v.pre_token.split(".")[1])); claims.update(expected)
     bindings = replace(v.preflight, approved_plan_digest=approved, policy=replace(v.preflight.policy, expected=expected))
     with pytest.raises(BindingError): preflight(context, jwt(v.h.issuer_key, claims), bindings=bindings)
-    assert v.process is None and v.h.calls == 0
+    assert v.process is None
+    assert v.h.calls == 0
 
 
 def test_late_mutation_of_reused_stage_snapshot_cannot_mask_generation_drift(v):
