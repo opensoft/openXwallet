@@ -1,3 +1,19 @@
+# Current provider review correction
+Status: draft
+Date: 2026-11-15
+
+Current declared bodies advance to 9cb27c157154ad691ff7efb7a5c8418c41309f4d.
+The upstream correction passes 302 pin/execution/citation cases and actual
+offline cache-recovery/full strict acceptance. Missing install files bypass
+retained generations; unsafe links continue to refuse. The fixed ten-code
+vocabulary is unchanged and now also drives operator help. Consumer body-hash,
+strict corpus and hosted checks are rerun for this exact adoption.
+
+The initial receipt below remains evidence for the earlier candidate.
+Current source and full-file hashes are those in docs/openspec-cli-pin.md.
+
+## Initial candidate receipt (retained)
+
 # OpenSpec P1 consumption acceptance
 Status: draft
 Date: 2026-11-15
@@ -25,3 +41,5 @@ were not changed. No protected runtime setup/dispatch, credential request,
 active session/profile, historical release or billing setting is modified.
 Provider main landing, fresh hosted CI/Codex review and consumer-main readback
 remain required completion gates.
+
+Correction validation: exact body checks and six real strict corpus items pass. The complete configured rerun passed 2096 cases with one original 20-second conformance subprocess timeout locally; the cap is unchanged and full hosted tests/isolation must pass. The earlier configured full run passed all 2097 cases with zero skips.

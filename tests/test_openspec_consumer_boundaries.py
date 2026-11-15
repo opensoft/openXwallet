@@ -11,8 +11,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 BODY_DIGESTS = {
-    "scripts/validate-openspec-cli-pin.py": ("f17faabf8efb632dcee8d6fbd6bb9734"
-        "da652ed0d129a66b16dc3ee3ead69079"),
+    "scripts/validate-openspec-cli-pin.py": ("793480d193c4b152e514c70c950619d1"
+        "fb8c3adfbb2cd726d804e8b3dad51634"),
     "scripts/install-pinned-openspec-cli.py": ("082d036c18e40e2794e495633680f62a"
         "71795115b250ecd38428e451419fb083"),
     "contracts/openspec-cli-pin.yaml": ("1bab358ce6d5275fcad6fd1af3a4320a"

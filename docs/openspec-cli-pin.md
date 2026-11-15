@@ -1,31 +1,31 @@
 # Current P1 tooling consumption (2026-11-15)
 Status: draft
 
-The verifier, installer, artifact pin and dependency lock below are adopted
-from opensoft/openXfactory at immutable published commit 4e7f06ddac55ff46bfa4e8714eabf4d3d4964829
-(feature 045). Provider main and consumer main acceptance remain landing gates.
-The CLI stays at 1.12.0. The new lock pins 80 packages and is verified by the
-pin's SHA-512; installation uses npm ci with lifecycle scripts disabled.
-Operator-selected roots and executables are independent of model operands.
-Invalid cache generations and fetch workspaces are retained as evidence.
+The four provider bodies below are from published immutable commit
+9cb27c157154ad691ff7efb7a5c8418c41309f4d in opensoft/openXfactory (feature 045).
+Provider-main admission remains required before consumer landing.
+The CLI remains 1.12.0 with the same 80-package integrity-verified closure.
+Missing stamped install files now bypass retained incomplete generations;
+linked or unsafe state still refuses. A single described refusal catalog
+supplies the unchanged machine vocabulary and operator help.
 
 | File | SHA-256 of provider body | SHA-256 of complete consumer file |
 | --- | --- | --- |
-| `scripts/validate-openspec-cli-pin.py` | `f17faabf8efb632dcee8d6fbd6bb9734da652ed0d129a66b16dc3ee3ead69079` | `523da92c0af902f29819961f01cbe5f8660a1ed1eddca716e78a1c263fb4f4a3` |
-| `scripts/install-pinned-openspec-cli.py` | `082d036c18e40e2794e495633680f62a71795115b250ecd38428e451419fb083` | `391a312dfc3d97bbafc8ca1f6a027306e67d970c50ec813c57d1b310a8753f2e` |
-| `contracts/openspec-cli-pin.yaml` | `1bab358ce6d5275fcad6fd1af3a4320aebe42d25c158aa0364d680fd4d8fa482` | `99871769f51d056431103988b6a2db05fcaa38bf3e127a6ce1f99e378d9013de` |
+| `scripts/validate-openspec-cli-pin.py` | `793480d193c4b152e514c70c950619d1fb8c3adfbb2cd726d804e8b3dad51634` | `ed1d65e10b5097ecec5c4a8d0a83143d6b1805251c9aff195dc9ceaca02c5556` |
+| `scripts/install-pinned-openspec-cli.py` | `082d036c18e40e2794e495633680f62a71795115b250ecd38428e451419fb083` | `d699b5ecca4aa61dfd1db1bd4864f0dd2b68330dcc14ac30c270388abe8ca679` |
+| `contracts/openspec-cli-pin.yaml` | `1bab358ce6d5275fcad6fd1af3a4320aebe42d25c158aa0364d680fd4d8fa482` | `36f635de064daf85b2aeb5ec1f8eb34ef4432be9a9f04f2768599c88e9fd7424` |
 | `contracts/openspec-cli-pin.1.12.0.package-lock.json` | `696dce86e5e5699007129310d9de532795ce48467218fba03b729d38c829e2ca` | `696dce86e5e5699007129310d9de532795ce48467218fba03b729d38c829e2ca` |
 
-For Python bodies remove the three comment lines after the shebang; for the
-YAML body remove its first three comment lines. JSON is copied verbatim.
-tests/test_openspec_consumer_boundaries.py pins all four resulting provider-body
-hashes and verifies the artifact/lock agreement offline.
+For Python bodies remove the three comment lines following the shebang; for
+the YAML body remove its first three comment lines. JSON is verbatim.
+tests/test_openspec_consumer_boundaries.py pins all four provider body hashes
+and verifies artifact/lock agreement and forged-pin refusal offline.
 
-The existing adapted workflow is unchanged and retains its original
-44d8fbaf7d977668973dcd116040c9405416c2ea provenance and declared adaptation.
-openXwallet also keeps the same vendored artifact and offline-gate requirement.
-Cold dependency acquisition is preparation; a warmed locked closure can then
-run with npm offline. Runtime/core pins and unrelated active features do not move.
+The adapted openspec-cli-pin-gate.yml is unchanged at its original declared
+44d8fbaf7d977668973dcd116040c9405416c2ea provenance. Existing additional
+CI installation paths now also use the verified provider entrypoints.
+openXwallet retains its exact vendored artifact. Runtime/core pins, operational
+defaults, active feature/session state, scan policy and billing remain unchanged.
 
 ## Historical consumption record (retained)
 
