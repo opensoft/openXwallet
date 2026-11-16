@@ -28,7 +28,8 @@ COVERAGE_JSON = "coverage.json"
 COVERAGE_XML = "coverage.xml"
 JUNIT_REPORT = "pytest-report.xml"
 CONFIGS = (".coveragerc", "sonar-project.properties",
-           "requirements/sonar-analysis.lock", "requirements/analysis-providers.json")
+           "requirements/sonar-analysis.lock", "requirements/analysis-shape.lock",
+           "requirements/analysis-providers.json")
 LIMITS = {
     "new_security_rating": ("GT", "1"),
     "new_reliability_rating": ("GT", "1"),
@@ -157,6 +158,46 @@ def unchanged(root, directory):
     before = read_json(directory / "measurement.json")
     require(before == snapshot(root), "source/config/revision changed after measurement")
     return before
+
+
+
+AUXILIARY_REPORTS = (
+    "code-pytest.xml", "spec-pytest.xml",
+    "openspec-adapter-pytest.xml", "openspec-spec-pytest.xml",
+    "shape-pytest.xml",
+)
+
+
+def assemble_measurements(root, directory):
+    """Combine genuine same-source runs; retain every original report and shard."""
+    directory = report_directory(root, directory)
+    state = unchanged(root, directory)
+    auxiliary = directory / "auxiliary"
+    require(not auxiliary.is_symlink() and auxiliary.is_dir(),
+            "auxiliary measurement missing")
+    require(read_json(auxiliary / "measurement.json") == state,
+            "auxiliary source/config/revision differs")
+    reports = [directory / JUNIT_REPORT,
+               *(auxiliary / name for name in AUXILIARY_REPORTS)]
+    for path in reports:
+        require(not path.is_symlink(), "linked test report")
+        junit_counts(path)
+    shards = sorted(auxiliary.glob(".coverage.*"))
+    require(shards and all(p.is_file() and not p.is_symlink() for p in shards),
+            "auxiliary branch data missing or linked")
+    for index, path in enumerate(shards):
+        destination = directory / (".coverage.auxiliary." + str(index))
+        require(not destination.exists(), "measurement already assembled")
+        shutil.copyfile(path, destination)
+    combined = ET.Element("testsuites")
+    for path in reports:
+        source = read_xml(path)
+        suites = [source] if source.tag == "testsuite" else list(source)
+        for suite in suites:
+            combined.append(suite)
+    ET.ElementTree(combined).write(root / JUNIT_REPORT, encoding="utf-8",
+                                   xml_declaration=True)
+    return generate_report(root, directory)
 
 
 def generate_report(root, directory):
@@ -332,13 +373,15 @@ def verify_server_gate(root):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("prepare", "report", "check", "gate"))
+    parser.add_argument("command", choices=("prepare", "assemble", "report", "check", "gate"))
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     os.chdir(root)
     try:
         if args.command == "prepare":
             result = {"directory": str(prepare(root, REPORT_DIRECTORY))}
+        elif args.command == "assemble":
+            result = assemble_measurements(root, root / REPORT_DIRECTORY)
         elif args.command == "report":
             result = generate_report(root, root / REPORT_DIRECTORY)
         elif args.command == "gate":

@@ -324,3 +324,13 @@ runtime/validator two-line init rule. Ordinary runtime and wallet-validation
 gates retain their existing scoped init and never read the spec leg.
 The analysis inventory binds all four exact Git revisions and real executable
 coverage; no source omissions, runtime authority, thresholds or billing change.
+
+
+### Source-analysis conformance providers
+
+The #73 analysis job may fetch the immutable public provider revisions declared
+in requirements/analysis-providers.json and execute their fixed test selections
+against the actual copied consumer files. Both main admission and exact source
+bytes are required. This is additional source-only conformance; it grants no
+runtime, credential, broker, dispatch or operational authority. No test assertion
+may be deselected or waived to produce coverage.

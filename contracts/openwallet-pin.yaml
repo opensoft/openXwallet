@@ -76,7 +76,7 @@ kind: pinned_contract_manifest
 # moved. The verifier refuses any one of them moving alone.
 # ============================================================================
 
-# The annotated tag `wallet-v1.6` is on the root commit this pin records. Brett
+# Historical release note: the annotated tag `wallet-v1.6` stays on its original release commit. Brett
 # Heap RULED the name of the root's first tag, label verbatim "wallet-v1.6
 # (Recommended)", and its place, label verbatim "Release commit on b4580d16,
 # tag its merge (Recommended)". The tag stays a LABEL beside `commit:`, never
@@ -88,13 +88,15 @@ source_repository: opensoft/openWallet
 # The gitlink this pin governs, mounting the openWallet ROOT.
 submodule_path: openWallet
 
-# The openWallet root at the release merge of opensoft/openWallet#7 (task 4.9
+# Historical origin of the pin: release merge opensoft/openWallet#7 (task 4.9
 # of split-openwallet-neutral-core: the wallet-v1.6 release commit, which bumps
 # contracts/manifest.yaml, adds contracts/releases/wallet-v1.6.digests.yaml and
 # extends the CHANGELOG, and moves no gitlink and no digest, so `legs.code` and
 # `files:` below stand). Brett Heap's ruling, quoted at `contract_bundle_tag`
 # above, puts the annotated tag `wallet-v1.6` on this commit. Exactly 40 hex.
-commit: "b0af7c2ce53d63786a08a20aa3602a6f90345606"
+# Issue #73 candidate: paired admitted code and prepared spec/shape repairs.
+# Landing is held until their upstream main acceptance is verified.
+commit: "6b0395d37ba8786bc2ea802abbdb2e5e8a594d54"
 revision_kind: commit
 
 digest_algorithm: sha256
@@ -123,7 +125,7 @@ legs:
   code:
     source_repository: opensoft/openWallet-code
     submodule_path: code
-    commit: "72313daab1f229c049cb90998931564c1904dbbc"
+    commit: "b7c8ca1e0f9bb58674a12ffef89bf5dfc92cc58c"
 
 # The EIGHT digested members, relative to `submodule_path` as openxFactory's
 # are relative to `openXwallet`. Each path is the string the root manifest's

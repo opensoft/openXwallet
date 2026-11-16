@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# VENDORED from opensoft/openXfactory@371809285508ad4eb53d415103ecddaec5588938; do not edit here.
+# VENDORED from opensoft/openXfactory@e0e0b9a31ec8f4d5ec2d611d373ce0a918abb5de; do not edit here.
 # Everything below this header block is byte-identical to the provider.
 # Current provenance and hashes: docs/openspec-cli-pin.md.
 """Run OpenSpec strict validation through the PINNED CLI, and refuse otherwise.
@@ -1047,7 +1047,7 @@ def shasum_of(payload: bytes) -> str:
     return hashlib.sha1(payload, usedforsecurity=False).hexdigest()
 
 
-def verify_artifact(tarball: Path, integrity: str, shasum: str) -> None:
+def verify_artifact(tarball: Path, integrity: str, shasum: str) -> bytes:
     """Check 3: the artifact on disk IS the artifact the pin names.
 
     BOTH addresses are compared and the SHA-512 is compared FIRST, because it is
@@ -1081,6 +1081,7 @@ def verify_artifact(tarball: Path, integrity: str, shasum: str) -> None:
             "the SHA-512 agreed and the registry's legacy address did not, "
             "which is a disagreement about the same bytes and is refused rather "
             "than reconciled")
+    return payload
 
 
 def read_lockfile(payload: bytes) -> dict:
@@ -1474,8 +1475,25 @@ def fetch_artifact(package: str, version: str, destination: Path,
     return tarballs[0]
 
 
+def seed_supplied_artifact(directory_fd: int, anchored: Path,
+                           payload: bytes, npm: str) -> None:
+    """Seed npm from the exact authenticated bytes, never the mutable input path."""
+    try:
+        _write_new_leaf(directory_fd, "verified-cli.tgz", payload)
+    except OSError as exc:
+        raise PinRefusal(
+            "pin-unresolvable", "staging the verified supplied artifact failed") from exc
+    result = _run(
+        [npm, "cache", "add", str(anchored / "verified-cli.tgz"),
+         "--ignore-scripts", "--no-audit", "--no-fund"], cwd=str(anchored))
+    if result.returncode != 0:
+        raise PinRefusal("pin-unresolvable",
+                         "seeding npm with the verified supplied artifact failed")
+
+
 def install_locked(prefix: Path, lockfile_bytes: bytes, package: str,
-                   version: str, binary: str, npm: str = "npm") -> Path:
+                   version: str, binary: str, npm: str = "npm", *,
+                   artifact_bytes: bytes | None = None) -> Path:
     """Install THE LOCKFILE'S TREE into a private prefix; return the executable.
 
     `npm ci` AND NOT `npm install`, which is the whole act rather than a flag
@@ -1525,6 +1543,8 @@ def install_locked(prefix: Path, lockfile_bytes: bytes, package: str,
         _write_new_leaf(fd, "package.json",
                         (json.dumps(manifest, indent=2) + "\n").encode("utf-8"))
         anchored = _descriptor_directory(fd)
+        if artifact_bytes is not None:
+            seed_supplied_artifact(fd, anchored, artifact_bytes, npm)
         result = _run([npm, "ci", "--ignore-scripts", "--no-audit", "--no-fund"],
                       cwd=str(anchored))
         executable = anchored / "node_modules" / ".bin" / binary
@@ -2266,19 +2286,15 @@ def main(argv: list[str] | None = None) -> int:
                 # about to run from PATH anyway would verify bytes nobody runs.
                 executable = path_executable(binary)
             elif args.tarball is not None:
-                # The supplied bytes are checked against the referent exactly as
-                # a fetched artifact is — and the INSTALL still goes through the
-                # lockfile, because the closure is pinned by the lockfile and not
-                # by whichever tarball a caller had lying about. That is not a
-                # weakening of `--tarball`: `verify_lockfile` has already refused
-                # unless the lockfile's entry for the package carries THIS
-                # integrity, so the CLI bytes `npm ci` installs are the bytes
-                # just verified here.
+                # Authenticate once and stage those exact bytes in the private
+                # generation. npm's content cache then supplies the CLI while
+                # npm ci retains the unchanged integrity-locked dependency tree.
+                # A cold npm cache must not turn a vendored CLI into a new fetch.
                 supplied = Path(args.tarball)
-                verify_artifact(supplied, integrity, shasum)   # check 3
-                executable = install_locked(workspace / "prefix",
-                                            lockfile_bytes, package, version,
-                                            binary, npm=npm)
+                payload = verify_artifact(supplied, integrity, shasum)  # check 3
+                executable = install_locked(
+                    workspace / "prefix", lockfile_bytes, package, version,
+                    binary, npm=npm, artifact_bytes=payload)
             else:
                 cache_root = None if args.no_cache else (
                     Path(args.cache_dir) if args.cache_dir

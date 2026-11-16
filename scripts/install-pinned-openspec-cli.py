@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# VENDORED from opensoft/openXfactory@371809285508ad4eb53d415103ecddaec5588938; do not edit here.
+# VENDORED from opensoft/openXfactory@e0e0b9a31ec8f4d5ec2d611d373ce0a918abb5de; do not edit here.
 # Everything below this header block is byte-identical to the provider.
 # Current provenance and hashes: docs/openspec-cli-pin.md.
 """Install the PINNED OpenSpec CLI and put it on PATH. Judge nothing.

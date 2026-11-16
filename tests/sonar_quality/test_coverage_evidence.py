@@ -385,3 +385,55 @@ def test_missing_nested_repository_cannot_be_silently_omitted(tool, repository):
     (repository / "openWallet/spec").rename(repository / "parked-spec")
     with pytest.raises(tool.Refusal, match="missing or linked"):
         tool.snapshot(repository)
+
+
+def auxiliary(tool, root, directory):
+    import shutil
+
+    selected = directory / "auxiliary"
+    selected.mkdir()
+    shutil.copyfile(directory / "measurement.json", selected / "measurement.json")
+    for name in tool.AUXILIARY_REPORTS:
+        shutil.copyfile(root / "pytest-report.xml", selected / name)
+    for shard in directory.glob(".coverage.*"):
+        shutil.copyfile(shard, selected / shard.name)
+    return selected
+
+
+def test_same_source_auxiliary_runs_combine_real_arcs_and_all_reports(tool, repository):
+    directory = measured(tool, repository)
+    auxiliary(tool, repository, directory)
+    receipt = tool.assemble_measurements(repository, directory)
+    assert receipt["test_counts"] == {
+        "tests": 6, "failures": 0, "errors": 0, "skipped": 0}
+    assert set(receipt["sources"]) == {
+        "scripts/covered.py", "scripts/namespace/unreached.py"}
+    assert (directory / "auxiliary/measurement.json").is_file()
+
+
+@pytest.mark.parametrize("fault", ["source", "missing-report", "failed-test",
+                                  "missing-shards", "linked-report"])
+def test_auxiliary_evidence_cannot_omit_checks_or_mix_source(
+        tool, repository, fault):
+    directory = measured(tool, repository)
+    selected = auxiliary(tool, repository, directory)
+    if fault == "source":
+        state = json.loads((selected / "measurement.json").read_text())
+        state["revision"] = "0" * 40
+        (selected / "measurement.json").write_text(json.dumps(state))
+    elif fault == "missing-report":
+        (selected / tool.AUXILIARY_REPORTS[0]).unlink()
+    elif fault == "failed-test":
+        (selected / tool.AUXILIARY_REPORTS[0]).write_text(
+            '<testsuites><testsuite tests="1" failures="1">'
+            '<testcase name="failed"><failure/></testcase></testsuite></testsuites>')
+    elif fault == "missing-shards":
+        for path in selected.glob(".coverage.*"):
+            path.unlink()
+    else:
+        path = selected / tool.AUXILIARY_REPORTS[0]
+        path.unlink()
+        path.symlink_to(repository / "pytest-report.xml")
+    with pytest.raises(tool.Refusal):
+        tool.assemble_measurements(repository, directory)
+    assert not list(directory.glob(".coverage.auxiliary.*"))

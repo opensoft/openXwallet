@@ -86,6 +86,15 @@ jobs:
       - name: Install separate hash-pinned coverage tooling
         run: "pip install --only-binary :all: --require-hashes -r requirements/sonar-analysis.lock"
 
+      - name: Enable startup tracing in this ephemeral CI Python only
+        run: |
+          python3 - <<'PYCODE'
+          import site
+          from pathlib import Path
+          Path(site.getsitepackages()[0], "wallet_sonar_startup.pth").write_text(
+              "import coverage; coverage.process_startup()\n")
+          PYCODE
+
       - name: Initialize the openWallet root (scoped, never --recursive)
         run: git submodule update --init openWallet
 
@@ -119,7 +128,9 @@ jobs:
         # sudo/docker groups. The runtime correctly refuses unselected groups.
         shell: bash
         run: |
-          sudo --preserve-env=WALLET_BINDING_OWNER_CODE,HOME,PATH,COVERAGE_PROCESS_START,COVERAGE_ROOT,COVERAGE_FILE \
+          TMPDIR="$(mktemp -d "$RUNNER_TEMP/wallet-pytest.XXXXXX")"
+          export TMPDIR
+          sudo --preserve-env=WALLET_BINDING_OWNER_CODE,HOME,PATH,TMPDIR,COVERAGE_PROCESS_START,COVERAGE_ROOT,COVERAGE_FILE \
             setpriv --reuid "$(id -u)" --regid "$(id -g)" \
               --clear-groups --bounding-set=-all --inh-caps=-all --ambient-caps=-all \
               --no-new-privs \
@@ -141,20 +152,110 @@ jobs:
             --temp-root "$matrix_root" --owner-code "$WALLET_BINDING_OWNER_CODE"
 
 
-      - name: Generate and verify exhaustive measured Python coverage
-        run: python3 scripts/validate-sonar-coverage.py report
+      - name: Retain the complete suite report with raw coverage
+        run: cp pytest-report.xml .coverage-reports/pytest-report.xml
 
       - name: Publish same-run source and coverage evidence
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: wallet-sonar-coverage
+          name: wallet-sonar-primary
+          path: .coverage-reports/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14
+
+  source-conformance:
+    if: github.event_name != 'workflow_dispatch' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.sha }}
+          submodules: false
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+      - name: Install reviewed source-test and analysis dependencies
+        run: |
+          pip install --only-binary :all: --require-hashes -r requirements-workload-binding.lock -r requirements/sonar-analysis.lock
+          python3 -m venv "$RUNNER_TEMP/shape-analysis"
+          "$RUNNER_TEMP/shape-analysis/bin/pip" install --only-binary :all: --require-hashes -r requirements/analysis-shape.lock -r requirements/sonar-analysis.lock
+      - name: Enable startup tracing in both ephemeral CI interpreters
+        run: |
+          for python in "$(command -v python3)" "$RUNNER_TEMP/shape-analysis/bin/python"; do
+            "$python" - <<'PYCODE'
+          import site
+          from pathlib import Path
+          Path(site.getsitepackages()[0], "wallet_sonar_startup.pth").write_text(
+              "import coverage; coverage.process_startup()\n")
+          PYCODE
+          done
+      - name: Initialize the exact complete analysis assembly
+        run: |
+          git submodule update --init openWallet
+          git -C openWallet submodule update --init code spec
+      - name: Fetch immutable admitted conformance providers
+        run: |
+          python3 - <<'PYCODE'
+          import json, os, re, subprocess
+          from pathlib import Path
+          records = json.loads(Path("requirements/analysis-providers.json").read_text())
+          for role, repository in (("openspec", "opensoft/openXfactory"), ("shape", "opensoft/openRepoShape")):
+              row = records[role]
+              assert row["repository"] == repository and row["main_admission"] == "verified"
+              assert all(re.fullmatch("[0-9a-f]{40}", row[key]) for key in ("commit", "admitted_main"))
+              target = Path(os.environ["RUNNER_TEMP"]) / ("wallet-analysis-" + role)
+              def git(*args):
+                  subprocess.run(["git", "-C", str(target), *args], check=True)
+              target.mkdir(mode=0o700)
+              git("init")
+              git("remote", "add", "origin", "https://github.com/" + repository + ".git")
+              # Full provider history also runs the existing historical probes.
+              git("fetch", "--no-tags", "origin", row["admitted_main"])
+              git("checkout", "--detach", row["commit"])
+          PYCODE
+      - name: Prepare a fresh same-source measurement
+        run: python3 scripts/validate-sonar-coverage.py prepare
+      - name: Run owning-leg tests and immutable provider conformance on actual copies
+        env:
+          COVERAGE_PROCESS_START: ${{ github.workspace }}/.coveragerc
+          COVERAGE_ROOT: ${{ github.workspace }}
+          COVERAGE_FILE: ${{ github.workspace }}/.coverage-reports/.coverage
+          WALLET_ANALYSIS_PROVIDER_ROOT: ${{ runner.temp }}/wallet-analysis-openspec
+          WALLET_ANALYSIS_SHAPE_ROOT: ${{ runner.temp }}/wallet-analysis-shape
+        run: |
+          set -euo pipefail
+          TMPDIR="$(mktemp -d "$RUNNER_TEMP/wallet-source.XXXXXX")"
+          export TMPDIR
+          reports="$PWD/.coverage-reports"
+          (cd openWallet/code && python3 -m pytest tests/ -q -rs --junitxml="$reports/code-pytest.xml")
+          (cd openWallet/spec && python3 -m pytest tests/ -q -rs --junitxml="$reports/spec-pytest.xml")
+          python3 scripts/run-provider-conformance.py openspec-adapter
+          python3 scripts/run-provider-conformance.py openspec-spec
+          PATH="$RUNNER_TEMP/shape-analysis/bin:$PATH" "$RUNNER_TEMP/shape-analysis/bin/python" scripts/run-provider-conformance.py shape
+      - name: Verify the source remained identical throughout the auxiliary run
+        run: |
+          python3 - <<'PYCODE'
+          import importlib.util
+          from pathlib import Path
+          path = Path("scripts/validate-sonar-coverage.py").resolve()
+          spec = importlib.util.spec_from_file_location("wallet_coverage", path)
+          module = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(module)
+          module.unchanged(path.parents[1], path.parents[1] / ".coverage-reports")
+          PYCODE
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: wallet-sonar-auxiliary
           path: .coverage-reports/
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 14
 
   sonar-analysis:
-    needs: pytest-suite
+    needs: [pytest-suite, source-conformance]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -174,12 +275,18 @@ jobs:
           git -C openWallet submodule update --init code spec
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
-          name: wallet-sonar-coverage
+          name: wallet-sonar-primary
           path: .coverage-reports
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: wallet-sonar-auxiliary
+          path: .coverage-reports/auxiliary
       - name: Install hash-pinned evidence reader
         run: "pip install --only-binary :all: --require-hashes -r requirements/sonar-analysis.lock"
-      - name: Verify coverage against the exact scanner checkout
-        run: python3 scripts/validate-sonar-coverage.py check
+      - name: Combine real same-source runs and verify exhaustive coverage
+        run: |
+          python3 scripts/validate-sonar-coverage.py assemble
+          python3 scripts/validate-sonar-coverage.py check
       - name: Analyze complete source and wait for the existing quality gate
         uses: SonarSource/sonarqube-scan-action@c7ee0f9df90b7aa20e8dcf9695dcfe2e7da5b4f2
         env:

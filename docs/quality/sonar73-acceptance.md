@@ -26,7 +26,7 @@ complete-source coverage and exact-main gate verification remain pending.
 The coverage verifier is adapted from openXfactory@a31e2060e61fcec47a818ccdcd4d8c675a440505.
 It binds every nested revision, exhaustive production Python inventory,
 unchanged source/configuration and actual branch-coverage reports. Its
-32 evidence tests preserve zero-hit files and refuse missing/forged data,
+52 evidence and provider-boundary tests preserve zero-hit files and refuse missing/forged data,
 lost parent execution, changed nested pins and incomplete/weakened gates.
 No coverage hits or file identities are synthesized.
 
@@ -35,3 +35,23 @@ still match the prior P1 closeout at the preservation readback. Current bench
 session/pane inventories are retained for final comparison. Older session
 inventories differ independently; this repair has sent no session input,
 restarted no session/bench and restored or overwritten no owner work.
+
+
+The additional source-conformance job executes both owning legs and immutable
+provider assertions against the actual copied files. The CLI provider has 193
+exact assertions per consumer copy; the shape selection has 2,223 exact assertions
+across 25 modules. Collection fingerprints and per-phase reports refuse omissions,
+deselection, expected failures and unrecorded skips. Provider roots remain the
+source of their fixtures; production file identities and coverage hits are not
+rewritten.
+
+Both jobs prepare the same four-repository source/configuration snapshot. The
+analysis job refuses missing or changed snapshots, any failed/missing JUnit
+report and missing real branch-data shards before combining actual measurements.
+All owned Python files, including zero-hit files, remain in the final inventory.
+
+Upstream supplied-artifact repair is openXfactory #1333 at e0e0b9a31ec8f4d5ec2d611d373ce0a918abb5de;
+shape repair is openRepoShape #1331 at 55cc8aeef4a96985d76cddc7a0ee834c97909860.
+These remain prepared candidates pending main admission. The current neutral
+root candidate is openWallet #13 at 6b0395d37ba8786bc2ea802abbdb2e5e8a594d54;
+the adapter will be repinned to accepted publication before landing.
