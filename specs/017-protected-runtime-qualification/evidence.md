@@ -2757,3 +2757,13 @@ changes. All proposed implementation and operational owner boxes remain unchecke
 Factory ledger generation still requires the real new factory PR number; the
 ledger remains unchanged and this publication prerequisite is recorded explicitly.
 No new candidate PR, hosted CI or expert-review claim is made by this local commit.
+
+## T012T owner acceptance, ordered landing and partial isolated candidate
+
+The owner ratified #1332 aa1896ded7ef with #76 56471096ff98 for source acceptance,
+and commissioned only isolated T012T after ordered landing. See
+[as-built source and exact hosted budget blocker](hosting-evidence-implementation.md).
+Both accepted heads landed in order with the accepted packet preserved. Component
+and source-refusal controls pass, but the real hosted positive reaches private12
+and refuses its next lease read. No full T012T or operational acceptance is claimed.
+The separate factory amendment remains draft/unratified; no new budget is applied.

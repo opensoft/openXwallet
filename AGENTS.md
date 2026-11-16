@@ -334,3 +334,15 @@ fixture reports and refusing CLI compatible; no runtime/workflow/dependency/pin
 change, provider service, setup or protected dispatch follows. T012U-V/T001/T013-T015,
 live report/consumer/human/domain acceptance remain separate. Feedback stays
 deferred and neither historical blocked write is replayed.
+
+## T012T isolated implementation commission
+
+Brett source-ratified factory #1332 aa1896ded7ef with wallet #76 56471096ff98
+and commissioned ordered landing followed by T012T in isolation. Factory merged
+as 7ad00a2c03a4 (clean integration with concurrent #1331; accepted packet and index
+additions preserved); wallet merged normally as 43166dd6ebc3 with its accepted tree.
+Only T012T01-T012T06 are commissioned. Internal runtime/custody observation seams
+record existing checks without extra reads or changed worker inputs. Preserve
+neutral APIs/pins, v1 evidence, phase clocks/budgets and operational default refusal.
+T012U-V/T001/T013-T015 and every operational setup/dispatch/live acceptance gate
+remain separate. Feedback stays deferred; neither historical blocked write is replayed.

@@ -12,7 +12,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from workload_factory_binding.evidence import BindingError
 from workload_factory_binding_runtime.evidence import safe_error
 from workload_factory_binding_runtime.bootstrap import DispatchContext, bootstrap, validate_dispatch_context
-from workload_factory_binding_runtime.workflow import operational_bindings, GithubWorkflowBindings, admit_github, HostedWorkflowBindings, admit_hosted
+from workload_factory_binding_runtime.workflow import operational_bindings, GithubWorkflowBindings, admit_github, HostedWorkflowBindings, admit_hosted, QualificationWorkflowBindings, qualify_hosted
 
 
 def context_from_environment(environment, source_commit):
@@ -34,6 +34,11 @@ def main():
         # Intentionally blocks before any environment output or OIDC operation.
         # Production binding selection needs a later reviewed source integration.
         bindings = operational_bindings()
+        if type(bindings) is QualificationWorkflowBindings:
+            report = qualify_hosted(context, bindings=bindings, phase=args.phase)
+            if args.phase == "qualify":
+                sys.stdout.buffer.write(report + b"\n")
+            return 0
         if args.phase not in ("preflight", "protected-admission"):
             # T012 prepares admission/job wiring. Live execution and independent
             # cleanup adapters remain gated; never substitute the offline suite.

@@ -296,3 +296,29 @@ def admit_hosted(context,*,bindings,phase,environment):
     result=selected.read(context,token,decision=use)
     require(result.state==("plan-ready" if phase=="preflight" else "running"),"workflow-admission-refused")
     use.now();return result
+
+
+@dataclass(frozen=True, repr=False)
+class QualificationWorkflowBindings:
+    """Explicit trusted source routing; operational_bindings still refuses."""
+    qualifier: object
+
+
+def qualify_hosted(context, *, bindings, phase):
+    from .bootstrap import validate_dispatch_context
+    from .hosted.qualification import Qualifier
+    from .hosted.evidence import build_receipt
+    validate_dispatch_context(context)
+    require(type(bindings) is QualificationWorkflowBindings and type(bindings.qualifier) is Qualifier
+            and phase in ("qualify", "cleanup"), "workflow-admission-refused")
+    qualifier = bindings.qualifier
+    accepted = qualifier.bindings.context
+    require(all(getattr(context, name) == getattr(accepted, name) for name in
+        ("repository", "repository_id", "event_name", "ref", "sha", "workflow_ref", "workflow_sha",
+         "run_id", "run_attempt", "accepted_commit", "source_commit")), "workflow-context-mismatch")
+    if phase == "cleanup":
+        # Reconcile the original registered reference by a read only. Never call
+        # finalize or resend a potentially consumed cleanup action from this route.
+        return qualifier.reconcile_cleanup()
+    result = qualifier.run()
+    return build_receipt(result, now=qualifier.bindings.workflow.lifecycle.cleanup_clock())
