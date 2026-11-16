@@ -367,3 +367,18 @@ cleanup validator/parser retain old operation semantics. The fresh-process sourc
 control passes after lease expiry and refuses wrong scope/worker/window use.
 This is still an isolated candidate pending full/native verification and later
 source publication; no T012U/V or operational commission is inferred.
+
+## Completed T012T isolated qualification
+
+Frozen runtime b7049e8ef20f985db26e5b7a966012161737ac7e passes2,511 full tests plus
+nine subtests and all2,203 mandatory native nodes. All186 hosted-evidence cases
+pass in both; prior identities/fingerprints/anchors survive, H10=75/H11=143/H12=142.
+Actual positives verify owning proof and cleanup at38 reads (39 with fixture
+origin), with no operational origin inferred. Independent native boundary and
+external21,872-generation/ten-positive preservation audit pass; both final fixture
+roots and native container are absent. See hosting-evidence-budget-realization.md
+for source hashes, historical failure limits, timings and later CI-budget handoff.
+Task/evidence reconciliation is documentation-only after those tests. Only T012T
+is complete; candidate publication, T012U/V and all operational gates remain
+separate and unauthorized. Keep setup/dispatch unauthorized, feedback deferred,
+and neither historical blocked write replayed.

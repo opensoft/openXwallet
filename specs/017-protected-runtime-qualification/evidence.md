@@ -2767,3 +2767,35 @@ Both accepted heads landed in order with the accepted packet preserved. Componen
 and source-refusal controls pass, but the real hosted positive reaches private12
 and refuses its next lease read. No full T012T or operational acceptance is claimed.
 The separate factory amendment remains draft/unratified; no new budget is applied.
+
+## T012T accepted-budget continuation and completed isolated candidate
+
+Brett source-ratified factory #1334 at7518c058ef3defb7408475cfed65807d7609d626
+and commissioned green landing plus continued isolated T012T. Merge
+89974846b847e1c31761792677155cc9779d400d cleanly integrates concurrent main;
+all exact-merge factory CI workflow kinds pass. The accepted private39 source
+entry applies only before any read on one original qualification Decision.
+All other allocations, clocks, expiries and operational refusal remain unchanged.
+
+See the [completed as-built qualification record](hosting-evidence-budget-realization.md).
+Runtime b7049e8ef20f985db26e5b7a966012161737ac7e passes2,511 full tests plus nine
+subtests and all2,203 mandatory native cases. All186 hosted-evidence cases pass in
+both; H10=75/H11=143/H12=142, with prior identities/fingerprints/anchors preserved.
+Actual complete hosted positives verify owning proof and independent cleanup
+within38 reads (39 with fixture origin). Fresh-process audit, cancellation with
+lost cleanup reply and CLI/privacy controls pass. Ordered pins/YAML/plain/strict/
+pinned OpenSpec gates pass;335 regular-file hashes and the neutral gitlink match.
+
+The independently observed native boundary has network none, only loopback,
+read-only source/rootfs, UID1000, no groups/capabilities and NoNewPrivs=1.
+External cleanup audit verifies21,872 generations,748 journals,234 helper receipts
+and all ten positive preservation cases, with no live attribution or initial
+teardown failures. Both final exact owned fixture roots and the native container
+are absent; receipts remain outside them. Earlier failed/interrupted runs remain
+diagnostic; the unexplained unchanged large-manifest refusal and successful
+unchanged reproduction/full/native runs are recorded without a fabricated cause.
+
+Only documentation is reconciled after the frozen runtime tests. No hosted runtime
+CI/source acceptance or operational qualification is inferred. T012U/V and
+T001/T013-T015 remain separate; setup/dispatch unauthorized, feedback deferred,
+and historical blocked writes unreplayed.
