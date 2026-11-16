@@ -268,3 +268,14 @@ All checks, suite order, triggers, permissions, isolation, protected defaults an
 runtime budgets remain unchanged. See hosting-lifecycle-analysis.md for the
 measured reason, governance classification and 153-unchanged/one-workflow input
 provenance. Fresh exact-head full/native CI is required before publication success.
+
+## Journal snapshot qualification update
+
+The aggregate snapshot correction keeps the 65,536-byte per-event and 2,048-event
+bounds while allowing a validated journal above one document's size. The new
+component and actual 63-selected-resource mixed-retention cleanup/audit controls
+use the original clocks. The collection is now 107 lifecycle / 2,310 full / 2,005
+native nodes; fresh complete qualification is pending at this source checkpoint.
+Execution receipts will be posted on PR #75. See
+hosting-lifecycle-analysis.md for counterfactual evidence and the explicit
+unqualified all-run throughput limit. Protected defaults and budgets are unchanged.

@@ -217,6 +217,20 @@ def lh(stage, provider, tmp_path, request):
     for kind, store in stores.items():
         selected.append(FileResource("resource:" + kind + "-journal", store.directory / "lifecycle.sqlite", "retained"))
         selected.append(FileResource("resource:" + kind + "-witness", store.witness / "00000000.witness", "retained"))
+    if mode == "large-manifest":
+        for n in range(63 - len(selected) - len(tokens)):
+            path = root / f"large-file-{n}"
+            path.write_bytes(b"owned large-manifest generation")
+            selected.append(FileResource(f"resource:large-{n}", path, "run" if n < 27 else "retained"))
+        # Maximal legal handles and mixed retention exercise the supported
+        # manifest bound without extending the real cleanup Decision.
+        selected = [replace(value, ref="resource" + "x" * 24 + ":" + f"r{n:02d}" + "x" * 125)
+                    if value.ref != config["state"]["store_ref"] else value for n, value in enumerate(selected)]
+        # Selection paths precede registration; the host creates its run
+        # configuration later, and registration binds its actual generation.
+        file_records = [{"ref": value.ref, "path": str(value.path.relative_to(tmp_path)),
+                         "retention": value.retention} for value in selected]
+        private_write(root / "large-files.json", canonical(file_records))
     resources = PosixResources(files=tuple(selected), worker_ref="resource:hosted-worker", pins=stores["primary"],
         tokens=tuple(TokenResource("resource:issued-capability" + (f"-{i}" if i else ""), cap,
             InstallationRetirer(writer=provider.routed(), observer=provider.routed())) for i, cap in enumerate(tokens)))

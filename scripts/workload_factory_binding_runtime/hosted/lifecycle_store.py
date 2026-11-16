@@ -5,6 +5,7 @@ The witness detects database rollback within the selected private identities; it
 is not protection from a trusted administrator restoring both retained stores.
 """
 from contextlib import closing
+from copy import deepcopy
 import fcntl
 import os
 from pathlib import Path
@@ -205,7 +206,8 @@ class LifecycleStore:
                 os.close(lock)
 
     def events(self, *, decision):
-        return self.mutate(lambda events, _: document(canonical(events)), decision=decision)
+        # The validated journal may exceed a single event document limit.
+        return self.mutate(lambda events, _: deepcopy(events), decision=decision)
 
     def record(self, kind, data, *, decision):
         require(kind != "clock", ERROR)

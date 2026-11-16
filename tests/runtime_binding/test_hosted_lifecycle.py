@@ -984,3 +984,55 @@ def test_process_generation_disappearance_during_proc_read_is_absent(monkeypatch
 
     monkeypatch.setattr(Path, "read_text", gone)
     assert process_instance(123456) == (None, None)
+
+
+def test_lifecycle_aggregate_snapshot_exceeds_document_limit_without_raising_event_bounds(tmp_path):
+    store, identity = journal(tmp_path)
+    payload = {"ref": "launch:aggregate", "nested": {"value": "x" * 25000}}
+    for n in range(3):
+        store.record("stage-intake", {**payload, "index": n}, decision=use())
+    events = store.events(decision=use())
+    assert len(canonical(events)) > 65536
+    assert len(events) < 2048 and all(len(canonical(e["data"])) <= 65536 for e in events)
+    events[1]["data"]["nested"]["value"] = "caller mutation"
+    reopened = LifecycleStore(store.directory, store.witness, identity=identity, kind="primary")
+    assert reopened.events(decision=use())[1]["data"]["nested"]["value"] == payload["nested"]["value"]
+    with pytest.raises(BindingError):
+        reopened.record("stage-intake", {"value": "x" * 65536}, decision=use())
+    assert len(reopened.events(decision=use())) == len(events)
+
+
+@pytest.mark.parametrize("lh", ["large-manifest"], indirect=True)
+def test_large_final_manifest_cleans_and_audits_above_aggregate_document_limit(lh):
+    lh.launch()
+    lh.finalize()
+    lh.takeover()
+    state = lh.life.state(decision=lh.use())
+    resources = lh.life.resources_for(state)
+    assert len(resources) == 64
+    assert sum(r.kind == "file" and r.retention == "run" for r in resources) == 30
+    assert sum(r.kind == "file" and r.retention != "run" for r in resources) == 32
+    selected = lh.life.resources.selected
+    kept = {r.ref: (selected[r.ref].path.stat().st_dev, selected[r.ref].path.stat().st_ino)
+            for r in resources if r.kind == "file" and r.retention != "run"}
+    lh.primary().call("cleanup", outcome="success", decision=lh.use())
+    audit = lh.audit().call("cleanup-audit", attempt_ref="cleanup-attempt:large-manifest", decision=lh.use())
+    assert audit["kind"] == "final" and len(audit["record"]["resources"]) == 64
+    actual = {r["ref"]: r for r in audit["record"]["resources"]}
+    for resource in resources:
+        observed = actual[resource.ref]
+        assert observed["instance_ref"] == resource.instance_ref
+        assert observed["present"] is (resource.retention != "run")
+        if resource.kind == "credential":
+            assert observed["revoked"]
+        if resource.kind == "file":
+            path = selected[resource.ref].path
+            if resource.retention == "run":
+                assert not path.exists()
+            else:
+                assert (path.stat().st_dev, path.stat().st_ino) == kept[resource.ref]
+    assert not lh.provider.active[lh.token.credential]
+    assert not list((lh.stores["primary"].directory / "file-pins").iterdir())
+    events = lh.stores["primary"].events(decision=lh.use())
+    assert len(canonical(events)) > 65536
+    assert len(events) < 2048 and all(len(canonical(e["data"])) <= 65536 for e in events)

@@ -2572,3 +2572,33 @@ The historical 154-input local manifests remain intact; 153 inputs are unchanged
 and the ordinary CI workflow is the sole changed hash. Fresh exact-head hosted
 full/native completion is required and recorded on PR #75 after it succeeds.
 See hosting-lifecycle-analysis.md for the reviewed implementation classification.
+
+## Subsequent journal-capacity source qualification
+
+The connector review at `78123c50b08a3752db9dcd34dc8ae6f4a9b36753` found
+that LifecycleStore.events reparsed the complete journal with the single-document
+65,536-byte cap, although each of up to 2,048 events is independently validated.
+Three valid roughly 25 KiB events reproduced that failure. The implementation
+now deep-copies the already validated structures inside the same mutate fence.
+Per-event size, event count, schema, canonical bytes, hash/witness checks and
+original clocks remain unchanged; this is a private T012S02/S05/S07 correction.
+
+Both new controls fail with the old aggregate conversion and pass with the fix.
+The owning mTLS positive selects 63 resources: 30 run files, 31 retained files,
+one shared file and one token; the actual worker becomes the 64th final resource.
+Maximal legal handles grow its primary journal above 64 KiB during actual final
+cleanup, followed by independent audit and retained/shared generation checks.
+The old-copy counterfactual fails while 2.75 seconds remain on its Decision,
+separating the size defect from deadline refusal. A separate all-run stress
+probe exhausted its unchanged 10-second Decision and remained unverified;
+all-run throughput at this storage latency is not qualified. No clock or
+cleanup/read limit was extended to make the positive pass.
+
+The corrected collection is 107 lifecycle / 2,310 full / 2,005 mandatory native
+nodes, with H05=26 and H11=107; every accepted 1,898 baseline identity, digest
+and anchor remains. The earlier 153-unchanged/one-workflow account applies only
+to the CI-cap checkpoint at 78123c5. This subsequent runtime/test correction
+receives a new complete 154-input freeze and renewed full/native execution.
+Renewed immutable-head full/native and hosted checks are pending at this source
+checkpoint; PR #75 will hold completion receipts after execution. Source
+ratification, T012T-V and operational authority remain separate.

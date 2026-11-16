@@ -242,7 +242,7 @@ T012S01-T012S07 are executable; mark completion only after actual checks. Preser
 all old matrix identities and budgets. T012T-V, setup/dispatch and live qualification
 remain uncommissioned; feedback deferred and neither blocked write replayed.
 
-## T012S isolated candidate qualified
+## Historical T012S isolated candidate qualification
 
 The commissioned T012S/S01-S07 implementation and isolated qualification are
 complete: 105 lifecycle cases, 2,308 full tests plus four subtests and 2,003 mandatory native cases,
@@ -274,3 +274,13 @@ T012S07's publication correction includes the ordinary source-CI job cap: 20 to
 The prior local 154-input receipts remain historical; one ordinary workflow
 hash changes and the other 153 inputs are identical. PR #75 records fresh hosted
 full/native results. Protected defaults and runtime authority budgets are unchanged.
+
+The subsequent journal-capacity fix deep-copies validated events without imposing
+a single-document limit on their aggregate. Its corpus is 107 lifecycle / 2,310
+full / 2,005 native cases. Its new complete 154-input freeze is ready; renewed
+full/native and hosted execution remain pending at this source checkpoint, with
+completion receipts to be posted on PR #75. The
+153/one account above describes only the earlier ordinary-CI cap checkpoint.
+The 63-selected-resource mixed-retention positive preserves original clocks;
+the separate all-run throughput stress remains unverified after its Decision
+expired. Do not infer operational qualification or alter runtime budgets.
