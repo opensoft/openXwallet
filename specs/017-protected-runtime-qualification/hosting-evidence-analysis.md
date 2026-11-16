@@ -61,3 +61,13 @@ factory PR, seed with that real reference, verify only the new row moves, and re
 ledger/all affected gates before CI/review. Never invent a number, use wallet #75
 as factory provenance, edit rows manually or waive the gate. This pending publication
 step does not commission a new PR, implementation or operational action now.
+
+## Final consistency refinements
+
+Audience/environment barriers stay in the existing factory signed-workload/context
+verifiers, not the neutral wallet contract. Cleanup must follow actual operation/
+proof use, but report-privacy and cleanup-derived case observations legitimately
+follow cleanup. The new profile validates that phase-specific ordering separately
+from v1's all-case cleanup floor, without modifying v1 or renewing runtime authority.
+Together with an external final-report digest, this removes both temporal and
+self-hash cycles from the proposed projection.

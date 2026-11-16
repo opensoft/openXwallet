@@ -55,3 +55,17 @@ The report cannot be a wallet possession proof, openMFA factor receipt, human
 approval or consumer dependency decision. It makes no HSM/non-exportability or
 human-MFA claim. No fixture credential/report is an operational input. Retention,
 transport, publication and live acceptance require later separate source/owner gates.
+
+## Factory context and report-time ordering
+
+Valid-signed audience/environment mutations exercise the existing factory workload/
+context verification path before the unchanged neutral owning proof; they do not
+teach neutral openWallet verification GitHub-specific fields or semantics.
+
+Cleanup freshness is relative to the latest actual operation/proof-use observation.
+Cleanup-derived and H12 privacy results can follow verified cleanup and precede
+report issuance, without reactivating runtime use. The new encoder cannot directly
+reuse v1's all-case-before-cleanup floor for those later report-only observations.
+Validate operational-use ordering and report-time freshness separately; preserve
+existing v1 output/validation behavior. This avoids an impossible temporal cycle
+between checking the completed projection and the cleanup facts it contains.
