@@ -14,7 +14,7 @@ ownership, validation, versioning, and release constraints.
 
 - Active feature: 017-protected-runtime-qualification; plan:
   specs/017-protected-runtime-qualification/plan.md.
-  Current bounded T012S subplan: specs/017-protected-runtime-qualification/hosting-lifecycle-plan.md.
+  Current bounded T012T preparation subplan: specs/017-protected-runtime-qualification/hosting-evidence-plan.md.
 - Ratified factory composition: opensoft/openXfactory,
   openspec/changes/prepare-protected-runtime-qualification/.
   Feature 017 tasks.md is the sole implementation list. Brett Heap ratified
@@ -314,6 +314,26 @@ mandatory native cases, H05=29/H11=119, with every accepted baseline preserved.
 Complete immutable-head review/full/native/hosted qualification is pending at
 this source checkpoint; completion receipts will be posted on PR #75. Earlier
 interrupted/failed runs remain diagnostic. No operational authority is inferred.
+
+## Source-accepted T012S and current T012T preparation
+
+Brett source-ratified #75 at dbe855cf3a41475426cd1329ca46d7b95dee2905 and
+then explicitly directed governed landing when green, post-merge CI verification
+and T012T preparation. Normal merge d832709a1119c17014287cd15ff8661bfd758cc4
+is the clean integration with existing P1 consumer main fce58c192e93; lifecycle
+runtime/native tests/feature017 content retain accepted bytes. Exact-merge ordinary
+source CI run43887121548 passes full2,322 and required-native2,017, H05=29/H11=119.
+
+Only preparation is now commissioned. Factory draft add-protected-runtime-report
+owns the proposed new closed protected-report profile; feature017
+hosting-evidence-plan.md/acceptance/analysis/contracts and sole tasks.md T012T01-T012T06
+prepare implementation. These source tasks remain unchecked/uncommissioned until
+explicit paired-profile acceptance and implementation authorization. H10's budget
+anchors are not a connected qualifier; H12 is not implemented. Keep current source/
+fixture reports and refusing CLI compatible; no runtime/workflow/dependency/pin
+change, provider service, setup or protected dispatch follows. T012U-V/T001/T013-T015,
+live report/consumer/human/domain acceptance remain separate. Feedback stays
+deferred and neither historical blocked write is replayed.
 
 ## Issue #73 complete-source analysis
 

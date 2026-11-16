@@ -2704,3 +2704,56 @@ Renewed complete immutable-head full/native, local review and hosted qualificati
 are pending at this source checkpoint; PR #75 will hold completion receipts.
 Source acceptance, T012T-V, operational setup and protected dispatch remain
 separate and unauthorized. Feedback stays deferred; blocked writes are not replayed.
+
+## T012S source acceptance, governed landing and T012T preparation
+
+Brett Heap explicitly ratified #75 at
+`dbe855cf3a41475426cd1329ca46d7b95dee2905` for source acceptance only, recorded
+in the [owner receipt](https://github.com/opensoft/openXwallet/pull/75#issuecomment-6919256488).
+He then authorized landing when green, post-merge CI verification and T012T preparation.
+Seven runnable exact-head PR checks and local/connector review passed; both finding
+threads were resolved. Normal merge `d832709a1119c17014287cd15ff8661bfd758cc4`
+required no admin override. Existing main P1 consumer fixes at
+`fce58c192e93be9678cfd94fee81f9dacd41e5aa` account for13 inherited paths;
+`git merge-tree` independently reproduces actual tree
+`2e058d12f1f32c2795629ea21e305cc1f6131dfe`. Lifecycle runtime, native tests
+and feature017 retain their ratified content; the complete tree is a clean
+integration rather than a claim that main's prior work disappeared.
+
+[Exact-merge source run43887121548](https://github.com/opensoft/openXwallet/actions/runs/43887121548)
+completed success. Full: 2,322 passed, three shallow-history skips and nine subtests;
+mandatory native: all2,017 passed, no skips, H05=29/H10=34/H11=119 and conformancePASS.
+The existing workflow permits main-only manual source validation with contents-read,
+no protected environment or OIDC. This run did not invoke the protected runtime
+workflow. Other ordinary workflows are PR-only; no post-merge rerun is claimed
+for them. Main's Sonar check posted NEUTRAL, not a claimed new green analysis.
+
+The three shallow-history skips remain the dedicated full-history carve/neutrality
+checks. The source-accepted local full/native qualification and exact-generation
+cleanup receipts on #75 remain historical evidence; no fixture or live service was
+started for this documentation preparation.
+
+New preparation: `hosting-evidence-plan.md`, acceptance/analysis and
+`contracts/hosting-evidence.md`, paired with factory draft
+`openspec/changes/add-protected-runtime-report/`. The factory owns new report/case
+vocabulary; this does not ratify it or commission T012T implementation. Proposed
+T012T01-T012T06 remain unchecked in the sole tasks.md list. Source/fixture reports,
+neutral APIs/pins, runtime/workflow defaults and existing budgets are unchanged.
+H10 budget tests do not establish a connected qualifier; H12 remains unimplemented.
+Preparation checks are recorded with the candidate after pinned validation and
+scope/link consistency; no fresh draft hosted CI/expert review is claimed.
+
+T012U-V, T001/T013-T015, provider setup, protected dispatch, live qualification,
+consumer/human/domain acceptance remain separate. Feedback stays deferred and
+neither historical blocked write is replayed.
+
+Preparation document checks pass: adapter pinned strict OpenSpec6/6; factory143
+passing targets plus the same one accepted add-chain-attestation exception; the
+new protected-report packet passes strict validation with no issues. Factory
+code-surface, target-release and dependency/archive-date checks pass. Scope/link
+checks confirm only seven factory and nine adapter governance/planning files,
+29 added relative links, no host paths and no runtime/test/workflow/dependency/pin
+changes. All proposed implementation and operational owner boxes remain unchecked.
+Factory ledger generation still requires the real new factory PR number; the
+ledger remains unchanged and this publication prerequisite is recorded explicitly.
+No new candidate PR, hosted CI or expert-review claim is made by this local commit.
