@@ -58,7 +58,7 @@ def measured(tool, root):
     directory = tool.prepare(root, ".coverage-reports")
     cov = coverage.Coverage(data_file=str(directory / ".coverage"),
                             data_suffix=True, branch=True, config_file=False)
-    cov.set_option("run:relative_files", True)
+    cov.set_option("run:relative_files", False)
     cov.set_option("run:include", [str(root / "scripts/*")])
     cov.start()
     try:
@@ -437,3 +437,42 @@ def test_auxiliary_evidence_cannot_omit_checks_or_mix_source(
     with pytest.raises(tool.Refusal):
         tool.assemble_measurements(repository, directory)
     assert not list(directory.glob(".coverage.auxiliary.*"))
+
+
+
+def test_nested_startup_keeps_same_named_sources_and_hits_distinct(
+        tool, repository):
+    roots = (repository, repository / "openWallet/code",
+             repository / "openWallet/spec")
+    for index, root in enumerate(roots):
+        (root / "scripts").mkdir(parents=True, exist_ok=True)
+        (root / "scripts/collision.py").write_text(
+            "def choose(value):\n    if value:\n        return 1\n"
+            "    return 2\nchoose(" + ("False" if index == 1 else "True") + ")\n")
+    full_assembly(tool, repository)
+    for root in reversed(roots[1:]):
+        git(root, "add", "scripts/collision.py")
+        git(root, "commit", "-qm", "synthetic distinct source")
+    git(repository / "openWallet", "add", "code", "spec")
+    git(repository / "openWallet", "commit", "-qm", "synthetic leg pins")
+    git(repository, "add", "scripts/collision.py", "openWallet")
+    git(repository, "commit", "-qm", "synthetic complete source")
+    directory = tool.prepare(repository, ".coverage-reports")
+    environment = dict(os.environ, COVERAGE_PROCESS_START=str(repository / ".coveragerc"),
+                       COVERAGE_ROOT=str(repository),
+                       COVERAGE_FILE=str(directory / ".coverage"))
+    environment.pop("COVERAGE_PROCESS_CONFIG", None)
+    for root in roots:
+        subprocess.run([sys.executable, "scripts/collision.py"], cwd=root,
+                       env=environment, check=True, timeout=30)
+    (repository / "pytest-report.xml").write_text(
+        '<testsuite tests="3" failures="0" errors="0" skipped="0"/>')
+    tool.generate_report(repository, directory)
+    files = json.loads((directory / "coverage.json").read_text())["files"]
+    names = ("scripts/collision.py", "openWallet/code/scripts/collision.py",
+             "openWallet/spec/scripts/collision.py")
+    assert set(names) <= set(files)
+    assert 3 in files[names[0]]["executed_lines"]
+    assert 3 in files[names[1]]["missing_lines"]
+    assert 4 in files[names[1]]["executed_lines"]
+    assert 4 in files[names[2]]["missing_lines"]

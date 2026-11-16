@@ -130,8 +130,10 @@ jobs:
         run: |
           TMPDIR="$(mktemp -d "$RUNNER_TEMP/wallet-pytest.XXXXXX")"
           export TMPDIR
-          sudo --preserve-env=WALLET_BINDING_OWNER_CODE,HOME,PATH,TMPDIR,COVERAGE_PROCESS_START,COVERAGE_ROOT,COVERAGE_FILE \
-            setpriv --reuid "$(id -u)" --regid "$(id -g)" \
+          # sudo's initial secure loader strips TMPDIR before its preserve list.
+          # Pass this fresh, task-owned path after sudo starts.
+          sudo --preserve-env=WALLET_BINDING_OWNER_CODE,HOME,PATH,COVERAGE_PROCESS_START,COVERAGE_ROOT,COVERAGE_FILE \
+            env TMPDIR="$TMPDIR" setpriv --reuid "$(id -u)" --regid "$(id -g)" \
               --clear-groups --bounding-set=-all --inh-caps=-all --ambient-caps=-all \
               --no-new-privs \
               "$(command -v python3)" -m pytest tests/ -q -rs --junitxml=pytest-report.xml

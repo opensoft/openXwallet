@@ -112,7 +112,7 @@ def test_only_complete_passing_provider_assertions_are_accepted(tool, tmp_path, 
     monkeypatch.setitem(tool.PROVIDERS, "openspec", {"tests": ["assertions.py"]})
     try:
         plugin = tool.CollectionBindings(tmp_path, tmp_path, "openspec", record)
-        plugin.pytest_collection_modifyitems(None, None, [
+        plugin.pytest_collection_modifyitems([
             SimpleNamespace(module=module, nodeid=node)])
         if fault == "deselection":
             with pytest.raises(ValueError, match="deselect"):
@@ -129,7 +129,7 @@ def test_only_complete_passing_provider_assertions_are_accepted(tool, tmp_path, 
             if fault == "duplicate-report":
                 plugin.pytest_runtest_logreport(report)
         session = SimpleNamespace(exitstatus=0)
-        plugin.pytest_sessionfinish(session, 0)
+        plugin.pytest_sessionfinish(session)
         assert session.exitstatus == (0 if fault == "none" else 1)
     finally:
         monkeypatch.undo()

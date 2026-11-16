@@ -1,7 +1,7 @@
 [run]
 branch = True
 parallel = True
-relative_files = True
+relative_files = False
 patch = subprocess
 include =
     ${COVERAGE_ROOT?}/scripts/*

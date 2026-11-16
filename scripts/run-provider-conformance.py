@@ -20,6 +20,12 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+VERIFIER = 'scripts/validate-openspec-cli-pin.py'
+INSTALLER = 'scripts/install-pinned-openspec-cli.py'
+CLI_PIN = 'contracts/openspec-cli-pin.yaml'
+CLI_LOCK = 'contracts/openspec-cli-pin.1.12.0.package-lock.json'
+SHAPE_READER = 'scripts/repo_shape.py'
+NAMING_CLI = 'scripts/validate-repository-naming.py'
 MODES = {"openspec-adapter": ("openspec", ""),
          "openspec-spec": ("openspec", "openWallet/spec"),
          "shape": ("shape", "openWallet")}
@@ -31,19 +37,19 @@ PROVIDERS = {
             "tests/openspec_cli_pin/test_openspec_cli_pin.py"
         ],
         "copies": {
-            "scripts/validate-openspec-cli-pin.py": "scripts/validate-openspec-cli-pin.py",
-            "scripts/install-pinned-openspec-cli.py": "scripts/install-pinned-openspec-cli.py",
-            "contracts/openspec-cli-pin.yaml": "contracts/openspec-cli-pin.yaml",
-            "contracts/openspec-cli-pin.1.12.0.package-lock.json": "contracts/openspec-cli-pin.1.12.0.package-lock.json"
+            VERIFIER: VERIFIER,
+            INSTALLER: INSTALLER,
+            CLI_PIN: CLI_PIN,
+            CLI_LOCK: CLI_LOCK
         },
         "assets": [
             "tests/openspec_cli_pin/test_openspec_cli_pin.py",
             "tests/openspec_cli_pin/fixtures/openspec-1.12.0-validate-changes-strict-report-findings.json",
             "tests/openspec_cli_pin/fixtures/openspec-1.12.0-validate-one-change-strict.json",
-            "scripts/validate-openspec-cli-pin.py",
-            "scripts/install-pinned-openspec-cli.py",
-            "contracts/openspec-cli-pin.yaml",
-            "contracts/openspec-cli-pin.1.12.0.package-lock.json"
+            VERIFIER,
+            INSTALLER,
+            CLI_PIN,
+            CLI_LOCK
         ]
     },
     "shape": {
@@ -77,15 +83,15 @@ PROVIDERS = {
             "tests/test_yaml_reader_spaces.py"
         ],
         "copies": {
-            "scripts/repo_shape.py": "scripts/repo_shape.py",
-            "scripts/validate-repository-naming.py": "scripts/validate-repository-naming.py",
+            SHAPE_READER: SHAPE_READER,
+            NAMING_CLI: NAMING_CLI,
             "scripts/validate-manifest.py": "templates/assembly-root/scripts/validate-manifest.py",
             "scripts/validate-pins.py": "templates/assembly-root/scripts/validate-pins.py",
             "scripts/bootstrap.py": "templates/assembly-root/scripts/bootstrap.py"
         },
         "assets": [
-            "scripts/repo_shape.py",
-            "scripts/validate-repository-naming.py",
+            SHAPE_READER,
+            NAMING_CLI,
             "templates/assembly-root/scripts/bootstrap.py",
             "templates/assembly-root/scripts/validate-manifest.py",
             "templates/assembly-root/scripts/validate-pins.py",
@@ -199,7 +205,7 @@ class CollectionBindings:
         self.provider, self.target, self.role, self.record = provider, target, role, record
         self.nodes, self.phases, self.problems = set(), {}, []
 
-    def pytest_collection_modifyitems(self, session, config, items):
+    def pytest_collection_modifyitems(self, items):
         expected = {self.provider / name for name in PROVIDERS[self.role]["tests"]}
         modules = {item.module for item in items}
         actual = {Path(module.__file__).resolve() for module in modules}
@@ -213,9 +219,9 @@ class CollectionBindings:
         self.nodes = set(nodes)
         if self.role == "openspec":
             for module in modules:
-                module.SCRIPT = self.target / "scripts/validate-openspec-cli-pin.py"
-                module.INSTALLER = self.target / "scripts/install-pinned-openspec-cli.py"
-                module.PIN = self.target / "contracts/openspec-cli-pin.yaml"
+                module.SCRIPT = self.target / VERIFIER
+                module.INSTALLER = self.target / INSTALLER
+                module.PIN = self.target / CLI_PIN
 
     def pytest_deselected(self, items):
         if items:
@@ -229,7 +235,7 @@ class CollectionBindings:
         if hasattr(report, "wasxfail"):
             self.problems.append("expected-failure reporting is not acceptance")
 
-    def pytest_sessionfinish(self, session, exitstatus):
+    def pytest_sessionfinish(self, session):
         permitted = set(self.record["allowed_skips"])
         passed = {"setup": "passed", "call": "passed", "teardown": "passed"}
         skipped = {"setup": "skipped", "teardown": "passed"}
@@ -257,7 +263,7 @@ class ShapeBindings(CollectionBindings):
                        for local, remote in PROVIDERS["shape"]["copies"].items()
                        if Path(local).name != "repo_shape.py"}
 
-    def pytest_configure(self, config):
+    def pytest_configure(self):
         module = sys.modules.get("conftest")
         expected = self.provider / "tests/conftest.py"
         if module is None or Path(module.__file__).resolve() != expected:
@@ -265,7 +271,7 @@ class ShapeBindings(CollectionBindings):
         self.conftest, self.original_run = module, module.run_script
         module.run_script = self.run_script
 
-    def pytest_unconfigure(self, config):
+    def pytest_unconfigure(self):
         if self.conftest is not None:
             self.conftest.run_script = self.original_run
 
@@ -288,7 +294,7 @@ class ShapeBindings(CollectionBindings):
 
 
 def import_actual_reader(target):
-    path = target / "scripts/repo_shape.py"
+    path = target / SHAPE_READER
     spec = importlib.util.spec_from_file_location("repo_shape", path)
     module = importlib.util.module_from_spec(spec)
     sys.modules["repo_shape"] = module

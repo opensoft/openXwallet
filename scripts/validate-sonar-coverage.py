@@ -27,6 +27,7 @@ REPORT_DIRECTORY = ".coverage-reports"
 COVERAGE_JSON = "coverage.json"
 COVERAGE_XML = "coverage.xml"
 JUNIT_REPORT = "pytest-report.xml"
+MEASUREMENT = "measurement.json"
 CONFIGS = (".coveragerc", "sonar-project.properties",
            "requirements/sonar-analysis.lock", "requirements/analysis-shape.lock",
            "requirements/analysis-providers.json")
@@ -150,12 +151,12 @@ def prepare(root, name):
     state = snapshot(root)
     require(not directory.exists(), "existing measurement cannot be reused")
     directory.mkdir(mode=0o700)
-    (directory / "measurement.json").write_text(json.dumps(state, indent=2) + "\n")
+    (directory / MEASUREMENT).write_text(json.dumps(state, indent=2) + "\n")
     return directory
 
 
 def unchanged(root, directory):
-    before = read_json(directory / "measurement.json")
+    before = read_json(directory / MEASUREMENT)
     require(before == snapshot(root), "source/config/revision changed after measurement")
     return before
 
@@ -175,7 +176,7 @@ def assemble_measurements(root, directory):
     auxiliary = directory / "auxiliary"
     require(not auxiliary.is_symlink() and auxiliary.is_dir(),
             "auxiliary measurement missing")
-    require(read_json(auxiliary / "measurement.json") == state,
+    require(read_json(auxiliary / MEASUREMENT) == state,
             "auxiliary source/config/revision differs")
     reports = [directory / JUNIT_REPORT,
                *(auxiliary / name for name in AUXILIARY_REPORTS)]
@@ -208,7 +209,7 @@ def generate_report(root, directory):
     totals = junit_counts(root / JUNIT_REPORT)
     cov = coverage.Coverage(data_file=str(directory / ".coverage"),
                             config_file=False, branch=True)
-    cov.set_option("run:relative_files", True)
+    cov.set_option("run:relative_files", False)
     cov.set_option("report:include_namespace_packages", True)
     cov.combine(data_paths=[str(directory)], strict=True, keep=True)
     require(cov.get_data().has_arcs(), "no real branch data")

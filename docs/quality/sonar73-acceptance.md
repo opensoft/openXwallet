@@ -26,7 +26,7 @@ complete-source coverage and exact-main gate verification remain pending.
 The coverage verifier is adapted from openXfactory@a31e2060e61fcec47a818ccdcd4d8c675a440505.
 It binds every nested revision, exhaustive production Python inventory,
 unchanged source/configuration and actual branch-coverage reports. Its
-53 evidence and provider-boundary tests preserve zero-hit files and refuse missing/forged data,
+54 evidence and provider-boundary tests preserve zero-hit files and refuse missing/forged data,
 lost parent execution, changed nested pins and incomplete/weakened gates.
 No coverage hits or file identities are synthesized.
 
@@ -55,3 +55,16 @@ shape repair is openRepoShape #1331 at 55cc8aeef4a96985d76cddc7a0ee834c97909860.
 These remain prepared candidates pending main admission. The current neutral
 root candidate is openWallet #13 at 6b0395d37ba8786bc2ea802abbdb2e5e8a594d54;
 the adapter will be repinned to accepted publication before landing.
+
+
+Qualification correction: collection and combination both retain absolute
+source identities. Relative-name combination can auto-alias a nested scripts/
+path to an outer scripts/ path. The real startup regression runs same-named
+sources from the assembly, code and spec working directories and requires their
+distinct branch hits to remain separate in the ordinary relative XML/JSON report.
+Earlier relative-name data is retained as failed diagnostic evidence and is not
+eligible for the final scan.
+
+The privilege launcher passes each fresh task-owned TMPDIR after sudo starts:
+sudo's initial secure loader removes that variable before its preserve list.
+The original privilege controls, pytest assertions and timeouts remain.
