@@ -86,4 +86,5 @@ The selected manifest permits at most three tokens under the unchanged private12
 final cleanup limit. Source correction testing adds a deterministic process-exit
 ESRCH control. The new measured collection is 105 lifecycle / 2,003 native / 2,308
 full cases; corrected qualification passes as recorded in evidence.md.
-Earlier results above describe the initial candidate, not these corrected bytes.
+Historical preparation and initial-review paragraphs predate these corrections;
+evidence.md records the corrected qualification results.
