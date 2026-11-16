@@ -94,9 +94,9 @@ submodule_path: openWallet
 # extends the CHANGELOG, and moves no gitlink and no digest, so `legs.code` and
 # `files:` below stand). Brett Heap's ruling, quoted at `contract_bundle_tag`
 # above, puts the annotated tag `wallet-v1.6` on this commit. Exactly 40 hex.
-# Issue #73 candidate: paired admitted code and prepared spec/shape repairs.
-# Landing is held until their upstream main acceptance is verified.
-commit: "7351c23e81dfc1d1dead466c7168670d7dfda53e"
+# Issue #73 repair: published neutral root with admitted code, spec and shape.
+# Both leg pins and all eight artifact digests remain verified together.
+commit: "58cfa716c66e5b7f594db19b2d16f2bbc6fe7d9b"
 revision_kind: commit
 
 digest_algorithm: sha256

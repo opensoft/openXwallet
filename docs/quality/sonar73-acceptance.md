@@ -1,6 +1,6 @@
 # openXwallet #73 source acceptance
 
-Status: implementation in progress; main acceptance is pending.
+Status: provider repairs are admitted; fresh wallet CI and main acceptance are pending.
 
 The [original issue and gate record](sonar73-before.json) preserves all eight
 finding identities, six original Sonar way conditions and profiles. The
@@ -20,7 +20,7 @@ The existing wallet-v1.6 tag and separate future v1.7 train remain untouched.
 
 Shared checksum repair: [openXfactory #1331](https://github.com/opensoft/openXfactory/pull/1331).
 Neutral spec consumption: [openWallet-spec #12](https://github.com/opensoft/openWallet-spec/pull/12).
-Shape provider main admission, compatible root/adapter pins, final
+The dated preparation checkpoints below retain earlier pending states. Final
 complete-source coverage and exact-main gate verification remain pending.
 
 The coverage verifier is adapted from openXfactory@a31e2060e61fcec47a818ccdcd4d8c675a440505.
@@ -40,7 +40,7 @@ restarted no session/bench and restored or overwritten no owner work.
 
 The additional source-conformance job executes both owning legs and immutable
 provider assertions against the actual copied files. The CLI provider has 193
-exact assertions per consumer copy; the shape selection has 2,223 exact assertions
+exact assertions per consumer copy; the current shape selection has 2,231 exact assertions
 across 25 modules. Collection fingerprints and per-phase reports refuse omissions,
 deselection, expected failures and unrecorded skips. Provider roots remain the
 source of their fixtures; production file identities and coverage hits are not
@@ -53,11 +53,11 @@ report and missing real branch-data shards before combining actual measurements.
 All owned Python files, including zero-hit files, remain in the final inventory.
 
 Upstream supplied-artifact repair is openXfactory #1333 at e0e0b9a31ec8f4d5ec2d611d373ce0a918abb5de;
-shape repair is openRepoShape #1331, with final import-reference correction at
-0be1f3b8ff48b4c063a40b1adfc2859a8cb169a9. Shape remains a candidate pending
-its full checks and main admission; the supplied-artifact provider is admitted. The current neutral
-root candidate is openWallet #13 at 7351c23e81dfc1d1dead466c7168670d7dfda53e;
-the adapter will be repinned to accepted publication before landing.
+The then-candidate shape repair was openRepoShape #1331, with final import-reference correction at
+0be1f3b8ff48b4c063a40b1adfc2859a8cb169a9. At that preparation checkpoint,
+shape admission and the openWallet #13 candidate at
+7351c23e81dfc1d1dead466c7168670d7dfda53e still awaited qualification.
+The published admission results are recorded below.
 
 
 Qualification correction: collection and combination both retain absolute
@@ -158,5 +158,38 @@ with only two literal-import reference checks failing. Its production detector
 already recognizes guarded fallback imports. The test-only 0be1f3b8 correction
 retains exact required-name checks, requires all literal names in the current
 provider, and adds two guard-removal controls. All 187 tests in that module pass.
-The full unchanged suite is rerunning; no failing required check is bypassed.
+At that checkpoint the full unchanged suite was rerunning; no failing required
+check was bypassed.
 All eleven managed consumer bytes and their individual hashes remain unchanged.
+
+
+### Published provider admission and final wallet qualification
+
+openRepoShape #1331 qualified at 0be1f3b8ff48b4c063a40b1adfc2859a8cb169a9:
+[run 43966640703](https://github.com/opensoft/openRepoShape/actions/runs/43966640703)
+passed 22,450 Linux tests with 409 existing platform/optional skips. Packaging,
+Git Bash/Windows and the unchanged Sonar check also passed. It merged as
+833f75564c6ed4b622c3d504f66a84ccdf2537c8 with qualified ancestry and an identical
+tree verified. Both earlier actionable hosted review threads are resolved.
+
+openWallet #13 qualified at 7351c23e81dfc1d1dead466c7168670d7dfda53e and merged as
+58cfa716c66e5b7f594db19b2d16f2bbc6fe7d9b. Its qualified ancestry and identical
+tree are verified. The adapter now selects that published root, code b7c8ca1e
+and spec e0f7467f together. All eleven managed shape copies and all eight
+manifest-owned artifacts retain their verified bytes; the historical wallet-v1.6
+tag and separate future release work remain unchanged.
+
+The d3c489b9 wallet checkpoint in
+[run 43968252614](https://github.com/opensoft/openXwallet/actions/runs/43968252614)
+passed all 2,414 full-source tests plus 11 subtests and all 2,017 native cases.
+Its two genuine measurement partitions passed 2,413 CTracer cases and one
+SysMonitor case. Complete collection identities, all assertion phases/subtest
+contexts, both immutable parent branch-data hashes and all four-repository
+source/configuration snapshots match. This candidate checkpoint deliberately
+refused source admission while the provider was pending; analysis was skipped.
+It is retained as diagnostic evidence, not the final source/main qualification.
+
+The seven original primary checkout heads, working changes and staged changes
+still match their preservation baseline. All original worktree paths and bench
+sessions/panes remain present. Final exact-head CI and published main gate
+acceptance are still required after this admission-only pin update.
