@@ -268,3 +268,9 @@ finding resolution and presentation for ratification. This supplies no source
 acceptance, merge, T012T-V or operational grant. Setup/dispatch remain unauthorized,
 feedback deferred and neither blocked write replayed. Preserve accepted scope and
 budgets; keep CI, local review and source ratification as distinct gates.
+
+T012S07's publication correction includes the ordinary source-CI job cap: 20 to
+45 minutes so its existing full and mandatory native suites can both complete.
+The prior local 154-input receipts remain historical; one ordinary workflow
+hash changes and the other 153 inputs are identical. PR #75 records fresh hosted
+full/native results. Protected defaults and runtime authority budgets are unchanged.

@@ -88,3 +88,12 @@ ESRCH control. The new measured collection is 105 lifecycle / 2,003 native / 2,3
 full cases; corrected qualification passes as recorded in evidence.md.
 Historical preparation and initial-review paragraphs predate these corrections;
 evidence.md records the corrected qualification results.
+
+## Ordinary source-CI execution-cap correction
+
+The existing full suite and all 2,003 mandatory native cases must finish within
+the corrected 45-minute ordinary CI job cap. Ordinary full-suite environment
+skips never waive native cases. The historical local manifest remains intact;
+153 inputs are unchanged and only the ordinary CI workflow timeout changes.
+Require semantic workflow equivalence except that cap and fresh exact-head
+hosted full/native success, recorded on PR #75. See hosting-lifecycle-analysis.md.

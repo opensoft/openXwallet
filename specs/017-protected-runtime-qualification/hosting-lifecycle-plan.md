@@ -259,3 +259,12 @@ ESRCH control. The new measured collection is 105 lifecycle / 2,003 native / 2,3
 full cases; corrected qualification passes as recorded in evidence.md.
 Historical preparation and initial-review paragraphs predate these corrections;
 evidence.md records the corrected qualification results.
+
+## Ordinary source-CI execution-cap correction
+
+T012S07 also corrects the adapter-owned ordinary pytest job cap from 20 to 45
+minutes, allowing the existing sequential full/native verification to complete.
+All checks, suite order, triggers, permissions, isolation, protected defaults and
+runtime budgets remain unchanged. See hosting-lifecycle-analysis.md for the
+measured reason, governance classification and 153-unchanged/one-workflow input
+provenance. Fresh exact-head full/native CI is required before publication success.

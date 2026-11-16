@@ -118,3 +118,30 @@ Every accepted baseline identity, digest and anchor is preserved. Corrected
 ordered/full/native gates and exact-root fixture cleanup pass; evidence.md records
 the measured results and PR #75 carries exact-head hosted CI.
 T012T-V and all operational tasks remain open.
+
+## Ordinary source-CI execution-cap correction
+
+Hosted run `43801720583` at `6be8145e5b9567dd7e9d1e15140842acb633cafe`
+passed the full suite (2,308 passed, three shallow/environment skips and nine
+subtests in 11:55), then its mandatory native stage was interrupted. The job
+annotation explicitly reports the 20-minute maximum execution time. This is
+incomplete native qualification, not a passing gate or a test assertion failure.
+
+T012S07 includes the adapter-owned kept/post-carve ordinary pytest workflow.
+Correct only its combined job execution cap from 20 to 45 minutes and the stale
+eight-minute comment. The independently measured local full (19:47) and native
+(17:28) stages total 37:15, leaving bootstrap and bounded scheduling headroom.
+Both suites, their order and native zero-missing/skip enforcement remain required.
+Triggers, token permissions, privilege drops, isolation, required check identity,
+protected workflow defaults and all runtime decision/read/cleanup budgets remain
+unchanged. This restores the already-specified verification behavior as an
+implementation correction; it adds no factory contract or acceptance policy.
+
+Preserve the earlier 154-input manifests and local qualification as historical
+receipts. The corrected final source changes exactly one ordinary CI workflow
+input; the other 153 input hashes remain identical. Check the parsed workflow
+allowing only the job-timeout value, run focused existing workflow/validation
+checks, and require a fresh exact-head hosted full suite and complete 2,003-case
+native matrix. Current-head success is recorded on PR #75 after both finish.
+Ordinary full-suite shallow/environment skips never waive mandatory native cases.
+Owner source ratification and all operational gates remain separate.

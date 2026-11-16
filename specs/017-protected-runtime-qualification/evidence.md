@@ -2556,3 +2556,19 @@ the completed local expert panel supplies the commissioned Codex review evidence
 Owner source ratification remains pending. No T012T-V work, provider setup,
 protected dispatch, live hosting acceptance or feedback submission is authorized
 by these results; neither historical blocked write was replayed.
+
+## Ordinary source-CI execution-cap correction
+
+Run `43801720583` at `6be8145e5b9567dd7e9d1e15140842acb633cafe` passed
+the full suite: 2,308 passed, three shallow/environment skips and nine subtests
+in 11:55. Its native step was then canceled; the annotation explicitly reports
+the 20-minute job maximum. This is incomplete native qualification.
+
+T012S07 corrects the adapter-owned ordinary job cap to 45 minutes, with no
+change to either suite, step order, native zero-missing/skip enforcement, triggers,
+permissions, privilege/isolation boundaries, protected defaults or runtime budgets.
+Local full/native stages total 37:15 before setup, supporting that bounded cap.
+The historical 154-input local manifests remain intact; 153 inputs are unchanged
+and the ordinary CI workflow is the sole changed hash. Fresh exact-head hosted
+full/native completion is required and recorded on PR #75 after it succeeds.
+See hosting-lifecycle-analysis.md for the reviewed implementation classification.
