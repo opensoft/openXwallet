@@ -68,3 +68,10 @@ eligible for the final scan.
 The privilege launcher passes each fresh task-owned TMPDIR after sudo starts:
 sudo's initial secure loader removes that variable before its preserve list.
 The original privilege controls, pytest assertions and timeouts remain.
+
+
+The source-conformance job additionally runs both actual pinned OpenSpec corpora
+through the supplied committed tarballs under immutable setup-node v4 / Node 22.
+Each currently passes all seven strict items; the existing independent CLI gate
+is retained. Both entrypoints still verify SHA-512 and the unchanged 80-package
+lock before installation, with lifecycle scripts disabled.
