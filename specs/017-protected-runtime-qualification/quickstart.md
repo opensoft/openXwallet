@@ -339,15 +339,36 @@ listener, service unit, provider write, credential, setup or dispatch follows fr
 this plan. Use only document/pinned-validator checks for preparation; later source
 qualification uses the reviewed [acceptance matrix](hosting-issuance-acceptance.md).
 
-## T012S source preparation only
+## T012S isolated lifecycle source candidate
 
-The staging lease and immutable final cleanup takeover subplan is
-[hosting-lifecycle-plan.md](hosting-lifecycle-plan.md);
-[hosting-lifecycle-acceptance.md](hosting-lifecycle-acceptance.md) defines H05/H11
-positives/faults. These are future isolated source tests, not deployment or dispatch
-instructions. Do not execute T012S tasks until the owner commissions implementation.
-Use the existing isolated gate procedure after implementation, measure new node
-identities before updating the matrix, and audit task-local process/credential/file
-generations before removing exact fixture roots. Every operational stage remains
-NOT GRANTED; live cleanup/automatic infrastructure expiry needs external-watchdog
-and actual conditional-retirement qualification.
+Brett commissioned isolated implementation of the
+[staging/final lifecycle plan](hosting-lifecycle-plan.md). The
+[acceptance controls](hosting-lifecycle-acceptance.md) use actual separate local
+scheduler/primary/audit processes, mTLS and inert sandboxed workers. Source
+qualification uses the ordinary ordered pin/syntax/plain/strict/full/OpenSpec gates
+and the existing isolation.py/conformance.py procedure with a new private temp root.
+Use the existing pytest workflow privilege-drop boundary: the source-test process
+has no supplementary groups or capabilities and cannot regain privileges. Native
+conformance additionally has only loopback, read-only source and task-local writes.
+
+The new module can be exercised with
+`python3 -m pytest tests/runtime_binding/test_hosted_lifecycle.py -q` inside that
+source-test boundary. Its fixture alone initializes task-local lifecycle journals
+and starts/stops fixture roles. The source package has no automatic initialization,
+service activation, production resolver, default opt-in or protected dispatch.
+Never use fixture credentials, grants, stores or reports as operational inputs.
+
+Staging preserves its private16 allowance; finalization preserves private12 using
+explicit local primary/audit retained-store observation. Moving those reads behind
+remote RPCs requires a separately governed budget if the allocation cannot hold.
+Unknown generations, expired cleanup authority, lost mutation replies or incomplete
+audit leave cleanup unverified; reconcile the same reference by reads and obtain
+separate remedial authority if necessary. Do not repeat a consumed destructive
+attempt, recreate a journal, renew a lease or launch a replacement worker.
+
+Before removing exact fixture roots, retain source hashes, full/native XML and
+journal/process/retirement/preservation summaries outside them, audit actual process
+generations in the correct PID namespace, and confirm native container absence.
+These are isolated source results only. T012T-V, publication/review/source acceptance,
+actual services, setup, dispatch, total-control-host-loss watchdogs and cloud
+conditional retirement remain separate gates. Feedback remains deferred.

@@ -104,7 +104,8 @@ def observation_route(method,target):
 
 def hosted_route(method,target,mode):
     selected=urlsplit(sys.argv[4]);paths={"agent":("/stage/register","/stage/start","/stage/status"),
-                                       "admission":("/v2/plan","/v2/protected")}
+                                       "admission":("/v2/plan","/v2/protected"),
+                                       "lifecycle":("/lifecycle/register","/lifecycle/generation","/lifecycle/prepare","/lifecycle/release","/lifecycle/cleanup","/lifecycle/lease","/lifecycle/status","/lifecycle/ack-stage","/lifecycle/ack-final","/lifecycle/cleanup-audit")}
     if (method!="POST" or target.path not in paths[mode] or target.query or selected.scheme!="https"
             or not selected.hostname or selected.username is not None or selected.password is not None
             or selected.path or selected.query or selected.fragment or selected.netloc!=target.netloc):raise ValueError
@@ -115,7 +116,7 @@ def route():
     method,url=sys.argv[1:3];target=parse_target(method,url)
     if len(sys.argv)==5:
         if sys.argv[3]=="--observation-origin":return observation_route(method,target)
-        if sys.argv[3] in ("--agent-origin","--admission-origin"):return hosted_route(method,target,sys.argv[3][2:-7])
+        if sys.argv[3] in ("--agent-origin","--admission-origin","--lifecycle-origin"):return hosted_route(method,target,sys.argv[3][2:-7])
         return method,fixture_route(method,target)
     if len(sys.argv)!=3:raise ValueError
     if target.netloc=="api.github.com":return method,("api.github.com",443,github_path(method,target.path,target.query),False)
@@ -163,7 +164,7 @@ def main():
     try:
         method,(host,port,path,fixture)=route()
         value=json.loads(sys.stdin.buffer.readline(196609))
-        if fixture in (True,"observation","agent") and any(value[k] is None for k in ("ca","certificate","key")):raise ValueError
+        if fixture in (True,"observation","agent","lifecycle") and any(value[k] is None for k in ("ca","certificate","key")):raise ValueError
         started=time.monotonic()
         context=tls_context(value)
         signal.signal(signal.SIGALRM,expired);signal.setitimer(signal.ITIMER_REAL,min(5,value["seconds"]))
@@ -174,7 +175,7 @@ def main():
         # Connect retains five seconds; response I/O uses the original total RPC
         # remainder, rather than accidentally inheriting the connect timeout.
         connection.sock.settimeout(remaining);signal.setitimer(signal.ITIMER_REAL,remaining)
-        if fixture in ("observation","agent","admission") and value["server_pin"] is not None and "sha256:"+hashlib.sha256(connection.sock.getpeercert(binary_form=True)).hexdigest()!=value["server_pin"]:raise ValueError
+        if fixture in ("observation","agent","admission","lifecycle") and value["server_pin"] is not None and "sha256:"+hashlib.sha256(connection.sock.getpeercert(binary_form=True)).hexdigest()!=value["server_pin"]:raise ValueError
         print("READY",flush=True)
         if sys.stdin.buffer.readline(4)!=b"GO\n":raise ValueError
         connection.request(method,path,body=base64.b64decode(value["body"],validate=True),headers=value["headers"])

@@ -1,11 +1,11 @@
 # T012S staging lease and final cleanup takeover plan
 
-Status: prepared source plan; implementation not commissioned
+Status: isolated source candidate qualified; source acceptance and operational qualification separate
 Date: 2026-11-15
 Feature: 017-protected-runtime-qualification
 Sole executable list: tasks.md, T012S and T012S01-T012S07
 
-## Commission and immutable source basis
+## Preparation commission and immutable source basis
 
 Brett Heap source-ratified factory #1326 at dc159da61860 with adapter #71 at
 74b4af51322b, directed ordered landing when green, then preparation of T012S.
@@ -186,3 +186,58 @@ source candidate must then receive CI/local Codex review and source acceptance.
 T012T-V, T013 selections/authorization, live T014 and consumer/human T015 remain
 separate. No setup, dispatch, provider write, live factor/credential or feedback
 submission is performed by planning or isolated source testing.
+
+## T012S as-built isolated source candidate
+
+Brett subsequently commissioned T012S implementation/testing in isolation. This
+supersedes preparation-only statements above without granting source acceptance,
+publication, setup, dispatch or T012T-V. The factory post-merge CI readback is a
+separate evidence gate; local results never substitute for it.
+
+The opt-in hosted/lifecycle_store.py journal has explicit initialization, private
+inode/schema checks, a chained append-only event log, separate retained commit
+witness and high-water clock. It refuses missing/replaced/corrupt/rolled-back
+state. A crash between database commit and witness publication is indeterminate;
+there is no automatic repair, migration, restore or new registration fallback.
+The witness is not protection against an administrator restoring both stores.
+
+hosted/lifecycle.py freezes registered resources and the manager/actual worker
+generation. The local reference also binds the producer and cleanup roles to the
+same actual Linux PID namespace. Pre-start independent acknowledgement observes
+the durable scheduler intake and selected scheduler process. Each subsequent staging
+lease observation also rechecks that same scheduler generation before permitting start. Finalization derives
+actual accepted configuration/policy; final preparation binds every static byte,
+RunScope, generation, retention class and manifest. A distinct audit acknowledgement
+and current scheduler observation precede the retained stage-release tombstone.
+Final active-lease observations also recheck that selected scheduler generation;
+closed-lease cleanup stays independently available when that scheduler dies.
+Existing RunJanitor/RunLifecycle own the final lease/cleanup decision; their generic
+implementations and the replay-state schema are unchanged.
+
+hosted/lifecycle_service.py supplies explicit pinned-mTLS private registration,
+cleanup and separate audit ports. The worker has no authority. Existing staging
+constructs CleanupRegistration only when explicitly selected, retaining the original
+Decision and shared private16 ledger. Finalization selects RegisteredStageReadback
+as a local retained primary/audit-store capability under its original Decision;
+it adds no relayed RPC and fits private12. A remote-only topology that adds calls
+must return to a governed budget amendment; it cannot reset/join the ledger.
+Nothing imports into an automatically activated service or protected dispatch.
+
+The independent scheduler durably consumes one cleanup request before I/O. Every
+resource action is separately claimed before mutation. A lost/unknown result is
+read-only reconciliation, never another destructive send. Process cleanup uses
+PIDFDs and observed start identity; HostAgent reaps only its own children so a
+zombie cannot count as absent. Selected private-file writers share an ownership
+fence, and credential cleanup uses the existing capability/retirement ledger.
+An independent fresh attempt-bound audit must observe actual absence/revocation
+and retained/shared generations. Unknown unpersisted generation, failed action or
+missing audit stays owned/closed and unverified; none permits a replacement child.
+
+The fixture runs three distinct local scheduler/primary/audit processes with
+separate TLS identities, actual sandboxed inert workers, retained SQLite journals,
+and a local credential-issuer/retirement service. It tests real runner os._exit
+outside finally at four takeover boundaries. Same-user reference processes are
+not deployed OS administration isolation. Total control-host loss, external
+watchdogs, automatic VM expiry, cloud resource retirement and real GitHub App
+credentials remain unqualified. Host-root and trusted writers bypassing the file
+fence are trusted. No provider setup, protected dispatch or real credential is used.

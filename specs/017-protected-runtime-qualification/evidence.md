@@ -1,6 +1,6 @@
 # Preparation and Issuer Slice Evidence
 
-Status: isolated T012H–K source candidate qualified; operational qualification not performed
+Status: isolated T012S source candidate qualified; operational qualification not performed
 Scope: source/isolated fixtures only, with historical preparation and earlier slice evidence
 
 At preparation baseline #49, the new runtime feature had no implementation or live qualification result.
@@ -2361,3 +2361,139 @@ Preparation receipt SHA-256:
 - `ordered-landing-verification.json`: `8d22faccc88f454e1ee8b30d7023a7d93052aa77c226ed7029adf7bc37190c7f`
 - `preparation-document-gates.json`: `31d8f758c8149036948b9f2fe1ae1702c767e9f5a8b15a3310930e19ddce982a`
 - `preparation-scope-proof.json`: `c777707855f87109ab6b87382fdbec1688435340a4faee4cd6ee570344daff7a`
+
+## 2026-11-15: Commissioned isolated T012S lifecycle candidate
+
+Brett directed verification of factory post-merge CI, then implementation/testing
+of T012S in isolation from the prepared plan. Setup and dispatch remain NOT GRANTED;
+feedback stays deferred and neither historical blocked write is replayed. This
+commission covers T012S01-S07 only, not T012T-V, publication/source acceptance or
+live qualification.
+
+The source realization and limitations are in hosting-lifecycle-plan.md; controls
+and coordinator consistency review are in hosting-lifecycle-acceptance.md and
+hosting-lifecycle-analysis.md. The new implementation uses retained independent
+scheduler/primary/audit journals, explicit mTLS role capabilities, actual worker
+PID/start/session/cgroup observations, same PID-namespace selection, immutable
+actual-full-config takeover, per-generation destructive-attempt consumption and
+fresh independent cleanup audit. Generic lifecycle/replay code, default refusal,
+neutral pins/contracts and all protected workflow YAML are preserved.
+
+The initial focused development batch passes all 80 then-existing nodes. After the scheduler correction, collection measures
+2,282 full nodes and 1,980 required native nodes. The new module fingerprint is
+`4aeea91a85313922960073905c78414460bf6c6bcfdbd4eddc98b4ed1eb56a15`;
+all old 1,898 node identities, module counts/fingerprints and substantive anchors
+are preserved. H05 anchors 21 nodes and H11 anchors all 82 lifecycle nodes. These
+are committed collection expectations, not a generated CI allowance.
+
+The initial full-run harness placed basetemp beside the selected TMPDIR. Two
+existing neutrality export controls correctly refused that path; that run was
+interrupted after 427 passes and is not qualification evidence. The corrected
+run nests basetemp under its selected private TMPDIR. No source test or production
+path boundary was weakened. Development failures and the lost-reply diagnostic
+are retained separately from final qualification.
+
+Private retained receipts live at
+`/workspace/projects/.factory-binding-qa/runtime-next-20261112T171205Z/t012s-isolated-20261115/`.
+The frozen input manifest has 148 tested Python/workflow files. Scope review proves
+neutral pins, workflow YAML and generic lifecycle/replay source unchanged. The
+development cleanup audit covers 9,540 process-generation records and 614 journal
+summaries, with zero matching live processes; 19 exact development fixture roots
+were removed after audit. Three retained actual cleanup positives confirm run-file
+absence, credential retirement and retained/shared generation preservation. The
+initial journal-only `/tmp/pytest-of-brett/pytest-1126` is already absent. None of
+these fixture receipts is an operational cleanup or protected qualification report.
+
+At this intermediate checkpoint, final ordered/full/OpenSpec/native qualification
+and factory CI readback were pending. Measured completion is recorded below.
+
+### Local review correction before final qualification
+
+A private real-process probe proved that the retained staging acknowledgement could
+remain readable after its selected scheduler died, permitting child creation. The
+old-source full run was stopped and retained as pre-scheduler-fix-full.log/XML;
+its interruption also produced a helper-teardown assertion, requiring actual later
+PID-generation audit rather than a clean-teardown claim. It is not final qualification.
+The source now rechecks the actual scheduler generation on every staging lease
+observation. The new regression and complete protected-start positive both pass
+(2 tests), including original private16 accounting. No new RPC, deadline or budget
+is introduced. The measured module now has 81 nodes; final qualification restarts
+on the corrected 148-file input manifest. No expert-panel or hosted review is claimed.
+
+The final active-lease path had the same reproduced stale-scheduler condition.
+Both active staging/final observations now require the actual selected scheduler
+PID/start/boot to be current. The final regression proves operation is refused
+before entry while independently authenticated janitor/audit cleanup still verifies
+under the closed lease with that scheduler dead. The three targeted controls pass;
+the intermediate run (386 passes, interrupted for review correction) is retained as
+pre-final-lease-fix-full.log/XML and is not final qualification. Final collection
+measures 82 new nodes, 2,282 full nodes and 1,980 mandatory native nodes.
+
+### Factory post-merge CI verified
+
+The exact merge run 43765166319 was cancelled by a subsequent main push. Its first
+replacement 43766903480 was also superseded. The completed inherited-main
+[run 43772988866](https://github.com/opensoft/openXfactory/actions/runs/43772988866)
+passes on fefb5ae4ad7227a53469d5f1c711632d993b0dcf, including its existing quality
+gate. Current main readback equals that head; accepted merge 0503c7bf36ea remains
+its ancestor. The accepted six-file staging-refresh packet is preserved byte for
+byte. No stale rerun, rules change or check override was performed. This CI result
+is separate from the isolated candidate's full/native results and grants no runtime
+authority. Retained receipts: factory-followed-main-ci.json,
+factory-postmerge-ci-verified.json and factory-latest-source-proof.json.
+
+### Final corrected-source qualification and teardown
+
+The corrected source passes all seven ordered repository gates. Scoped checkout
+initialization, both pin checks, syntax, plain and strict validators pass with no
+validator errors/warnings. The full suite passes **2,282 tests**, with zero failures,
+errors or skips, in 1,175.81 seconds. The default pinned OpenSpec verifier validates
+all five targets strictly through @fission-ai/openspec@1.12.0, after rechecking the
+pinned artifact's content address. An initial root-HOME cache permission error is
+retained separately; the successful run selects only a task-local
+OPENSPEC_CLI_PIN_CACHE and leaves the verifier/version/integrity checks intact.
+
+The separate network-none, read-only-source native container passes all **1,980
+mandatory cases** in 1,222.63 seconds and reports **runtime-conformance: PASS**.
+There are zero missing, skipped, deselected, xfailed or nonpassing cases. H05 anchors
+21 nodes and H11 anchors all 82 new lifecycle nodes. The source retains every old
+1,898-node identity/count/fingerprint/anchor. All **148 tested Python/workflow inputs**
+match the pre-run manifest after both runs. The 217 Python3.12 threaded-fork fixture
+DeprecationWarnings are retained in each result; no warning suppression or case
+skip is introduced. These local fixture roles do not qualify deployed administrative
+separation or an external watchdog.
+
+The full external audit covers 6,637 process-generation records, 223 journal
+summaries and 71 role-helper receipts; the native audit covers 6,638 records, 223
+journal summaries and 71 helper receipts. Both have zero matching live task processes
+and zero nonclean teardown receipts. Each retains two independent cleanup positives,
+including the dead-final-scheduler/closed-lease cleanup case: eight selected
+retained/shared file identities preserved, three run files absent, fixture credential
+retired and fresh independent audit retained. Eight additional control-journal
+records are kept for each full/native run. PID counts are records, not distinct
+processes; native numbers are never compared against py-bench's different PID namespace.
+
+The native --rm container's absence is confirmed from the orchestrating daemon and
+independently from Windows-native Docker before its namespace is considered gone.
+Both final fixture roots were removed after audit, with absence verified. Earlier
+19 development roots and seven correction/interruption roots were separately audited
+and removed; their failed/interrupted results remain classified as such. Accepted
+worktrees, owner-code checkout, shared pinned tooling, benches and unrelated jobs
+are preserved. No real provider credentials or operational cleanup action is used.
+
+Retained final receipts under the private evidence root include:
+
+- qualified-inputs-before.json, qualified-results.json and matrix-extension-proof.json;
+- ordered-final-static-gates.json, ordered-final-gate-1..5.log, full-command.json,
+  full.log/XML, openspec-command.json and openspec.log;
+- native-command.json, native-result.json, native.log/XML and native-preflight.json;
+- full-qualified-cleanup-audit.json, native-qualified-cleanup-audit.json and the
+  full/native-retained-control-journals.json records;
+- native-container-absence.json, host-native-container-absence.json,
+  full-fixture-removal.json and native-fixture-removal.json.
+
+T012S and S01-S07 are complete as an isolated source candidate. No new candidate
+PR/hosted CI, formal Codex panel, source ratification, T012T-V, setup/dispatch or live
+hosting/provider acceptance is inferred. Publication/local Codex review and owner
+source acceptance follow a later commission. Feedback remains deferred; neither
+historical blocked write is replayed.

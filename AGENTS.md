@@ -201,7 +201,7 @@ review. The proposed finalizer-only six-observation/18-protection/28-total ledge
 retains default3/13 and all original clocks/current checks. Source ratification and
 landing remain separate; T012R-V and setup/dispatch are uncommissioned.
 
-## Current T012R isolated continuation
+## Historical source-accepted T012R continuation
 
 Brett source-ratified #1322 e813051af8c0 with #70 f6956e324e37 and commissioned
 ordered landing then T012R only in isolation. Normal merges 54f720b6df81 and
@@ -221,7 +221,7 @@ Adapter #71 changes the ordinary pytest privilege bootstrap only; protected work
 YAML, default refusal, neutral APIs and pins remain unchanged. Local review is complete;
 source ratification, landing and operational authority remain separate gates.
 
-## Current T012S preparation (supersedes prior candidate status)
+## Historical T012S preparation
 
 Brett source-ratified factory #1326 dc159da61860 with adapter #71 74b4af51322b,
 then directed ordered landing and T012S preparation only. They merged in order
@@ -233,3 +233,30 @@ T012S01-T012S07 stay unchecked/uncommissioned for implementation. T012T-V,
 T001/T013-T015, setup/dispatch and live provider/host acceptance remain separate.
 No lifecycle initialization, scheduler activation or service restart is performed
 by this preparation. Feedback deferred; neither blocked/denied write replayed.
+
+## T012S isolated implementation commission
+
+Brett now commissions implementation/testing of T012S in isolation using the
+prepared lifecycle plan, with factory post-merge CI verified separately. Only
+T012S01-T012S07 are executable; mark completion only after actual checks. Preserve
+all old matrix identities and budgets. T012T-V, setup/dispatch and live qualification
+remain uncommissioned; feedback deferred and neither blocked write replayed.
+
+## T012S isolated candidate qualified
+
+The commissioned T012S/S01-S07 implementation and isolated qualification are
+complete: 82 new lifecycle cases, 2,282 full tests and 1,980 mandatory native cases,
+with no failures or skips. All 148 frozen Python/workflow inputs match before/after;
+all 1,898 baseline native identities/fingerprints/anchors are preserved. The seven
+ordered gates, including the default pinned OpenSpec strict verifier, pass. Factory
+post-merge run 43772988866 passes on inherited main fefb5ae4ad72 with the accepted
+six-file packet preserved. Evidence.md records exact CI provenance and receipts.
+
+Both active staging/final leases recheck the actual selected scheduler generation;
+closed-lease cleanup remains independently available. Exact-generation teardown and
+preservation audits pass; task fixtures and native container are removed. This is
+an isolated source candidate, not source ratification, deployment, actual provider
+qualification or T012T-V commissioning. Setup/dispatch remain unauthorized; feedback
+deferred and neither blocked write replayed. Publication/review/acceptance are later
+gates. The explicit local POSIX reference supplies no external control-host-loss
+watchdog, automatic VM expiry or cloud infrastructure retirement capability.

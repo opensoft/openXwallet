@@ -4,6 +4,7 @@ No systemd/cgroup deployment is claimed. The retained unit precedes start and
 PDEATHSIG+no-fork confinement fences an unpersisted child if its manager dies.
 """
 from concurrent.futures import ThreadPoolExecutor
+from threading import Event,Thread,Lock
 import json,os,select,signal,struct,subprocess,sys,time,uuid
 from pathlib import Path
 from types import MappingProxyType
@@ -150,6 +151,16 @@ class HostAgent:
         # Linux PDEATHSIG follows the creating thread, not merely its process.
         # Keep one owner thread alive across short-lived HTTP request threads.
         self.launch_owner=ThreadPoolExecutor(max_workers=1,thread_name_prefix="stage-launch-owner")
+        namespace=Path("/proc/self/ns/pid").stat()
+        self.pid_namespace=(namespace.st_dev,namespace.st_ino)
+        self.children_lock=Lock();self.reap_stop=Event()
+        self.reaper=Thread(target=self._reap,daemon=True,name="stage-owned-child-reaper")
+        self.reaper.start()
+
+    def _reap(self):
+        while not self.reap_stop.wait(.02):
+            with self.children_lock:children=tuple(self.children.values())
+            for child in children:child.poll()
 
     def current(self,decision,unit=None):
         scope=self.worker.scope();grant=self.authority.launch_grant(scope,decision=decision);ack=None
@@ -184,7 +195,8 @@ class HostAgent:
                 child=subprocess.Popen([str(self.worker.paths["executable"]),"-I","-B",str(Path(__file__).with_name("_launch_exec.py"))],
                     stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,start_new_session=True,close_fds=True,
                     cwd=self.worker.paths["cwd"],env={"PATH":os.defpath,"LANG":"C.UTF-8"})
-                self.children[ref]=child;return child
+                with self.children_lock:self.children[ref]=child
+                return child
             process=self.launch_owner.submit(spawn).result(timeout=decision.remaining())
             # Creating the trusted helper may block: no worker instructions cross
             # its pipe until original authority/source are current again.
@@ -218,6 +230,8 @@ class HostAgent:
 
     def close(self):
         self.launch_owner.shutdown(wait=True,cancel_futures=True)
+        self.reap_stop.set();self.reaper.join(timeout=2)
+        require(not self.reaper.is_alive(),ERROR)
         for process in self.children.values():
             if process.poll() is None:process.terminate()
             try:process.communicate(timeout=3)

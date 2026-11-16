@@ -29,7 +29,8 @@ class StageController:
         require(type(preflight) is PlanBindings and preflight.policy.phase=="preflight"
                 and type(protected) is PlanBindings and protected.policy.phase=="protected"
                 and type(correlator) is StageCorrelator and type(authority) is StageAuthority
-                and type(store) is StageStore and store.kind=="controller" and callable(register_cleanup),ERROR)
+                and type(store) is StageStore and store.kind=="controller"
+                and callable(register_cleanup),ERROR)
         self.context,self.preflight,self.protected=context,preflight,protected
         self.correlator,self.authority,self.host,self.store,self.register_cleanup=correlator,authority,host,store,register_cleanup
 
@@ -78,7 +79,11 @@ class StageController:
             unit=registered["unit"];self.store.transition(ref,"reserved","registered",decision=decision,unit=unit)
             ReadBudget(decision).consume("private")
             # Request result confers no acknowledgement: read independent mTLS facts.
-            self.register_cleanup(scope,unit,deadline=decision.deadline)
+            from .lifecycle_service import CleanupRegistration
+            if type(self.register_cleanup) is CleanupRegistration:
+                self.register_cleanup.register(scope,unit,decision=decision)
+            else:
+                self.register_cleanup(scope,unit,deadline=decision.deadline)
             lease=self.authority.acknowledged(scope,unit,decision=decision);self.store.bind_lease(ref,lease,decision=decision)
             # Complete refresh after registration, before request deadline serialization.
             refreshed,refreshed_scope=self.correlator.correlate(self.context,token,bindings,phase=phase,decision=decision)

@@ -1,8 +1,10 @@
-# T012S scoped preparation consistency review
+# T012S scoped lifecycle consistency review
 
-Status: source-preparation review complete; implementation not commissioned
+Status: coordinator review and isolated qualification complete; no new expert-panel or hosted review
 Date: 2026-11-15
 Scope: T012S subplan/acceptance/task links against accepted hosting decisions
+
+## Preparation review before the later implementation commission
 
 This is a coordinator source-document review, not a new nine-agent Codex panel,
 a hosted connector review, formal whole-feature constitution certification or a
@@ -38,3 +40,41 @@ limitations, insufficient accepted read budget, a new durable/public contract or
 additional late fields must return to governed amendment before implementation.
 Actual source implementation still needs owner commissioning, measured isolated
 tests, local/hosted validation, review and source acceptance. T012S is not complete.
+
+## Commissioned as-built consistency review
+
+The later owner instruction commissions only T012S01-S07 in isolation. The actual
+source follows the prepared ownership/expiry/preservation model and keeps tasks.md
+as its sole executable list. Existing generic lifecycle/replay code, neutral pins,
+seven role names, four late configuration fields and workflow YAML are unchanged.
+Source-selected local retained-store observation keeps finalization within the
+accepted private12 budget; staging keeps its existing private16 allocation. No
+remote service composition, infrastructure capability or operational resolver is
+inferred from this reference implementation.
+
+Review corrections include actual owned-child reaping, closed operation-specific
+TLS reply validation, exact static configuration/policy comparison, independently
+corroborated final ownership, consumed per-resource mutation attempts, and explicit
+PID-namespace binding. A real pre-fix scheduler-after-ack probe exposed child creation
+after that selected scheduler died; staging lease readback now rechecks the actual
+scheduler generation, with a paired real-start positive and no-child negative.
+The cleanup positive requires independent actual resource
+observations; worker denial controls require available authorized positives and
+fail on either excess permission or service outage. Lost-reply tests assert the
+intended boundary, rather than accepting any earlier BindingError as proof.
+
+This coordinator review is not a new expert panel, hosted Codex review, source
+ratification or live qualification. Final measured gates and cleanup receipts are
+recorded in evidence.md after execution; T012T-V and operational gates remain open.
+
+## Final coordinator verification
+
+T012S and its seven child tasks are checked only after actual ordered gates,
+full/native execution, source-hash comparison and exact-root cleanup audits. Task
+paths cover the actual source and status documentation; IDs remain unique. The
+measured module fingerprint is
+4aeea91a85313922960073905c78414460bf6c6bcfdbd4eddc98b4ed1eb56a15.
+Both active-lease review findings are closed by real pre-fix probes, corrected
+positive/negative controls, and complete full/native reruns. No unresolved
+coordinator source finding remains. This does not add a formal expert panel,
+hosted Codex review, owner source acceptance or operational authorization.
