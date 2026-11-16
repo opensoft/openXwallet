@@ -358,8 +358,20 @@ class Qualifier:
             require(now >= cleanup.checked_at, "qualification-failed")
             observations.append(CaseObservation("H11", now, digest(asdict(cleanup)), "passed"))
             observations.append(CaseObservation("L01", cleanup.observed_at, digest(asdict(cleanup)), "passed"))
-        # A closed projection alone does not execute independent privacy controls.
-        # H12 therefore remains unperformed in this partial runtime composition.
+        # Observe the actual pre-report projection and independent canary controls;
+        # never hash final report bytes into their own embedded observation.
+        from .privacy import observe_privacy
+        try:
+            privacy = observe_privacy({"config_digest": selected.config_digest, "proof": proof,
+                "cleanup_digest": None if cleanup is None else digest(asdict(cleanup))})
+            observations.append(CaseObservation("H12", now, privacy, "passed"))
+        except BaseException as error:
+            observations.append(CaseObservation("H12", now, digest({"privacy": "refused"}), "failed"))
+            failure = error if failure is None else failure
+            if not isinstance(error, Exception):
+                outcome, cancelled = "cancel", error
+            elif outcome != "cancel":
+                outcome = "failure"
         # Origin is established by the selected operator's actual signature over
         # these exact observations. A genuine issuer token or transport class by
         # itself cannot upgrade an isolated fixture/control-plane observation.
@@ -384,12 +396,18 @@ class Qualifier:
         life = self.bindings.workflow.lifecycle
         before = life.cleanup_clock()
         require(integer(before), "qualification-failed")
-        deadline = min(before + life.plan.cleanup_timeout, life.plan.expires_at + life.plan.cleanup_timeout)
+        from .lifecycle_service import FinalLifecyclePorts
+        target = life.readback.target
+        # The hosted service authenticates the immutable registration's original
+        # cleanup_until/timeout. A shorter final lease can expire before that
+        # window begins; it must not invent an earlier audit expiry. This fresh
+        # read-only Decision grants no operation or cleanup mutation authority.
+        deadline = before + life.plan.cleanup_timeout
+        if type(target) is not FinalLifecyclePorts:
+            deadline = min(deadline, life.plan.expires_at + life.plan.cleanup_timeout)
         require(before < deadline, "qualification-failed")
         attempt = "cleanup-attempt:" + token_hex(16)
         try:
-            target = life.readback.target
-            from .lifecycle_service import FinalLifecyclePorts
             audit = target.audit_cleanup if type(target) is FinalLifecyclePorts else target.read_cleanup
             record = audit(life.plan.ref, attempt_ref=attempt, deadline=deadline)
             now = life.cleanup_clock()

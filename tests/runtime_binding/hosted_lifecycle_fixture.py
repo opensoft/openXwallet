@@ -366,8 +366,9 @@ def lh(stage, provider, tmp_path, request):
         result.audit().call("ack-final", decision=result.use())
         return result.primary().call("release", decision=result.use())
     result.takeover = takeover
-    def runtime():
-        ports = FinalLifecyclePorts(primary=result.primary(), audit=result.audit("observer"), operation=result.use(),
+    def runtime(*, operation=None):
+        ports = FinalLifecyclePorts(primary=result.primary(), audit=result.audit("observer"),
+            operation=result.use() if operation is None else operation,
             plan_ref=result.plan.ref, clock=lambda: clock.value, monotonic=time.monotonic)
         # Actual final-authority output is retained separately from the runtime
         # candidate. The operator reader observes that immutable source record.

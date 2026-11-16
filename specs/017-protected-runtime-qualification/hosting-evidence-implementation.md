@@ -1,6 +1,6 @@
 # T012T partial isolated implementation and observed budget blocker
 
-Status: implementation candidate; NOT complete hosted qualification
+Status: historical partial checkpoint; superseded by hosting-evidence-budget-realization.md
 Kind: implementation-record
 Scope: source/fixture only; no setup, protected dispatch or live acceptance
 

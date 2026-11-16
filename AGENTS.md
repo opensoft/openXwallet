@@ -346,3 +346,16 @@ record existing checks without extra reads or changed worker inputs. Preserve
 neutral APIs/pins, v1 evidence, phase clocks/budgets and operational default refusal.
 T012U-V/T001/T013-T015 and every operational setup/dispatch/live acceptance gate
 remain separate. Feedback stays deferred; neither historical blocked write is replayed.
+
+
+## Source-accepted qualification budget continuation
+
+Brett source-ratified factory #1334 at 7518c058ef3defb7408475cfed65807d7609d626,
+then directed landing when green and continuation of T012T in isolation. It merged
+as 89974846b847e1c31761792677155cc9779d400d; the accepted packet survives the
+clean merge with concurrent #1327. The qualification-only private39 entry must
+precede all reads on one original Decision. Preserve all other allocations,
+original clocks, earliest expiries, neutral APIs/pins and default refusal. T012T
+completion still requires actual hosted source positives, boundaries and cleanup;
+component counts alone do not qualify it. T012U/V and operational setup/dispatch
+remain unauthorized; feedback deferred and historical blocked writes unreplayed.

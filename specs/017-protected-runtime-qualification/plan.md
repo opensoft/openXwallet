@@ -2,7 +2,7 @@
 
 **Branch**: `017-protected-runtime-qualification` | **Date**: 2026-11-12
 **Spec**: [spec.md](spec.md)
-**State**: T012T preparation source accepted through #1332/#76; isolated implementation is partial and the hosted positive is blocked on the governed private-read amendment; operations unauthorized
+**State**: T012T and qualification-only private39 source decisions are accepted; isolated realization is implemented and frozen validation is pending; operations unauthorized. See [current record](hosting-evidence-budget-realization.md).
 
 Bootstrap amendment `fix-protected-runtime-dispatch-bootstrap` was source
 accepted and landed in factory #1311 / adapter #60. The static dispatch selection

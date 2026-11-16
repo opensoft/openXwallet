@@ -178,7 +178,7 @@ def test_barriers_require_real_valid_signature_and_exact_claim_refusal(c, kind):
                  (c.h.challenge.id, c.h.request, c.h.token, c.h.observation))
 
 
-def test_connected_hosted_proof_refuses_at_original_private_read_cap_and_cleans_up(k, w, request, tmp_path):
+def _connected_hosted_qualification(k, w, request, tmp_path, *, qualified=False, origin=False, fault=None):
     from factory_binding.test_owner_integration import owner_source
     owner_source()
     from openwallet_runtime.custody import TLSClient
@@ -191,7 +191,13 @@ def test_connected_hosted_proof_refuses_at_original_private_read_cap_and_cleans_
         hosted = request.getfixturevalue("lh")
         retained["hosted"] = hosted
         hosted.launch(full=True);final, plan = hosted.finalize();hosted.takeover()
-        life = hosted.runtime()
+        wall=[None];shift=[0.]
+        decision = Decision(clock=lambda:hosted.clock.value if wall[0] is None else wall[0],
+            monotonic=lambda:time.monotonic()+shift[0])
+        if qualified:
+            from workload_factory_binding_runtime.hosted.readback import start_qualification
+            start_qualification(decision)
+        life = hosted.runtime(operation=decision)
         original_run = life.run
         def traced_run(operation):
             def traced():
@@ -257,6 +263,17 @@ def test_connected_hosted_proof_refuses_at_original_private_read_cap_and_cleans_
         def observed(*a, **kw):
             value = actual(*a, **kw)
             retained["accepted"] = value
+            if not retained.get("fault_injected"):
+                retained["fault_injected"]=True
+                if fault=="runner-death":__import__("os")._exit(23)
+                if fault=="cancel":raise KeyboardInterrupt("private-hosted-cancel-canary")
+                if fault=="failure":raise RuntimeError("private-hosted-failure-canary")
+                if fault=="wall-expiry":wall[0]=hosted.clock.value+10
+                if fault=="wall-regression":wall[0]=hosted.clock.value-1
+                if fault=="monotonic-expiry":shift[0]=20.
+                if fault=="monotonic-regression":shift[0]=-100.
+                if fault=="read-exhaustion":
+                    for _ in range(2):life.janitor.target.read_lease(life.plan.ref,deadline=decision.deadline)
             return value
         c.bridge.sign_observed = observed
         context = replace(w.context, config_digest=final.binding.config_digest)
@@ -268,18 +285,106 @@ def test_connected_hosted_proof_refuses_at_original_private_read_cap_and_cleans_
             jwt(c.h.issuer_key, {**c.h.claims, "environment": "negative-environment"}))
         worker = TLSClient(k.material.endpoint, ca_file=k.ca, certificate=k.worker[0], private_key=k.worker[1])
         positive = TLSClient(k.material.endpoint, ca_file=k.ca, certificate=k.gate[0], private_key=k.gate[1])
+        excess = None
+        if qualified:
+            from factory_binding.test_owner_integration import launch
+            from .test_custody import _stop
+            control = directory/"excess-control";control.mkdir(mode=0o700);ready=control/"ready"
+            process,_=launch("custody",{"owner_code":str(owner_source()),"now":c.h.now,
+                "registry_directory":str(directory/"registry"),"key_directory":str(directory/"keys"),
+                "ca_file":str(k.ca),"certificate":str(k.server[0]),"private_key":str(k.server[1]),
+                "ready":str(ready),"policies":{k.worker[2]:{"actions":["resolve","sign"],
+                    "subjects":[c.h.binding.subject_ref]}}},control,wait=False)
+            request.addfinalizer(lambda:_stop(process))
+            limit=time.monotonic()+10
+            while not ready.exists():
+                assert process.poll() is None and time.monotonic()<limit
+                time.sleep(0.02)
+            excess=TLSClient("https://127.0.0.1:"+ready.read_text(),ca_file=k.ca,
+                certificate=k.worker[0],private_key=k.worker[1]);excess.context=worker.context
+        if fault=="worker-outage":
+            from openwallet_runtime.custody import RemoteSigner
+            sign=RemoteSigner.sign
+            def disconnect_after_available_positive(self,message):
+                value=sign(self,message)
+                if self.client is positive:worker.port=0  # actual next connection refuses
+                return value
+            request.getfixturevalue("monkeypatch").setattr(RemoteSigner,"sign",disconnect_after_available_positive)
+        if fault=="privacy-failure":
+            from workload_factory_binding_runtime.hosted import privacy
+            request.getfixturevalue("monkeypatch").setattr(privacy,"safe_error",lambda error:"private-privacy-canary")
         bindings = QualificationBindings(validate_config(final.configuration, trust=c.trust), final, context,
-            workflow, c.bridge, life.janitor.target.operation, barrier, WorkerProbe(worker, positive))
+            workflow, c.bridge, life.janitor.target.operation, barrier, WorkerProbe(worker, positive, excess))
+        if origin:
+            from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+            from workload_factory_binding.evidence import encode64
+            from workload_factory_binding_runtime.hosted import qualification as module
+            key=Ed25519PrivateKey.generate()
+            observe=module.admit_finalized
+            def capture(*a,**kw):
+                value=observe(*a,**kw);retained["phase"]=value;return value
+            request.getfixturevalue("monkeypatch").setattr(module,"admit_finalized",capture)
+            def load(ref,*,deadline):
+                assert ref==life.plan.ref
+                # Independently verify the fixture token; the origin receives a
+                # selected reference, never caller-supplied candidate facts.
+                workload=module.IssuerWorkloadVerifier(audience=c.config["issuer"]["audience"],
+                    source=c.r.source).verify(c.h.token,dict(c.config["launch"]),now=c.h.now)
+                phase_digest=digest({"admission":asdict(retained["phase"]),"finalization":asdict(final.binding),
+                    "readback_digest":bindings.selected.readback_digest,"workload_digest":digest(dict(workload.claims))})
+                payload={"config_digest":bindings.selected.config_digest,"case_digest":digest(c.config["case_ref"]),
+                    "run_id":context.run_id,"run_attempt":context.run_attempt,"phase_provenance_digest":phase_digest,
+                    "generation_digest":final.binding.generation_digest,"issuance_digest":digest(asdict(k.access)),
+                    "plan_digest":life.plan.digest,"principal_ref":workflow.runtime_trust.readback_principal,
+                    "scope":"isolated-fixture","observed_at":c.h.now,"expires_at":c.h.now+10}
+                if fault=="origin-mismatch":payload["run_id"]="999"
+                return canonical({"payload":payload,"signature":encode64(key.sign(module.ORIGIN_CONTEXT+canonical(payload)))})
+            bindings=replace(bindings,origin=module.OriginTrust(workflow.runtime_trust.readback_principal,
+                key.public_key().public_bytes_raw(),"isolated-fixture",load))
         retained["qualifier"] = Qualifier(bindings, challenge_id=c.h.challenge.id, request=c.h.request,
             token=c.h.token, observation=c.h.observation)
     def perform(_run):
         qualifier = retained["qualifier"]
+        if fault=="runner-death":
+            import multiprocessing
+            from workload_factory_binding_runtime.hosted.lifecycle import process_instance
+            process=multiprocessing.get_context("fork").Process(target=qualifier.run)
+            process.start()
+            instance=process_instance(process.pid)[0]
+            assert instance is not None
+            (tmp_path/"runner-generation.json").write_bytes(canonical({"pid":process.pid,"instance_ref":instance}))
+            try:
+                process.join(timeout=15)
+                assert process.exitcode==23
+            finally:
+                if process.is_alive():process.kill();process.join(timeout=5)
+            hosted=retained["hosted"]
+            original=hosted.life.state(decision=hosted.use())
+            hosted.advance(original["registration"]["expires_at"]+1)
+            end=time.monotonic()+8
+            while time.monotonic()<end:
+                try:
+                    observed=hosted.audit().call("cleanup-audit",attempt_ref="cleanup-attempt:qualification-death",decision=hosted.use())
+                    if observed["kind"]=="final":break
+                except BindingError:pass
+                time.sleep(.05)
+            else:pytest.fail("independent original-scope cleanup not observed")
+            retained["death_cleanup"]=qualifier.reconcile_cleanup()
+            raise BindingError("fixture-runner-death")
         result = qualifier.run()
         retained["result"] = result
+        retained["operation_private_reads"] = qualifier.bindings.decision._hosted_reads["counts"]["private"]
         return retained["accepted"]
     directory = tmp_path / "owning-connected";directory.mkdir(mode=0o700)
+    def execute():
+        return _owning_run(k, directory, before_proof=prepare, perform=perform)
+    return execute, retained
+
+
+def test_connected_hosted_proof_refuses_at_original_private_read_cap_and_cleans_up(k, w, request, tmp_path):
+    execute, retained = _connected_hosted_qualification(k,w,request,tmp_path)
     with pytest.raises(BindingError, match="^qualification-failed$"):
-        _owning_run(k, directory, before_proof=prepare, perform=perform)
+        execute()
     qualifier = retained["qualifier"];result = qualifier.result;hosted = retained["hosted"]
     assert result is not None and result.cleanup is not None
     assert result.outcome == "failure"
@@ -291,6 +396,25 @@ def test_connected_hosted_proof_refuses_at_original_private_read_cap_and_cleans_
     with pytest.raises(BindingError, match="^protected-report-refused$"):
         build_receipt(result, now=k.c.h.now)
     with pytest.raises(BindingError):qualifier.run()
+
+
+def test_source_accepted_hosted_qualification_completes_on_one_original_decision(k,w,request,tmp_path):
+    execute, state = _connected_hosted_qualification(k,w,request,tmp_path,qualified=True)
+    execute()
+    qualifier=state["qualifier"];result=qualifier.result
+    assert result.outcome=="success" and result.proof["status"]=="verified" and result.cleanup is not None
+    decision=qualifier.bindings.decision
+    assert decision is qualifier.bindings.workflow.lifecycle.janitor.target.operation
+    assert decision._hosted_reads["qualification"] is True
+    assert len(decision._hosted_reads["members"])==1
+    assert state["operation_private_reads"]==38
+    assert decision._hosted_reads["counts"]["private"]==39  # helper closed-lease negative follows the measured operation
+    assert not state["hosted"].temporary.exists()
+    assert state["hosted"].shared.read_bytes()==b"retained shared generation"
+    with pytest.raises(BindingError,match="^protected-report-refused$"):build_receipt(result,now=k.c.h.now)
+    (tmp_path/"hosted-qualification-measurement.json").write_text(json.dumps({
+        "scope":"isolated-source","private_reads":state["operation_private_reads"],"operation_outcome":result.outcome,
+        "proof_status":result.proof["status"],"independent_cleanup_verified":True}))
 
 
 @pytest.fixture
@@ -451,7 +575,7 @@ def test_portable_qualifier_component_real_proof_barriers_and_cleanup(k, w, tmp_
         value=json.loads(result.fixture_receipt(now=k.c.h.now))
         assert value["scope"]=="isolated-fixture" and not value["protected_machine_qualified"]
         assert "private-cancel-canary" not in json.dumps(value)
-        assert not {"G01","G02","S01","H12",*("H%02d"%n for n in range(1,10))} & {x.case_id for x in result.cases}
+        assert not {"G01","G02","S01",*("H%02d"%n for n in range(1,10))} & {x.case_id for x in result.cases}
         if outcome=="missing-excess":
             assert result.proof["status"]=="not-performed"
             assert not {"G03","H10"} & {x.case_id for x in result.cases}
@@ -524,3 +648,155 @@ def test_fresh_hosted_cleanup_audit_reads_original_window_without_mutation(lh, m
         else:assert future.result(timeout=10).lease_status in ("closed","revoked","cancelled")
     after=len([x for x in lh.stores["primary"].events(decision=lh.use()) if x["kind"]=="cleanup-request"])
     assert before==after
+
+
+@pytest.mark.parametrize("entry,limit", [("ordinary",12),("staging",16),("finalization",12),("qualification",39)])
+def test_accepted_qualification_cap_keeps_other_phase_private_bounds(entry,limit):
+    from workload_factory_binding_runtime.hosted.readback import (ReadBudget,start_qualification,start_staging,start_finalization)
+    d=Decision(clock=lambda:1000,monotonic=lambda:0.)
+    if entry!="ordinary":locals()["start_"+entry](d)
+    b=ReadBudget(d)
+    for _ in range(limit):b.consume("private")
+    assert b.count("private")==limit
+    with pytest.raises(BindingError):b.consume("private")
+    assert b.count("private")==limit
+
+
+@pytest.mark.parametrize("used", ["ordinary","staging","finalization","qualification","correlation"])
+def test_qualification_entry_cannot_upgrade_used_phase_or_correlation(used):
+    from workload_factory_binding_runtime.hosted.readback import (ReadBudget,start_qualification,start_staging,start_finalization)
+    d=Decision(clock=lambda:1000,monotonic=lambda:0.)
+    if used=="ordinary":ReadBudget(d).consume("private")
+    elif used=="correlation":d.api_requests=1
+    else:locals()["start_"+used](d)
+    before=getattr(d,"_hosted_reads",None)
+    with pytest.raises(BindingError):start_qualification(d)
+    assert getattr(d,"_hosted_reads",None) is before
+
+
+@pytest.mark.parametrize("mode", ["join","wall-expiry","monotonic-expiry","wall-regression","monotonic-regression","earliest-expiry","protection","correlation"])
+def test_qualification_does_not_enlarge_other_authority_or_clocks(mode):
+    from workload_factory_binding_runtime.hosted.readback import ReadBudget,start_qualification
+    wall=[1000];mono=[10.]
+    d=Decision(clock=lambda:wall[0],monotonic=lambda:mono[0]);start_qualification(d);b=ReadBudget(d)
+    if mode=="join":
+        with pytest.raises(BindingError):b.join(Decision(clock=lambda:1000,monotonic=lambda:10.))
+        assert len(b.state["members"])==1
+        return
+    if mode=="protection":
+        for _ in range(3):b.consume("protection")
+        with pytest.raises(BindingError):b.consume("protection")
+        return
+    if mode=="correlation":
+        for _ in range(4):b.consume_correlation()
+        with pytest.raises(BindingError):b.consume_correlation()
+        return
+    if mode=="earliest-expiry":d.clip(1002);wall[0]=1002
+    elif mode=="wall-expiry":wall[0]=1010
+    elif mode=="monotonic-expiry":mono[0]=20.
+    elif mode=="wall-regression":wall[0]=999
+    elif mode=="monotonic-regression":mono[0]=9.
+    with pytest.raises(BindingError):b.consume("private")
+    assert b.state["counts"]["private"]==0
+
+
+@pytest.mark.parametrize("mutation", ["raw-error", "wrong-safe-code", "private-projection"])
+def test_privacy_observation_requires_actual_independent_controls(vector,monkeypatch,mutation):
+    from workload_factory_binding_runtime.hosted import privacy
+    projection={"config_digest":vector["selected"].config_digest,"proof":vector["proof"],"cleanup_digest":None}
+    assert privacy.observe_privacy(projection).startswith("sha256:")
+    if mutation=="raw-error":monkeypatch.setattr(privacy,"safe_error",lambda error:error.args[0])
+    elif mutation=="wrong-safe-code":monkeypatch.setattr(privacy,"safe_error",lambda error:"qualification-failed")
+    else:projection["proof"]={**projection["proof"],"private_token":"private-canary"}
+    with pytest.raises(BindingError,match="^protected-report-refused$"):privacy.observe_privacy(projection)
+
+
+@pytest.mark.parametrize("kind", ["audience","environment"])
+def test_signed_claim_barrier_detects_independent_removed_check(c,monkeypatch,kind):
+    from workload_factory_binding_runtime.issuer import IssuerWorkloadVerifier
+    from workload_factory_binding.evidence import decode64,decode_object
+    c.run();selected=validate_config(c.bridge.load_config(),trust=c.trust)
+    field="aud" if kind=="audience" else "environment"
+    token=jwt(c.h.issuer_key,{**c.h.claims,field:"independent-negative"})
+    inputs=(c.h.challenge.id,c.h.request,c.h.token,c.h.observation)
+    assert _barrier(token,kind,c.bridge,c.h.now,selected,inputs).startswith("sha256:")
+    original=IssuerWorkloadVerifier.verify
+    def removed(self,token,expected,*,now):
+        claims=decode_object(decode64(token.split(".")[1]))
+        if kind=="audience":
+            return original(IssuerWorkloadVerifier(audience=claims["aud"],source=self._source),token,expected,now=now)
+        return original(self,token,{**expected,"environment":claims["environment"]},now=now)
+    monkeypatch.setattr(IssuerWorkloadVerifier,"verify",removed)
+    with pytest.raises(BindingError,match="^qualification-failed$"):_barrier(token,kind,c.bridge,c.h.now,selected,inputs)
+
+
+def test_connected_authenticated_fixture_origin_uses_last_read_without_live_promotion(k,w,request,tmp_path):
+    execute,state=_connected_hosted_qualification(k,w,request,tmp_path,qualified=True,origin=True)
+    execute();result=state["qualifier"].result
+    assert result.outcome=="success" and result.proof["status"]=="verified" and result.cleanup is not None
+    assert state["operation_private_reads"]==39
+    assert {x.case_id:x.status for x in result.cases}["H12"]=="passed"
+    assert result._operational_origin is None
+    with pytest.raises(BindingError,match="^protected-report-refused$"):build_receipt(result,now=k.c.h.now)
+
+
+@pytest.mark.parametrize("fault", ["failure","cancel","read-exhaustion","wall-expiry","wall-regression",
+    "monotonic-expiry","monotonic-regression","origin-mismatch","worker-outage","privacy-failure"])
+def test_connected_qualification_faults_keep_original_cleanup_and_cannot_report_success(k,w,request,tmp_path,fault):
+    execute,state=_connected_hosted_qualification(k,w,request,tmp_path,qualified=True,
+        origin=fault=="origin-mismatch",fault=fault)
+    with pytest.raises(KeyboardInterrupt if fault=="cancel" else BindingError):execute()
+    q=state["qualifier"];result=q.result
+    assert result is not None and result.cleanup is not None
+    assert result.outcome==("cancel" if fault=="cancel" else "failure")
+    assert q.bindings.decision._hosted_reads["counts"]["private"]<=39
+    if fault=="worker-outage":assert not {"G03","H10"} & {c.case_id for c in result.cases}
+    if fault=="privacy-failure":assert {c.case_id:c.status for c in result.cases}["H12"]=="failed"
+    if fault=="read-exhaustion":assert q.bindings.decision._hosted_reads["counts"]["private"]==39
+    if fault=="origin-mismatch":assert q.bindings.decision._hosted_reads["counts"]["private"]==38  # failed origin skips closing lease read
+    assert not state["hosted"].temporary.exists()
+    assert state["hosted"].shared.read_bytes()==b"retained shared generation"
+    with pytest.raises(BindingError,match="^protected-report-refused$"):build_receipt(result,now=k.c.h.now)
+
+
+@pytest.mark.parametrize("kind", ["runtime","binding","interrupt","exit","generator"])
+def test_actual_cli_redacts_private_args_notes_causes_and_context(monkeypatch,tmp_path,capsys,kind):
+    import importlib.util
+    from pathlib import Path
+    canary="private-token-PEM-provider-proof-challenge-path-canary"
+    errors={"runtime":RuntimeError,"binding":BindingError,"interrupt":KeyboardInterrupt,"exit":SystemExit,"generator":GeneratorExit}
+    error=errors[kind](canary);error.add_note(canary);error.__cause__=ValueError(canary);error.__context__=ValueError(canary)
+    path=Path(__file__).resolve().parents[2]/"scripts/prepare-protected-runtime.py"
+    spec=importlib.util.spec_from_file_location("prepare_protected_runtime_privacy",path)
+    module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+    monkeypatch.setattr(module.subprocess,"run",lambda *a,**kw:SimpleNamespace(stdout="b"*40))
+    monkeypatch.setattr(module,"validate_dispatch_context",lambda context:None)
+    def fail():raise error
+    monkeypatch.setattr(module,"operational_bindings",fail)
+    monkeypatch.setattr(module.sys,"argv",[str(path),"--phase","qualify"])
+    assert module.main()==(2 if isinstance(error,Exception) else 130)
+    value=capsys.readouterr();assert value.out==""
+    assert value.err==("qualification-failed\n" if isinstance(error,Exception) else "qualification-cancelled\n")
+
+
+def test_actual_qualifier_runner_death_keeps_independent_original_cleanup(k,w,request,tmp_path):
+    execute,state=_connected_hosted_qualification(k,w,request,tmp_path,qualified=True,fault="runner-death")
+    with pytest.raises(BindingError,match="^fixture-runner-death$"):execute()
+    q=state["qualifier"];hosted=state["hosted"]
+    assert q.result is None and state["death_cleanup"].plan_digest==q.bindings.workflow.lifecycle.plan.digest
+    assert not hosted.temporary.exists() and hosted.shared.read_bytes()==b"retained shared generation"
+    assert not hosted.provider.active[hosted.token.credential]
+    assert sum(e["kind"]=="cleanup-request" for e in hosted.stores["scheduler"].events(decision=hosted.use()))==1
+    with pytest.raises(BindingError,match="^protected-report-refused$"):build_receipt(q.result,now=hosted.clock.value)
+
+
+def test_reconciliation_refuses_after_original_registered_cleanup_window(k,w,request,tmp_path):
+    execute,state=_connected_hosted_qualification(k,w,request,tmp_path,qualified=True)
+    execute();q=state["qualifier"];hosted=state["hosted"]
+    registered=hosted.life.state(decision=hosted.use())["registration"]
+    before=sum(e["kind"]=="lease-closed" for e in hosted.stores["primary"].events(decision=hosted.use()))
+    hosted.advance(registered["cleanup_until"])
+    with pytest.raises(BindingError,match="^lifecycle-cleanup-unverified$"):q.reconcile_cleanup()
+    after=sum(e["kind"]=="lease-closed" for e in hosted.stores["primary"].events(decision=hosted.use()))
+    assert before==after==1
+    assert not hosted.temporary.exists() and hosted.shared.read_bytes()==b"retained shared generation"

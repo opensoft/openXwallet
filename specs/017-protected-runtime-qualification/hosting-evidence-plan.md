@@ -2,11 +2,11 @@
 
 Status: draft
 Kind: implementation-plan
-Scope: accepted preparation; partial isolated source candidate, hosted positive blocked
+Scope: accepted preparation and private39 source decision; isolated realization candidate under validation
 Factory decision: opensoft/openXfactory openspec/changes/add-protected-runtime-report
 Sole executable list: tasks.md, proposed T012T01-T012T06
 
-Current commission/status: [partial implementation and observed blocker](hosting-evidence-implementation.md).
+Current commission/status: [accepted-budget source realization](hosting-evidence-budget-realization.md). The earlier [partial blocker](hosting-evidence-implementation.md) remains historical.
 Historical preparation text below records its earlier source checkpoint; it is not a claim of current implementation permission or completion.
 
 ## Accepted baseline and authority

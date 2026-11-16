@@ -109,7 +109,7 @@ alone completed no checkbox; the actual source decision and qualification do.
 
 ### T012T isolated source realization — commissioned after paired ratification
 
-Current partial candidate and original-private12 blocker: [as-built record](hosting-evidence-implementation.md). All tasks after T012T01 remain incomplete; passing component/refusal controls do not clear the hosted positive.
+Current source-accepted private39 realization: [as-built record](hosting-evidence-budget-realization.md). The prior [partial private12 blocker](hosting-evidence-implementation.md) remains historical. T012T02-T012T06 remain unchecked until their frozen verification completes.
 
 - [X] T012T01 [O] Obtain explicit owner source acceptance of the paired factory protected-report profile and adapter plan, plus a separate isolated implementation commission; files: feature017 evidence and factory proposal/review records; verify: exact accepted heads, closed grammar/case/provenance/cleanup/privacy decisions, no inferred operational grant. Completed by Brett's paired #1332/#76 exact-head ratification and separate isolated T012T commission; no operational grant.
 - [ ] T012T02 [O] Compose explicit trusted qualifier and existing RunLifecycle once from authenticated same-run finalized bindings and fixed observation ports; files: proposed `scripts/workload_factory_binding_runtime/hosted/qualification.py`, reviewed workflow/CLI integration and hosted evidence fixture; verify: same source/case/run/attempt/generation, preserved per-use checks, original clocks/budgets and default refusal before outputs/OIDC; no new service role/input/plugin or initialization.
