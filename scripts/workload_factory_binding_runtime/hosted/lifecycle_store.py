@@ -170,7 +170,8 @@ class LifecycleStore:
             require(now >= highwater, ERROR)
             def append(kind, data):
                 nonlocal previous
-                require(kind in KINDS and type(data) is dict and len(events) < MAX_EVENTS, ERROR)
+                limit = MAX_EVENTS if kind == "clock" else MAX_EVENTS - 1
+                require(kind in KINDS and type(data) is dict and len(events) < limit, ERROR)
                 raw = canonical(data)
                 require(0 < len(raw) <= 65536, ERROR)
                 value = document(raw)
@@ -184,15 +185,25 @@ class LifecycleStore:
             if now > highwater:
                 append("clock", {})
             db.execute("SAVEPOINT business")
+            business_count, business_previous = len(events), previous
             error, result = None, None
             try:
+                # Exhaustion never admits lifecycle use at an unpersistable time.
+                require(len(events) < MAX_EVENTS, ERROR)
                 result = operation(events, append)
                 decision.now()
                 require(_identity(self.directory, self.witness) == self.identity, ERROR)
             except Exception as caught:
                 db.execute("ROLLBACK TO business")
+                del events[business_count:]
+                previous = business_previous
                 error = caught
             db.execute("RELEASE business")
+            if decision.last > now:
+                # Preserve every validated observation, including a refused
+                # business operation, without renewing the original Decision.
+                now = decision.last
+                append("clock", {})
             # A crash after this commit but before its witness leaves the store
             # explicitly indeterminate. Opening never repairs or rolls it back.
             db.execute("COMMIT")

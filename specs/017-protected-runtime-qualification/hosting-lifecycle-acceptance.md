@@ -131,3 +131,15 @@ evidence. Renewed complete review/full/native/hosted qualification is pending at
 this immutable source checkpoint; receipts will follow on PR #75. See
 hosting-lifecycle-analysis.md for the reproduced race and limits of causal evidence.
 No original deadline, read budget, authority, schema or operational default changes.
+
+## Validated-clock durability and capacity update
+
+The retained journal now persists the latest successfully validated observation
+for both successful and rolled-back business operations, without new clock reads
+or renewed deadlines. Business appends reserve a closing-clock slot under the
+unchanged 2,048-event cap; an exhausted journal refuses further lifecycle use,
+including reads, without reset/repair. The current corpus is 119 lifecycle / 2,322
+full / 2,017 mandatory native cases, H05=29/H11=119. Renewed complete immutable-head
+qualification remains pending at this source checkpoint; receipts will follow on
+PR #75. See hosting-lifecycle-analysis.md for counterfactual and capacity evidence.
+Operational authority, schemas, profiles, roles and read/cleanup limits are unchanged.

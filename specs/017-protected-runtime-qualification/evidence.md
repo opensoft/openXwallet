@@ -2668,3 +2668,39 @@ qualification remain pending at this source checkpoint; completion receipts will
 be posted on PR #75. Earlier failed runs are not qualification evidence. Source
 ratification, T012T-V, setup, protected dispatch and live acceptance remain separate.
 Feedback stays deferred; neither historical blocked write was replayed.
+
+## Final validated-clock durability correction
+
+Exact-head connector review at `ac8910358b34a4f3cd29d9197e9c49d022075910`
+identified a persisted-clock gap: a transaction starting at 1000 and successfully
+validating 1009 could commit only highwater 1000, admitting a fresh request at 1001.
+Two actual SQLite regressions reproduce this for successful and rolled-back
+business operations. The journal now appends the existing last successfully
+validated Decision observation as a clock event outside the business savepoint.
+Rollback first restores the in-memory append sequence and preceding digest to
+match SQL, retaining only committed business events plus the closing clock.
+There is no new clock sample, renewed Decision, or deadline extension.
+
+Review also identified the capacity edge. Business appends reserve the last slot
+for a closing clock. At the unchanged 2,048-event cap the journal refuses further
+lifecycle operations, including reads; exhaustion cannot admit regressed time or
+silently renew/reset/repair the store. Two bounded private-fixture capacity controls
+prove both read-only completion and refused business mutation retain the later
+clock, preserve prior records/witnesses, and refuse subsequent use at exhaustion.
+All four new controls fail before their respective corrections and pass afterward.
+The final focused integrity/clock/journal group has 19 passing cases; the earlier
+four clock/concurrent-cleanup/large-manifest integration cases also pass.
+
+The preceding runs at 99cd867 and ac89103 were interrupted cleanly after 1,254
+and 1,240 passes for source findings, before native execution. They remain partial
+diagnostic evidence. The Sonar regression-assertion correction preserves explicit
+worker error propagation and all main-thread synchronization checks.
+
+Current measured collection is 119 lifecycle / 2,322 full / 2,017 mandatory native
+nodes, H05=29/H11=119. All 1,898 accepted baseline identities, fingerprints and
+anchors remain preserved. This is a private T012S02/S06/S07 implementation
+correction, using the existing clock event/schema and resource/authority bounds.
+Renewed complete immutable-head full/native, local review and hosted qualification
+are pending at this source checkpoint; PR #75 will hold completion receipts.
+Source acceptance, T012T-V, operational setup and protected dispatch remain
+separate and unauthorized. Feedback stays deferred; blocked writes are not replayed.

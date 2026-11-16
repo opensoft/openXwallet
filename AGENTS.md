@@ -304,3 +304,13 @@ initial-registration refusal remains a failed checkpoint with unproven internal
 cause; see hosting-lifecycle-analysis.md for precise causal limits. Renewed source
 review/full/native/exact-head hosted qualification is pending at this checkpoint;
 PR #75 will record completion receipts. No lease, read, role or authority changes.
+
+The validated-clock correction records the latest successful Decision observation
+outside the business savepoint, restoring append state after business rollback.
+It reserves the closing-clock slot under the unchanged 2,048-event cap; a full
+journal refuses all further lifecycle use, including reads. Never renew/reset or
+repair that journal. Current measured corpus: 119 lifecycle / 2,322 full / 2,017
+mandatory native cases, H05=29/H11=119, with every accepted baseline preserved.
+Complete immutable-head review/full/native/hosted qualification is pending at
+this source checkpoint; completion receipts will be posted on PR #75. Earlier
+interrupted/failed runs remain diagnostic. No operational authority is inferred.

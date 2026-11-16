@@ -160,6 +160,71 @@ def test_lifecycle_highwater_and_original_decision_cannot_regress_or_renew(tmp_p
     assert sum(e["kind"] == "stage-intake" for e in store.events(decision=use(1012))) == 1
 
 
+@pytest.mark.parametrize("failed_business", [False, True])
+def test_lifecycle_commit_persists_latest_validated_clock_even_after_business_rollback(tmp_path, failed_business):
+    store, _ = journal(tmp_path)
+    clock = [1000]
+    decision = Decision(clock=lambda: clock[0], monotonic=lambda: 0.)
+    original_deadline = decision.deadline
+    def operation(events, append):
+        append("stage-intake", {"ref": "launch:clock-crossing"})
+        clock[0] = 1009
+        decision.now()
+        if failed_business:
+            raise BindingError("fixture-business-refused")
+    if failed_business:
+        with pytest.raises(BindingError):
+            store.mutate(operation, decision=decision)
+    else:
+        store.mutate(operation, decision=decision)
+    assert decision.deadline == original_deadline
+    regressed = use(1001)
+    with pytest.raises(BindingError):
+        store.events(decision=regressed)
+    events = store.events(decision=use(1009))
+    assert events[-1]["kind"] == "clock"
+    assert events[-1]["at"] == 1009
+    expected = [] if failed_business else [{"ref": "launch:clock-crossing"}]
+    assert [e["data"] for e in events if e["kind"] == "stage-intake"] == expected
+    reopened = LifecycleStore(store.directory, store.witness, identity=store.identity, kind="primary")
+    assert reopened.events(decision=use(1009)) == events
+
+
+@pytest.mark.parametrize("append_business", [False, True])
+def test_lifecycle_capacity_reserves_clock_and_exhausted_store_cannot_admit_regression(tmp_path, monkeypatch, append_business):
+    from workload_factory_binding_runtime.hosted import lifecycle_store as module
+    monkeypatch.setattr(module, "MAX_EVENTS", 6)
+    store, _ = journal(tmp_path)
+    for number in range(4):
+        store.record("stage-intake", {"seed": number}, decision=use())
+    clock = [1000]
+    decision = Decision(clock=lambda: clock[0], monotonic=lambda: 0.)
+    original_deadline = decision.deadline
+    def operation(events, append):
+        clock[0] = 1009
+        decision.now()
+        if append_business:
+            append("stage-intake", {"uncommitted": True})
+        return "read-only"
+    if append_business:
+        with pytest.raises(BindingError):
+            store.mutate(operation, decision=decision)
+    else:
+        assert store.mutate(operation, decision=decision) == "read-only"
+    assert decision.deadline == original_deadline
+    for value in (1001, 1009):
+        current = use(value)
+        with pytest.raises(BindingError):
+            store.events(decision=current)
+    with sqlite3.connect(store.directory / "lifecycle.sqlite") as db:
+        assert db.execute("SELECT highwater FROM metadata").fetchone() == (1009,)
+        assert db.execute("SELECT count(*) FROM events").fetchone() == (6,)
+        assert db.execute("SELECT kind,observed_at FROM events ORDER BY sequence DESC LIMIT 1").fetchone() == ("clock", 1009)
+        rows = [json.loads(raw) for raw, in db.execute("SELECT body FROM events WHERE kind='stage-intake'")]
+    assert rows == [{"seed": n} for n in range(4)]
+    assert len(list(store.witness.iterdir())) == 7
+
+
 from .launch_fixture import stage, v, g, rb, configuration, c, l, w
 from .test_hosted_issuance import provider
 from .hosted_fixture import child_generations
