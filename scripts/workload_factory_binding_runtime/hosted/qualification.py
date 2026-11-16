@@ -49,19 +49,21 @@ class BarrierInputs:
 
 @dataclass(frozen=True, repr=False)
 class WorkerProbe:
-    """Explicit existing owning clients; only the actual accepted preimage is used.
+    """Existing clients and an optional disposable excess-policy control.
 
-    The positive client proves service availability and valid signature. The worker
-    client must resolve that same binding and explicitly refuse its valid preimage.
-    Isolated excess-permission controls change their disposable fixture policy only.
+    The same loaded worker credential must sign the same accepted preimage at
+    the separately selected control endpoint. Without that control the denial
+    remains incomplete. No production permission or owning protocol is changed.
     """
     worker: object
     positive: object
+    excess: object = None
 
     def check(self, message, binding, *, now, decision):
+        import base64
+        import http.client
         from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
         from openwallet_runtime.custody import TLSClient, RemoteRegistry, RemoteSigner
-        from openwallet_runtime.proof import ProofError
         require(type(self.worker) is TLSClient and type(self.positive) is TLSClient
                 and type(message) is bytes and 0 < len(message) <= 8192, "qualification-failed")
         def call(operation):
@@ -70,21 +72,39 @@ class WorkerProbe:
             value = operation()
             decision.now()
             return value
-        # The gate's credential deliberately has sign-only authority. Resolve
-        # through the worker's existing read permission, then verify the positive
-        # signature against that same binding; never request broader gate rights.
         actual = call(lambda: RemoteRegistry(self.worker).resolve(binding.subject_ref, now=now))
         require(actual == binding, "qualification-failed")
         signature = call(lambda: RemoteSigner(self.positive, subject_ref=binding.subject_ref).sign(message))
-        Ed25519PublicKey.from_public_bytes(binding.public_key).verify(signature, message)
-        try:
-            call(lambda: RemoteSigner(self.worker, subject_ref=binding.subject_ref).sign(message))
-        except ProofError as error:
-            require(error.args == ("service-refused",), "qualification-failed")
-        else:
-            raise BindingError("qualification-failed")
+        key = Ed25519PublicKey.from_public_bytes(binding.public_key)
+        key.verify(signature, message)
+        # The neutral client collapses all HTTP errors. Inspect the existing wire
+        # response directly so a 500, redirect or malformed body is never denial.
+        def denied():
+            client = self.worker
+            connection = http.client.HTTPSConnection(client.host, client.port,
+                context=client.context, timeout=min(client.timeout, decision.remaining()))
+            try:
+                connection.request("POST", "/v0/sign", body=canonical({"subject_ref": binding.subject_ref,
+                    "message": base64.urlsafe_b64encode(message).decode()}),
+                    headers={"Content-Type": "application/json", "Accept": "application/json"})
+                response = connection.getresponse()
+                raw = response.read(8193)
+                require(response.status == 403 and response.getheader("Content-Type") == "application/json"
+                        and len(raw) <= 8192 and decode_object(raw) == {"error": "service-refused"},
+                        "qualification-failed")
+            finally:
+                connection.close()
+        call(denied)
+        if self.excess is None:
+            return None
+        require(type(self.excess) is TLSClient and self.excess.context is self.worker.context
+                and (self.excess.host, self.excess.port) != (self.worker.host, self.worker.port),
+                "qualification-failed")
+        control = call(lambda: RemoteSigner(self.excess, subject_ref=binding.subject_ref).sign(message))
+        key.verify(control, message)
         return digest({"preimage_digest": byte_digest(message), "binding_digest": _binding_digest(binding),
-                       "positive_signature_digest": byte_digest(signature), "denial": "service-refused"})
+            "positive_signature_digest": byte_digest(signature), "excess_signature_digest": byte_digest(control),
+            "denial": "http403-service-refused"})
 
 
 ORIGIN_CONTEXT = b"openxfactory/runtime-report-origin/internal-v1\x00"
@@ -199,14 +219,16 @@ def _barrier(token, kind, bridge, now, selected, inputs):
     try:
         IssuerWorkloadVerifier(audience=audience, source=bridge.issuer_source).verify(token, expected, now=now)
     except BindingError as error:
-        require(error.args == ("workload-mismatch",), "qualification-failed")
+        require(type(error) is BindingError and len(error.args) == 1 and type(error.args[0]) is str
+                and error.args[0] == "workload-mismatch", "qualification-failed")
     else:
         raise BindingError("qualification-failed")
     negative = ProofTrace()
     try:
         bridge.sign_observed(inputs[0], inputs[1], token, inputs[3], trace=negative)
     except BindingError as error:
-        require(error.args == ("workload-mismatch",) and negative.reservation is None,
+        require(type(error) is BindingError and len(error.args) == 1 and type(error.args[0]) is str
+                and error.args[0] == "workload-mismatch" and negative.reservation is None,
                 "qualification-failed")
     else:
         raise BindingError("qualification-failed")
@@ -237,9 +259,8 @@ class Qualifier:
             self._used = True
         b, trace = self.bindings, ProofTrace()
         life, selected = b.workflow.lifecycle, b.selected
-        started = b.decision.now()
-        require(selected.config_digest == b.finalized.binding.config_digest == b.context.config_digest
-                and life.plan.scope.config_digest == selected.config_digest, "qualification-failed")
+        started = b.decision.last
+        require(integer(started), "qualification-failed")
         observations, proof, phase = [], {"status": "not-performed"}, None
         issuance = digest({"status": "not-performed"})
         outcome, floor, cancelled = "failure", started, None
@@ -249,6 +270,8 @@ class Qualifier:
         def operation():
             nonlocal phase, issuance, proof, outcome, floor, cancelled, origin_scope, origin_digest
             try:
+                require(selected.config_digest == b.finalized.binding.config_digest == b.context.config_digest
+                        and life.plan.scope.config_digest == selected.config_digest, "qualification-failed")
                 phase = admit_finalized(b.finalized, b.context, bindings=b.workflow)
                 b.decision.clip(phase.valid_until)
                 require(phase.config_digest == selected.config_digest, "qualification-failed")
@@ -273,9 +296,6 @@ class Qualifier:
                     "verification_digest": digest({"subject_ref": verified.subject_ref,
                         "challenge_digest": trace.challenge.digest, "binding_digest": _binding_digest(trace.registry)}),
                     "replay_refusal_digest": digest({"proof_digest": digest(accepted["proof"]), "refusal": replay.reservation})}
-                record("G01", {"reservation": replay.reservation})
-                record("G02", {"proof_digest": values["accepted_proof_digest"]})
-                record("S01", {"readback_digest": trace.selected.readback_digest})
                 if b.barriers is not None:
                     require(type(b.barriers) is BarrierInputs, "qualification-failed")
                     for kind in ("audience", "environment"):
@@ -284,19 +304,14 @@ class Qualifier:
                 if b.worker_probe is not None:
                     require(type(b.worker_probe) is WorkerProbe and type(trace.preimage) is bytes,
                             "qualification-failed")
-                    values["worker_denial_digest"] = b.worker_probe.check(trace.preimage, trace.registry,
+                    denial = b.worker_probe.check(trace.preimage, trace.registry,
                         now=b.decision.now(), decision=b.decision)
-                    record("G03", {"worker_denial_digest": values["worker_denial_digest"]})
+                    if denial is not None:
+                        values["worker_denial_digest"] = denial
+                        record("G03", {"worker_denial_digest": denial})
                 if set(values) == set(PROOF_FIELDS):
                     proof = {"status": "verified", **values}
                     record("H10", values)
-                for case, value in (("H01", asdict(phase)), ("H02", asdict(b.finalized.binding)),
-                    ("H03", {"issuance_digest": issuance}), ("H04", dict(trace.workload.claims)),
-                    ("H05", {"plan_digest": life.plan.digest}), ("H06", {"readback_digest": selected.readback_digest}),
-                    ("H07", {"config_digest": selected.config_digest}),
-                    ("H08", {"deadline": b.decision.deadline}),
-                    ("H09", {"generation_digest": b.finalized.binding.generation_digest})):
-                    record(case, value)
                 if b.origin is not None:
                     require(type(b.origin) is OriginTrust and callable(b.origin.load), "protected-report-refused")
                     phase_value = digest({"admission": asdict(phase), "finalization": asdict(b.finalized.binding),
@@ -331,8 +346,9 @@ class Qualifier:
             life.run(operation)
         except BaseException as error:
             failure = error
-            if outcome == "success":
-                outcome = "failure" if isinstance(error, Exception) else "cancel"
+            outcome = "failure" if isinstance(error, Exception) else "cancel"
+            if not isinstance(error, Exception):
+                cancelled = error
         cleanup = life.cleanup_verification
         # Read an independent historical clock only; do not renew the original
         # Decision to encode post-cleanup privacy facts.
@@ -342,9 +358,8 @@ class Qualifier:
             require(now >= cleanup.checked_at, "qualification-failed")
             observations.append(CaseObservation("H11", now, digest(asdict(cleanup)), "passed"))
             observations.append(CaseObservation("L01", cleanup.observed_at, digest(asdict(cleanup)), "passed"))
-        safe_projection = {"config_digest": selected.config_digest, "proof": proof,
-                           "cleanup_digest": None if cleanup is None else digest(asdict(cleanup))}
-        observations.append(CaseObservation("H12", now, digest(safe_projection), "passed"))
+        # A closed projection alone does not execute independent privacy controls.
+        # H12 therefore remains unperformed in this partial runtime composition.
         # Origin is established by the selected operator's actual signature over
         # these exact observations. A genuine issuer token or transport class by
         # itself cannot upgrade an isolated fixture/control-plane observation.
@@ -373,7 +388,10 @@ class Qualifier:
         require(before < deadline, "qualification-failed")
         attempt = "cleanup-attempt:" + token_hex(16)
         try:
-            record = life.readback.target.read_cleanup(life.plan.ref, attempt_ref=attempt, deadline=deadline)
+            target = life.readback.target
+            from .lifecycle_service import FinalLifecyclePorts
+            audit = target.audit_cleanup if type(target) is FinalLifecyclePorts else target.read_cleanup
+            record = audit(life.plan.ref, attempt_ref=attempt, deadline=deadline)
             now = life.cleanup_clock()
             require(integer(now) and before <= now < deadline, "qualification-failed")
             floor = max(before, self.result.operation_floor if self.result is not None else before)

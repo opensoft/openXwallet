@@ -348,7 +348,7 @@ def test_origin_requires_actual_signature_bounded_freshness_and_closed_shape(ori
         _origin(raw,trust=trust,principal=v.principal,expected=v.expected,now=v.now)
 
 
-@pytest.mark.parametrize("outcome", ["success", "cancel", "worker-excess"])
+@pytest.mark.parametrize("outcome", ["success", "missing-excess", "cancel", "cancel-entry", "cancel-close", "worker-excess"])
 def test_portable_qualifier_component_real_proof_barriers_and_cleanup(k, w, tmp_path, outcome):
     """Existing IPC lifecycle component; never substituted for hosted qualification."""
     from factory_binding.test_owner_integration import owner_source
@@ -369,7 +369,8 @@ def test_portable_qualifier_component_real_proof_barriers_and_cleanup(k, w, tmp_
         original_life_run=life.run
         def debug_run(operation):
             def captured():
-                try:return operation()
+                try:
+                    value=operation();state["operation_finished"]=True;return value
                 except BaseException as error:
                     import traceback
                     frames=[{"file":__import__("pathlib").Path(f.filename).name,"line":f.lineno,"function":f.name}
@@ -382,6 +383,9 @@ def test_portable_qualifier_component_real_proof_barriers_and_cleanup(k, w, tmp_
         read = life.janitor.target.read_lease
         def counted(*a,**kw):
             count["lease_reads"]+=1
+            if (outcome=="cancel-entry" or (outcome=="cancel-close" and state.get("operation_finished"))) and not state.get("cancelled"):
+                state["cancelled"]=True
+                raise KeyboardInterrupt("private-cancel-canary")
             return read(*a,**kw)
         life.janitor.target.read_lease = counted
         k.access = replace(k.access,config_digest=digest(c.config),sources_digest=digest(c.config["sources"]))
@@ -406,9 +410,29 @@ def test_portable_qualifier_component_real_proof_barriers_and_cleanup(k, w, tmp_
             jwt(c.h.issuer_key,{**c.h.claims,"environment":"negative-environment"}))
         worker=TLSClient(k.material.endpoint,ca_file=k.ca,certificate=k.worker[0],private_key=k.worker[1])
         positive=TLSClient(k.material.endpoint,ca_file=k.ca,certificate=k.gate[0],private_key=k.gate[1])
+        excess = None
+        if outcome != "missing-excess":
+            # Disposable source-only counterfactual; no existing service policy is mutated.
+            from factory_binding.test_owner_integration import launch
+            from .test_custody import _stop
+            control_dir=directory/"excess-control";control_dir.mkdir(mode=0o700)
+            ready=control_dir/"ready"
+            process,_=launch("custody",{"owner_code":str(owner_source()),"now":c.h.now,
+                "registry_directory":str(directory/"registry"),"key_directory":str(directory/"keys"),
+                "ca_file":str(k.ca),"certificate":str(k.server[0]),"private_key":str(k.server[1]),
+                "ready":str(ready),"policies":{k.worker[2]:{"actions":["resolve","sign"],
+                    "subjects":[c.h.binding.subject_ref]}}},control_dir,wait=False)
+            state["excess_process"]=process
+            limit=time.monotonic()+10
+            while not ready.exists():
+                assert process.poll() is None and time.monotonic()<limit
+                time.sleep(0.02)
+            excess=TLSClient("https://127.0.0.1:"+ready.read_text(),ca_file=k.ca,
+                certificate=k.worker[0],private_key=k.worker[1])
+            excess.context=worker.context
         state["qualifier"]=Qualifier(QualificationBindings(validate_config(c.bridge.load_config(),trust=c.trust),
             final,replace(w.context,config_digest=cfg),workflow,c.bridge,
-            Decision(clock=lambda:c.h.now,monotonic=time.monotonic),barriers,WorkerProbe(worker,positive)),
+            Decision(clock=lambda:c.h.now,monotonic=time.monotonic),barriers,WorkerProbe(worker,positive,excess)),
             challenge_id=c.h.challenge.id,request=c.h.request,token=c.h.token,observation=c.h.observation)
         state["count"]=count
     def perform(_run):
@@ -417,16 +441,20 @@ def test_portable_qualifier_component_real_proof_barriers_and_cleanup(k, w, tmp_
         return state["accepted"]
     directory=tmp_path/"owning-component";directory.mkdir(mode=0o700)
     try:
-        if outcome=="success":_owning_run(k,directory,before_proof=prepare,perform=perform)
+        if outcome in ("success","missing-excess"):_owning_run(k,directory,before_proof=prepare,perform=perform)
         else:
-            with pytest.raises(KeyboardInterrupt if outcome=="cancel" else BindingError):
+            with pytest.raises(KeyboardInterrupt if outcome.startswith("cancel") else BindingError):
                 _owning_run(k,directory,allow_worker_sign=outcome=="worker-excess",before_proof=prepare,perform=perform)
         result=state["qualifier"].result
-        assert result.cleanup is not None and result.outcome=={"success":"success","cancel":"cancel","worker-excess":"failure"}[outcome]
+        assert result.cleanup is not None and result.outcome==("cancel" if outcome.startswith("cancel") else "failure" if outcome=="worker-excess" else "success")
         with pytest.raises(BindingError,match="^protected-report-refused$"):build_receipt(result,now=k.c.h.now)
         value=json.loads(result.fixture_receipt(now=k.c.h.now))
         assert value["scope"]=="isolated-fixture" and not value["protected_machine_qualified"]
         assert "private-cancel-canary" not in json.dumps(value)
+        assert not {"G01","G02","S01","H12",*("H%02d"%n for n in range(1,10))} & {x.case_id for x in result.cases}
+        if outcome=="missing-excess":
+            assert result.proof["status"]=="not-performed"
+            assert not {"G03","H10"} & {x.case_id for x in result.cases}
         if outcome=="success":
             assert result.proof["status"]=="verified"
             (tmp_path/"component-read-measurement.json").write_text(json.dumps({
@@ -434,6 +462,9 @@ def test_portable_qualifier_component_real_proof_barriers_and_cleanup(k, w, tmp_
                 "lease_reads":state["operation_lease_reads"],
                 "private_probe_reads":state["qualifier"].bindings.decision._hosted_reads["counts"]["private"]}))
     finally:
+        if "excess_process" in state:
+            from .test_custody import _stop
+            _stop(state["excess_process"])
         if "fixture" in state:state["fixture"].close()
 
 
@@ -455,3 +486,41 @@ def test_cli_cancellation_is_fixed_and_never_prints_exception_payload(monkeypatc
     captured=capsys.readouterr()
     assert captured.out=="" and captured.err=="qualification-cancelled\n"
     assert not output.exists()
+
+
+@pytest.mark.parametrize("mode", ["normal", "lost-response", "stale-audit"])
+def test_fresh_hosted_cleanup_audit_reads_original_window_without_mutation(lh, mode):
+    from concurrent.futures import ThreadPoolExecutor
+    from secrets import token_hex
+    from workload_factory_binding_runtime.hosted.lifecycle_service import FinalLifecyclePorts
+    lh.launch();lh.finalize();lh.takeover()
+    runtime=lh.runtime()
+    if mode=="lost-response":
+        original=runtime.janitor.target.primary.call
+        def lost(operation,**kw):
+            value=original(operation,**kw)
+            if operation=="cleanup":raise BindingError("private-lost-response")
+            return value
+        runtime.janitor.target.primary.call=lost
+        with pytest.raises(BindingError):runtime.run(lambda:None)
+    else:runtime.run(lambda:None)
+    old=runtime.janitor.target
+    before=len([x for x in lh.stores["primary"].events(decision=lh.use()) if x["kind"]=="cleanup-request"])
+    if mode=="stale-audit":
+        (lh.stores["audit"].directory/"lifecycle.sqlite").write_bytes(b"corrupt")
+    fresh=FinalLifecyclePorts(primary=old.primary,audit=old.audit,operation=old.operation,
+        plan_ref=old.plan_ref,clock=old.clock,monotonic=old.monotonic)
+    def read():
+        attempt="cleanup-attempt:"+token_hex(16)
+        now=runtime.cleanup_clock()
+        record=fresh.audit_cleanup(runtime.plan.ref,attempt_ref=attempt,
+            deadline=min(now+runtime.plan.cleanup_timeout,runtime.plan.expires_at+runtime.plan.cleanup_timeout))
+        runtime._verify_cleanup(record,now,runtime.cleanup_clock(),attempt)
+        return record
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        future=executor.submit(read)
+        if mode=="stale-audit":
+            with pytest.raises(BindingError):future.result(timeout=10)
+        else:assert future.result(timeout=10).lease_status in ("closed","revoked","cancelled")
+    after=len([x for x in lh.stores["primary"].events(decision=lh.use()) if x["kind"]=="cleanup-request"])
+    assert before==after

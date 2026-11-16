@@ -364,11 +364,28 @@ class FinalLifecyclePorts:
         HostedLifecycle.narrow(self.local.cleanup, deadline)
         self.primary.call("cleanup", outcome="failure", decision=self.local.cleanup)
 
+    def audit_cleanup(self, ref, *, attempt_ref, deadline):
+        """One audit-only entry; caller clips to the registered cleanup window.
+
+        Fresh process/thread readback never resends the cleanup mutation and
+        never changes the original operation Decision. The selected audit
+        service independently enforces the retained original registration.
+        """
+        require(ref == self.plan_ref and not getattr(self.local, "audit_started", False), ERROR)
+        self.local.audit_started = True
+        decision = Decision(clock=self.clock, monotonic=self.monotonic, deadline=deadline)
+        HostedLifecycle.narrow(decision, deadline)
+        return self._cleanup_record(ref, attempt_ref=attempt_ref, decision=decision)
+
     def read_cleanup(self, ref, *, attempt_ref, deadline):
         require(ref == self.plan_ref, ERROR)
         decision = getattr(self.local, "cleanup", None)
         require(type(decision) is Decision, ERROR)
         HostedLifecycle.narrow(decision, deadline)
+        return self._cleanup_record(ref, attempt_ref=attempt_ref, decision=decision)
+
+    def _cleanup_record(self, ref, *, attempt_ref, decision):
+        require(ref == self.plan_ref, ERROR)
         value = self.audit.call("cleanup-audit", attempt_ref=attempt_ref, decision=decision)
         require(value["kind"] == "final", ERROR)
         record = value["record"]

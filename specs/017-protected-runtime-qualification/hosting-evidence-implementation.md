@@ -63,18 +63,18 @@ qualification remains BLOCKED; T012T02-T012T06 and parent T012T remain unchecked
 The initial122 focused controls passed. A CLI cancellation correction now catches
 BaseException at the outer CLI boundary, prints only the fixed cancellation code
 and exits130. Three direct interrupt/exit/generator-close canary controls extend
-the current focused collection to125 passing tests. The first broad regression was
+the current focused collection to125 passing tests (superseded below). The first broad regression was
 interrupted for this source privacy finding and is diagnostic, not qualification. The distinct already-accepted portable IPC
 lifecycle component runs the actual owning TLS registry/custody, exact replay,
 valid-signed claim negatives, available worker denial, excess-permission mutation
 and BaseException cancellation. It is not substituted for the hosted positive.
-It measures34 actual lease observations and3 private worker-probe calls. Static
+It measures34 actual lease observations and4 private worker-probe calls. Static
 call accounting agrees: constructor1, run entry1, admission1, proof20, replay8,
 claim negatives2, closing lifecycle check1. One optional authenticated origin read
-would bring the bounded current path to38 private observations.
+would bring the bounded current path to39 private observations.
 
 Separate factory draft `fix-hosted-qualification-lease-budget` proposes a trusted
-qualification-only private38 allocation selected before any reads on the same
+qualification-only private39 allocation selected before any reads on the same
 original Decision. This is a proposed source decision only, not implemented here.
 Ordinary/private12, protected staging/private16, finalization/private12 and cleanup/
 private12 stay unchanged; GitHub3/13 and all existing clocks/correlation limits stay
@@ -82,9 +82,22 @@ unchanged. The actual hosted positive and timing remain to be tested after exact
 source ratification. If it still cannot fit, stop again for governance; never assume
 this component measurement proves deployed or hosted feasibility.
 
-Collection measures125 new nodes and2,142 native nodes total, preserving every one
+Collection now measures131 new nodes and2,148 native nodes total, preserving every one
 of the2,017 accepted node identities, module fingerprints and old anchors. New H10/
 H12 anchors include honest component and refusal controls; they do not clear T014.
+Review corrections bring the focused module to131 passing controls. The same
+qualification now requires a valid same-preimage signature with the same worker
+credential at a separate disposable excess-policy endpoint; a missing control leaves
+G03/H10 unperformed. HTTP500/redirect/malformed responses cannot count as denial.
+The neutral reference service collapses application exceptions into403; actual live
+authorization attribution is therefore not inferred from that response alone and
+requires separately selected factual service observations at T013. Fixture results
+remain fixture-only. Captured fields no longer automatically clear G01/G02/S01 or
+H01-H09. H12 remains unperformed until independent per-run privacy controls
+exist; closed-projection grammar vectors do not supply those controls. Entry and closing cancellation propagate their original BaseException after
+cleanup. Fresh hosted audit-only ports reconcile without retrying cleanup and refuse
+stale journal state. The interrupted broad runs remain diagnostic.
+
 Fresh full/native/ordered validation and external fixture cleanup are pending at
 this working source checkpoint; their actual receipts will supersede this status.
 
