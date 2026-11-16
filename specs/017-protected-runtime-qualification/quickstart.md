@@ -372,3 +372,19 @@ generations in the correct PID namespace, and confirm native container absence.
 These are isolated source results only. T012T-V, publication/review/source acceptance,
 actual services, setup, dispatch, total-control-host-loss watchdogs and cloud
 conditional retirement remain separate gates. Feedback remains deferred.
+
+## T012T preparation after source-accepted lifecycle
+
+PR #75 is source accepted and landed as `d832709a1119c17014287cd15ff8661bfd758cc4`;
+its exact-merge ordinary source CI passes the full suite and all2,017 native cases.
+The current [qualification/report subplan](hosting-evidence-plan.md),
+[acceptance controls](hosting-evidence-acceptance.md), [interfaces](contracts/hosting-evidence.md)
+and [consistency analysis](hosting-evidence-analysis.md) prepare T012T only.
+
+The factory candidate `add-protected-runtime-report` needs source review and owner
+acceptance, then a separate isolated implementation commission. Only tasks.md owns
+proposed T012T01-T012T06. Do not implement them, enable CLI bindings, initialize a
+service, mint credentials, run protected dispatch or publish a live report now.
+Document preparation uses `python3 scripts/validate-openspec-cli-pin.py --all` in
+its default pinned form plus relative-link/scope checks. It creates no new runtime
+case count or live qualification. T012U/V/T001/T013-T015 remain separate.
