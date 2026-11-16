@@ -2639,3 +2639,32 @@ remain preserved. At this source checkpoint renewed full/native and hosted
 qualification are pending; PR #75 will receive execution receipts after completion.
 Prior journal/CI checkpoints remain historical. No operational authority,
 source ratification, setup, protected dispatch or feedback submission is inferred.
+
+## Optional SQLite journal overlap correction
+
+The renewed local run at `9891a8412a02d028020de19053886b7b821657ca` ended
+with 2,312 passed and one failure during initial registration, before the existing
+retained-file substitution test performed its mutation. The primary journal held
+only a clock event and no file anchors; native execution was not started. These
+artifacts fit an early identity-check refusal but do not prove its internal cause.
+
+A deterministic actual-writer control independently reproduces a source race:
+a legitimate DELETE-mode commit removes the optional rollback journal between
+an existence check and lstat, refusing a reader despite valid committed events
+and witnesses. The fix inspects that optional journal once and permits only its
+FileNotFoundError. Required database/lock/witness/directory identities, ownership,
+permissions, forbidden WAL/SHM and symlink checks remain enforced; the reader
+still acquires the original journal fence and validates committed hash/witness
+state under its original Decision. No mutation is retried or repaired.
+
+The new overlap control fails on the old code and passes after the correction.
+Four invalid-artifact controls and the existing corruption, concurrent-registration
+and clock controls also pass: 14 focused cases total. This is a T012S02/S06/S07
+implementation correction, with no schema, role, budget or authority change.
+Measured collection is now 115 lifecycle / 2,318 full / 2,013 mandatory native
+nodes; H05=29 and H11=115. All 1,898 accepted baseline identities, fingerprints
+and anchors remain preserved. Renewed immutable-head full/native and hosted
+qualification remain pending at this source checkpoint; completion receipts will
+be posted on PR #75. Earlier failed runs are not qualification evidence. Source
+ratification, T012T-V, setup, protected dispatch and live acceptance remain separate.
+Feedback stays deferred; neither historical blocked write was replayed.

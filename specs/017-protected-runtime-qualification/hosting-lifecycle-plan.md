@@ -289,3 +289,16 @@ The existing complete concurrency audit is retained, with deterministic parent/p
 contention and unknown-postclaim controls. The corpus is 110 lifecycle / 2,313
 full / 2,008 native cases. Fresh complete qualification is pending at this source
 checkpoint, with receipts to follow on PR #75. See hosting-lifecycle-analysis.md.
+
+## Optional rollback-journal qualification update
+
+A single inspection permits only disappearance of the optional SQLite DELETE-mode
+journal during a legitimate concurrent commit. Required identities, private-file
+checks, forbidden sidecars and locked hash/witness validation remain enforced.
+The actual-writer overlap control and invalid-artifact negatives extend the corpus
+to 115 lifecycle / 2,318 full / 2,013 mandatory native cases, H05=29/H11=115.
+The preceding local run failed during initial registration and is not qualification
+evidence. Renewed complete review/full/native/hosted qualification is pending at
+this immutable source checkpoint; receipts will follow on PR #75. See
+hosting-lifecycle-analysis.md for the reproduced race and limits of causal evidence.
+No original deadline, read budget, authority, schema or operational default changes.

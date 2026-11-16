@@ -68,6 +68,66 @@ def test_lifecycle_store_loss_replacement_corruption_or_rollback_refuses(tmp_pat
         store.events(decision=use())
 
 
+
+def test_completed_sqlite_delete_journal_overlap_preserves_exact_committed_events(tmp_path, monkeypatch):
+    import threading
+    from workload_factory_binding_runtime.hosted import lifecycle_store as module
+    store, _ = journal(tmp_path)
+    ready, release = threading.Event(), threading.Event()
+    errors, observed = [], []
+    main = threading.current_thread()
+    original = module._private
+    def writer():
+        try:
+            def mutation(events, append):
+                append("stage-intake", {"ref": "launch:overlap"})
+                ready.set()
+                assert release.wait(2)
+            store.mutate(mutation, decision=use())
+        except BaseException as error:
+            errors.append(error)
+    thread = threading.Thread(target=writer)
+    def concurrent_private(path, directory=False):
+        if (path == store.directory / "lifecycle.sqlite-journal"
+                and threading.current_thread() is main and not observed):
+            assert path.exists()
+            observed.append(path.name)
+            release.set()
+            thread.join(2)
+            assert not thread.is_alive() and not errors and not path.exists()
+        return original(path, directory)
+    thread.start()
+    try:
+        assert ready.wait(2)
+        monkeypatch.setattr(module, "_private", concurrent_private)
+        decision = use()
+        deadline = decision.deadline
+        events = store.events(decision=decision)
+        assert decision.deadline == deadline
+        assert [(e["kind"], e["data"]) for e in events if e["kind"] != "clock"] == [
+            ("stage-intake", {"ref": "launch:overlap"})]
+        assert observed == ["lifecycle.sqlite-journal"]
+    finally:
+        release.set()
+        thread.join(2)
+    assert not thread.is_alive() and not errors
+    assert store.events(decision=use()) == events
+
+
+@pytest.mark.parametrize("artifact", ["journal-mode", "journal-symlink", "wal", "shm"])
+def test_optional_sqlite_artifact_disappearance_does_not_admit_invalid_files(tmp_path, artifact):
+    store, _ = journal(tmp_path)
+    suffix = "-journal" if artifact.startswith("journal-") else "-" + artifact
+    path = store.directory / ("lifecycle.sqlite" + suffix)
+    if artifact == "journal-symlink":
+        path.symlink_to(store.witness / "00000000.witness")
+    else:
+        path.write_bytes(b"untrusted optional SQLite artifact")
+        path.chmod(0o644 if artifact == "journal-mode" else 0o600)
+    with pytest.raises(BindingError):
+        store.events(decision=use())
+
+
 def test_lifecycle_journal_has_one_concurrent_registration_winner(tmp_path):
     store, _ = journal(tmp_path)
     def register(_):

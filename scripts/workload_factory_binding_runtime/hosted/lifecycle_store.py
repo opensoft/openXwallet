@@ -41,9 +41,15 @@ def _identity(directory, witness):
             and not witness.is_relative_to(directory), ERROR)
     for suffix in ("-journal", "-wal", "-shm"):
         p = directory / (DB + suffix)
-        if p.exists() or p.is_symlink():
-            require(suffix == "-journal", ERROR)
-            _private(p)
+        if suffix == "-journal":
+            try:
+                _private(p)
+            except FileNotFoundError:
+                # A concurrent DELETE-mode commit may remove this optional
+                # artifact before the ownership lock is acquired.
+                pass
+        else:
+            require(not p.exists() and not p.is_symlink(), ERROR)
     return (_private(directory, True), _private(directory / DB), _private(directory / "journal.lock"),
             _private(witness, True), _private(witness / "00000000.witness"), _private(directory / "file-pins", True))
 

@@ -292,3 +292,15 @@ claiming and protected defaults do not change. Its 110 lifecycle / 2,313 full /
 2,008 native corpus needs fresh full/native and exact-head hosted completion;
 those checks remain pending at this immutable source checkpoint. PR #75 will
 record receipts after execution. Existing concurrency/deadline assertions remain.
+
+The optional SQLite rollback-journal correction permits only the artifact's
+FileNotFoundError during a legitimate concurrent DELETE-mode commit. Required
+identities and locked hash/witness validation remain enforced; forbidden WAL/SHM,
+symlink and permission checks still refuse. The actual-writer overlap regression
+and four invalid-artifact controls extend the current corpus to 115 lifecycle /
+2,318 full / 2,013 mandatory native cases, with H05=29/H11=115 and all 1,898
+baseline identities/fingerprints/anchors preserved. The preceding local run's
+initial-registration refusal remains a failed checkpoint with unproven internal
+cause; see hosting-lifecycle-analysis.md for precise causal limits. Renewed source
+review/full/native/exact-head hosted qualification is pending at this checkpoint;
+PR #75 will record completion receipts. No lease, read, role or authority changes.
