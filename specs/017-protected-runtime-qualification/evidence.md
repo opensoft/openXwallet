@@ -2510,3 +2510,49 @@ hosted results and the expert panel remain distinct until observed. Publication
 hygiene replaces the new machine-specific receipt root with WALLET_BINDING_QA_ROOT;
 older historical receipt paths are pre-existing context and are not propagated into
 new source or runbook commands. No runtime input changes in this documentation fix.
+
+## T012S PR #75 publication correction qualification
+
+The owner commissioned opening the T012S source candidate, hosted CI and local
+Codex review. Current main `261084feedea5a4ba0d5324c7f294c2c883e1f32` is integrated
+without dropping the accepted T012R source. The nine-role local expert panel plus
+a Linux/PID-namespace specialist reviewed the candidate and corrections. It found
+six source defects: inode recycling, retention/control-root aliases, cleanup of
+known prestart or persisted-dead generations, shorter cleanup deadlines not reaching
+backends, interrupted scheduler-intake delivery, and excessive token manifests.
+All six have reviewed fixes and substantive regressions. Full lifecycle execution
+then exposed proc-stat ESRCH during worker reaping; precise missing-process
+handling and a deterministic regression close that additional defect.
+
+Corrected qualification passes: 105 lifecycle controls; 2,308 full tests plus four
+subtests; and 2,003 mandatory native conformance nodes. Native H05 has 25 anchored
+nodes and H11 has all 105 lifecycle nodes. No required node is missing, skipped,
+deselected, xfail or nonpassing. The lifecycle fingerprint is
+`6c42d7ff21c2f1c7d3f4b9e2d3e6a2882c5a3d5a715849f9a219924591f59555`.
+Every accepted baseline module count, fingerprint and anchor remains unchanged
+(1,898 nodes). All 150 Python/workflow files and four pin/dependency files have
+identical complete key sets and SHA-256 values before and after qualification.
+Existing contract/owning pins, syntax and plain/strict validators pass. The default
+pinned OpenSpec verifier validates all six items under strict mode after checking
+its content address and complete npm closure; no alternate global CLI was used.
+
+The native run used the pinned existing image with network none, a read-only
+root/source and only the task evidence root writable. Observed process credentials
+are UID1000/GID65534, empty groups and capability sets, and NoNewPrivs1. Actual
+fixture process/credential generations and retained/shared file identities were
+audited before removing exact task roots. Native container absence was checked
+from both the bench and Windows host before its PID namespace was treated as
+removed. Positive independent audits require real run-file absence, issuer
+retirement and retained/shared generation preservation; no actor-only success
+substitutes for readback. Receipts are retained privately under
+`$WALLET_BINDING_QA_ROOT/t012s-publication-20261115/`, including full/native XML,
+input manifests, matrix-extension proof, review synthesis, observed isolation
+boundary, cleanup audits and exact-root removal records.
+
+This commits the corrected source/local qualification result. PR #75 records its
+final immutable head and fresh hosted checks separately. A hosted GitHub Codex
+review request hit the account quota and produced no completed connector review;
+the completed local expert panel supplies the commissioned Codex review evidence.
+Owner source ratification remains pending. No T012T-V work, provider setup,
+protected dispatch, live hosting acceptance or feedback submission is authorized
+by these results; neither historical blocked write was replayed.

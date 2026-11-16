@@ -6,10 +6,10 @@ public route, operational resolver or control-host-loss watchdog.
 """
 from dataclasses import asdict, dataclass
 from copy import deepcopy
-import fcntl
 import os
 from pathlib import Path
 import select
+import secrets
 import signal
 import stat
 import time
@@ -24,6 +24,7 @@ from .plan import StaticPlan
 from .staging import StagePolicy, scope_of
 from .stage_store import StageStore
 from .lifecycle_store import LifecycleStore, ERROR
+from .file_pins import FilePins
 from .issuance import InstallationRetirer, IssuedToken
 from .private_http import Response
 from .readback import ReadBudget
@@ -62,7 +63,7 @@ def process_instance(pid):
     try:
         raw = (Path("/proc") / str(pid) / "stat").read_text().rsplit(")", 1)[1].split()
         return f"process:{pid}:{raw[19]}", raw[0]
-    except FileNotFoundError:
+    except (FileNotFoundError, ProcessLookupError):
         return None, None
 
 
@@ -87,15 +88,17 @@ class PosixResources:
     worker is excluded by its inherited sandbox. Host-root and privileged writers
     bypassing that fence remain trusted; this is not conditional cloud deletion.
     """
-    def __init__(self, *, files, worker_ref, tokens=()):
+    def __init__(self, *, files, worker_ref, pins, tokens=()):
         _handle(worker_ref)
-        require(type(files) is tuple and type(tokens) is tuple and 1 <= len(files) + len(tokens) < 64, ERROR)
-        selected, roots = {}, {}
+        require(type(files) is tuple and type(tokens) is tuple and 1 <= len(files) + len(tokens) < 64
+                and len(tokens) <= 3, ERROR)  # final cleanup costs four private reads/token; limit stays12
+        selected, roots, paths = {}, {}, set()
         for value in files:
             require(type(value) is FileResource and value.retention in ("run", "retained", "shared"), ERROR)
             _handle(value.ref)
             path = Path(value.path).absolute()
-            require(path.resolve() == path and value.ref not in selected, ERROR)
+            require(path.resolve() == path and value.ref not in selected and path not in paths, ERROR)
+            paths.add(path)
             parent = path.parent.lstat()
             require(stat.S_ISDIR(parent.st_mode) and parent.st_uid == os.geteuid() and not parent.st_mode & 0o077, ERROR)
             roots[value.ref] = (parent.st_dev, parent.st_ino)
@@ -105,51 +108,32 @@ class PosixResources:
                     and type(value.capability) is IssuedToken and type(value.retirement) is InstallationRetirer, ERROR)
             _handle(value.ref)
             selected[value.ref] = value
-        require(worker_ref not in selected, ERROR)
+        token_instances = [digest(value.capability.readback()) for value in tokens]
+        require(len(set(token_instances)) == len(token_instances) and worker_ref not in selected, ERROR)
         self.selected, self.roots = MappingProxyType(selected), MappingProxyType(roots)
         self.worker_ref = worker_ref
         self.pid_namespace = pid_namespace()
+        self.epoch = secrets.token_hex(32)
+        self.files = FilePins(selected={k: v for k, v in selected.items() if type(v) is FileResource},
+                              roots=roots, store=pins, epoch=self.epoch)
+
+    def close(self):
+        self.files.close()
 
     def current_namespace(self):
-        require(self.pid_namespace == pid_namespace(), ERROR)
+        require(self.pid_namespace == pid_namespace() and not self.files.closed, ERROR)
 
-    def _directory(self, ref, *, decision):
-        value = self.selected[ref]
-        decision.now()
-        fd = os.open(value.path.parent, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
-        try:
-            info = os.fstat(fd)
-            require((info.st_dev, info.st_ino) == self.roots[ref] and info.st_uid == os.geteuid()
-                    and not info.st_mode & 0o077 and value.path.parent.resolve() == value.path.parent, ERROR)
-            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            return fd
-        except BaseException:
-            os.close(fd)
-            raise
-
-    def _file(self, ref, *, decision):
-        fd = self._directory(ref, decision=decision)
-        try:
-            try:
-                info = os.stat(self.selected[ref].path.name, dir_fd=fd, follow_symlinks=False)
-            except FileNotFoundError:
-                return None
-            require(stat.S_ISREG(info.st_mode) and info.st_nlink == 1 and info.st_uid == os.geteuid(), ERROR)
-            decision.now()
-            return f"file:{info.st_dev}:{info.st_ino}"
-        finally:
-            os.close(fd)
-
-    def inventory(self, *, decision):
+    def inventory(self, *, decision, initialize=False):
         self.current_namespace()
         result = []
         for ref, value in self.selected.items():
             if type(value) is FileResource:
-                instance = self._file(ref, decision=decision)
+                instance = self.files.inventory(ref, decision=decision, initialize=initialize)
                 require(instance is not None, ERROR)
                 result.append(RunResource(ref, instance, "file", value.retention))
             else:
                 result.append(RunResource(ref, "credential:" + digest(value.capability.readback()).split(":")[1], "credential", "run"))
+        require(len({r.instance_ref for r in result}) == len(result), ERROR)
         return tuple(result)
 
     def observe(self, expected, *, decision):
@@ -167,8 +151,8 @@ class PosixResources:
         value = self.selected[expected.ref]
         if type(value) is FileResource:
             require(expected.kind == "file" and expected.retention == value.retention, ERROR)
-            current = self._file(expected.ref, decision=decision)
-            return ResourceReadback(expected.ref, current or expected.instance_ref, current is not None, False)
+            current, present = self.files.observe(expected.ref, expected.instance_ref, decision=decision)
+            return ResourceReadback(expected.ref, current, present, False)
         actual = "credential:" + digest(value.capability.readback()).split(":")[1]
         require(expected.kind == "credential" and expected.retention == "run" and actual == expected.instance_ref, ERROR)
         ReadBudget(decision).consume("private")
@@ -212,17 +196,7 @@ class PosixResources:
         value = self.selected[expected.ref]
         if type(value) is FileResource:
             require(value.retention == "run" and expected.kind == "file", ERROR)
-            fd = self._directory(expected.ref, decision=decision)
-            try:
-                info = os.stat(value.path.name, dir_fd=fd, follow_symlinks=False)
-                require(stat.S_ISREG(info.st_mode) and info.st_nlink == 1
-                        and f"file:{info.st_dev}:{info.st_ino}" == expected.instance_ref, ERROR)
-                decision.now()
-                os.unlink(value.path.name, dir_fd=fd)
-                os.fsync(fd)
-                decision.now()
-            finally:
-                os.close(fd)
+            self.files.retire(expected.ref, expected.instance_ref, decision=decision)
         else:
             require(expected.kind == "credential" and expected.instance_ref ==
                     "credential:" + digest(value.capability.readback()).split(":")[1], ERROR)
@@ -233,17 +207,25 @@ class PosixResources:
 
 def _state(events):
     result = {"registration": None, "generation": None, "final": None, "released": False,
-              "closed": False, "actions": {}, "release": None}
+              "closed": False, "actions": {}, "release": None, "prestart_closed": None}
     for event in events:
         kind, value = event["kind"], event["data"]
-        if kind == "clock":
+        if kind in ("clock", "file-retired"):
             continue
         if kind == "registration":
             require(result["registration"] is None, ERROR)
             result["registration"] = value
         elif kind == "generation":
-            require(result["registration"] is not None and result["generation"] is None and result["final"] is None, ERROR)
+            require(result["registration"] is not None and result["generation"] is None and result["final"] is None
+                    and result["prestart_closed"] is None, ERROR)
             result["generation"] = value
+        elif kind == "prestart-closed":
+            _closed(value, "registration_digest unit_digest")
+            require(result["registration"] is not None and result["closed"] and result["generation"] is None
+                    and result["prestart_closed"] is None and result["final"] is None
+                    and value["registration_digest"] == digest(result["registration"])
+                    and value["unit_digest"] == digest(result["registration"]["unit"]), ERROR)
+            result["prestart_closed"] = value
         elif kind == "final-plan":
             require(result["generation"] is not None and result["final"] is None and not result["closed"], ERROR)
             result["final"] = value
@@ -267,7 +249,7 @@ class HostedLifecycle:
     """Trusted source construction; primary operations are private capabilities."""
     def __init__(self, *, plan, context, policy, host_store, store, intake, audit_store,
                  resources, janitor, auditor, scheduler, host_pid_namespace,
-                 final_authority_principal, cleanup_until, cleanup_timeout=30):
+                 final_authority_principal, cleanup_until, cleanup_timeout=30, retained_roots=()):
         require(type(plan) is StaticPlan and type(policy) is StagePolicy
                 and type(host_store) is StageStore and host_store.kind == "host"
                 and all(type(x) is LifecycleStore for x in (store, intake, audit_store))
@@ -295,6 +277,16 @@ class HostedLifecycle:
                 and type(scheduler["pid"]) is int and scheduler["pid"] > 0
                 and type(scheduler["start_time"]) is int and scheduler["start_time"] > 0, ERROR)
         require(type(host_pid_namespace) is tuple and host_pid_namespace == resources.pid_namespace == pid_namespace(), ERROR)
+        require(resources.files.store.directory == store.directory and resources.files.store.identity == store.identity
+                and type(retained_roots) is tuple, ERROR)
+        protected = (host_store.directory, store.directory, store.witness, intake.directory, intake.witness,
+                     audit_store.directory, audit_store.witness, *map(Path, retained_roots))
+        require(all(root.resolve() == root and root.is_dir() for root in protected), ERROR)
+        for value in resources.selected.values():
+            if type(value) is FileResource and value.retention == "run":
+                require(not any(value.path.is_relative_to(root) for root in protected), ERROR)
+        state_resource = resources.selected.get(config["state"]["store_ref"])
+        require(type(state_resource) is FileResource and state_resource.retention == "retained", ERROR)
         self.host_pid_namespace = host_pid_namespace
         self.plan, self.context, self.policy, self.host_store = plan, context, policy, host_store
         self.store, self.intake, self.audit_store, self.resources = store, intake, audit_store, resources
@@ -314,7 +306,8 @@ class HostedLifecycle:
         if registration is not None:
             require(canonical(registration["scope"]) == self.scope_raw
                     and registration["accepted_commit"] == self.context.accepted_commit
-                    and registration["pid_namespace"] == list(self.host_pid_namespace), ERROR)
+                    and registration["pid_namespace"] == list(self.host_pid_namespace)
+                    and registration["resource_epoch"] == self.resources.epoch, ERROR)
         return value
 
     def _registration(self, ref, decision):
@@ -325,6 +318,7 @@ class HostedLifecycle:
 
     def register(self, ref, unit_digest, *, decision):
         require(ref == self.scope["launch_ref"], ERROR)
+        require(self.state(decision=decision)["registration"] is None, ERROR)
         row = self.host_store.read(ref, decision=decision)
         unit = row["unit"]
         require(row["state"] == "registered" and canonical(row["scope"]) == self.scope_raw
@@ -332,7 +326,7 @@ class HostedLifecycle:
                 and unit["scope_digest"] == digest(self.scope), ERROR)
         actual, state = process_instance(unit["manager_pid"])
         require(actual == f"process:{unit['manager_pid']}:{unit['manager_start']}" and state not in ("Z", "X"), ERROR)
-        files = self.resources.inventory(decision=decision)
+        files = self.resources.inventory(decision=decision, initialize=True)
         retained = self.plan.value()["configuration_template"]["state"]["store_ref"]
         require(any(r.ref == retained and r.kind == "file" and r.retention == "retained" for r in files), ERROR)
         now = decision.now()
@@ -340,7 +334,7 @@ class HostedLifecycle:
         require(now < expiry < self.cleanup_until, ERROR)
         decision.clip(expiry)
         value = {"scope": self.scope, "accepted_commit": self.context.accepted_commit,
-                 "unit": unit, "pid_namespace": list(self.host_pid_namespace), "resources": [asdict(r) for r in files], "worker_ref": self.resources.worker_ref,
+                 "unit": unit, "pid_namespace": list(self.host_pid_namespace), "resource_epoch": self.resources.epoch, "resources": [asdict(r) for r in files], "worker_ref": self.resources.worker_ref,
                  "issued_at": now, "expires_at": expiry, "cleanup_until": self.cleanup_until,
                  "cleanup_timeout": self.cleanup_timeout, "retained_state_ref": retained,
                  "janitor": asdict(self.janitor), "auditor": asdict(self.auditor), "scheduler": document(self.scheduler)}
@@ -399,26 +393,57 @@ class HostedLifecycle:
         decision.clip(reg["cleanup_until"] if cleanup else reg["expires_at"])
         if state["generation"] is not None:
             return state["generation"]
+        if cleanup and state["prestart_closed"] is not None:
+            return None
         row = self.host_store.read(ref, decision=decision)
+        require(canonical(row["unit"]) == canonical(reg["unit"]) and canonical(row["scope"]) == self.scope_raw, ERROR)
         generation = row["generation"]
-        require(row["state"] == "running" and canonical(row["unit"]) == canonical(reg["unit"])
-                and type(generation) is dict and generation["unit_digest"] == digest(reg["unit"])
-                and generation["boot_id"] == self.scope["boot_id"]
-                and generation["uid"] == self.scope["worker_uid"] and generation["session_id"] == generation["pid"], ERROR)
+        if cleanup and row["state"] == "registered" and generation is None:
+            # Lease closure precedes this observation. A later host start must
+            # consume its attempt then reread that closed lease before Popen.
+            require(state["closed"], ERROR)
+            def prestart(events, append):
+                current = _state(events)
+                require(current["closed"] and current["generation"] is None, ERROR)
+                if current["prestart_closed"] is None:
+                    append("prestart-closed", {"registration_digest": digest(reg), "unit_digest": digest(reg["unit"])})
+            self.store.mutate(prestart, decision=decision)
+            return None
+        require(row["state"] == "running" and type(generation) is dict, ERROR)
+        _closed(generation, "unit_digest pid start_time session_id boot_id uid policy_digest cgroup_digest")
+        require(generation["unit_digest"] == digest(reg["unit"])
+                and generation["boot_id"] == self.scope["boot_id"] and generation["uid"] == self.scope["worker_uid"]
+                and all(type(generation[k]) is int and generation[k] > 0 for k in ("pid", "start_time", "session_id", "uid"))
+                and generation["session_id"] == generation["pid"]
+                and generation["policy_digest"] == self.scope["hosting_selection_digest"]
+                and valid_digest(generation["cgroup_digest"]), ERROR)
+        expected = f"process:{generation['pid']}:{generation['start_time']}"
         current, process_state = process_instance(generation["pid"])
-        require(current == f"process:{generation['pid']}:{generation['start_time']}" and process_state not in ("Z", "X")
-                and os.getsid(generation["pid"]) == generation["session_id"]
-                and byte_digest((Path("/proc") / str(generation["pid"]) / "cgroup").read_bytes()) == generation["cgroup_digest"], ERROR)
-        value = {"generation": generation, "resource": asdict(RunResource(reg["worker_ref"], current, "process", "run"))}
+        if not (cleanup and (current is None or current == expected and process_state in ("Z", "X"))):
+            require(current == expected and process_state not in ("Z", "X"), ERROR)
+            try:
+                require(os.getsid(generation["pid"]) == generation["session_id"]
+                        and byte_digest((Path("/proc") / str(generation["pid"]) / "cgroup").read_bytes()) == generation["cgroup_digest"], ERROR)
+            except (FileNotFoundError, ProcessLookupError):
+                require(cleanup and process_instance(generation["pid"])[0] is None, ERROR)
+        # This is the exact generation already persisted by the authenticated
+        # host, never an invented PID or a replacement process observation.
+        value = {"generation": generation, "resource": asdict(RunResource(reg["worker_ref"], expected, "process", "run"))}
         def save(events, append):
-            require(_state(events)["generation"] is None, ERROR)
-            append("generation", value)
+            current = _state(events)
+            require(current["prestart_closed"] is None, ERROR)
+            if current["generation"] is None:
+                append("generation", value)
+            else:
+                require(current["generation"] == value, ERROR)
         self.store.mutate(save, decision=decision)
         return value
 
     def resources_for(self, state):
-        require(state["registration"] is not None and state["generation"] is not None, ERROR)
-        return tuple(RunResource(**r) for r in state["registration"]["resources"]) + (RunResource(**state["generation"]["resource"]),)
+        require(state["registration"] is not None
+                and (state["generation"] is not None or state["closed"] and state["prestart_closed"] is not None), ERROR)
+        selected = tuple(RunResource(**r) for r in state["registration"]["resources"])
+        return selected + ((RunResource(**state["generation"]["resource"]),) if state["generation"] is not None else ())
 
     def prepare_final(self, ref, finalized, plan, *, decision):
         require(type(finalized) is FinalizedPlan and type(finalized.binding) is FinalizationBinding
@@ -550,12 +575,21 @@ class HostedLifecycle:
             return True
         return self.store.mutate(claim, decision=decision)
 
+    @staticmethod
+    def narrow(decision, deadline):
+        decision.clip(deadline)
+        decision.end = min(decision.end, decision.last_mono + decision.deadline - decision.last)
+        decision.now()
+
     def cleanup(self, ref, outcome, *, decision):
         require(outcome in ("success", "failure", "cancel", "expired"), ERROR)
         state = self._registration(ref, decision)
         reg = state["registration"]
         require(decision.now() < reg["cleanup_until"], ERROR)
-        decision.clip(reg["cleanup_until"])
+        timeout = reg["cleanup_timeout"]
+        if state["released"]:
+            timeout = min(timeout, run_plan(state["final"]["plan"]).cleanup_timeout)
+        self.narrow(decision, min(reg["cleanup_until"], decision.now() + timeout))
         if outcome == "expired":
             expiry = run_plan(state["final"]["plan"]).expires_at if state["released"] else reg["expires_at"]
             require(decision.now() >= expiry, ERROR)
@@ -563,7 +597,7 @@ class HostedLifecycle:
             if not _state(events)["closed"]:
                 append("lease-closed", {"outcome": outcome})
         self.store.mutate(close, decision=decision)
-        if state["generation"] is None:
+        if state["generation"] is None and state["prestart_closed"] is None:
             self.bind_generation(ref, decision=decision, cleanup=True)
         state = self._registration(ref, decision)
         selected = self.resources_for(state)
@@ -578,12 +612,15 @@ class HostedLifecycle:
         if state["released"]:
             plan = run_plan(state["final"]["plan"])
             peer = JanitorPeer(self.janitor.principal_ref, self.janitor.credential_ref)
+            def bounded(action, *args, deadline):
+                self.narrow(decision, deadline)
+                return action(*args)
             janitor = RunJanitor(plan=plan, allowed_gate=peer,
-                load_plan=lambda *_a, **_k: plan,
-                load_lease=lambda *_a, **_k: self.final_lease(plan.ref, decision=decision),
-                load_resource=lambda ref, **_k: self.managed_resource(ref, decision=decision),
-                close_lease=lambda *_a, **_k: None,
-                cleanup=lambda managed, **_k: remove(managed.resource), clock=decision.clock)
+                load_plan=lambda _ref, *, deadline: bounded(lambda: plan, deadline=deadline),
+                load_lease=lambda _ref, *, deadline: bounded(lambda: self.final_lease(plan.ref, decision=decision), deadline=deadline),
+                load_resource=lambda ref, *, deadline: bounded(lambda: self.managed_resource(ref, decision=decision), deadline=deadline),
+                close_lease=lambda _ref, *, deadline: bounded(lambda: None, deadline=deadline),
+                cleanup=lambda managed, *, deadline: bounded(remove, managed.resource, deadline=deadline), clock=decision.clock)
             janitor.finalize(plan.ref, peer=peer, deadline=min(decision.deadline, reg["cleanup_until"]))
         else:
             failed = False
@@ -603,7 +640,10 @@ class HostedLifecycle:
         state = self._registration(ref, decision)
         reg = state["registration"]
         require(state["closed"] and decision.now() < reg["cleanup_until"], ERROR)
-        decision.clip(reg["cleanup_until"])
+        timeout = reg["cleanup_timeout"]
+        if state["released"]:
+            timeout = min(timeout, run_plan(state["final"]["plan"]).cleanup_timeout)
+        self.narrow(decision, min(reg["cleanup_until"], decision.now() + timeout))
         resources = self.resources_for(state)
         actual = tuple(self.resources.observe(r, decision=decision) for r in resources)
         for expected, observed in zip(resources, actual):

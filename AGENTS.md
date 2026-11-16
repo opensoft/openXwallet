@@ -245,8 +245,8 @@ remain uncommissioned; feedback deferred and neither blocked write replayed.
 ## T012S isolated candidate qualified
 
 The commissioned T012S/S01-S07 implementation and isolated qualification are
-complete: 82 new lifecycle cases, 2,282 full tests and 1,980 mandatory native cases,
-with no failures or skips. All 148 frozen Python/workflow inputs match before/after;
+complete: 105 lifecycle cases, 2,308 full tests plus four subtests and 2,003 mandatory native cases,
+with no failures or skips. All 150 frozen Python/workflow inputs and four pin/dependency files match before/after;
 all 1,898 baseline native identities/fingerprints/anchors are preserved. The seven
 ordered gates, including the default pinned OpenSpec strict verifier, pass. Factory
 post-merge run 43772988866 passes on inherited main fefb5ae4ad72 with the accepted
@@ -257,8 +257,8 @@ closed-lease cleanup remains independently available. Exact-generation teardown 
 preservation audits pass; task fixtures and native container are removed. This is
 an isolated source candidate, not source ratification, deployment, actual provider
 qualification or T012T-V commissioning. Setup/dispatch remain unauthorized; feedback
-deferred and neither blocked write replayed. Publication/review/acceptance are later
-gates. The explicit local POSIX reference supplies no external control-host-loss
+deferred and neither blocked write replayed. The owner commissioned PR #75 publication and local Codex review; exact-head
+CI is recorded on the PR, while owner source acceptance remains pending. The explicit local POSIX reference supplies no external control-host-loss
 watchdog, automatic VM expiry or cloud infrastructure retirement capability.
 
 ## T012S publication commission

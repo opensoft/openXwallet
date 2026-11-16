@@ -241,3 +241,20 @@ not deployed OS administration isolation. Total control-host loss, external
 watchdogs, automatic VM expiry, cloud resource retirement and real GitHub App
 credentials remain unqualified. Host-root and trusted writers bypassing the file
 fence are trusted. No provider setup, protected dispatch or real credential is used.
+
+## Publication correction boundary
+
+PR #75 adds measured source corrections within T012S: durable run-file anchors,
+retained/shared inode handles, a private provider epoch retained by the selected
+source keeper, alias/control-root rejection, exact persisted-dead/prestart cleanup,
+read-only primary-registration discovery after interrupted intake delivery, and
+wall plus monotonic cleanup deadline narrowing. Run files share the initialized
+anchor filesystem. A fresh path-only provider cannot reopen a prior epoch.
+Missing anchors/retirement records, unknown consumed generations and replacement
+resources stay preserved and unverified; no repair, mutation retry or new launch
+is inferred. Scheduler reconcile-only ticks require a separate fresh audit.
+The selected manifest permits at most three tokens under the unchanged private12
+final cleanup limit. Source correction testing adds a deterministic process-exit
+ESRCH control. The new measured collection is 105 lifecycle / 2,003 native / 2,308
+full cases; corrected qualification passes as recorded in evidence.md.
+Earlier results above describe the initial candidate, not these corrected bytes.

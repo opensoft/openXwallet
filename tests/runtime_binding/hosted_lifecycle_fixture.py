@@ -84,8 +84,16 @@ def final_file(path):
                           FinalizationBinding(**value["binding"])), run_plan(value["plan"]))
 
 
-def server_role(life, mode, principal, ca, certs, clock, scope, path, connection, root, excess=False):
+def server_role(life, mode, principal, ca, certs, clock, scope, path, connection, root,
+                excess=False, crash_intake=False, listen_port=0):
     track_helpers(root / (mode + "-helpers.jsonl"))
+    if mode == "primary" and crash_intake:
+        original_intake = life.intake.record
+        def intake_record(kind, data, **kwargs):
+            if kind == "stage-intake":
+                os._exit(23)  # actual primary death after its registration commit
+            return original_intake(kind, data, **kwargs)
+        life.intake.record = intake_record
     if mode == "primary":
         original_cleanup = life.cleanup
         def cleanup(*args, **kwargs):
@@ -124,7 +132,7 @@ def server_role(life, mode, principal, ca, certs, clock, scope, path, connection
     server = LifecycleServer(lifecycle=life, mode=mode, principal=principal, cert_file=str(certs["server"][0]),
         key_file=str(certs["server"][1]), ca_file=str(ca), permissions=permissions,
         clock=lambda: clock.value, monotonic=time.monotonic, observation_scope=scope,
-        load_final=lambda _ref, **_kwargs: final_file(path))
+        listen=("127.0.0.1", listen_port), load_final=lambda _ref, **_kwargs: final_file(path))
     connection.send(server.server_port)
     def stop():
         try:
@@ -138,6 +146,7 @@ def server_role(life, mode, principal, ca, certs, clock, scope, path, connection
         server.serve_forever(poll_interval=.02)
     finally:
         server.server_close()
+        life.resources.close()
         connection.close()
 
 
@@ -170,6 +179,7 @@ def scheduler_role(intake, clock, connection, root):
 def lh(stage, provider, tmp_path, request):
     root = tmp_path / "lifecycle"
     root.mkdir(mode=0o700)
+    mode = getattr(request, "param", None)
     ctx = multiprocessing.get_context("fork")
     clock = ctx.RawValue("q", stage.v.h.now)
     provider.now = stage.v.h.now
@@ -177,6 +187,12 @@ def lh(stage, provider, tmp_path, request):
     issue_use = Decision(clock=lambda: provider.now, monotonic=time.monotonic)
     issuer.issue(provider.ref, provider.nonce, decision=issue_use)
     token = issuer.pending(provider.ref)
+    tokens = [token]
+    if mode == "three-tokens":
+        for n in range(1, 3):
+            provider.ref, provider.nonce = f"issuance:fixture-{n}", secrets.token_hex(32)
+            issuer.issue(provider.ref, provider.nonce, decision=Decision(clock=lambda: provider.now, monotonic=time.monotonic))
+            tokens.append(issuer.pending(provider.ref))
     stores = {}
     for kind in ("primary", "scheduler", "audit"):
         directory, witness = root / kind, root / (kind + "-witness")
@@ -201,23 +217,27 @@ def lh(stage, provider, tmp_path, request):
     for kind, store in stores.items():
         selected.append(FileResource("resource:" + kind + "-journal", store.directory / "lifecycle.sqlite", "retained"))
         selected.append(FileResource("resource:" + kind + "-witness", store.witness / "00000000.witness", "retained"))
-    resources = PosixResources(files=tuple(selected), worker_ref="resource:hosted-worker",
-        tokens=(TokenResource("resource:issued-capability", token, InstallationRetirer(writer=provider.routed(), observer=provider.routed())),))
+    resources = PosixResources(files=tuple(selected), worker_ref="resource:hosted-worker", pins=stores["primary"],
+        tokens=tuple(TokenResource("resource:issued-capability" + (f"-{i}" if i else ""), cap,
+            InstallationRetirer(writer=provider.routed(), observer=provider.routed())) for i, cap in enumerate(tokens)))
+    request.addfinalizer(resources.close)
     life = HostedLifecycle(plan=stage.v.selected, context=stage.v.context, policy=stage.policy,
         host_store=stage.agent.store, store=stores["primary"], intake=stores["scheduler"], audit_store=stores["audit"],
         resources=resources, janitor=janitor, auditor=auditor, host_pid_namespace=stage.agent.pid_namespace,
         scheduler={"principal_ref": "principal:lifecycle-scheduler", "pid": scheduler_process.pid,
             "start_time": scheduler_start, "boot_id": stage.scope["boot_id"]},
-        final_authority_principal="principal:final-authority", cleanup_until=config["expires_at"] + 30)
+        final_authority_principal="principal:final-authority", cleanup_until=config["expires_at"] + 30,
+        cleanup_timeout=1 if mode == "short-cleanup" else 30,
+        retained_roots=(stage.controller.store.directory, stage.v.h.ledger.path.parent,
+                        tmp_path / "dispatch-journal", tmp_path / "store", tmp_path / "issuance-state"))
     final_path = root / "accepted-final.json"
     primary_pki, audit_pki = pki(root / "primary-pki"), pki(root / "audit-pki")
     clients, origins = {}, {}
-    mode = getattr(request, "param", None)
     for role, material, principal in (("primary", primary_pki, janitor.principal_ref), ("audit", audit_pki, auditor.principal_ref)):
         parent, child = ctx.Pipe()
         ca, certs = material
         process = ctx.Process(target=server_role, args=(life, role, principal, ca, certs, clock, stage.rb.scope,
-            final_path, child, root, mode == "excess-worker"))
+            final_path, child, root, mode == "excess-worker", mode == "intake-crash"))
         process.start()
         processes.append(process)
         pipes.append(parent)
@@ -243,8 +263,26 @@ def lh(stage, provider, tmp_path, request):
     stage.controller.authority = authority
     stage.controller.register_cleanup = CleanupRegistration(clients["primary"](), clients["audit"]())
     result = SimpleNamespace(stage=stage, root=root, life=life, clock=clock, provider=provider, issuer=issuer,
-        token=token, stores=stores, processes=processes, pipes=pipes, primary=clients["primary"], audit=clients["audit"],
+        token=token, tokens=tuple(tokens), stores=stores, processes=processes, pipes=pipes, primary=clients["primary"], audit=clients["audit"],
         shared=shared, temporary=temporary, final_path=final_path)
+    def restart_primary():
+        previous = processes[1]
+        previous.join(timeout=3)
+        assert not previous.is_alive()
+        ca, certs = primary_pki
+        port = int(origins["primary"].rsplit(":", 1)[1])
+        parent, child = ctx.Pipe()
+        process = ctx.Process(target=server_role, args=(life, "primary", janitor.principal_ref,
+            ca, certs, clock, stage.rb.scope, final_path, child, root, False, False, port))
+        process.start()
+        processes.append(process)
+        pipes.append(parent)
+        assert parent.poll(8) and parent.recv() == port
+        path = root / "lifecycle-processes.json"
+        records = document(path.read_bytes())
+        records["generations"].append({"pid": process.pid, "instance_ref": process_instance(process.pid)[0]})
+        path.write_bytes(canonical(records))
+    result.restart_primary = restart_primary
     result.use = lambda: Decision(clock=lambda: clock.value, monotonic=time.monotonic)
     def advance(value):
         clock.value = value
@@ -302,7 +340,8 @@ def lh(stage, provider, tmp_path, request):
         scope = RunScope(value.binding.config_digest, config["case_ref"], config["launch"]["run_id"],
             config["launch"]["run_attempt"], **config["lifecycle"])
         plan = RunPlan("plan:hosted-final", scope, janitor, life.resources_for(state), clock.value,
-            min(value.binding.expires_at, state["registration"]["expires_at"]), 30, config["state"]["store_ref"])
+            min(value.binding.expires_at, state["registration"]["expires_at"]),
+            state["registration"]["cleanup_timeout"], config["state"]["store_ref"])
         result.finalized, result.plan = value, plan
         private_write(final_path, canonical({"configuration": config, "policy": document(value.policy),
                                             "binding": asdict(value.binding), "plan": asdict(plan)}))

@@ -20,7 +20,7 @@ DB = "lifecycle.sqlite"
 MAX_EVENTS = 2048
 KINDS = frozenset({"clock", "registration", "generation", "final-plan", "stage-release",
     "action-claimed", "action-observed", "lease-closed", "stage-intake", "final-intake",
-    "stage-ack", "takeover-ack", "cleanup-audit", "cleanup-request"})
+    "stage-ack", "takeover-ack", "cleanup-audit", "cleanup-request", "prestart-closed", "file-retired"})
 SCHEMA = (
     "CREATE TABLE metadata (version INTEGER NOT NULL, kind TEXT NOT NULL, nonce TEXT NOT NULL, highwater INTEGER NOT NULL)",
     "CREATE TABLE events (sequence INTEGER PRIMARY KEY, kind TEXT NOT NULL, body BLOB NOT NULL, previous TEXT NOT NULL, digest TEXT NOT NULL, observed_at INTEGER NOT NULL)",
@@ -44,7 +44,7 @@ def _identity(directory, witness):
             require(suffix == "-journal", ERROR)
             _private(p)
     return (_private(directory, True), _private(directory / DB), _private(directory / "journal.lock"),
-            _private(witness, True), _private(witness / "00000000.witness"))
+            _private(witness, True), _private(witness / "00000000.witness"), _private(directory / "file-pins", True))
 
 
 def _sync_directory(path):
@@ -77,6 +77,7 @@ class LifecycleStore:
                     and not witness.is_relative_to(directory), ERROR)
             directory.mkdir(mode=0o700)
             witness.mkdir(mode=0o700)
+            (directory / "file-pins").mkdir(mode=0o700)
             for name in (DB, "journal.lock"):
                 fd = os.open(directory / name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
                 os.close(fd)

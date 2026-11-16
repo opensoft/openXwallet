@@ -639,3 +639,348 @@ def test_dead_final_scheduler_refuses_operation_but_independent_closed_lease_cle
     assert runtime.cleanup_verification is not None
     assert lh.primary().call("lease", plan_ref=lh.plan.ref, decision=lh.use())["status"] == "closed"
     assert not lh.provider.active[lh.token.credential]
+
+
+from workload_factory_binding_runtime.hosted.lifecycle import PosixResources, FileResource, TokenResource, HostedLifecycle
+from workload_factory_binding_runtime.hosted.issuance import InstallationRetirer
+import fcntl
+
+
+def file_provider(tmp_path, request, files):
+    store, _ = journal(tmp_path)
+    value = PosixResources(files=tuple(files), worker_ref="resource:worker", pins=store)
+    request.addfinalizer(value.close)
+    return value, store
+
+
+@pytest.mark.parametrize("alias", ["same-path", "hardlink"])
+def test_retained_run_alias_is_rejected_before_any_anchor(tmp_path, request, alias):
+    target = tmp_path / "retained"
+    target.write_bytes(b"retained generation")
+    second = target
+    if alias == "hardlink":
+        second = tmp_path / "alias"
+        os.link(target, second)
+    store, _ = journal(tmp_path)
+    with pytest.raises(BindingError):
+        PosixResources(files=(FileResource("resource:retained", target, "retained"),
+            FileResource("resource:alias", second, "run")), worker_ref="resource:worker", pins=store)
+    assert target.read_bytes() == b"retained generation"
+    assert not list((store.directory / "file-pins").iterdir())
+
+
+def test_run_anchor_prevents_inode_recycling_and_preserves_fenced_replacement(tmp_path, request):
+    target = tmp_path / "run-file"
+    target.write_bytes(b"original generation")
+    resources, store = file_provider(tmp_path, request, [FileResource("resource:file", target, "run")])
+    expected, = resources.inventory(decision=use(), initialize=True)
+    original = target.stat()
+    anchor = store.directory / "file-pins" / resources.files.slot(expected.ref)
+    assert anchor.stat().st_ino == original.st_ino and original.st_nlink == 2
+    directory = os.open(tmp_path, os.O_RDONLY | os.O_DIRECTORY)
+    try:
+        fcntl.flock(directory, fcntl.LOCK_EX)
+        for _ in range(16):
+            target.unlink()
+            target.write_bytes(b"replacement generation")
+            assert target.stat().st_ino != original.st_ino
+        assert anchor.stat().st_nlink == 1
+    finally:
+        os.close(directory)
+    assert resources.observe(expected, decision=use()).instance_ref != expected.instance_ref
+    with pytest.raises(BindingError):
+        resources.cleanup(expected, decision=use())
+    assert target.read_bytes() == b"replacement generation"
+    assert anchor.read_bytes() == b"original generation"
+
+
+def test_successful_file_retirement_removes_anchor_and_preserves_any_later_path(tmp_path, request):
+    target = tmp_path / "run-file"
+    target.write_bytes(b"original")
+    resources, store = file_provider(tmp_path, request, [FileResource("resource:file", target, "run")])
+    expected, = resources.inventory(decision=use(), initialize=True)
+    resources.cleanup(expected, decision=use())
+    assert not target.exists() and not list((store.directory / "file-pins").iterdir())
+    assert resources.observe(expected, decision=use()).present is False
+    target.write_bytes(b"new slot generation")
+    actual = resources.observe(expected, decision=use())
+    assert actual.present and actual.instance_ref != expected.instance_ref
+    with pytest.raises(BindingError):
+        resources.cleanup(expected, decision=use())
+    assert target.read_bytes() == b"new slot generation"
+    assert sum(e["kind"] == "file-retired" for e in store.events(decision=use())) == 1
+
+
+def test_missing_file_anchor_never_recreates_or_adopts_a_generation(tmp_path, request):
+    target = tmp_path / "run-file"
+    target.write_bytes(b"original")
+    resources, store = file_provider(tmp_path, request, [FileResource("resource:file", target, "run")])
+    expected, = resources.inventory(decision=use(), initialize=True)
+    anchor = store.directory / "file-pins" / resources.files.slot(expected.ref)
+    anchor.unlink()
+    for action in (lambda: resources.observe(expected, decision=use()),
+                   lambda: resources.cleanup(expected, decision=use()),
+                   lambda: resources.inventory(decision=use())):
+        with pytest.raises(BindingError):
+            action()
+    assert not anchor.exists() and target.read_bytes() == b"original"
+
+
+def test_fresh_file_provider_cannot_adopt_a_registered_epoch(lh, request):
+    original = lh.life.resources
+    selected = tuple(v for v in original.selected.values() if type(v) is FileResource)
+    tokens = tuple(v for v in original.selected.values() if type(v) is TokenResource)
+    fresh = PosixResources(files=selected, tokens=tokens, worker_ref=original.worker_ref, pins=lh.stores["primary"])
+    request.addfinalizer(fresh.close)
+    lh.register()
+    assert fresh.epoch != original.epoch
+    try:
+        lh.life.resources = fresh
+        with pytest.raises(BindingError):
+            lh.life.state(decision=lh.use())
+    finally:
+        lh.life.resources = original
+    assert lh.life.state(decision=lh.use())["registration"] is not None
+
+
+@pytest.mark.parametrize("target", ["primary", "audit", "scheduler-witness", "host", "controller"])
+def test_known_control_state_can_never_be_selected_as_a_run_file(lh, request, target):
+    paths = {"primary": lh.stores["primary"].directory / "lifecycle.sqlite",
+             "audit": lh.stores["audit"].directory / "lifecycle.sqlite",
+             "scheduler-witness": lh.stores["scheduler"].witness / "00000000.witness",
+             "host": lh.stage.agent.store.directory / "staging.sqlite",
+             "controller": lh.stage.controller.store.directory / "staging.sqlite"}
+    path = paths[target]
+    original = lh.life.resources
+    selected = [v for v in original.selected.values() if type(v) is FileResource and v.path != path]
+    selected.append(FileResource("resource:unsafe-control-file", path, "run"))
+    resources = PosixResources(files=tuple(selected),
+        tokens=tuple(v for v in original.selected.values() if type(v) is TokenResource),
+        worker_ref=original.worker_ref, pins=lh.stores["primary"])
+    request.addfinalizer(resources.close)
+    life = lh.life
+    with pytest.raises(BindingError):
+        HostedLifecycle(plan=life.plan, context=life.context, policy=life.policy,
+            host_store=life.host_store, store=life.store, intake=life.intake, audit_store=life.audit_store,
+            resources=resources, janitor=life.janitor, auditor=life.auditor, scheduler=json.loads(life.scheduler),
+            host_pid_namespace=life.host_pid_namespace, final_authority_principal=life.final_authority_principal,
+            cleanup_until=life.cleanup_until, retained_roots=(lh.stage.controller.store.directory,))
+    assert path.exists() and not list((lh.stores["primary"].directory / "file-pins").iterdir())
+    assert lh.life.state(decision=lh.use())["registration"] is None
+
+
+def tick_cleanup(lh):
+    deadline = time.monotonic() + 8
+    while time.monotonic() < deadline:
+        lh.pipes[0].send("tick")
+        assert lh.pipes[0].poll(8)
+        outcome = lh.pipes[0].recv()
+        if outcome in ("cleanup-requested", "reconcile-only"):
+            return outcome
+        time.sleep(.05)
+    pytest.fail("independent cleanup did not run within its bounded fixture wait")
+
+
+def test_independent_expiry_retires_registered_scope_that_never_started(lh):
+    lh.register()
+    registration = lh.life.state(decision=lh.use())["registration"]
+    lh.advance(registration["expires_at"])
+    tick_cleanup(lh)
+    record = lh.audit().call("cleanup-audit", attempt_ref="cleanup-attempt:prestart", decision=lh.use())
+    assert record["kind"] == "stage" and all(r["ref"] != lh.life.resources.worker_ref for r in record["resources"])
+    state = lh.life.state(decision=lh.use())
+    assert state["closed"] and state["prestart_closed"] and state["generation"] is None
+    assert not lh.stage.agent.children and not lh.temporary.exists()
+    assert not lh.provider.active[lh.token.credential]
+
+
+def test_persisted_worker_exit_before_lifecycle_binding_still_retires_exact_scope(lh):
+    lh.launch(bind=False)
+    row = lh.stage.agent.store.read(lh.stage.scope["launch_ref"], decision=lh.use())
+    child = lh.stage.agent.children[lh.stage.scope["launch_ref"]]
+    child.terminate()
+    child.communicate(timeout=3)
+    assert process_instance(child.pid)[0] is None
+    lh.primary().call("cleanup", outcome="failure", decision=lh.use())
+    record = lh.audit().call("cleanup-audit", attempt_ref="cleanup-attempt:known-dead", decision=lh.use())
+    assert record["kind"] == "stage"
+    assert lh.life.state(decision=lh.use())["generation"]["generation"] == row["generation"]
+    assert not lh.temporary.exists() and not lh.provider.active[lh.token.credential]
+
+
+@pytest.mark.parametrize("lh", ["short-cleanup"], indirect=True)
+@pytest.mark.parametrize("owner", ["stage", "final"])
+def test_short_cleanup_timeout_bounds_backend_on_the_same_wall_and_monotonic_decision(lh, monkeypatch, owner):
+    lh.launch()
+    if owner == "final":
+        lh.finalize()
+        lh.takeover()
+    monotonic = [0.]
+    decision = Decision(clock=lambda: lh.clock.value, monotonic=lambda: monotonic[0])
+    original = lh.life.resources.cleanup
+    called = []
+    def delayed(resource, *, decision):
+        called.append((decision.deadline, decision.end))
+        monotonic[0] += 2
+        original(resource, decision=decision)
+    monkeypatch.setattr(lh.life.resources, "cleanup", delayed)
+    with pytest.raises(BindingError):
+        lh.life.cleanup(lh.stage.scope["launch_ref"], "failure", decision=decision)
+    assert called and called[0][0] == lh.clock.value + 1 and called[0][1] <= 1
+    assert lh.temporary.exists() and lh.provider.active[lh.token.credential]
+
+
+@pytest.mark.parametrize("lh", ["intake-crash"], indirect=True)
+@pytest.mark.parametrize("replacement", [False, True])
+def test_primary_death_after_registration_commit_is_discovered_without_replaying_registration(lh, replacement):
+    with pytest.raises(BindingError):
+        lh.register()
+    lh.processes[1].join(timeout=3)
+    assert lh.processes[1].exitcode == 23
+    state = lh.life.state(decision=lh.use())
+    assert state["registration"] and state["generation"] is None
+    assert not any(e["kind"] == "stage-intake" for e in lh.stores["scheduler"].events(decision=lh.use()))
+    anchor = lh.stores["primary"].directory / "file-pins" / lh.life.resources.files.slot("resource:temporary")
+    assert anchor.stat().st_ino == lh.temporary.stat().st_ino
+    if replacement:
+        fd = os.open(lh.root, os.O_RDONLY | os.O_DIRECTORY)
+        try:
+            fcntl.flock(fd, fcntl.LOCK_EX)
+            lh.temporary.unlink()
+            lh.temporary.write_bytes(b"replacement after API actor crash")
+            assert lh.temporary.stat().st_ino != anchor.stat().st_ino
+        finally:
+            os.close(fd)
+    lh.restart_primary()
+    with pytest.raises(BindingError):
+        lh.audit().call("ack-stage", decision=lh.use())
+    lh.advance(state["registration"]["expires_at"])
+    tick_cleanup(lh)
+    if replacement:
+        with pytest.raises(BindingError):
+            lh.audit().call("cleanup-audit", attempt_ref="cleanup-attempt:registration-crash", decision=lh.use())
+        assert lh.temporary.read_bytes() == b"replacement after API actor crash" and anchor.exists()
+    else:
+        record = lh.audit().call("cleanup-audit", attempt_ref="cleanup-attempt:registration-crash", decision=lh.use())
+        assert record["kind"] == "stage" and not lh.temporary.exists()
+    assert not lh.stage.agent.children and not lh.provider.active[lh.token.credential]
+    assert sum(e["kind"] == "registration" for e in lh.stores["primary"].events(decision=lh.use())) == 1
+
+
+@pytest.mark.parametrize("lh", ["three-tokens"], indirect=True)
+@pytest.mark.parametrize("owner", ["stage", "final"])
+def test_maximum_selected_token_manifest_completes_cleanup_within_private12(lh, owner):
+    lh.launch()
+    if owner == "final":
+        lh.finalize()
+        lh.takeover()
+    lh.primary().call("cleanup", outcome="failure", decision=lh.use())
+    record = lh.audit().call("cleanup-audit", attempt_ref="cleanup-attempt:three-tokens", decision=lh.use())
+    assert record["kind"] == owner and len(lh.tokens) == 3
+    assert all(not lh.provider.active[cap.credential] for cap in lh.tokens)
+    assert sum(method == "DELETE" and path == "/installation/token" for method, path in lh.provider.calls) == 3
+
+
+def test_token_manifest_over_cleanup_budget_is_rejected_before_registration(lh):
+    extras = []
+    retire = InstallationRetirer(writer=lh.provider.routed(), observer=lh.provider.routed())
+    try:
+        for n in range(3):
+            lh.provider.ref, lh.provider.nonce = f"issuance:extra-{n}", secrets.token_hex(32)
+            lh.issuer.issue(lh.provider.ref, lh.provider.nonce, decision=lh.use())
+            extras.append(lh.issuer.pending(lh.provider.ref))
+        original = lh.life.resources
+        tokens = tuple(TokenResource(f"resource:token-{n}", cap, retire)
+                       for n, cap in enumerate((lh.token, *extras)))
+        with pytest.raises(BindingError):
+            PosixResources(files=tuple(v for v in original.selected.values() if type(v) is FileResource),
+                tokens=tokens, worker_ref=original.worker_ref, pins=lh.stores["primary"])
+        assert lh.life.state(decision=lh.use())["registration"] is None
+        assert not list((lh.stores["primary"].directory / "file-pins").iterdir())
+    finally:
+        for cap in extras:
+            retire.retire(cap, decision=lh.use())
+
+
+def test_file_retirement_without_durable_marker_stays_unverified_and_never_replays(tmp_path, request, monkeypatch):
+    target = tmp_path / "run-file"
+    target.write_bytes(b"original")
+    resources, store = file_provider(tmp_path, request, [FileResource("resource:file", target, "run")])
+    expected, = resources.inventory(decision=use(), initialize=True)
+    original = store.record
+    def lost(kind, data, **kwargs):
+        if kind == "file-retired":
+            raise BindingError("fixture-lost-retirement-marker")
+        return original(kind, data, **kwargs)
+    monkeypatch.setattr(store, "record", lost)
+    with pytest.raises(BindingError, match="fixture-lost-retirement-marker"):
+        resources.cleanup(expected, decision=use())
+    assert not target.exists() and not list((store.directory / "file-pins").iterdir())
+    target.write_bytes(b"newer generation")
+    with pytest.raises(BindingError):
+        resources.observe(expected, decision=use())
+    with pytest.raises(BindingError):
+        resources.cleanup(expected, decision=use())
+    assert target.read_bytes() == b"newer generation"
+
+
+def test_actual_host_manager_death_preserves_independent_cleanup_of_persisted_generation(lh):
+    import select
+    import sys
+    import subprocess
+    def observer(source):
+        transport = source.transport
+        return {"origin": source.origin, "principal_ref": source.principal, "scope": source.scope.record(),
+            "transport": {"ca_file": str(transport.ca), "certificate": str(transport.cert),
+                "private_key": str(transport.key), "observation_origin": source.origin,
+                "server_certificate_digest": transport.server_certificate_digest}}
+    stage, spec = lh.stage, lh.stage.spec
+    receipt = lh.root.parent / "crashed-generation.json"
+    refs = {"now": stage.v.h.now, "plan": stage.v.plan, "context": asdict(stage.v.context),
+        "policy": asdict(stage.policy), "roots": {k: str(v) for k,v in spec.roots.items()},
+        "runtime": [str(p) for p in spec.runtime], "private": [str(p) for p in spec.private], "gid": spec.gid,
+        "directory": str(stage.agent.store.directory), "identity": stage.agent.store.identity,
+        "grant": observer(stage.agent.authority.grant), "lease": observer(stage.agent.authority.lease),
+        "grant_ref": stage.agent.authority.ref, "receipt": str(receipt), "persist_generation": True}
+    path = lh.root.parent / "manager-crash-refs.json"
+    path.write_bytes(canonical(refs));path.chmod(0o600)
+    helper = Path(__file__).with_name("stage_crash_role.py")
+    process = subprocess.Popen([sys.executable, "-I", "-B", str(helper), "supervisor", str(path)],
+        stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, close_fds=True)
+    try:
+        assert select.select([process.stdout], [], [], 10)[0]
+        unit = json.loads(process.stdout.readline())
+        records_path = lh.root / "lifecycle-processes.json"
+        records = json.loads(records_path.read_bytes())
+        records["generations"].append({"pid": unit["manager_pid"],
+            "instance_ref": f"process:{unit['manager_pid']}:{unit['manager_start']}"})
+        records_path.write_bytes(canonical(records))
+        lh.primary().call("register", unit_digest=digest(unit), decision=lh.use())
+        lh.audit().call("ack-stage", decision=lh.use())
+        out, error = process.communicate("start\n", timeout=22)
+        assert process.returncode == 0, error
+        result = json.loads(out)
+        assert result["manager_exit"] == 73 and result["worker_reaped"] and result["worker_signal"] == 9
+        assert process_instance(result["worker_pid"])[0] is None
+        assert all(role.is_alive() for role in lh.processes[:3])
+        row = stage.agent.store.read(stage.scope["launch_ref"], decision=lh.use())
+        assert row["state"] == "running" and row["generation"] is not None
+        assert lh.life.state(decision=lh.use())["generation"] is None
+        lh.primary().call("cleanup", outcome="failure", decision=lh.use())
+        record = lh.audit().call("cleanup-audit", attempt_ref="cleanup-attempt:real-manager-death", decision=lh.use())
+        assert record["kind"] == "stage" and not lh.provider.active[lh.token.credential]
+        assert not lh.temporary.exists()
+    finally:
+        if process.poll() is None:
+            process.kill()
+        process.communicate(timeout=3)
+
+
+def test_process_generation_disappearance_during_proc_read_is_absent(monkeypatch):
+    from workload_factory_binding_runtime.hosted.lifecycle import process_instance
+
+    def gone(_path, *args, **kwargs):
+        raise ProcessLookupError("process reaped during proc stat read")
+
+    monkeypatch.setattr(Path, "read_text", gone)
+    assert process_instance(123456) == (None, None)

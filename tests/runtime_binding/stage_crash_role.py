@@ -33,11 +33,14 @@ def manager(path):
     original=store.transition
     def crash(ref,old,new,**kwargs):
         if new=="running":
+            if v.get("persist_generation", False):
+                original(ref,old,new,**kwargs)
             generation=kwargs["generation"]
             fd=os.open(v["receipt"],os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
             try:os.write(fd,canonical(generation));os.fsync(fd)
             finally:os.close(fd)
-            # The real child exists/measures correctly; its PID is not committed.
+            # Existing scenario crashes before persistence; the lifecycle
+            # scenario also qualifies actual manager death after persistence.
             os._exit(73)
         return original(ref,old,new,**kwargs)
     store.transition=crash

@@ -1,6 +1,6 @@
 # T012S scoped lifecycle consistency review
 
-Status: coordinator review and isolated qualification complete; no new expert-panel or hosted review
+Status: publication corrections reviewed and isolated requalification complete; owner acceptance pending
 Date: 2026-11-15
 Scope: T012S subplan/acceptance/task links against accepted hosting decisions
 
@@ -24,7 +24,7 @@ is not adopted by this review. Source decisions/AGENTS remain controlling.
 All seven child tasks are security/interface/multi-module work and retain tier [O].
 Each has explicit future source/test files and a meaningful pytest/gate verification
 command. They are sequential unless independence is later proved, carry no [P]
-parallel marker and remain unchecked. The new test/fixture/store/service modules
+parallel marker and were unchecked during preparation. The new test/fixture/store/service modules
 are planned files; preparation creates none of their implementation bytes. There
 is no duplicate executable task list in the plan, acceptance table or factory.
 
@@ -78,3 +78,43 @@ Both active-lease review findings are closed by real pre-fix probes, corrected
 positive/negative controls, and complete full/native reruns. No unresolved
 coordinator source finding remains. This does not add a formal expert panel,
 hosted Codex review, owner source acceptance or operational authorization.
+
+## Publication review corrections
+
+The local Codex panel reviews PR #75 against the integrated current main. Its
+findings remain within the commissioned T012S source boundary. No neutral API,
+role, late configuration field, read allocation or operational grant changes.
+
+Run files receive durable hardlink anchors in the explicitly initialized primary
+store before registration. Retained/shared file descriptors and a frozen private
+provider epoch prevent inode recycling or a fresh path-only provider from
+adopting a prior registration. Run files must share the anchor filesystem, and
+cooperating writers retain the private parent-directory fence. The selected
+source keeper must retain those capabilities across primary actor restart; loss
+of all keepers remains unqualified. Control-store paths and physical aliases
+cannot be run resources. Successful file retirement records its original
+generation after both directory syncs. Missing anchors or retirement markers
+remain unverified and are never repaired or replayed during observation.
+
+Closed leases can clean a registered scope that never started without inventing
+a process generation. Exact persisted host generations can also be cleaned after
+the worker exits before lifecycle binding. A consumed launch with no persisted
+generation, replacement process/file, or total control-host loss still refuses
+verified success. The scheduler may discover its preselected primary registration
+read-only after interrupted intake delivery; it never reconstructs an
+acknowledgement or replays registration. Its reconcile-only state requires a
+separate fresh cleanup audit.
+
+The same Decision is narrowed on both wall and monotonic clocks before backend
+effects, including RunJanitor callbacks. At most three issuer tokens are selected
+because final cleanup costs four private reads per token under private12. A
+process-disappearance race found during full lifecycle testing is covered by a
+deterministic ESRCH regression; both missing proc entries and ProcessLookupError
+mean that exact process no longer exists.
+
+The reviewed collection now includes 105 lifecycle cases, with fingerprint
+`6c42d7ff21c2f1c7d3f4b9e2d3e6a2882c5a3d5a715849f9a219924591f59555`.
+Every accepted baseline identity, digest and anchor is preserved. Corrected
+ordered/full/native gates and exact-root fixture cleanup pass; evidence.md records
+the measured results and PR #75 carries exact-head hosted CI.
+T012T-V and all operational tasks remain open.

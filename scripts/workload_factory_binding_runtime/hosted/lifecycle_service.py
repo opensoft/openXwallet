@@ -361,13 +361,14 @@ class FinalLifecyclePorts:
     def finalize(self, ref, *, deadline):
         require(ref == self.plan_ref, ERROR)
         self.local.cleanup = Decision(clock=self.clock, monotonic=self.monotonic, deadline=deadline)
+        HostedLifecycle.narrow(self.local.cleanup, deadline)
         self.primary.call("cleanup", outcome="failure", decision=self.local.cleanup)
 
     def read_cleanup(self, ref, *, attempt_ref, deadline):
         require(ref == self.plan_ref, ERROR)
         decision = getattr(self.local, "cleanup", None)
         require(type(decision) is Decision, ERROR)
-        decision.clip(deadline)
+        HostedLifecycle.narrow(decision, deadline)
         value = self.audit.call("cleanup-audit", attempt_ref=attempt_ref, decision=decision)
         require(value["kind"] == "final", ERROR)
         record = value["record"]
@@ -381,17 +382,25 @@ class IndependentScheduler:
     def __init__(self, *, intake, client, clock, monotonic):
         require(type(intake) is LifecycleStore and intake.kind == "scheduler" and type(client) is LifecycleClient, ERROR)
         self.intake, self.client, self.clock, self.monotonic = intake, client, clock, monotonic
+        self.next_discovery = None
 
     def tick(self):
         decision = Decision(clock=self.clock, monotonic=self.monotonic)
         events = self.intake.events(decision=decision)
-        if not any(e["kind"] == "stage-intake" for e in events):
-            return "unregistered"
         if any(e["kind"] == "cleanup-request" for e in events):
             return "reconcile-only"
         expiries = [e["data"]["expires_at"] for e in events if e["kind"] in ("stage-intake", "final-intake")]
-        if decision.now() < min(expiries):
-            return "active"
+        if expiries:
+            if decision.now() < min(expiries):
+                return "active"
+        else:
+            # Registration may have committed before scheduler-intake delivery
+            # was interrupted. Discover only this preselected scope by reads;
+            # never replay registration or manufacture a launch acknowledgement.
+            decision.now()
+            if self.next_discovery is not None and decision.last_mono < self.next_discovery:
+                return "awaiting-registration"
+            self.next_discovery = decision.last_mono + 1
         status = self.client.call("status", decision=decision)
         decision.clip(status["cleanup_until"])
         if decision.now() < status["expires_at"]:
