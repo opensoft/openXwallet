@@ -40,6 +40,7 @@
 name: pytest-suite
 
 on:
+  workflow_dispatch:
   pull_request:
     branches:
       - main
@@ -53,6 +54,18 @@ jobs:
     # A plan call: the suite runs ~8 min locally, and a timeout is not a verdict.
     timeout-minutes: 20
     steps:
+      - name: Require main for manual source validation
+        id: manual-main-guard
+        env:
+          VALIDATION_EVENT: ${{ github.event_name }}
+          VALIDATION_REF: ${{ github.ref }}
+        run: |
+          set -euo pipefail
+          if [ "$VALIDATION_EVENT" = "workflow_dispatch" ] && [ "$VALIDATION_REF" != "refs/heads/main" ]; then
+            echo "::error::Manual source validation requires refs/heads/main."
+            exit 1
+          fi
+
       - uses: actions/checkout@v4
         with:
           submodules: false

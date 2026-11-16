@@ -15,3 +15,17 @@ Invalid generations and fetch evidence are retained, never destructively reset.
 Existing workflow adaptations remain at their declared older provenance.
 Existing runtime, contract and core pins stay coherent; this tooling refresh
 does not advance unrelated runtime composition or grant operational authority.
+
+## Manual source validation of published main
+
+Manual source CI accepts only refs/heads/main. A first-step shell guard
+rejects other refs before dependency reads. Existing pull-request conditions
+and source checks remain effective. GitHub supplies event/ref metadata; no
+model-selected runtime/dependency/base input is introduced. Whitespace
+validation on a manual main run compares HEAD to its actual first parent.
+The existing named jobs, capability/group removal and offline matrix are
+unchanged. A small countertest executes the declared guard for main, another
+branch, a tag, an empty ref and a pull-request context.
+
+
+Final upstream argument-boundary completion (2026-11-16): adopt published provider 87e08c277971bc8a072934df44c291a7e1331ab9 byte-identically below declared headers. Its complete-batch execution check prevents a valid early target from running before a later invalid target refuses. Provider main admission and unchanged checks remain prerequisites for consumer landing. No runtime pins, scan settings, historical evidence or billing changes.

@@ -43,3 +43,16 @@ Provider main landing, fresh hosted CI/Codex review and consumer-main readback
 remain required completion gates.
 
 Correction validation: exact body checks and six real strict corpus items pass. The complete configured rerun passed 2096 cases with one original 20-second conformance subprocess timeout locally; the cap is unchanged and full hosted tests/isolation must pass. The earlier configured full run passed all 2097 cases with zero skips.
+
+Published-main follow-up: the P1 PR landed with the provider copy body intact.
+The test workflow currently validates PRs. A guarded manual source invocation
+will qualify actual main with the same complete checks. Existing runtime/
+core pins, protected workflow and operational authorization stay intact.
+
+
+Final upstream argument-boundary completion (2026-11-16): adopt published provider 87e08c277971bc8a072934df44c291a7e1331ab9 byte-identically below declared headers. Its complete-batch execution check prevents a valid early target from running before a later invalid target refuses. Provider main admission and unchanged checks remain prerequisites for consumer landing. No runtime pins, scan settings, historical evidence or billing changes.
+
+Current body/full-file measurements are in docs/openspec-cli-pin.md; earlier candidate receipts remain historical. Exact-head validation and main readback remain pending.
+
+Final-candidate local acceptance: all three declared-copy tests and four body subtests pass; the real pinned CLI validates the complete strict corpus clean. Main-only manual guard cases and actionlint pass where applicable.
+The local full suite completed 2203 passing cases and three existing 20-second subprocess timeout failures; the isolated conformance replay passed 54 cases but retained one timeout. These failures are not waived or hidden, and the original 20-second limits remain unchanged. Hosted full suite and mandatory offline native conformance (with exact census and zero skips) are required for acceptance; the bench lacks network-namespace permission for that native gate.
