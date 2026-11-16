@@ -147,6 +147,11 @@ def provider_checkout(role):
         raise ValueError("provider revision differs")
     if git(provider, "diff", "--name-only", "HEAD"):
         raise ValueError("provider source changed")
+    try:
+        git(provider, "merge-base", "--is-ancestor",
+            record["admitted_main"], "refs/remotes/origin/main")
+    except subprocess.CalledProcessError as exc:
+        raise ValueError("provider admission is not on fetched main") from exc
     git(provider, "merge-base", "--is-ancestor",
         record["commit"], record["admitted_main"])
     git(provider, "diff", "--exit-code", record["commit"],

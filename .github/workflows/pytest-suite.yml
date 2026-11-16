@@ -213,7 +213,8 @@ jobs:
               git("init")
               git("remote", "add", "origin", "https://github.com/" + repository + ".git")
               # Full provider history also runs the existing historical probes.
-              git("fetch", "--no-tags", "origin", row["admitted_main"])
+              git("fetch", "--no-tags", "origin", "main")
+              git("merge-base", "--is-ancestor", row["admitted_main"], "refs/remotes/origin/main")
               git("checkout", "--detach", row["commit"])
           PYCODE
       - name: Prepare a fresh same-source measurement

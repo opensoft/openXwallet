@@ -40,7 +40,7 @@ def test_forged_provenance_cannot_hide_executable_lines(tool, tmp_path):
 
 
 @pytest.mark.parametrize("fault", ["pending", "dirty", "wrong-head",
-                                  "wrong-hash", "wrong-identity", "linked"])
+                                  "wrong-hash", "wrong-identity", "linked", "unadmitted"])
 def test_provider_admission_is_bound_to_clean_immutable_bytes(
         tool, tmp_path, monkeypatch, fault):
     provider = tmp_path / "provider"
@@ -56,6 +56,7 @@ def test_provider_admission_is_bound_to_clean_immutable_bytes(
     git("-c", "user.name=Synthetic", "-c", "user.email=test@example.invalid",
         "commit", "-qm", "synthetic provider")
     revision = git("rev-parse", "HEAD")
+    git("update-ref", "refs/remotes/origin/main", revision)
     record = {"repository": "test/provider", "test_paths": ["assertions.py"],
               "files": {"assertions.py": hashlib.sha256(path.read_bytes()).hexdigest()},
               "commit": revision, "admitted_main": revision,
@@ -80,6 +81,10 @@ def test_provider_admission_is_bound_to_clean_immutable_bytes(
         record["files"]["assertions.py"] = "0" * 64
     elif fault == "wrong-identity":
         record["repository"] = "unapproved/provider"
+    elif fault == "unadmitted":
+        git("-c", "user.name=Synthetic", "-c", "user.email=test@example.invalid",
+            "commit", "--allow-empty", "-qm", "unadmitted candidate")
+        record["commit"] = record["admitted_main"] = git("rev-parse", "HEAD")
     else:
         outside = tmp_path / "outside.py"
         outside.write_bytes(path.read_bytes())
