@@ -2602,3 +2602,40 @@ receives a new complete 154-input freeze and renewed full/native execution.
 Renewed immutable-head full/native and hosted checks are pending at this source
 checkpoint; PR #75 will hold completion receipts after execution. Source
 ratification, T012T-V and operational authority remain separate.
+
+## File-fence concurrency correction
+
+The renewed full run at `a78e019f0e7e26280e0a57044f8a414d8b75505f` passed
+2,309 tests but failed the existing concurrent-cleanup control. Retained
+diagnostics show a BlockingIOError after a file action was durably claimed: one
+run file remained present with a consumed attempt, and independent audit refused.
+No cleanup success was reported; the failed run is not qualification evidence.
+
+Files now acquire the parent and pin-directory fences, revalidate the original
+generation/link counts, then claim immediately before the first unlink. A single
+acquisition cutoff of min(one second, original Decision remainder) covers both
+locks; constructors without a Decision remain nonblocking. Identity/ownership
+and permissions are rechecked after waiting. The existing parent -> pins ->
+journal order is preserved. A completed marker does not claim again; failure
+after a successful claim remains consumed and cannot replay an unknown mutation.
+Process/token claim timing, wire fields, schemas, roles, profiles and original
+cleanup/read/authority budgets are unchanged. This implements T012S05/S06/S07.
+
+Two deterministic controls hold the parent or pin fence after observation and
+prove a bounded refusal leaves the original file/anchor unclaimed and unchanged.
+A later explicit cleanup may finish only that unattempted resource under the
+original persisted cleanup_until; the audit then succeeds with one claim/marker
+and one token DELETE. Both controls fail under the prior claim ordering. A third
+control injects an unlink error after claiming and proves subsequent RPCs cannot
+replay it or fabricate successful audit. The original concurrency and short-clock
+assertions stay intact. Five independent repetitions of the formerly intermittent
+concurrency case pass; the initial five focused cases and post-claim/large-journal
+pair pass as well. Dedicated filesystem/concurrency, QA and governance review
+closed without source findings.
+
+The current corpus is 110 lifecycle / 2,313 full / 2,008 mandatory native nodes,
+H05=29 and H11=110; all 1,898 accepted baseline identities/fingerprints/anchors
+remain preserved. At this source checkpoint renewed full/native and hosted
+qualification are pending; PR #75 will receive execution receipts after completion.
+Prior journal/CI checkpoints remain historical. No operational authority,
+source ratification, setup, protected dispatch or feedback submission is inferred.

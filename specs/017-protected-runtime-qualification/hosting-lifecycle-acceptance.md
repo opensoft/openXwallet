@@ -108,3 +108,13 @@ native nodes; fresh complete qualification is pending at this source checkpoint.
 Execution receipts will be posted on PR #75. See
 hosting-lifecycle-analysis.md for counterfactual evidence and the explicit
 unqualified all-run throughput limit. Protected defaults and budgets are unchanged.
+
+## File ownership-fence qualification update
+
+A file's durable destructive claim now follows both ownership locks and exact
+generation preflight, before any unlink. Non-mutating fence acquisition shares
+one bounded cutoff under the original Decision; post-claim failures stay consumed.
+The existing complete concurrency audit is retained, with deterministic parent/pin
+contention and unknown-postclaim controls. The corpus is 110 lifecycle / 2,313
+full / 2,008 native cases. Fresh complete qualification is pending at this source
+checkpoint, with receipts to follow on PR #75. See hosting-lifecycle-analysis.md.

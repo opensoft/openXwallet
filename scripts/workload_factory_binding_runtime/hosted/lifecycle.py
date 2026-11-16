@@ -164,9 +164,10 @@ class PosixResources:
         require(response.status == 200 or revoked, ERROR)
         return ResourceReadback(expected.ref, actual, not revoked, revoked)
 
-    def cleanup(self, expected, *, decision):
+    def cleanup(self, expected, *, decision, claim=None):
         self.current_namespace()
-        require(type(expected) is RunResource and expected.retention == "run", ERROR)
+        require(type(expected) is RunResource and expected.retention == "run"
+                and (claim is None or expected.kind == "file" and callable(claim)), ERROR)
         decision.now()
         if expected.ref == self.worker_ref:
             _, pid, start = expected.instance_ref.split(":")
@@ -196,7 +197,7 @@ class PosixResources:
         value = self.selected[expected.ref]
         if type(value) is FileResource:
             require(value.retention == "run" and expected.kind == "file", ERROR)
-            self.files.retire(expected.ref, expected.instance_ref, decision=decision)
+            self.files.retire(expected.ref, expected.instance_ref, decision=decision, claim=claim)
         else:
             require(expected.kind == "credential" and expected.instance_ref ==
                     "credential:" + digest(value.capability.readback()).split(":")[1], ERROR)
@@ -607,8 +608,12 @@ class HostedLifecycle:
             if not actual.present:
                 require(resource.kind != "credential" or actual.revoked, ERROR)
                 return
-            require(self._claim(resource, decision), ERROR)
-            self.resources.cleanup(resource, decision=decision)
+            if resource.kind == "file":
+                # Claim only under the backend's exact-generation file fence.
+                self.resources.cleanup(resource, decision=decision, claim=lambda: self._claim(resource, decision))
+            else:
+                require(self._claim(resource, decision), ERROR)
+                self.resources.cleanup(resource, decision=decision)
         if state["released"]:
             plan = run_plan(state["final"]["plan"])
             peer = JanitorPeer(self.janitor.principal_ref, self.janitor.credential_ref)

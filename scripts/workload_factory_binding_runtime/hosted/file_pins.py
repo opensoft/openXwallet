@@ -8,6 +8,7 @@ from contextlib import contextmanager
 import fcntl
 import os
 import stat
+import time
 from workload_factory_binding.evidence import BindingError, digest, require
 from .lifecycle_store import LifecycleStore, ERROR
 
@@ -18,6 +19,27 @@ def instance(info):
 
 def regular(info):
     require(stat.S_ISREG(info.st_mode) and info.st_uid == os.geteuid(), ERROR)
+
+
+def directory_identity(fd, path, expected):
+    info, current = os.fstat(fd), path.lstat()
+    require(stat.S_ISDIR(info.st_mode)
+            and (info.st_dev, info.st_ino) == (current.st_dev, current.st_ino) == expected
+            and info.st_uid == os.geteuid() and not info.st_mode & 0o077 and path.resolve() == path, ERROR)
+
+
+def bounded_lock(fd, decision, until):
+    while True:
+        decision.now()
+        require(time.monotonic() < until, ERROR)
+        try:
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            decision.now()
+            return
+        except BlockingIOError:
+            decision.now()
+            require(time.monotonic() < until, ERROR)
+            time.sleep(min(.005, decision.remaining(), max(0, until - time.monotonic())))
 
 
 class FilePins:
@@ -60,15 +82,17 @@ class FilePins:
             self.kept.clear()
 
     @contextmanager
-    def directory(self, ref):
+    def directory(self, ref, *, decision=None, until=None):
         require(not self.closed, ERROR)
         path = self.selected[ref].path.parent
         fd = os.open(path, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
         try:
-            info = os.fstat(fd)
-            require((info.st_dev, info.st_ino) == self.roots[ref] and info.st_uid == os.geteuid()
-                    and not info.st_mode & 0o077 and path.resolve() == path, ERROR)
-            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            directory_identity(fd, path, self.roots[ref])
+            if decision is None:
+                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            else:
+                bounded_lock(fd, decision, until)
+            directory_identity(fd, path, self.roots[ref])
             yield fd
         finally:
             os.close(fd)
@@ -76,15 +100,15 @@ class FilePins:
     @contextmanager
     def pinned(self, ref, decision):
         decision.now()
-        # Every operation uses parent then pin-directory order. No selected
-        # parent may be the pin directory, so callers cannot invert the order.
-        with self.directory(ref) as parent:
+        # Both acquisitions share one bounded wait and the original Decision.
+        # Parent then pins then journal is the only ownership-fence order.
+        until = time.monotonic() + min(1, decision.remaining())
+        with self.directory(ref, decision=decision, until=until) as parent:
             fd = os.open(self.root, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
             try:
-                info = os.fstat(fd)
-                require((info.st_dev, info.st_ino) == self.identity and info.st_uid == os.geteuid()
-                        and not info.st_mode & 0o077 and self.root.resolve() == self.root, ERROR)
-                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                directory_identity(fd, self.root, self.identity)
+                bounded_lock(fd, decision, until)
+                directory_identity(fd, self.root, self.identity)
                 decision.now()
                 yield parent, fd
             finally:
@@ -165,7 +189,7 @@ class FilePins:
             require(actual.st_nlink == (2 if instance(actual) == expected else 1), ERROR)
             return instance(actual), True
 
-    def retire(self, ref, expected, *, decision):
+    def retire(self, ref, expected, *, decision, claim=None):
         with self.pinned(ref, decision) as (parent, pins):
             value = self.selected[ref]
             require(value.retention == "run", ERROR)
@@ -177,11 +201,15 @@ class FilePins:
             require(anchor is not None and instance(anchor) == expected, ERROR)
             if actual is not None:
                 require(instance(actual) == expected and actual.st_nlink == anchor.st_nlink == 2, ERROR)
-                decision.now()
-                os.unlink(value.path.name, dir_fd=parent)
-                os.fsync(parent)
             else:
                 require(anchor.st_nlink == 1, ERROR)
+            decision.now()
+            if claim is not None:
+                require(claim(), ERROR)
+            decision.now()
+            if actual is not None:
+                os.unlink(value.path.name, dir_fd=parent)
+                os.fsync(parent)
             decision.now()
             os.unlink(self.slot(ref), dir_fd=pins)
             os.fsync(pins)

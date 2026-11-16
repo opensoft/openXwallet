@@ -819,10 +819,10 @@ def test_short_cleanup_timeout_bounds_backend_on_the_same_wall_and_monotonic_dec
     decision = Decision(clock=lambda: lh.clock.value, monotonic=lambda: monotonic[0])
     original = lh.life.resources.cleanup
     called = []
-    def delayed(resource, *, decision):
+    def delayed(resource, *, decision, **kwargs):
         called.append((decision.deadline, decision.end))
         monotonic[0] += 2
-        original(resource, decision=decision)
+        original(resource, decision=decision, **kwargs)
     monkeypatch.setattr(lh.life.resources, "cleanup", delayed)
     with pytest.raises(BindingError):
         lh.life.cleanup(lh.stage.scope["launch_ref"], "failure", decision=decision)
@@ -1036,3 +1036,83 @@ def test_large_final_manifest_cleans_and_audits_above_aggregate_document_limit(l
     events = lh.stores["primary"].events(decision=lh.use())
     assert len(canonical(events)) > 65536
     assert len(events) < 2048 and all(len(canonical(e["data"])) <= 65536 for e in events)
+
+
+@pytest.mark.parametrize("fence", ["parent", "pins"])
+def test_busy_file_fence_keeps_unattempted_generation_available_for_bounded_cleanup(lh, monkeypatch, fence):
+    import fcntl
+    lh.launch()
+    lh.finalize()
+    lh.takeover()
+    state = lh.life.state(decision=lh.use())
+    target = next(r for r in lh.plan.resources if r.ref == "resource:temporary")
+    path = lh.temporary
+    anchor = lh.life.resources.files.root / lh.life.resources.files.slot(target.ref)
+    original_generation = (path.stat().st_dev, path.stat().st_ino, path.read_bytes(), path.stat().st_nlink)
+    backend = lh.life.resources.cleanup
+    blocked = []
+    def hold_after_observation(resource, *, decision, **kwargs):
+        if resource.ref != target.ref or blocked:
+            return backend(resource, decision=decision, **kwargs)
+        blocked.append(True)
+        directory = path.parent if fence == "parent" else anchor.parent
+        fd = os.open(directory, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW | os.O_CLOEXEC)
+        try:
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            return backend(resource, decision=decision, **kwargs)
+        finally:
+            os.close(fd)
+    monkeypatch.setattr(lh.life.resources, "cleanup", hold_after_observation)
+    with pytest.raises(BindingError):
+        lh.life.cleanup(lh.stage.scope["launch_ref"], "failure", decision=lh.use())
+    partial = lh.life.state(decision=lh.use())
+    assert blocked and partial["closed"] and partial["released"]
+    assert partial["registration"] == state["registration"]
+    assert target.ref not in {a["resource"]["ref"] for a in partial["actions"].values()}
+    assert (path.stat().st_dev, path.stat().st_ino, path.read_bytes(), path.stat().st_nlink) == original_generation
+    assert (anchor.stat().st_dev, anchor.stat().st_ino, anchor.stat().st_nlink) == (original_generation[0], original_generation[1], 2)
+    assert not any(e["kind"] == "file-retired" and e["data"]["ref"] == target.ref
+                   for e in lh.stores["primary"].events(decision=lh.use()))
+    with pytest.raises(BindingError):
+        lh.audit().call("cleanup-audit", attempt_ref="cleanup-attempt:still-owned", decision=lh.use())
+    monkeypatch.setattr(lh.life.resources, "cleanup", backend)
+    lh.primary().call("cleanup", outcome="failure", decision=lh.use())
+    assert lh.audit().call("cleanup-audit", attempt_ref="cleanup-attempt:fence-released", decision=lh.use())["kind"] == "final"
+    final = lh.life.state(decision=lh.use())
+    assert final["registration"]["cleanup_until"] == state["registration"]["cleanup_until"]
+    assert set(partial["actions"]) <= set(final["actions"])
+    assert sum(a["resource"]["ref"] == target.ref for a in final["actions"].values()) == 1
+    assert sum(e["kind"] == "file-retired" and e["data"]["ref"] == target.ref
+               for e in lh.stores["primary"].events(decision=lh.use())) == 1
+    assert sum(method == "DELETE" and route == "/installation/token" for method, route in lh.provider.calls) == 1
+
+
+def test_file_failure_after_durable_claim_never_replays_an_unknown_unlink(lh, monkeypatch):
+    lh.launch()
+    lh.finalize()
+    lh.takeover()
+    target = next(r for r in lh.plan.resources if r.ref == "resource:temporary")
+    generation = (lh.temporary.stat().st_dev, lh.temporary.stat().st_ino, lh.temporary.read_bytes())
+    unlink = os.unlink
+    attempted = []
+    def fail_unlink(path, *args, **kwargs):
+        if os.fspath(path) == lh.temporary.name and kwargs.get("dir_fd") is not None:
+            attempted.append(True)
+            raise OSError("fixture file mutation result unavailable")
+        return unlink(path, *args, **kwargs)
+    monkeypatch.setattr(os, "unlink", fail_unlink)
+    with pytest.raises(BindingError):
+        lh.life.cleanup(lh.stage.scope["launch_ref"], "failure", decision=lh.use())
+    monkeypatch.setattr(os, "unlink", unlink)
+    state = lh.life.state(decision=lh.use())
+    assert attempted == [True]
+    assert sum(a["resource"]["ref"] == target.ref for a in state["actions"].values()) == 1
+    with pytest.raises(BindingError):
+        lh.primary().call("cleanup", outcome="failure", decision=lh.use())
+    assert (lh.temporary.stat().st_dev, lh.temporary.stat().st_ino, lh.temporary.read_bytes()) == generation
+    assert lh.life.state(decision=lh.use())["actions"] == state["actions"]
+    assert not any(e["kind"] == "file-retired" and e["data"]["ref"] == target.ref
+                   for e in lh.stores["primary"].events(decision=lh.use()))
+    with pytest.raises(BindingError):
+        lh.audit().call("cleanup-audit", attempt_ref="cleanup-attempt:unknown-file", decision=lh.use())
+    assert sum(method == "DELETE" and route == "/installation/token" for method, route in lh.provider.calls) == 1

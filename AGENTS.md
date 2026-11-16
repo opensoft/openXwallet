@@ -284,3 +284,11 @@ completion receipts to be posted on PR #75. The
 The 63-selected-resource mixed-retention positive preserves original clocks;
 the separate all-run throughput stress remains unverified after its Decision
 expired. Do not infer operational qualification or alter runtime budgets.
+
+The subsequent file-fence correction moves only file claims inside the acquired
+parent/pin generation fence. One combined bounded lock wait samples the original
+Decision; claim-success followed by failure remains consumed. Process/token
+claiming and protected defaults do not change. Its 110 lifecycle / 2,313 full /
+2,008 native corpus needs fresh full/native and exact-head hosted completion;
+those checks remain pending at this immutable source checkpoint. PR #75 will
+record receipts after execution. Existing concurrency/deadline assertions remain.
