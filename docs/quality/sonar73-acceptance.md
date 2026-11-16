@@ -20,13 +20,13 @@ The existing wallet-v1.6 tag and separate future v1.7 train remain untouched.
 
 Shared checksum repair: [openXfactory #1331](https://github.com/opensoft/openXfactory/pull/1331).
 Neutral spec consumption: [openWallet-spec #12](https://github.com/opensoft/openWallet-spec/pull/12).
-Provider main admission, shape repair, compatible root/adapter pins, final
+Shape provider main admission, compatible root/adapter pins, final
 complete-source coverage and exact-main gate verification remain pending.
 
 The coverage verifier is adapted from openXfactory@a31e2060e61fcec47a818ccdcd4d8c675a440505.
 It binds every nested revision, exhaustive production Python inventory,
 unchanged source/configuration and actual branch-coverage reports. Its
-73 evidence and provider-boundary tests preserve zero-hit files and refuse missing/forged data,
+75 evidence and provider-boundary tests preserve zero-hit files and refuse missing/forged data,
 lost parent execution, changed nested pins and incomplete/weakened gates.
 No coverage hits or file identities are synthesized.
 
@@ -52,10 +52,10 @@ report and missing real branch-data shards before combining actual measurements.
 All owned Python files, including zero-hit files, remain in the final inventory.
 
 Upstream supplied-artifact repair is openXfactory #1333 at e0e0b9a31ec8f4d5ec2d611d373ce0a918abb5de;
-shape repair is openRepoShape #1331, with compatibility follow-up at
-9ede52c720289d546ab2f4772f876ef6364505d5. Shape remains a candidate pending
+shape repair is openRepoShape #1331, with final compatibility follow-up at
+4f6821312a91f87e10ecfac4498aa48183a09ca2. Shape remains a candidate pending
 its full checks and main admission; the supplied-artifact provider is admitted. The current neutral
-root candidate is openWallet #13 at 6b0395d37ba8786bc2ea802abbdb2e5e8a594d54;
+root candidate is openWallet #13 at eacd2aa41a8e35c5cec35c92cadd7946d90e1d93;
 the adapter will be repinned to accepted publication before landing.
 
 
@@ -81,55 +81,52 @@ lock before installation, with lifecycle scripts disabled.
 
 ### Complete measurement without changing runtime budgets
 
-The 24a1fc2 Python 3.12 CTracer checkpoint completed 2,379 passed and one failed
-in 31m27. The existing large-manifest lifecycle positive refused during cleanup.
-The unchanged case passed without tracing in 18.91s, refused under CTracer in
-24.45s, and passed under Python 3.14.7 / SysMonitor in 26.02s. These timings do
-not establish a source defect or a universal speed comparison. Failed full and
-focused checkpoints remain retained; no timer, assertion or production input changed.
+Historical checkpoints remain retained. The 24a1fc2 full Python 3.12 CTracer
+run had 2,379 passes and one large-manifest lifecycle failure in 31m27. The same
+unchanged case passed untraced 3.12 in 18.91s, failed measured CTracer in 24.45s,
+and passed measured 3.14 SysMonitor in 26.02s. These do not prove universal speed
+or authorize changing runtime timers.
 
-The original Python 3.12 full/native acceptance now runs untraced with its
-45-minute job cap, exact 2,017-case native contract and original privilege/network
-controls. A separate 45-minute Python 3.14 job measures every full-suite case
-under the explicitly verified SysMonitor core. Neither full run may omit or skip
-an assertion; full Git history enables the existing carve-history seat. Complete
-node identities, ordinary/subtest phase outcomes, interpreter, coverage version
-and actual core are recorded and compared before analysis.
+The later complete 3.14 measurement was not accepted. Its authority mTLS cases
+also failed without tracing because the synthetic CA lacked strict X.509
+extensions. A privately preserved fixture experiment cleared 41 authority cases,
+but hosted launch still exceeded its unchanged ten-second deadline untraced.
+Original fixture bytes were restored. No production runtime, test assertion,
+matrix identity, original package lock or budget changes are included.
 
-The analysis-only 3.14 wheel closure preserves all 18 runtime package versions;
-the frozen 3.12 lock stays unchanged. Both interpreter versions pass all 75
-evidence tests. A real mixed-version calibration preserves same-named source
-identities, different branch hits and zero-hit files. The production report is generated under Python 3.12, retaining its entire
-executable-line denominator. The secondary 3.14 auditor invokes the actual
-operator-selected 3.12 compiler and requires every target line; it also verifies
-that its local statement set is a subset of that target inventory.
-All three jobs must succeed before credentialed analysis, with no source, coverage
-or duplication exclusions and all six original Sonar way conditions retained.
+The original Python 3.12 full suite/native matrix runs untraced with its
+45-minute cap and unchanged privilege/network controls. Real branch coverage
+comes from fixed complementary measurements: 3.12 CTracer for all cases except
+one committed large-manifest node, and 3.14 SysMonitor for exactly that node.
+Both collect the complete suite. Acceptance requires identical complete
+collections, exact selected/deselected complements, a disjoint union covering
+every runtime case, matching passing phases and subtest message/parameter
+identities, and actual parent/child collectors. Extra filters, missing cases,
+overlap, skips, xfails or changed snapshots refuse the scan. Provider conformance
+continues to forbid deselection.
 
-The required native namespace command cannot start in this local bench
-(Operation not permitted for unshare). Its unchanged hosted result remains a
-required acceptance boundary; local source measurement is not native acceptance.
+The analysis-only 3.14 wheel closure retains all 18 package versions. Reporting
+uses the complete Python 3.12 executable-line denominator, including zero-hit
+files. The secondary 3.14 auditor invokes the real target 3.12 compiler and checks
+its own statement set is a subset. Real calibration preserves distinct same-name
+source identities, branch hits and zero-hit annotation lines. All four source
+jobs must pass before credentialed analysis. No line/hit filtering, fabricated
+coverage, source/duplication exclusions, threshold or billing change is included.
+
+The required native namespace command cannot start locally (unshare: Operation
+not permitted). Its unchanged hosted 2,017-case result remains required; local
+measurements do not establish native acceptance.
 
 Provider openXfactory #1333 is admitted at 828d88c2ca9d7bcf551e1759c847a9789c5c2066,
 with qualified e0e0b9a ancestry and unchanged common bodies/test assets verified.
-The provider PR's full checks and Sonar passed. Post-merge run 43934646906
-was superseded by an independent main push; the latest main run remains separately
-watched. The independent wallet main documentation at
-43166dd6 is preserved verbatim under feature017 in this maintenance branch.
+Post-merge run 43934646906 was superseded by independent main movement; the latest
+main run remains separately watched. Neutral spec #12 is admitted at
+e0f7467f52f75103e10cb6824ad88de460ec9d39 with qualified 4834c753 ancestry and an
+identical tree verified. Its required checks and nine review roles passed; the
+final documentation-only hosted request reached the existing review quota.
+Prior functional head has a clean hosted receipt. Independent wallet main
+feature017 documentation at 43166dd6 remains preserved verbatim.
 
-
-Compiler preflight found 36 owned files where Python 3.14 omits annotation lines
-that Python 3.12 executes. No target line is dropped: reporting stays on 3.12,
-and the auxiliary job adds real 3.12 collection/import measurement without running
-timed tests under CTracer. Both full jobs still execute every assertion. The
-mixed-version calibration includes an annotated class and requires the unexecuted
-3.12 annotation line to remain present at zero hits for the 3.14-only file.
-
-Neutral spec PR #12 is admitted at e0f7467f52f75103e10cb6824ad88de460ec9d39,
-with qualified 4834c753 ancestry and an identical merged tree verified. Its nine
-local review roles and required checks passed; the final documentation-only
-hosted review request reached the existing quota. The prior functional head has
-a clean hosted receipt, and no new credits or billing changes were requested.
-
-Full-run receipts also preserve each real subtest message and parameter mapping;
-equal counts with different subtest cases are refused before analysis.
+The fixed-partition implementation has 82 evidence and provider-boundary tests;
+both interpreters pass the selection, completeness and refusal checks. Final
+complete-source qualification and published main acceptance remain pending.

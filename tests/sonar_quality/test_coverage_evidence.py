@@ -402,21 +402,23 @@ def auxiliary(tool, root, directory):
     shutil.copyfile(directory / "measurement.json", runtime / "measurement.json")
     shutil.copyfile(root / "pytest-report.xml", runtime / "pytest-report.xml")
     shutil.copyfile(root / "pytest-report.xml", directory / tool.MEASURED_JUNIT)
-    nodes = ["synthetic::test_fixture"]
-    phases = [{"phase": phase, "outcome": "passed", "subtest": False, "xfail": False, "context": None}
+    isolated = directory / "isolated"
+    isolated.mkdir()
+    shutil.copyfile(directory / "measurement.json", isolated / "measurement.json")
+    shutil.copyfile(root / "pytest-report.xml", isolated / tool.MEASURED_JUNIT)
+    for shard in directory.glob(".coverage.*"):
+        shutil.copyfile(shard, isolated / shard.name)
+    (runtime / "pytest-report.xml").write_text(
+        '<testsuite tests="2" failures="0" errors="0" skipped="0"/>')
+    phases = [{"phase": phase, "outcome": "passed", "subtest": False,
+               "xfail": False, "context": None}
               for phase in ("setup", "call", "teardown")]
-    for role, folder, version, core in [
-            ("runtime", runtime, [3, 12, 0], None),
-            ("coverage", directory, [3, 14, 0], "SysMonitor")]:
-        row = {"role": role, "python": version, "core": core,
-               "coverage_version": "7.16.2", "nodes": nodes,
-               "nodeids_sha256": hashlib.sha256(json.dumps(
-                   nodes, separators=(",", ":")).encode()).hexdigest(),
-               "reports": {nodes[0]: phases}, "exitstatus": 0, "deselected": False}
-        (folder / tool.SOURCE_SUITE).write_text(json.dumps(row))
-    probe = {kind: {"python": [3, 14, 0], "core": "SysMonitor",
-                    "coverage_version": "7.16.2"} for kind in ("parent", "child")}
-    (directory / tool.CORE_PROBE).write_text(json.dumps(probe))
+    rows, probes = execution_rows(tool, phases)
+    for role, folder in (("runtime", runtime), ("coverage", directory),
+                         ("isolated", isolated)):
+        (folder / tool.SOURCE_SUITE).write_text(json.dumps(rows[role]))
+        if role != "runtime":
+            (folder / tool.CORE_PROBE).write_text(json.dumps(probes[role]))
     cross = {"passed": True, "reporting_python": [3, 12, 0], "python312": {"python": [3, 12, 0], "core": "CTracer"},
              "python314": {"python": [3, 14, 0], "core": "SysMonitor"}}
     (directory / tool.CROSS_VERSION).write_text(json.dumps(cross))
@@ -428,7 +430,7 @@ def test_same_source_auxiliary_runs_combine_real_arcs_and_all_reports(tool, repo
     auxiliary(tool, repository, directory)
     receipt = tool.assemble_measurements(repository, directory)
     assert receipt["test_counts"] == {
-        "tests": 7, "failures": 0, "errors": 0, "skipped": 0}
+        "tests": 9, "failures": 0, "errors": 0, "skipped": 0}
     assert set(receipt["sources"]) == {
         "scripts/covered.py", "scripts/namespace/unreached.py"}
     assert (directory / "auxiliary/measurement.json").is_file()
@@ -516,9 +518,9 @@ def test_full_source_execution_cannot_be_weakened_or_mislabelled(
     row = json.loads(path.read_text())
     node = row["nodes"][0]
     if fault == "core-fallback":
-        row["core"] = "CTracer"
+        row["core"] = "SysMonitor"
     elif fault == "wrong-interpreter":
-        row["python"] = [3, 12, 0]
+        row["python"] = [3, 14, 0]
     elif fault == "deselected":
         row["deselected"] = True
     elif fault == "skip":
@@ -551,80 +553,133 @@ def test_full_source_execution_cannot_be_weakened_or_mislabelled(
     assert not list(directory.glob(".coverage.auxiliary.*"))
 
 
+def execution_rows(tool, phases):
+    collection = sorted(["synthetic::test_fixture", tool.ISOLATED_CASE])
+    fingerprint = lambda names: hashlib.sha256(
+        json.dumps(names, separators=(",", ":")).encode()).hexdigest()
+    rows, probes = {}, {}
+    for role, version, core in (("runtime", [3, 12, 0], None),
+                                 ("coverage", [3, 12, 0], "CTracer"),
+                                 ("isolated", [3, 14, 0], "SysMonitor")):
+        selected = (collection if role == "runtime" else
+                    [tool.ISOLATED_CASE] if role == "isolated" else
+                    ["synthetic::test_fixture"])
+        rows[role] = {
+            "role": role, "python": version, "core": core,
+            "coverage_version": "7.16.2", "collection": collection,
+            "collection_sha256": fingerprint(collection),
+            "nodes": selected, "nodeids_sha256": fingerprint(selected),
+            "reports": {node: phases for node in selected}, "exitstatus": 0,
+            "deselected": sorted(set(collection) - set(selected)),
+        }
+        probes[role] = {kind: {"python": version, "core": core,
+                               "coverage_version": "7.16.2"}
+                        for kind in ("parent", "child")}
+    return json.loads(json.dumps(rows)), probes
+
+
 @pytest.mark.parametrize("mismatch", ["missing", "parameters", "message"])
-def test_passing_subtests_are_preserved_and_must_match_both_full_runs(tool, mismatch):
-    nodes = ["synthetic::test_subtests"]
-    fingerprint = hashlib.sha256(
-        json.dumps(nodes, separators=(",", ":")).encode()).hexdigest()
-    phases = [{"phase": phase, "outcome": "passed", "subtest": False, "xfail": False, "context": None}
+def test_passing_subtests_are_preserved_and_must_match_both_measurements(tool, mismatch):
+    phases = [{"phase": phase, "outcome": "passed", "subtest": False,
+               "xfail": False, "context": None}
               for phase in ("setup", "call", "teardown")]
     phases.insert(1, {"phase": "call", "outcome": "passed", "subtest": True,
                       "xfail": False, "context": {
-                          "message": None, "parameters": {"value": 0}}})
-    common = {"coverage_version": "7.16.2", "nodes": nodes,
-              "nodeids_sha256": fingerprint, "reports": {nodes[0]: phases},
-              "deselected": False, "exitstatus": 0}
-    runtime = dict(common, role="runtime", python=[3, 12, 0], core=None)
-    traced = dict(common, role="coverage", python=[3, 14, 0], core="SysMonitor")
-    probe = {kind: {"python": [3, 14, 0], "core": "SysMonitor",
-                    "coverage_version": "7.16.2"} for kind in ("parent", "child")}
-    assert tool.compare_source_executions(runtime, traced, probe)["runtime"]["tests"] == 1
-    traced = json.loads(json.dumps(traced))
+                          "message": None, "parameters": {"value": "0"}}})
+    rows, probes = execution_rows(tool, phases)
+    def compare():
+        return tool.compare_source_executions(
+            rows["runtime"], rows["coverage"], probes["coverage"],
+            rows["isolated"], probes["isolated"])
+    assert compare()["runtime"]["tests"] == 2
+    selected = rows["coverage"]["reports"]["synthetic::test_fixture"]
     if mismatch == "missing":
-        traced["reports"][nodes[0]].pop(1)
+        selected.pop(1)
     elif mismatch == "parameters":
-        traced["reports"][nodes[0]][1]["context"]["parameters"]["value"] = 1
+        selected[1]["context"]["parameters"]["value"] = "1"
     else:
-        traced["reports"][nodes[0]][1]["context"]["message"] = "different case"
+        selected[1]["context"]["message"] = "different case"
     with pytest.raises(tool.Refusal, match="identical"):
-        tool.compare_source_executions(runtime, traced, probe)
+        compare()
 
 
+@pytest.mark.parametrize("fault", [
+    "missing-isolated", "overlap", "isolated-core", "isolated-version",
+    "collection-drift", "unexpected-deselection", "missing-isolated-assertion",
+])
+def test_fixed_partition_cannot_omit_overlap_or_relabel_cases(tool, fault):
+    phases = [{"phase": phase, "outcome": "passed", "subtest": False,
+               "xfail": False, "context": None}
+              for phase in ("setup", "call", "teardown")]
+    rows, probes = execution_rows(tool, phases)
+    isolated = rows["isolated"]
+    if fault == "missing-isolated":
+        isolated["nodes"] = []
+    elif fault == "overlap":
+        isolated["nodes"] = rows["runtime"]["nodes"]
+    elif fault == "isolated-core":
+        isolated["core"] = "CTracer"
+    elif fault == "isolated-version":
+        isolated["python"] = [3, 12, 0]
+    elif fault == "collection-drift":
+        isolated["collection"] = [tool.ISOLATED_CASE]
+    elif fault == "unexpected-deselection":
+        isolated["deselected"] = []
+    else:
+        isolated["reports"] = {}
+    with pytest.raises(tool.Refusal):
+        tool.compare_source_executions(
+            rows["runtime"], rows["coverage"], probes["coverage"],
+            isolated, probes["isolated"])
 
-def test_real_full_receipt_preserves_subtests_and_ignores_nested_subset(
-        tool, tmp_path):
-    import shutil
 
-    root = tmp_path / "execution"
-    (root / "tests").mkdir(parents=True)
-    (root / ".coverage-reports").mkdir(mode=0o700)
-    shutil.copyfile(ROOT / "tests/conftest.py", root / "tests/conftest.py")
-    (root / "tests/probe_child.py").write_text("def test_child():\n    assert True\n")
-    (root / "tests/test_sample.py").write_text(
-        "import os,subprocess,sys,unittest\n"
-        "class Samples(unittest.TestCase):\n"
-        "    def test_subtests(self):\n"
-        "        for value in (1,2):\n"
-        "            with self.subTest(value=value):\n"
-        "                self.assertGreater(value,0)\n"
-        "def test_nested_subset():\n"
-        "    subprocess.run([sys.executable,'-m','pytest','tests/probe_child.py','-q'],"
-        "check=True,timeout=30)\n")
-    environment = dict(os.environ, PYTEST_DISABLE_PLUGIN_AUTOLOAD="1")
-    for key in ("COVERAGE_PROCESS_START", "COVERAGE_PROCESS_CONFIG", "COVERAGE_ROOT",
-                "COVERAGE_FILE", "COVERAGE_CORE", "PYTEST_CURRENT_TEST"):
-        environment.pop(key, None)
-    role = "runtime" if sys.version_info[:2] == (3, 12) else "coverage"
-    environment["WALLET_SOURCE_MEASUREMENT"] = role
-    if role == "coverage":
-        config = root / "coverage.ini"
-        config.write_text("[run]\nbranch=True\nparallel=True\nrelative_files=False\n")
-        environment.update(COVERAGE_PROCESS_START=str(config), COVERAGE_CORE="sysmon",
-                           COVERAGE_FILE=str(root / ".coverage-reports/.coverage"))
-    result = subprocess.run(
-        [sys.executable, "-m", "pytest", "tests/", "-q",
-         "--rootdir=" + str(root), "--confcutdir=" + str(root)],
-        cwd=root, env=environment, capture_output=True, text=True, timeout=60)
-    assert result.returncode == 0, result.stdout + result.stderr
-    row = json.loads((root / ".coverage-reports/source-suite.json").read_text())
-    assert len(row["nodes"]) == 2
-    assert sum(report["subtest"] for phases in row["reports"].values()
-               for report in phases) == 2
-    assert tool.validate_source_execution(row, role)["tests"] == 2
-    contexts = [report["context"] for phases in row["reports"].values()
-                for report in phases if report["subtest"]]
-    assert contexts == [{"message": None, "parameters": {"value": value}}
-                        for value in ("1", "2")]
+def test_real_partition_receipt_preserves_subtests_and_ignores_nested_subset(tool, tmp_path):
+    roles = ("runtime", "coverage") if sys.version_info[:2] == (3, 12) else ("isolated",)
+    for role in roles:
+        import shutil
+        root = tmp_path / role
+        (root / "tests/runtime_binding").mkdir(parents=True)
+        (root / ".coverage-reports").mkdir(mode=0o700)
+        shutil.copyfile(ROOT / "tests/conftest.py", root / "tests/conftest.py")
+        (root / "tests/probe_child.py").write_text("def test_child():\n    assert True\n")
+        (root / "tests/test_sample.py").write_text("def test_sample():\n    assert True\n")
+        (root / "tests/runtime_binding/test_hosted_lifecycle.py").write_text(
+            "import subprocess,sys,pytest\n"
+            "@pytest.mark.parametrize('size',['large-manifest'])\n"
+            "def test_large_final_manifest_cleans_and_audits_above_aggregate_document_limit(size,subtests):\n"
+            "    for value in (1,2):\n"
+            "        with subtests.test(value=value):\n"
+            "            assert value>0\n"
+            "    subprocess.run([sys.executable,'-m','pytest','tests/probe_child.py','-q'],"
+            "check=True,timeout=30)\n")
+        environment = dict(os.environ, PYTEST_DISABLE_PLUGIN_AUTOLOAD="1")
+        for key in ("COVERAGE_PROCESS_START", "COVERAGE_PROCESS_CONFIG", "COVERAGE_ROOT",
+                    "COVERAGE_FILE", "COVERAGE_CORE", "PYTEST_CURRENT_TEST"):
+            environment.pop(key, None)
+        environment["WALLET_SOURCE_MEASUREMENT"] = role
+        if role != "runtime":
+            config = root / "coverage.ini"
+            config.write_text("[run]\nbranch=True\nparallel=True\nrelative_files=False\n")
+            environment.update(COVERAGE_PROCESS_START=str(config),
+                               COVERAGE_CORE="sysmon" if role == "isolated" else "ctrace",
+                               COVERAGE_FILE=str(root / ".coverage-reports/.coverage"))
+        result = subprocess.run(
+            [sys.executable, "-m", "pytest", "tests/", "-q",
+             "--rootdir=" + str(root), "--confcutdir=" + str(root)],
+            cwd=root, env=environment, capture_output=True, text=True, timeout=60)
+        assert result.returncode == 0, result.stdout + result.stderr
+        row = json.loads((root / ".coverage-reports/source-suite.json").read_text())
+        assert len(row["collection"]) == 2
+        count = 2 if role == "runtime" else 1
+        assert tool.validate_source_execution(row, role)["tests"] == count
+        contexts = [report["context"] for phases in row["reports"].values()
+                    for report in phases if report["subtest"]]
+        expected_contexts = [{"message": None, "parameters": {"value": str(value)}}
+                             for value in (1, 2)]
+        assert contexts == ([] if role == "coverage" else expected_contexts)
+        assert row["deselected"] == (
+            [] if role == "runtime" else [tool.ISOLATED_CASE] if role == "coverage"
+            else ["tests/test_sample.py::test_sample"])
 
 
 

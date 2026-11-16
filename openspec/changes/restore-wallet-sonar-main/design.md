@@ -32,28 +32,45 @@ Fixture provenance and final retained-baseline ancestry are verification tasks, 
 
 ## Measurement execution decision
 
-Preserve Python 3.12 full/native runtime acceptance without instrumentation.
-Collect the same complete full test selection separately under Python 3.14
-SysMonitor, with an analysis-only hash-verified wheel closure at unchanged package
-versions. Keep both job caps at 45 minutes and retain all original resource and
-network boundaries. No test selection, expected failure or skip may qualify
-either full run; fetch full Git history to execute the existing historical seat.
+Preserve the unchanged Python 3.12 full/native runtime acceptance without
+instrumentation, including its 45-minute cap, complete case selection and
+original assertion, resource and network boundaries.
 
-Require exact node identities and passing ordinary/subtest phases to match.
-Record and require actual parent/child SysMonitor collectors and interpreter
-versions. A real cross-version calibration must preserve source identity, branch
-hits and zero-hit files; generate the final report under target Python 3.12. Both auditors require
-its complete executable-line universe; the 3.14 auditor invokes the real 3.12
-compiler and additionally verifies its own statement set is a subset. Keep the declared Sonar target Python 3.12.
-This measurement choice supplies no Python 3.14 runtime acceptance or authority.
+Measure every assertion through a fixed complementary partition. The main
+measurement uses Python 3.12 / CTracer for every case except the exact committed
+large-manifest lifecycle case. The second uses Python 3.14 / SysMonitor for that
+one case. Both collect the entire tests/ inventory. Record complete collection,
+selected and complementary deselected node identities, actual parent/child cores,
+passing phases and subtest message/parameter identities. Require identical full
+collections, disjoint selected sets whose union equals runtime, exact expected
+complements, and identical passing assertion records for every case. No assertion
+may be omitted, waived, skipped or expected-failure in the complete union.
+Partition membership is fixed in source, never an arbitrary operator override.
+Provider conformance still prohibits any deselection.
 
-The untraced runtime, measured full suite and auxiliary conformance source
-snapshots must all match. Retain failed CTracer checkpoints and complete verified
-coverage artifacts before introducing the Sonar credential. No excluded source,
-line/arc filtering, fabricated hits, threshold reduction or billing change follows.
+The main measurement cap stays 45 minutes; the isolated measurement has its own
+45-minute cap. Fetch full history to execute the existing carve-history seat.
+The analysis-only 3.14 wheel closure retains all runtime package versions.
+All four source jobs must pass before analysis. Their source/config snapshots
+must match. Retain actual raw branch shards and failed diagnostic checkpoints.
+No source exclusion, line/arc filtering, invented hit, filename remapping,
+threshold reduction, runtime compatibility claim or billing change follows.
 
+Generate the production report under Python 3.12 and retain its complete
+executable-line denominator. The secondary 3.14 audit invokes the actual
+operator-selected 3.12 compiler and also checks its local inventory is a subset.
+Real cross-version calibration checks same-name identity, differing branch hits
+and zero-hit annotation preservation. Keep declared Sonar target 3.12.
 
-Python 3.14 lazy annotation compilation differs from the target's executable-line
-universe. Preserve the 3.12 denominator and collect actual 3.12 module imports
-separately from timed assertions. This adds genuine execution data, without
-synthesizing annotation hits or relaxing either complete full test run.
+## Preserved qualification experiments
+
+The earlier all-CTracer full run failed only the large-manifest timed case.
+That case passes untraced 3.12 and separately measured 3.14 SysMonitor with its
+original fixture bytes. A complete 3.14 run exposed stricter synthetic-PKI
+verification and additional unchanged hosted-launch deadline failures even
+without instrumentation. A fixture-extension experiment cleared 41 authority
+tests but did not resolve the separate runtime deadline; its private patch and
+diagnostics remain retained. Original fixture bytes were restored.
+The complete-3.14 approach is not accepted and is superseded by the fixed
+complementary measurement above. Production runtime, fixtures, matrix identities
+and all budgets remain unchanged. This does not commission feature017 work.

@@ -35,10 +35,16 @@ MEASURED_JUNIT = "measured-pytest.xml"
 CROSS_VERSION = "cross-version.json"
 SYS_MONITOR = "SysMonitor"
 RUNTIME_DIRECTORY = Path("runtime")
+ISOLATED_DIRECTORY = Path("isolated")
+ISOLATED_CASE = ("tests/runtime_binding/test_hosted_lifecycle.py::"
+                 "test_large_final_manifest_cleans_and_audits_above_aggregate_document_limit"
+                 "[large-manifest]")
 EXECUTION_ARTIFACTS = (
     SOURCE_SUITE, CORE_PROBE, MEASURED_JUNIT, CROSS_VERSION, MEASUREMENT,
     str(RUNTIME_DIRECTORY / MEASUREMENT), "auxiliary/" + MEASUREMENT,
     str(RUNTIME_DIRECTORY / SOURCE_SUITE), str(RUNTIME_DIRECTORY / JUNIT_REPORT),
+    str(ISOLATED_DIRECTORY / SOURCE_SUITE), str(ISOLATED_DIRECTORY / CORE_PROBE),
+    str(ISOLATED_DIRECTORY / MEASURED_JUNIT), str(ISOLATED_DIRECTORY / MEASUREMENT),
 )
 CONFIGS = (".coveragerc", "sonar-project.properties",
            "requirements/sonar-analysis.lock", "requirements/analysis-shape.lock",
@@ -192,7 +198,7 @@ def core_probe(root):
     child = json.loads(subprocess.check_output(
         [sys.executable, "-c", program], text=True, timeout=30))
     result = {"parent": parent, "child": child}
-    validate_core_probe(result)
+    validate_core_probe(result, os.environ.get("WALLET_SOURCE_MEASUREMENT", "coverage"))
     directory = report_directory(root, REPORT_DIRECTORY)
     with (directory / CORE_PROBE).open("x") as stream:
         json.dump(result, stream, indent=2)
@@ -200,12 +206,14 @@ def core_probe(root):
     return result
 
 
-def validate_core_probe(probe):
+def validate_core_probe(probe, role="coverage"):
     require(set(probe) == {"parent", "child"}, "incomplete collector probe")
+    require(role in ("coverage", "isolated"), "invalid collector role")
+    version, core = ([3, 14], SYS_MONITOR) if role == "isolated" else ([3, 12], "CTracer")
     for row in probe.values():
-        require(row.get("python", [])[:2] == [3, 14]
+        require(row.get("python", [])[:2] == version
                 and row.get("coverage_version") == "7.16.2"
-                and row.get("core") == SYS_MONITOR,
+                and row.get("core") == core,
                 "actual parent/child measurement core differs")
 
 
@@ -232,39 +240,61 @@ def validate_phases(phases):
 
 
 def validate_source_execution(row, role):
-    expected = [3, 12] if role == "runtime" else [3, 14]
-    core = None if role == "runtime" else SYS_MONITOR
+    require(role in ("runtime", "coverage", "isolated"), "invalid source role")
+    expected = [3, 14] if role == "isolated" else [3, 12]
+    core = {"runtime": None, "coverage": "CTracer", "isolated": SYS_MONITOR}[role]
     require(row.get("role") == role and row.get("python", [])[:2] == expected
             and row.get("core") == core
             and row.get("coverage_version") == "7.16.2",
             "source execution role/interpreter/core differs")
-    nodes = row.get("nodes")
-    require(isinstance(nodes, list) and nodes and all(isinstance(n, str) for n in nodes),
-            "source collection missing")
-    require(nodes == sorted(set(nodes)), "duplicate or unordered source identities")
-    fingerprint = hashlib.sha256(
-        json.dumps(nodes, separators=(",", ":")).encode()).hexdigest()
-    require(row.get("nodeids_sha256") == fingerprint
-            and row.get("deselected") is False and row.get("exitstatus") == 0,
-            "source collection or execution did not qualify")
+    collection, nodes = row.get("collection"), row.get("nodes")
+    for names in (collection, nodes):
+        require(isinstance(names, list) and names
+                and all(isinstance(n, str) for n in names),
+                "source collection missing")
+        require(names == sorted(set(names)), "duplicate or unordered source identities")
+    def fingerprint(names):
+        return hashlib.sha256(
+            json.dumps(names, separators=(",", ":")).encode()).hexdigest()
+    require(row.get("nodeids_sha256") == fingerprint(nodes)
+            and row.get("collection_sha256") == fingerprint(collection)
+            and row.get("exitstatus") == 0, "source collection or execution did not qualify")
+    if role == "runtime":
+        selected = collection
+    else:
+        require(ISOLATED_CASE in collection, "fixed isolated case missing")
+        selected = ([ISOLATED_CASE] if role == "isolated"
+                    else [name for name in collection if name != ISOLATED_CASE])
+    require(nodes == selected
+            and row.get("deselected") == sorted(set(collection) - set(selected)),
+            "source selection differs from the fixed complete partition")
     reports = row.get("reports", {})
     require(set(reports) == set(nodes), "source assertion report missing")
     for phases in reports.values():
         validate_phases(phases)
     return {"python": row["python"], "coverage_version": row["coverage_version"],
-            "core": row["core"], "tests": len(nodes), "nodeids_sha256": fingerprint}
+            "core": row["core"], "tests": len(nodes),
+            "nodeids_sha256": fingerprint(nodes),
+            "collection_sha256": fingerprint(collection)}
 
 
-def compare_source_executions(runtime, measured, probe):
-    summary = {"runtime": validate_source_execution(runtime, "runtime"),
-               "coverage": validate_source_execution(measured, "coverage")}
-    require(runtime["nodes"] == measured["nodes"]
-            and runtime["reports"] == measured["reports"],
+def compare_source_executions(runtime, measured, probe, isolated, isolated_probe):
+    summary = {role: validate_source_execution(row, role)
+               for role, row in (("runtime", runtime), ("coverage", measured),
+                                 ("isolated", isolated))}
+    require(runtime["collection"] == measured["collection"] == isolated["collection"],
+            "runtime and measurement full collections differ")
+    require(not set(measured["nodes"]) & set(isolated["nodes"])
+            and set(measured["nodes"]) | set(isolated["nodes"]) == set(runtime["nodes"]),
+            "measurement partitions are not a disjoint complete union")
+    require({**measured["reports"], **isolated["reports"]} == runtime["reports"],
             "runtime and measurement did not execute identical passing assertions")
-    validate_core_probe(probe)
-    require(probe["parent"]["python"] == measured["python"],
-            "measurement probe interpreter differs")
-    summary["core_probe"] = probe
+    for role, row, actual in (("coverage", measured, probe),
+                              ("isolated", isolated, isolated_probe)):
+        validate_core_probe(actual, role)
+        require(actual["parent"]["python"] == row["python"],
+                "measurement probe interpreter differs")
+        summary[role]["core_probe"] = actual
     return summary
 
 
@@ -280,17 +310,22 @@ def validate_cross_version(probe):
                 "cross-version coverage probe used the wrong interpreter/core")
 
 def execution_evidence(directory):
-    runtime = directory / RUNTIME_DIRECTORY
-    measured = read_json(directory / SOURCE_SUITE)
+    runtime, isolated = directory / RUNTIME_DIRECTORY, directory / ISOLATED_DIRECTORY
     accepted = read_json(runtime / SOURCE_SUITE)
-    require(junit_counts(runtime / JUNIT_REPORT) == junit_counts(directory / MEASURED_JUNIT),
-            "runtime and measured JUnit counts differ")
+    measured = read_json(directory / SOURCE_SUITE)
+    separate = read_json(isolated / SOURCE_SUITE)
+    totals = [junit_counts(path) for path in (
+        runtime / JUNIT_REPORT, directory / MEASURED_JUNIT, isolated / MEASURED_JUNIT)]
+    require(all(totals[0][key] == totals[1][key] + totals[2][key] for key in totals[0]),
+            "runtime and measured JUnit totals differ")
     result = compare_source_executions(
-        accepted, measured, read_json(directory / CORE_PROBE))
+        accepted, measured, read_json(directory / CORE_PROBE),
+        separate, read_json(isolated / CORE_PROBE))
     cross_version = read_json(directory / CROSS_VERSION)
     validate_cross_version(cross_version)
     result["cross_version"] = cross_version
     return result
+
 
 AUXILIARY_REPORTS = (
     "code-pytest.xml", "spec-pytest.xml",
@@ -308,6 +343,11 @@ def assemble_measurements(root, directory):
             "runtime acceptance evidence missing")
     require(read_json(runtime / MEASUREMENT) == state,
             "runtime source/config/revision differs")
+    isolated = directory / ISOLATED_DIRECTORY
+    require(not isolated.is_symlink() and isolated.is_dir(),
+            "isolated measurement evidence missing")
+    require(read_json(isolated / MEASUREMENT) == state,
+            "isolated source/config/revision differs")
     execution = execution_evidence(directory)
     auxiliary = directory / "auxiliary"
     require(not auxiliary.is_symlink() and auxiliary.is_dir(),
@@ -315,17 +355,19 @@ def assemble_measurements(root, directory):
     require(read_json(auxiliary / MEASUREMENT) == state,
             "auxiliary source/config/revision differs")
     reports = [runtime / JUNIT_REPORT, directory / MEASURED_JUNIT,
+               isolated / MEASURED_JUNIT,
                *(auxiliary / name for name in AUXILIARY_REPORTS)]
     for path in reports:
         require(not path.is_symlink(), "linked test report")
         junit_counts(path)
-    shards = sorted(auxiliary.glob(".coverage.*"))
-    require(shards and all(p.is_file() and not p.is_symlink() for p in shards),
-            "auxiliary branch data missing or linked")
-    for index, path in enumerate(shards):
-        destination = directory / (".coverage.auxiliary." + str(index))
-        require(not destination.exists(), "measurement already assembled")
-        shutil.copyfile(path, destination)
+    for role, folder in (("auxiliary", auxiliary), ("isolated", isolated)):
+        shards = sorted(folder.glob(".coverage.*"))
+        require(shards and all(p.is_file() and not p.is_symlink() for p in shards),
+                role + " branch data missing or linked")
+        for index, path in enumerate(shards):
+            destination = directory / (".coverage." + role + "." + str(index))
+            require(not destination.exists(), "measurement already assembled")
+            shutil.copyfile(path, destination)
     combined = ET.Element("testsuites")
     for path in reports:
         source = read_xml(path)

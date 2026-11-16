@@ -52,9 +52,9 @@
     ],
     "files": {
       "scripts/repo_shape.py": "290d6856126193bd9e3617398b646489a78640494c9ef9631f3b79687c1fdb6d",
-      "scripts/validate-repository-naming.py": "cc0af10dadaf3669c4e9188ee1130167023c978db3a7f57e0d89dd1a8c34e396",
+      "scripts/validate-repository-naming.py": "b53fc68868f1f0d77acdac0b744f604f2c7cfc72e5c48337626b52de9e20f79f",
       "templates/assembly-root/scripts/bootstrap.py": "a3a860ce7ce59633c74d2f3390f3bf678b37a7c72ed800059e144aea2fb7a5b1",
-      "templates/assembly-root/scripts/validate-manifest.py": "78d44ee205e197c8dc300f7049325034ec734fb004845c30b15cf64666d7ae5f",
+      "templates/assembly-root/scripts/validate-manifest.py": "cd0176730cbb6dca5061d7ed6c7406cd071bf19a3a33142b4e5a947cb220d114",
       "templates/assembly-root/scripts/validate-pins.py": "eb6e09367b6907f1272803e56bbd5e12d838138758d83697bd7b502b5d164503",
       "tests/conftest.py": "e039a1fc4368e32aef390f6a4e57f018c421fa390f4eb516250df9ea1312730b",
       "tests/test_bootstrap_after_bump.py": "5b535404663c75ca821051286f4664e19636f34dd578f6acc3cbb6ffb5f686a4",
@@ -70,7 +70,7 @@
       "tests/test_bootstrap_spelling.py": "4e1e6a2a26b761168e53bf05b5309f6cf2ddec62c2f57fe70d0549281fdca90e",
       "tests/test_bootstrap_upstream_notice.py": "b5926a5102fc3bf85b821774cf075da5608a17c9603771057ff146c6578f7114",
       "tests/test_bootstrap_without_git.py": "2ef4f07d09133b6a898373191e3df1a77e831340cb8cdd47690b8a27ec45ac92",
-      "tests/test_cli_yaml_boundaries.py": "326462b4cde47aabe466673d7beef094fc31977bb0252a08dd16fe607f6b2358",
+      "tests/test_cli_yaml_boundaries.py": "d7875e2e1b05a06923412ba57d874ae8b4e3ee64b50e87a5220da3dabd9e43cd",
       "tests/test_load_yaml_refusals.py": "19fb8ed6a4bbdf614dbdc3d566c9148e4e294c491b9e0f571a5095da245eebb4",
       "tests/test_manifest_validator.py": "6d03b059e7ecb485303c9f5bd2a6295f9e61ba889666f24ecac0da8971ab45cd",
       "tests/test_naming_policy.py": "c188d5cd0b63866bb95f921995c343bf810410a5b62bef958206983d314d786c",
@@ -83,10 +83,10 @@
       "tests/test_yaml_quote_boundaries.py": "07438b3685897860fedb3f2fd547b923d9829cc831ae0036e31aa288f080886c",
       "tests/test_yaml_reader_spaces.py": "e941064690e971f4238604e258745ffb866422f48a1e9934d836c12b542a40d6"
     },
-    "commit": "55cc8aeef4a96985d76cddc7a0ee834c97909860",
+    "commit": "4f6821312a91f87e10ecfac4498aa48183a09ca2",
     "main_admission": "pending",
-    "expected_test_count": 2223,
-    "nodeids_sha256": "a66c49546e413fac126967e6c96651a84564650342159b530bdfb483c029787f",
+    "expected_test_count": 2231,
+    "nodeids_sha256": "f962663865181efae28865c42b7560b6c1c8605124f35ffe4b53a3e330a8a9d0",
     "allowed_skips": []
   }
 }

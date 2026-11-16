@@ -12,7 +12,11 @@ MODE = os.environ.get("WALLET_SOURCE_MEASUREMENT")
 ACTIVE = bool(MODE) and "PYTEST_CURRENT_TEST" not in os.environ
 NODES = []
 REPORTS = {}
-DESELECTED = False
+DESELECTED = []
+COLLECTED = []
+ISOLATED_CASE = ("tests/runtime_binding/test_hosted_lifecycle.py::"
+                 "test_large_final_manifest_cleans_and_audits_above_aggregate_document_limit"
+                 "[large-manifest]")
 START_CORE = None
 
 
@@ -26,16 +30,34 @@ def active_core():
 def pytest_sessionstart():
     global START_CORE
     if ACTIVE:
-        if MODE not in ("runtime", "coverage"):
+        if MODE not in ("runtime", "coverage", "isolated"):
             raise RuntimeError("unknown full-source execution role")
         START_CORE = active_core()
-        expected = (3, 12) if MODE == "runtime" else (3, 14)
+        expected = (3, 14) if MODE == "isolated" else (3, 12)
         if sys.version_info[:2] != expected:
             raise RuntimeError("source execution interpreter differs")
-        core = None if MODE == "runtime" else "SysMonitor"
+        core = {"runtime": None, "coverage": "CTracer", "isolated": "SysMonitor"}[MODE]
         if START_CORE != core:
             raise RuntimeError("source measurement core differs")
 
+
+
+def pytest_collection_modifyitems(config, items):
+    if not ACTIVE:
+        return
+    if (config.getoption("keyword") or config.getoption("markexpr")
+            or config.getoption("deselect")):
+        raise RuntimeError("measurement partitions cannot have extra selection")
+    COLLECTED.extend(sorted(item.nodeid for item in items))
+    if MODE != "runtime":
+        if ISOLATED_CASE not in COLLECTED:
+            raise RuntimeError("fixed isolated measurement case missing")
+        selected, removed = [], []
+        for item in items:
+            isolated = item.nodeid == ISOLATED_CASE
+            (selected if isolated == (MODE == "isolated") else removed).append(item)
+        config.hook.pytest_deselected(items=removed)
+        items[:] = selected
 
 def pytest_collection_finish(session):
     if ACTIVE:
@@ -45,9 +67,8 @@ def pytest_collection_finish(session):
 
 
 def pytest_deselected(items):
-    global DESELECTED
     if ACTIVE and items:
-        DESELECTED = True
+        DESELECTED.extend(sorted(item.nodeid for item in items))
 
 
 def pytest_runtest_logreport(report):
@@ -82,9 +103,11 @@ def pytest_sessionfinish(exitstatus):
         result = {
             "role": MODE, "python": list(sys.version_info[:3]),
             "coverage_version": coverage.__version__, "core": START_CORE,
+            "collection": COLLECTED, "collection_sha256": hashlib.sha256(
+                json.dumps(COLLECTED, separators=(",", ":")).encode()).hexdigest(),
             "nodes": NODES, "nodeids_sha256": hashlib.sha256(
                 json.dumps(NODES, separators=(",", ":")).encode()).hexdigest(),
-            "reports": REPORTS, "deselected": DESELECTED,
+            "reports": REPORTS, "deselected": sorted(DESELECTED),
             "exitstatus": int(exitstatus),
         }
         with (ROOT / ".coverage-reports/source-suite.json").open("x") as stream:
