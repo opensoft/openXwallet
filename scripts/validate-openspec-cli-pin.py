@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# VENDORED from opensoft/openXfactory@9cb27c157154ad691ff7efb7a5c8418c41309f4d; do not edit here.
+# VENDORED from opensoft/openXfactory@87e08c277971bc8a072934df44c291a7e1331ab9; do not edit here.
 # Everything below this header block is byte-identical to the provider.
 # Source: scripts/validate-openspec-cli-pin.py. Current provenance: docs/openspec-cli-pin.md.
 """Run OpenSpec strict validation through the PINNED CLI, and refuse otherwise.
@@ -1656,11 +1656,13 @@ def validation_targets(args: argparse.Namespace) -> list[list[str]]:
     if args.all:
         return [["validate", "--all", "--strict"]]
     if args.change:
+        targets = []
         for name in args.change:
             if re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,127}", name) is None:
                 raise PinRefusal("pin-no-target",
                                  "change id must be a bounded identifier, not an option or path")
-        return [["validate", name, "--strict"] for name in args.change]
+            targets.append(["validate", name, "--strict"])
+        return targets
     raise PinRefusal(
         "pin-no-target",
         "no scan target was given. Pass --all to validate every change and "
@@ -1682,6 +1684,30 @@ def validation_environment() -> dict:
     environment = dict(os.environ)
     environment.setdefault("OPENSPEC_TELEMETRY", "0")
     return environment
+
+
+def checked_validation_targets(targets: list[list[str]]) -> list[list[str]]:
+    """Rebuild the complete batch before any process can run.
+
+    Direct Python callers must obey the same fixed command/strictness boundary
+    as the CLI. A later invalid target refuses the whole batch before execution.
+    """
+    checked = []
+    if not targets:
+        raise PinRefusal("pin-no-target", "validation requires a nonempty target batch")
+    for argv in targets:
+        if argv == ["validate", "--all", "--strict"]:
+            checked.append(["validate", "--all", "--strict"])
+            continue
+        if (not isinstance(argv, list) or len(argv) != 3
+                or argv[0] != "validate" or argv[2] != "--strict"
+                or not isinstance(argv[1], str)):
+            raise PinRefusal("pin-no-target", "only fixed strict validation commands are permitted")
+        name = argv[1]
+        if re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,127}", name) is None:
+            raise PinRefusal("pin-no-target", "change id must be a bounded identifier, not an option or path")
+        checked.append(["validate", name, "--strict"])
+    return checked
 
 
 def run_validation(executable: Path, repo: Path,
@@ -1707,7 +1733,7 @@ def run_validation(executable: Path, repo: Path,
     assert_governed_surface(repo)
     environment = validation_environment()
     worst = 0
-    for argv in targets:
+    for argv in checked_validation_targets(targets):
         print(f"-> {executable} {' '.join(argv)}  (in {repo})", flush=True)
         try:
             completed = subprocess.run([str(executable), *argv], cwd=str(repo),
@@ -1840,7 +1866,7 @@ def run_reported_validation(executable: Path, repo: Path,
     worst = 0
     findings: list[dict] = []
     totals = {"items": 0, "passed": 0, "failed": 0}
-    for argv in targets:
+    for argv in checked_validation_targets(targets):
         reported = [*argv, "--json"]
         print(f"-> {executable} {' '.join(reported)}  (in {repo})", flush=True)
         try:
@@ -2214,7 +2240,7 @@ def main(argv: list[str] | None = None) -> int:
         dispositions = pinned_dispositions(pin)
         targets = validation_targets(args)                  # check 2
         if not args.path_mode:
-            args.npm = trusted_npm_executable(args.npm)
+            npm = trusted_npm_executable(args.npm)
         repo = Path(args.repo).resolve() if args.repo else ROOT
         # Asked BEFORE anything is fetched, for the same reason the shape checks
         # are: a pin whose exceptions cannot be scoped is unusable, and learning
@@ -2249,7 +2275,7 @@ def main(argv: list[str] | None = None) -> int:
                 verify_artifact(supplied, integrity, shasum)   # check 3
                 executable = install_locked(workspace / "prefix",
                                             lockfile_bytes, package, version,
-                                            binary, npm=args.npm)
+                                            binary, npm=npm)
             else:
                 cache_root = None if args.no_cache else (
                     Path(args.cache_dir) if args.cache_dir
@@ -2257,7 +2283,7 @@ def main(argv: list[str] | None = None) -> int:
                 executable = resolve_pinned(                   # check 3
                     package, version, integrity, shasum, binary, workspace,
                     cache_root, lockfile_bytes, lockfile_integrity,
-                    npm=args.npm)
+                    npm=npm)
             reported = assert_reported_version(executable, version)  # check 4
             mode = "PATH" if args.path_mode else "pinned artifact"
             print(f"openspec-cli-pin: {package}@{reported} from {mode} "

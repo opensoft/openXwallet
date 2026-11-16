@@ -1,3 +1,17 @@
+# Final P1 argument-boundary consumption (2026-11-16)
+Status: draft
+
+Provider: opensoft/openXfactory@87e08c277971bc8a072934df44c291a7e1331ab9. Provider main admission remains required before this consumer lands. Only the verifier body changes; installer, YAML and dependency-lock bodies remain identical to the preceding accepted adoption. All target batches are checked before any subprocess, and operator-selected npm is separate from parser data. CLI version, integrity closure and checks remain unchanged.
+
+| File | Provider body SHA-256 | Complete consumer file SHA-256 |
+| --- | --- | --- |
+| `scripts/validate-openspec-cli-pin.py` | `5e4f1001353976f622e8d67c958845a736ae799372e9b7c29f025efd999cd66c` | `92dee197f3863fb4ea15cca49286ec6172421efe70bf15381d586f24d4086e2c` |
+| `scripts/install-pinned-openspec-cli.py` | `082d036c18e40e2794e495633680f62a71795115b250ecd38428e451419fb083` | `c47dcf9ec9c45775f86abb6b8c4d1e09b741e8170b5cf66eb710726602310462` |
+| `contracts/openspec-cli-pin.yaml` | `1bab358ce6d5275fcad6fd1af3a4320aebe42d25c158aa0364d680fd4d8fa482` | `b8cffed899646898f04d4d9473d62c8c01f4c01c9fcb91500deaecc757870146` |
+| `contracts/openspec-cli-pin.1.12.0.package-lock.json` | `696dce86e5e5699007129310d9de532795ce48467218fba03b729d38c829e2ca` | `696dce86e5e5699007129310d9de532795ce48467218fba03b729d38c829e2ca` |
+
+Strip the three post-shebang comments from Python and the first three comments from YAML; JSON is verbatim. The byte-comparison tests assert all four bodies. The earlier acceptance records below are retained with their original measurements.
+
 # Current P1 tooling consumption (2026-11-15)
 Status: draft
 
