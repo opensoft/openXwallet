@@ -309,11 +309,36 @@ def validate_cross_version(probe):
         require(row.get("python", [])[:2] == version and row.get("core") == core,
                 "cross-version coverage probe used the wrong interpreter/core")
 
+def require_parent_shard(directory, row):
+    import coverage
+
+    parent = row.get("parent_shard")
+    require(isinstance(parent, dict) and set(parent) == {"name", "sha256"},
+            "parent measurement shard identity missing")
+    name = parent.get("name", "")
+    require(isinstance(name, str)
+            and re.fullmatch(r"\.coverage\.[A-Za-z0-9_.-]+", name) is not None,
+            "parent measurement shard identity missing")
+    path = directory / name
+    require(path.is_file() and not path.is_symlink()
+            and digest(path) == parent.get("sha256"),
+            "parent measurement shard missing, linked or changed")
+    data = coverage.CoverageData(basename=str(path))
+    try:
+        data.read()
+    except coverage.exceptions.CoverageException:
+        raise Refusal("parent measurement shard is not coverage data") from None
+    require(data.has_arcs() and any(data.arcs(name) for name in data.measured_files()),
+            "parent measurement shard has no observed branch data")
+
+
 def execution_evidence(directory):
     runtime, isolated = directory / RUNTIME_DIRECTORY, directory / ISOLATED_DIRECTORY
     accepted = read_json(runtime / SOURCE_SUITE)
     measured = read_json(directory / SOURCE_SUITE)
     separate = read_json(isolated / SOURCE_SUITE)
+    require_parent_shard(directory, measured)
+    require_parent_shard(isolated, separate)
     totals = [junit_counts(path) for path in (
         runtime / JUNIT_REPORT, directory / MEASURED_JUNIT, isolated / MEASURED_JUNIT)]
     require(all(totals[0][key] == totals[1][key] + totals[2][key] for key in totals[0]),

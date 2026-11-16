@@ -416,6 +416,9 @@ def auxiliary(tool, root, directory):
     rows, probes = execution_rows(tool, phases)
     for role, folder in (("runtime", runtime), ("coverage", directory),
                          ("isolated", isolated)):
+        if role != "runtime":
+            parent = next(folder.glob(".coverage.*"))
+            rows[role]["parent_shard"] = {"name": parent.name, "sha256": tool.digest(parent)}
         (folder / tool.SOURCE_SUITE).write_text(json.dumps(rows[role]))
         if role != "runtime":
             (folder / tool.CORE_PROBE).write_text(json.dumps(probes[role]))
@@ -578,6 +581,47 @@ def execution_rows(tool, phases):
     return json.loads(json.dumps(rows)), probes
 
 
+@pytest.mark.parametrize("fault", [
+    "missing", "changed", "linked", "invalid-database", "empty-branch-database", "missing-metadata",
+])
+def test_primary_parent_shard_must_survive_with_secondary_data(tool, repository, fault):
+    directory = measured(tool, repository)
+    auxiliary(tool, repository, directory)
+    assert list((directory / "auxiliary").glob(".coverage.*"))
+    assert list((directory / "isolated").glob(".coverage.*"))
+    row = json.loads((directory / tool.SOURCE_SUITE).read_text())
+    parent = directory / row["parent_shard"]["name"]
+    if fault == "missing":
+        for shard in directory.glob(".coverage.*"):
+            shard.unlink()
+    elif fault == "changed":
+        parent.write_bytes(parent.read_bytes() + b"changed")
+    elif fault == "invalid-database":
+        parent.write_bytes(b"not real branch data")
+        row["parent_shard"]["sha256"] = tool.digest(parent)
+        (directory / tool.SOURCE_SUITE).write_text(json.dumps(row))
+    elif fault == "empty-branch-database":
+        parent.unlink()
+        data = coverage.CoverageData(basename=str(parent))
+        data.add_arcs({})
+        data.touch_file(str(repository / "scripts/covered.py"))
+        data.write()
+        assert data.has_arcs() and data.measured_files() and not data.arcs(
+            str(repository / "scripts/covered.py"))
+        row["parent_shard"]["sha256"] = tool.digest(parent)
+        (directory / tool.SOURCE_SUITE).write_text(json.dumps(row))
+    elif fault == "missing-metadata":
+        row.pop("parent_shard")
+        (directory / tool.SOURCE_SUITE).write_text(json.dumps(row))
+    else:
+        saved = parent.with_name("retained-parent")
+        parent.rename(saved)
+        parent.symlink_to(saved)
+    with pytest.raises(tool.Refusal, match="parent measurement shard"):
+        tool.assemble_measurements(repository, directory)
+    assert not list(directory.glob(".coverage.auxiliary.*"))
+
+
 @pytest.mark.parametrize("mismatch", ["missing", "parameters", "message"])
 def test_passing_subtests_are_preserved_and_must_match_both_measurements(tool, mismatch):
     phases = [{"phase": phase, "outcome": "passed", "subtest": False,
@@ -670,6 +714,8 @@ def test_real_partition_receipt_preserves_subtests_and_ignores_nested_subset(too
         assert result.returncode == 0, result.stdout + result.stderr
         row = json.loads((root / ".coverage-reports/source-suite.json").read_text())
         assert len(row["collection"]) == 2
+        if role != "runtime":
+            tool.require_parent_shard(root / ".coverage-reports", row)
         count = 2 if role == "runtime" else 1
         assert tool.validate_source_execution(row, role)["tests"] == count
         contexts = [report["context"] for phases in row["reports"].values()

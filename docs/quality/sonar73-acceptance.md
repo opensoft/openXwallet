@@ -127,6 +127,13 @@ final documentation-only hosted request reached the existing review quota.
 Prior functional head has a clean hosted receipt. Independent wallet main
 feature017 documentation at 43166dd6 remains preserved verbatim.
 
-The fixed-partition implementation has 82 evidence and provider-boundary tests;
+The fixed-partition implementation has 88 evidence and provider-boundary tests;
 both interpreters pass the selection, completeness and refusal checks. Final
 complete-source qualification and published main acceptance remain pending.
+
+Each measured pytest parent saves a genuine post-assertion branch-data snapshot
+without changing its contents. The execution receipt binds its filename and
+SHA-256; assembly requires that exact regular unlinked SQLite data and actual
+observed arcs before secondary data is copied. Missing, changed, linked, invalid
+or metadata-only parent data refuses acceptance. Normal exit-time coverage
+files remain retained alongside the immutable snapshot.

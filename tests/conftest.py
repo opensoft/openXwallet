@@ -2,6 +2,7 @@
 import hashlib
 import json
 import os
+import shutil
 from pathlib import Path
 import sys
 
@@ -85,6 +86,7 @@ def pytest_runtest_logreport(report):
 
 
 def pytest_sessionfinish(exitstatus):
+    parent_shard = None
     if os.environ.get("COVERAGE_PROCESS_START"):
         import coverage
 
@@ -94,6 +96,18 @@ def pytest_sessionfinish(exitstatus):
         # Nested Coverage API tests disable startup autosaving. This public
         # call retains the real parent execution without changing its hits.
         current.save()
+        if ACTIVE:
+            shard = Path(current.get_data().data_filename())
+            if (shard.parent != ROOT / ".coverage-reports" or shard.is_symlink()
+                    or not shard.is_file() or not current.get_data().has_arcs()):
+                raise RuntimeError("parent branch measurement missing or linked")
+            # Preserve genuine post-assertion bytes. Coverage may save again at
+            # process exit; retain both that original and this immutable snapshot.
+            saved = shard.parent / (".coverage.parent." + str(os.getpid()))
+            with shard.open("rb") as source, saved.open("xb") as destination:
+                shutil.copyfileobj(source, destination)
+            parent_shard = {"name": saved.name,
+                            "sha256": hashlib.sha256(saved.read_bytes()).hexdigest()}
     if ACTIVE:
         import coverage
 
@@ -102,6 +116,7 @@ def pytest_sessionfinish(exitstatus):
             raise RuntimeError("source measurement core changed")
         result = {
             "role": MODE, "python": list(sys.version_info[:3]),
+            "parent_shard": parent_shard,
             "coverage_version": coverage.__version__, "core": START_CORE,
             "collection": COLLECTED, "collection_sha256": hashlib.sha256(
                 json.dumps(COLLECTED, separators=(",", ":")).encode()).hexdigest(),
