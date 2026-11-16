@@ -22,10 +22,23 @@ def context_from_environment(environment, source_commit):
     return DispatchContext(*(environment.get(name, "") for name in names), source_commit)
 
 
+class _PrivateParser(argparse.ArgumentParser):
+    def error(self, _message):
+        # argparse's default error echoes arbitrary invalid arguments before the
+        # runtime boundary. Keep invalid input on the same fixed-code contract.
+        raise BindingError("workflow-input-unavailable") from None
+
+
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = _PrivateParser(description=__doc__)
     parser.add_argument("--phase", choices=("preflight", "protected-admission", "qualify", "cleanup"), required=True)
-    args = parser.parse_args()
+    try:
+        args = parser.parse_args()
+    except BaseException as error:
+        if type(error) is SystemExit and type(error.code) is int and error.code == 0:
+            return 0  # argparse help completed; no context or binding was read.
+        print(safe_error(error), file=sys.stderr)
+        return 2 if isinstance(error, Exception) else 130
     try:
         source = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, check=True, capture_output=True,
                                 text=True, timeout=10).stdout.strip()

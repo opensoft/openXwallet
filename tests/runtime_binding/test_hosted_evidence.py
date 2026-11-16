@@ -800,3 +800,38 @@ def test_reconciliation_refuses_after_original_registered_cleanup_window(k,w,req
     after=sum(e["kind"]=="lease-closed" for e in hosted.stores["primary"].events(decision=hosted.use()))
     assert before==after==1
     assert not hosted.temporary.exists() and hosted.shared.read_bytes()==b"retained shared generation"
+
+
+@pytest.mark.parametrize("kind", ["invalid-phase","unknown-argument","missing-phase"])
+def test_cli_parse_failure_never_echoes_private_input_or_reads_context(monkeypatch,tmp_path,capsys,kind):
+    import importlib.util
+    from pathlib import Path
+    canary="private-token-proof-PEM-path-input-canary"
+    path=Path(__file__).resolve().parents[2]/"scripts/prepare-protected-runtime.py"
+    spec=importlib.util.spec_from_file_location("prepare_protected_runtime_parse",path)
+    module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+    arguments={"invalid-phase":["--phase",canary],"unknown-argument":["--phase","qualify","--token",canary],"missing-phase":["--token",canary]}
+    monkeypatch.setattr(module.sys,"argv",[str(path),*arguments[kind]])
+    def unexpected(*a,**kw):pytest.fail("parse failure read context or selected operational bindings")
+    monkeypatch.setattr(module.subprocess,"run",unexpected)
+    monkeypatch.setattr(module,"operational_bindings",unexpected)
+    output=tmp_path/"never-created";monkeypatch.setenv("GITHUB_OUTPUT",str(output))
+    assert module.main()==2
+    result=capsys.readouterr()
+    assert result.out=="" and result.err=="workflow-input-unavailable\n"
+    assert canary not in result.err and not output.exists()
+
+
+@pytest.mark.parametrize("kind", ["interrupt","exit","generator"])
+def test_cli_parse_cancellation_redacts_private_payload_before_context(monkeypatch,capsys,kind):
+    import importlib.util
+    from pathlib import Path
+    path=Path(__file__).resolve().parents[2]/"scripts/prepare-protected-runtime.py"
+    spec=importlib.util.spec_from_file_location("prepare_protected_runtime_parse_cancel",path)
+    module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+    error={"interrupt":KeyboardInterrupt,"exit":SystemExit,"generator":GeneratorExit}[kind]("private-parse-cancel-canary")
+    error.add_note("private-parse-cancel-canary")
+    def cancel(*a,**kw):raise error
+    monkeypatch.setattr(module._PrivateParser,"parse_args",cancel)
+    assert module.main()==130
+    value=capsys.readouterr();assert value.out=="" and value.err=="qualification-cancelled\n"
