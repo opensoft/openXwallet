@@ -661,17 +661,35 @@ def test_fixed_partition_cannot_omit_overlap_or_relabel_cases(tool, fault):
         isolated["nodes"] = []
     elif fault == "overlap":
         isolated["nodes"] = rows["runtime"]["nodes"]
+        isolated["reports"] = rows["runtime"]["reports"]
+        isolated["deselected"] = []
     elif fault == "isolated-core":
         isolated["core"] = "CTracer"
     elif fault == "isolated-version":
         isolated["python"] = [3, 12, 0]
     elif fault == "collection-drift":
         isolated["collection"] = [tool.ISOLATED_CASE]
+        isolated["deselected"] = []
     elif fault == "unexpected-deselection":
         isolated["deselected"] = []
     else:
         isolated["reports"] = {}
-    with pytest.raises(tool.Refusal):
+    # Keep identities internally consistent so each probe reaches the
+    # intended completeness/selection guard, rather than a stale hash check.
+    for key, names in (("nodeids_sha256", isolated["nodes"]),
+                       ("collection_sha256", isolated["collection"])):
+        isolated[key] = hashlib.sha256(
+            json.dumps(names, separators=(",", ":")).encode()).hexdigest()
+    messages = {
+        "missing-isolated": "source collection missing",
+        "overlap": "source selection differs",
+        "isolated-core": "role/interpreter/core differs",
+        "isolated-version": "role/interpreter/core differs",
+        "collection-drift": "full collections differ",
+        "unexpected-deselection": "source selection differs",
+        "missing-isolated-assertion": "source assertion report missing",
+    }
+    with pytest.raises(tool.Refusal, match=messages[fault]):
         tool.compare_source_executions(
             rows["runtime"], rows["coverage"], probes["coverage"],
             isolated, probes["isolated"])
