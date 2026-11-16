@@ -397,6 +397,29 @@ def auxiliary(tool, root, directory):
         shutil.copyfile(root / "pytest-report.xml", selected / name)
     for shard in directory.glob(".coverage.*"):
         shutil.copyfile(shard, selected / shard.name)
+    runtime = directory / "runtime"
+    runtime.mkdir()
+    shutil.copyfile(directory / "measurement.json", runtime / "measurement.json")
+    shutil.copyfile(root / "pytest-report.xml", runtime / "pytest-report.xml")
+    shutil.copyfile(root / "pytest-report.xml", directory / tool.MEASURED_JUNIT)
+    nodes = ["synthetic::test_fixture"]
+    phases = [{"phase": phase, "outcome": "passed", "subtest": False, "xfail": False}
+              for phase in ("setup", "call", "teardown")]
+    for role, folder, version, core in [
+            ("runtime", runtime, [3, 12, 0], None),
+            ("coverage", directory, [3, 14, 0], "SysMonitor")]:
+        row = {"role": role, "python": version, "core": core,
+               "coverage_version": "7.16.2", "nodes": nodes,
+               "nodeids_sha256": hashlib.sha256(json.dumps(
+                   nodes, separators=(",", ":")).encode()).hexdigest(),
+               "reports": {nodes[0]: phases}, "exitstatus": 0, "deselected": False}
+        (folder / tool.SOURCE_SUITE).write_text(json.dumps(row))
+    probe = {kind: {"python": [3, 14, 0], "core": "SysMonitor",
+                    "coverage_version": "7.16.2"} for kind in ("parent", "child")}
+    (directory / tool.CORE_PROBE).write_text(json.dumps(probe))
+    cross = {"passed": True, "reporting_python": [3, 12, 0], "python312": {"python": [3, 12, 0], "core": "CTracer"},
+             "python314": {"python": [3, 14, 0], "core": "SysMonitor"}}
+    (directory / tool.CROSS_VERSION).write_text(json.dumps(cross))
     return selected
 
 
@@ -405,7 +428,7 @@ def test_same_source_auxiliary_runs_combine_real_arcs_and_all_reports(tool, repo
     auxiliary(tool, repository, directory)
     receipt = tool.assemble_measurements(repository, directory)
     assert receipt["test_counts"] == {
-        "tests": 6, "failures": 0, "errors": 0, "skipped": 0}
+        "tests": 7, "failures": 0, "errors": 0, "skipped": 0}
     assert set(receipt["sources"]) == {
         "scripts/covered.py", "scripts/namespace/unreached.py"}
     assert (directory / "auxiliary/measurement.json").is_file()
@@ -476,3 +499,180 @@ def test_nested_startup_keeps_same_named_sources_and_hits_distinct(
     assert 3 in files[names[1]]["missing_lines"]
     assert 4 in files[names[1]]["executed_lines"]
     assert 4 in files[names[2]]["missing_lines"]
+
+
+
+@pytest.mark.parametrize("fault", [
+    "core-fallback", "wrong-interpreter", "deselected", "skip", "xfail",
+    "missing-phase", "repeated-phase", "different-identities", "missing-report",
+    "failed-runtime", "changed-runtime-source",
+])
+def test_full_source_execution_cannot_be_weakened_or_mislabelled(
+        tool, repository, fault):
+    directory = measured(tool, repository)
+    auxiliary(tool, repository, directory)
+    runtime = directory / "runtime"
+    path = directory / tool.SOURCE_SUITE
+    row = json.loads(path.read_text())
+    node = row["nodes"][0]
+    if fault == "core-fallback":
+        row["core"] = "CTracer"
+    elif fault == "wrong-interpreter":
+        row["python"] = [3, 12, 0]
+    elif fault == "deselected":
+        row["deselected"] = True
+    elif fault == "skip":
+        row["reports"][node][1]["outcome"] = "skipped"
+    elif fault == "xfail":
+        row["reports"][node][1]["xfail"] = True
+    elif fault == "missing-phase":
+        row["reports"][node].pop()
+    elif fault == "repeated-phase":
+        row["reports"][node].append(row["reports"][node][-1])
+    elif fault == "different-identities":
+        new = "synthetic::renamed"
+        row["nodes"] = [new]
+        row["reports"] = {new: row["reports"].pop(node)}
+        row["nodeids_sha256"] = hashlib.sha256(json.dumps(
+            [new], separators=(",", ":")).encode()).hexdigest()
+    elif fault == "missing-report":
+        row["reports"] = {}
+    elif fault == "failed-runtime":
+        accepted = json.loads((runtime / tool.SOURCE_SUITE).read_text())
+        accepted["exitstatus"] = 1
+        (runtime / tool.SOURCE_SUITE).write_text(json.dumps(accepted))
+    else:
+        state = json.loads((runtime / "measurement.json").read_text())
+        state["revision"] = "0" * 40
+        (runtime / "measurement.json").write_text(json.dumps(state))
+    path.write_text(json.dumps(row))
+    with pytest.raises(tool.Refusal):
+        tool.assemble_measurements(repository, directory)
+    assert not list(directory.glob(".coverage.auxiliary.*"))
+
+
+def test_passing_subtests_are_preserved_and_must_match_both_full_runs(tool):
+    nodes = ["synthetic::test_subtests"]
+    fingerprint = hashlib.sha256(
+        json.dumps(nodes, separators=(",", ":")).encode()).hexdigest()
+    phases = [{"phase": phase, "outcome": "passed", "subtest": False, "xfail": False}
+              for phase in ("setup", "call", "teardown")]
+    phases.insert(1, {"phase": "call", "outcome": "passed", "subtest": True,
+                      "xfail": False})
+    common = {"coverage_version": "7.16.2", "nodes": nodes,
+              "nodeids_sha256": fingerprint, "reports": {nodes[0]: phases},
+              "deselected": False, "exitstatus": 0}
+    runtime = dict(common, role="runtime", python=[3, 12, 0], core=None)
+    traced = dict(common, role="coverage", python=[3, 14, 0], core="SysMonitor")
+    probe = {kind: {"python": [3, 14, 0], "core": "SysMonitor",
+                    "coverage_version": "7.16.2"} for kind in ("parent", "child")}
+    assert tool.compare_source_executions(runtime, traced, probe)["runtime"]["tests"] == 1
+    traced = json.loads(json.dumps(traced))
+    traced["reports"][nodes[0]].pop(1)
+    with pytest.raises(tool.Refusal, match="identical"):
+        tool.compare_source_executions(runtime, traced, probe)
+
+
+
+def test_real_full_receipt_preserves_subtests_and_ignores_nested_subset(
+        tool, tmp_path):
+    import shutil
+
+    root = tmp_path / "execution"
+    (root / "tests").mkdir(parents=True)
+    (root / ".coverage-reports").mkdir(mode=0o700)
+    shutil.copyfile(ROOT / "tests/conftest.py", root / "tests/conftest.py")
+    (root / "tests/probe_child.py").write_text("def test_child():\n    assert True\n")
+    (root / "tests/test_sample.py").write_text(
+        "import os,subprocess,sys,unittest\n"
+        "class Samples(unittest.TestCase):\n"
+        "    def test_subtests(self):\n"
+        "        for value in (1,2):\n"
+        "            with self.subTest(value=value):\n"
+        "                self.assertGreater(value,0)\n"
+        "def test_nested_subset():\n"
+        "    subprocess.run([sys.executable,'-m','pytest','tests/probe_child.py','-q'],"
+        "check=True,timeout=30)\n")
+    environment = dict(os.environ, PYTEST_DISABLE_PLUGIN_AUTOLOAD="1")
+    for key in ("COVERAGE_PROCESS_START", "COVERAGE_PROCESS_CONFIG", "COVERAGE_ROOT",
+                "COVERAGE_FILE", "COVERAGE_CORE", "PYTEST_CURRENT_TEST"):
+        environment.pop(key, None)
+    role = "runtime" if sys.version_info[:2] == (3, 12) else "coverage"
+    environment["WALLET_SOURCE_MEASUREMENT"] = role
+    if role == "coverage":
+        config = root / "coverage.ini"
+        config.write_text("[run]\nbranch=True\nparallel=True\nrelative_files=False\n")
+        environment.update(COVERAGE_PROCESS_START=str(config), COVERAGE_CORE="sysmon",
+                           COVERAGE_FILE=str(root / ".coverage-reports/.coverage"))
+    result = subprocess.run(
+        [sys.executable, "-m", "pytest", "tests/", "-q",
+         "--rootdir=" + str(root), "--confcutdir=" + str(root)],
+        cwd=root, env=environment, capture_output=True, text=True, timeout=60)
+    assert result.returncode == 0, result.stdout + result.stderr
+    row = json.loads((root / ".coverage-reports/source-suite.json").read_text())
+    assert len(row["nodes"]) == 2
+    assert sum(report["subtest"] for phases in row["reports"].values()
+               for report in phases) == 2
+    assert tool.validate_source_execution(row, role)["tests"] == 2
+
+
+def test_analysis_wheel_closure_preserves_every_runtime_package_version():
+    import re
+
+    def versions(name):
+        return {package.lower().replace("_", "-"): version
+                for package, version in re.findall(
+                    r"^([A-Za-z0-9_.-]+)==([^\s\\]+)",
+                    (ROOT / name).read_text(), re.M)}
+    runtime = versions("requirements-workload-binding.lock")
+    analysis = versions("requirements/coverage-workload.lock")
+    assert len(runtime) == 18
+    assert analysis == runtime
+
+
+
+@pytest.mark.parametrize("fault", ["none", "wrong-runtime", "missing-file", "missing-line"])
+def test_secondary_auditor_uses_the_real_target_compiler_contract(
+        tool, repository, monkeypatch, fault):
+    from types import SimpleNamespace
+
+    names = list(tool.inventory(repository))
+    expected = tool.executable_inventory(repository, names, require_target=False)
+    result = {"python": [3, 12, 3], "coverage_version": "7.16.2",
+              "files": {name: sorted(lines) for name, lines in expected.items()}}
+    if fault == "wrong-runtime":
+        result["python"] = [3, 14, 7]
+    elif fault == "missing-file":
+        result["files"].pop(names[0])
+    elif fault == "missing-line":
+        result["files"][names[0]].pop()
+    monkeypatch.setattr(tool, "sys", SimpleNamespace(version_info=(3, 14, 7)))
+    monkeypatch.setenv("WALLET_TARGET_PYTHON", "/operator-selected/python312")
+    calls = []
+
+    def compiler(argv, **kwargs):
+        calls.append((argv, json.loads(kwargs["input"])))
+        return json.dumps(result)
+
+    monkeypatch.setattr(tool, "subprocess", SimpleNamespace(check_output=compiler))
+    if fault == "none":
+        assert tool.executable_inventory(
+            repository, names, require_target=True) == expected
+        assert calls[0][0][:2] == ["/operator-selected/python312", "-c"]
+        assert calls[0][1] == {"root": str(repository), "names": names}
+    else:
+        with pytest.raises(tool.Refusal):
+            tool.executable_inventory(repository, names, require_target=True)
+
+
+def test_production_denominator_cannot_be_reported_under_the_analysis_version(
+        tool, repository):
+    directory = measured(tool, repository)
+    auxiliary(tool, repository, directory)
+    tool.assemble_measurements(repository, directory)
+    path = directory / "receipt.json"
+    row = json.loads(path.read_text())
+    row["reporting_python"] = [3, 14, 7]
+    path.write_text(json.dumps(row))
+    with pytest.raises(tool.Refusal, match="denominator"):
+        tool.check_report(repository, directory, require_execution=True)

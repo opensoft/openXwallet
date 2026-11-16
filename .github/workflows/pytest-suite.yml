@@ -29,9 +29,8 @@
 # "Init is scoped"). Both repositories are PUBLIC (RULED Q5), so the default
 # token clones them and the job needs no secret.
 #
-# The checkout stays at depth 1. The carve manifest's real-repository test seat
-# needs the carve commit in history, so it skips loudly here, naming
-# carve-manifest.yml, which runs it at `fetch-depth: 0`.
+# Issue #73 source jobs fetch full history so the real carve-history test
+# executes in both full runs. The independent carve-manifest gate is retained.
 #
 # THE DEPENDENCY LINE IS PINNED AND WHEEL-ONLY: carve-manifest.yml's line. Each
 # package is pinned to the exact version verified there on 2026-10-08 in a
@@ -72,6 +71,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: ${{ github.sha }}
+          fetch-depth: 0
           submodules: false
           persist-credentials: false
 
@@ -121,19 +121,16 @@ jobs:
       - name: Run offline suite including explicit owning-source qualification
         env:
           WALLET_BINDING_OWNER_CODE: ${{ runner.temp }}/wallet-binding-owner
-          COVERAGE_PROCESS_START: ${{ github.workspace }}/.coveragerc
-          COVERAGE_ROOT: ${{ github.workspace }}
-          COVERAGE_FILE: ${{ github.workspace }}/.coverage-reports/.coverage
         # Source-test process only: do not grant a worker the runner's ambient
         # sudo/docker groups. The runtime correctly refuses unselected groups.
         shell: bash
         run: |
-          TMPDIR="$(mktemp -d "$RUNNER_TEMP/wallet-pytest.XXXXXX")"
+          TMPDIR="$(mktemp -d /var/tmp/xw.XXXXXX)"
           export TMPDIR
           # sudo's initial secure loader strips TMPDIR before its preserve list.
           # Pass this fresh, task-owned path after sudo starts.
-          sudo --preserve-env=WALLET_BINDING_OWNER_CODE,HOME,PATH,COVERAGE_PROCESS_START,COVERAGE_ROOT,COVERAGE_FILE \
-            env TMPDIR="$TMPDIR" setpriv --reuid "$(id -u)" --regid "$(id -g)" \
+          sudo --preserve-env=WALLET_BINDING_OWNER_CODE,HOME,PATH \
+            env WALLET_SOURCE_MEASUREMENT=runtime TMPDIR="$TMPDIR" setpriv --reuid "$(id -u)" --regid "$(id -g)" \
               --clear-groups --bounding-set=-all --inh-caps=-all --ambient-caps=-all \
               --no-new-privs \
               "$(command -v python3)" -m pytest tests/ -q -rs --junitxml=pytest-report.xml
@@ -154,8 +151,116 @@ jobs:
             --temp-root "$matrix_root" --owner-code "$WALLET_BINDING_OWNER_CODE"
 
 
+      - name: Verify the exact source stayed unchanged
+        run: python3 scripts/validate-sonar-coverage.py verify-source
+
       - name: Retain the complete suite report with raw coverage
         run: cp pytest-report.xml .coverage-reports/pytest-report.xml
+
+      - name: Publish same-run source and coverage evidence
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: wallet-sonar-runtime
+          path: .coverage-reports/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14
+
+  coverage-tests:
+    runs-on: ubuntu-latest
+    # Additional complete measurement: the original 3.12 full/native job is
+    # separately required. All source cases and original assertions run here.
+    timeout-minutes: 45
+    steps:
+      - name: Require main for manual source validation
+        id: manual-main-guard
+        env:
+          VALIDATION_EVENT: ${{ github.event_name }}
+          VALIDATION_REF: ${{ github.ref }}
+        run: |
+          set -euo pipefail
+          if [ "$VALIDATION_EVENT" = "workflow_dispatch" ] && [ "$VALIDATION_REF" != "refs/heads/main" ]; then
+            echo "::error::Manual source validation requires refs/heads/main."
+            exit 1
+          fi
+
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          submodules: false
+          persist-credentials: false
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.14"
+
+      # Quoted: `:all: ` would otherwise read as a YAML mapping key.
+      - name: Install complete reviewed wheel closure
+        run: "pip install --only-binary :all: --require-hashes -r requirements/coverage-workload.lock"
+
+      - name: Install separate hash-pinned coverage tooling
+        run: "pip install --only-binary :all: --require-hashes -r requirements/sonar-analysis.lock"
+
+      - name: Enable startup tracing in this ephemeral CI Python only
+        run: |
+          python3 - <<'PYCODE'
+          import site
+          from pathlib import Path
+          Path(site.getsitepackages()[0], "wallet_sonar_startup.pth").write_text(
+              "import coverage; coverage.process_startup()\n")
+          PYCODE
+
+      - name: Initialize the openWallet root (scoped, never --recursive)
+        run: git submodule update --init openWallet
+
+      - name: Initialize the openWallet code leg (never the spec leg)
+        run: git -C openWallet submodule update --init code
+
+      # Analysis only: this complete-assembly project already scans the spec leg.
+      - name: Initialize the spec leg for complete-source analysis only
+        run: git -C openWallet submodule update --init spec
+
+      - name: Select exact accepted owning wallet source for isolated integration
+        shell: bash
+        run: |
+          git init "$RUNNER_TEMP/wallet-binding-owner"
+          git -C "$RUNNER_TEMP/wallet-binding-owner" remote add origin https://github.com/opensoft/openWallet-code.git
+          git -C "$RUNNER_TEMP/wallet-binding-owner" fetch --depth 1 origin bb0e9dae89a771b05f6c235d0a77237288b95c85
+          git -C "$RUNNER_TEMP/wallet-binding-owner" checkout --detach FETCH_HEAD
+
+      - name: Verify coverage evidence and prepare a fresh exact-source measurement
+        run: |
+          python3 -m pytest tests/sonar_quality/test_coverage_evidence.py -q
+          python3 scripts/validate-sonar-coverage.py prepare
+
+      - name: Run offline suite including explicit owning-source qualification
+        env:
+          COVERAGE_CORE: sysmon
+          WALLET_BINDING_OWNER_CODE: ${{ runner.temp }}/wallet-binding-owner
+          COVERAGE_PROCESS_START: ${{ github.workspace }}/.coveragerc
+          COVERAGE_ROOT: ${{ github.workspace }}
+          COVERAGE_FILE: ${{ github.workspace }}/.coverage-reports/.coverage
+        # Source-test process only: do not grant a worker the runner's ambient
+        # sudo/docker groups. The runtime correctly refuses unselected groups.
+        shell: bash
+        run: |
+          TMPDIR="$(mktemp -d /var/tmp/xw.XXXXXX)"
+          export TMPDIR
+          # sudo's initial secure loader strips TMPDIR before its preserve list.
+          # Pass this fresh, task-owned path after sudo starts.
+          python3 scripts/validate-sonar-coverage.py core
+          sudo --preserve-env=WALLET_BINDING_OWNER_CODE,HOME,PATH,COVERAGE_PROCESS_START,COVERAGE_ROOT,COVERAGE_FILE \
+            env COVERAGE_CORE=sysmon WALLET_SOURCE_MEASUREMENT=coverage TMPDIR="$TMPDIR" setpriv --reuid "$(id -u)" --regid "$(id -g)" \
+              --clear-groups --bounding-set=-all --inh-caps=-all --ambient-caps=-all \
+              --no-new-privs \
+              "$(command -v python3)" -m pytest tests/ -q -rs --junitxml=pytest-report.xml
+
+      - name: Verify the exact source stayed unchanged
+        run: python3 scripts/validate-sonar-coverage.py verify-source
+
+      - name: Retain the complete suite report with raw coverage
+        run: cp pytest-report.xml .coverage-reports/measured-pytest.xml
 
       - name: Publish same-run source and coverage evidence
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
@@ -174,6 +279,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: ${{ github.sha }}
+          fetch-depth: 0
           submodules: false
           persist-credentials: false
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
@@ -222,10 +328,17 @@ jobs:
               git("merge-base", "--is-ancestor", row["admitted_main"], "refs/remotes/origin/main")
               git("checkout", "--detach", row["commit"])
           PYCODE
+      - name: Select the unchanged accepted owning source for import conformance
+        run: |
+          git init "$RUNNER_TEMP/wallet-binding-owner"
+          git -C "$RUNNER_TEMP/wallet-binding-owner" remote add origin https://github.com/opensoft/openWallet-code.git
+          git -C "$RUNNER_TEMP/wallet-binding-owner" fetch --depth 1 origin bb0e9dae89a771b05f6c235d0a77237288b95c85
+          git -C "$RUNNER_TEMP/wallet-binding-owner" checkout --detach FETCH_HEAD
       - name: Prepare a fresh same-source measurement
         run: python3 scripts/validate-sonar-coverage.py prepare
       - name: Run owning-leg tests and immutable provider conformance on actual copies
         env:
+          WALLET_BINDING_OWNER_CODE: ${{ runner.temp }}/wallet-binding-owner
           COVERAGE_PROCESS_START: ${{ github.workspace }}/.coveragerc
           COVERAGE_ROOT: ${{ github.workspace }}
           COVERAGE_FILE: ${{ github.workspace }}/.coverage-reports/.coverage
@@ -233,9 +346,13 @@ jobs:
           WALLET_ANALYSIS_SHAPE_ROOT: ${{ runner.temp }}/wallet-analysis-shape
         run: |
           set -euo pipefail
-          TMPDIR="$(mktemp -d "$RUNNER_TEMP/wallet-source.XXXXXX")"
+          TMPDIR="$(mktemp -d /var/tmp/xw.XXXXXX)"
           export TMPDIR
           reports="$PWD/.coverage-reports"
+          # Additional real 3.12 imports cover eager annotations without running
+          # timed cases under CTracer. Both full suites still execute every case.
+          python3 -c 'import coverage,sys; assert sys.version_info[:2] == (3,12); assert dict(coverage.Coverage.current().sys_info())["core"] == "CTracer"'
+          python3 -m pytest tests/ --collect-only -q > "$reports/import-collection.txt"
           (cd openWallet/code && python3 -m pytest tests/ -q -rs --junitxml="$reports/code-pytest.xml")
           (cd openWallet/spec && python3 -m pytest tests/ -q -rs --junitxml="$reports/spec-pytest.xml")
           python3 scripts/validate-openspec-cli-pin.py --all --no-cache --tarball tools/openspec-cli-pin/fission-ai-openspec-1.12.0-c844543999f673cdd72445879b86a4abea4c07ef.tgz
@@ -244,16 +361,7 @@ jobs:
           python3 scripts/run-provider-conformance.py openspec-spec
           PATH="$RUNNER_TEMP/shape-analysis/bin:$PATH" "$RUNNER_TEMP/shape-analysis/bin/python" scripts/run-provider-conformance.py shape
       - name: Verify the source remained identical throughout the auxiliary run
-        run: |
-          python3 - <<'PYCODE'
-          import importlib.util
-          from pathlib import Path
-          path = Path("scripts/validate-sonar-coverage.py").resolve()
-          spec = importlib.util.spec_from_file_location("wallet_coverage", path)
-          module = importlib.util.module_from_spec(spec)
-          spec.loader.exec_module(module)
-          module.unchanged(path.parents[1], path.parents[1] / ".coverage-reports")
-          PYCODE
+        run: python3 scripts/validate-sonar-coverage.py verify-source
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: wallet-sonar-auxiliary
@@ -263,7 +371,7 @@ jobs:
           retention-days: 14
 
   sonar-analysis:
-    needs: [pytest-suite, source-conformance]
+    needs: [pytest-suite, coverage-tests, source-conformance]
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -275,8 +383,9 @@ jobs:
           submodules: false
           persist-credentials: false
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        id: analysis-python
         with:
-          python-version: "3.12"
+          python-version: "3.14"
       - name: Initialize the exact complete analysis assembly
         run: |
           git submodule update --init openWallet
@@ -289,12 +398,39 @@ jobs:
         with:
           name: wallet-sonar-auxiliary
           path: .coverage-reports/auxiliary
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: wallet-sonar-runtime
+          path: .coverage-reports/runtime
       - name: Install hash-pinned evidence reader
         run: "pip install --only-binary :all: --require-hashes -r requirements/sonar-analysis.lock"
-      - name: Combine real same-source runs and verify exhaustive coverage
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        id: runtime-python
+        with:
+          python-version: "3.12"
+      - name: Install independent target-runtime evidence reader
+        run: "pip install --only-binary :all: --require-hashes -r requirements/sonar-analysis.lock"
+      - name: Verify real cross-version coverage identities and zero-hit preservation
+        env:
+          WALLET_PROBE_PYTHON312: ${{ steps.runtime-python.outputs.python-path }}
+          WALLET_PROBE_PYTHON314: ${{ steps.analysis-python.outputs.python-path }}
+        run: python3 tests/sonar_quality/cross_version_probe.py
+      - name: Combine real same-source runs and audit both interpreter denominators
+        env:
+          ANALYSIS_PYTHON: ${{ steps.analysis-python.outputs.python-path }}
+          WALLET_TARGET_PYTHON: ${{ steps.runtime-python.outputs.python-path }}
         run: |
           python3 scripts/validate-sonar-coverage.py assemble
           python3 scripts/validate-sonar-coverage.py check
+          "$ANALYSIS_PYTHON" scripts/validate-sonar-coverage.py check
+      - name: Retain the complete verified coverage before credentialed analysis
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: wallet-sonar-complete
+          path: .coverage-reports/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14
       - name: Analyze complete source and wait for the existing quality gate
         uses: SonarSource/sonarqube-scan-action@c7ee0f9df90b7aa20e8dcf9695dcfe2e7da5b4f2
         env:

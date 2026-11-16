@@ -3,7 +3,7 @@
   "openspec": {
     "repository": "opensoft/openXfactory",
     "commit": "e0e0b9a31ec8f4d5ec2d611d373ce0a918abb5de",
-    "main_admission": "pending",
+    "main_admission": "verified",
     "test_paths": [
       "tests/openspec_cli_pin/test_openspec_cli_pin.py"
     ],
@@ -18,7 +18,8 @@
     },
     "expected_test_count": 193,
     "nodeids_sha256": "4be6a4d350f0b0a8f978709be1a0d185e8c9c777aab085cf277a99a01b8f048c",
-    "allowed_skips": []
+    "allowed_skips": [],
+    "admitted_main": "828d88c2ca9d7bcf551e1759c847a9789c5c2066"
   },
   "shape": {
     "repository": "opensoft/openRepoShape",

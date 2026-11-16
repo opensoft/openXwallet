@@ -18,6 +18,7 @@ import urllib.parse
 import urllib.request
 import re
 import subprocess
+import sys
 from datetime import datetime
 import xml.etree.ElementTree as ET
 
@@ -28,9 +29,20 @@ COVERAGE_JSON = "coverage.json"
 COVERAGE_XML = "coverage.xml"
 JUNIT_REPORT = "pytest-report.xml"
 MEASUREMENT = "measurement.json"
+SOURCE_SUITE = "source-suite.json"
+CORE_PROBE = "core.json"
+MEASURED_JUNIT = "measured-pytest.xml"
+CROSS_VERSION = "cross-version.json"
+SYS_MONITOR = "SysMonitor"
+RUNTIME_DIRECTORY = Path("runtime")
+EXECUTION_ARTIFACTS = (
+    SOURCE_SUITE, CORE_PROBE, MEASURED_JUNIT, CROSS_VERSION, MEASUREMENT,
+    str(RUNTIME_DIRECTORY / MEASUREMENT), "auxiliary/" + MEASUREMENT,
+    str(RUNTIME_DIRECTORY / SOURCE_SUITE), str(RUNTIME_DIRECTORY / JUNIT_REPORT),
+)
 CONFIGS = (".coveragerc", "sonar-project.properties",
            "requirements/sonar-analysis.lock", "requirements/analysis-shape.lock",
-           "requirements/analysis-providers.json")
+           "requirements/analysis-providers.json", "requirements/coverage-workload.lock")
 LIMITS = {
     "new_security_rating": ("GT", "1"),
     "new_reliability_rating": ("GT", "1"),
@@ -162,6 +174,115 @@ def unchanged(root, directory):
 
 
 
+
+def core_probe(root):
+    """Prove actual parent and child collectors, without changing hit data."""
+    import coverage
+
+    current = coverage.Coverage.current()
+    require(current is not None, "measurement collector missing")
+    parent = {"python": list(sys.version_info[:3]),
+              "coverage_version": coverage.__version__,
+              "core": dict(current.sys_info()).get("core")}
+    program = (
+        "import coverage,json,sys; c=coverage.Coverage.current(); "
+        "print(json.dumps({'python':list(sys.version_info[:3]),"
+        "'coverage_version':coverage.__version__,"
+        "'core':dict(c.sys_info()).get('core') if c else None}))")
+    child = json.loads(subprocess.check_output(
+        [sys.executable, "-c", program], text=True, timeout=30))
+    result = {"parent": parent, "child": child}
+    validate_core_probe(result)
+    directory = report_directory(root, REPORT_DIRECTORY)
+    with (directory / CORE_PROBE).open("x") as stream:
+        json.dump(result, stream, indent=2)
+        stream.write("\n")
+    return result
+
+
+def validate_core_probe(probe):
+    require(set(probe) == {"parent", "child"}, "incomplete collector probe")
+    for row in probe.values():
+        require(row.get("python", [])[:2] == [3, 14]
+                and row.get("coverage_version") == "7.16.2"
+                and row.get("core") == SYS_MONITOR,
+                "actual parent/child measurement core differs")
+
+
+def validate_phases(phases):
+    require(phases and all(
+        set(p) == {"phase", "outcome", "subtest", "xfail"}
+        and p["outcome"] == "passed" and p["xfail"] is False
+        and type(p["subtest"]) is bool for p in phases),
+        "source assertion failed, skipped or expected-failure")
+    regular = [p["phase"] for p in phases if not p["subtest"]]
+    require(regular == ["setup", "call", "teardown"],
+            "source assertion phases are incomplete or repeated")
+    require(all(p["phase"] == "call" for p in phases if p["subtest"]),
+            "invalid subtest phase")
+
+
+def validate_source_execution(row, role):
+    expected = [3, 12] if role == "runtime" else [3, 14]
+    core = None if role == "runtime" else SYS_MONITOR
+    require(row.get("role") == role and row.get("python", [])[:2] == expected
+            and row.get("core") == core
+            and row.get("coverage_version") == "7.16.2",
+            "source execution role/interpreter/core differs")
+    nodes = row.get("nodes")
+    require(isinstance(nodes, list) and nodes and all(isinstance(n, str) for n in nodes),
+            "source collection missing")
+    require(nodes == sorted(set(nodes)), "duplicate or unordered source identities")
+    fingerprint = hashlib.sha256(
+        json.dumps(nodes, separators=(",", ":")).encode()).hexdigest()
+    require(row.get("nodeids_sha256") == fingerprint
+            and row.get("deselected") is False and row.get("exitstatus") == 0,
+            "source collection or execution did not qualify")
+    reports = row.get("reports", {})
+    require(set(reports) == set(nodes), "source assertion report missing")
+    for phases in reports.values():
+        validate_phases(phases)
+    return {"python": row["python"], "coverage_version": row["coverage_version"],
+            "core": row["core"], "tests": len(nodes), "nodeids_sha256": fingerprint}
+
+
+def compare_source_executions(runtime, measured, probe):
+    summary = {"runtime": validate_source_execution(runtime, "runtime"),
+               "coverage": validate_source_execution(measured, "coverage")}
+    require(runtime["nodes"] == measured["nodes"]
+            and runtime["reports"] == measured["reports"],
+            "runtime and measurement did not execute identical passing assertions")
+    validate_core_probe(probe)
+    require(probe["parent"]["python"] == measured["python"],
+            "measurement probe interpreter differs")
+    summary["core_probe"] = probe
+    return summary
+
+
+
+def validate_cross_version(probe):
+    require(probe.get("passed") is True
+            and probe.get("reporting_python", [])[:2] == [3, 12],
+            "cross-version coverage probe did not preserve the target denominator")
+    for name, version, core in (("python312", [3, 12], "CTracer"),
+                                ("python314", [3, 14], SYS_MONITOR)):
+        row = probe.get(name, {})
+        require(row.get("python", [])[:2] == version and row.get("core") == core,
+                "cross-version coverage probe used the wrong interpreter/core")
+
+def execution_evidence(directory):
+    runtime = directory / RUNTIME_DIRECTORY
+    measured = read_json(directory / SOURCE_SUITE)
+    accepted = read_json(runtime / SOURCE_SUITE)
+    require(junit_counts(runtime / JUNIT_REPORT) == junit_counts(directory / MEASURED_JUNIT),
+            "runtime and measured JUnit counts differ")
+    result = compare_source_executions(
+        accepted, measured, read_json(directory / CORE_PROBE))
+    cross_version = read_json(directory / CROSS_VERSION)
+    validate_cross_version(cross_version)
+    result["cross_version"] = cross_version
+    return result
+
 AUXILIARY_REPORTS = (
     "code-pytest.xml", "spec-pytest.xml",
     "openspec-adapter-pytest.xml", "openspec-spec-pytest.xml",
@@ -173,12 +294,18 @@ def assemble_measurements(root, directory):
     """Combine genuine same-source runs; retain every original report and shard."""
     directory = report_directory(root, directory)
     state = unchanged(root, directory)
+    runtime = directory / RUNTIME_DIRECTORY
+    require(not runtime.is_symlink() and runtime.is_dir(),
+            "runtime acceptance evidence missing")
+    require(read_json(runtime / MEASUREMENT) == state,
+            "runtime source/config/revision differs")
+    execution = execution_evidence(directory)
     auxiliary = directory / "auxiliary"
     require(not auxiliary.is_symlink() and auxiliary.is_dir(),
             "auxiliary measurement missing")
     require(read_json(auxiliary / MEASUREMENT) == state,
             "auxiliary source/config/revision differs")
-    reports = [directory / JUNIT_REPORT,
+    reports = [runtime / JUNIT_REPORT, directory / MEASURED_JUNIT,
                *(auxiliary / name for name in AUXILIARY_REPORTS)]
     for path in reports:
         require(not path.is_symlink(), "linked test report")
@@ -198,10 +325,10 @@ def assemble_measurements(root, directory):
             combined.append(suite)
     ET.ElementTree(combined).write(root / JUNIT_REPORT, encoding="utf-8",
                                    xml_declaration=True)
-    return generate_report(root, directory)
+    return generate_report(root, directory, execution=execution)
 
 
-def generate_report(root, directory):
+def generate_report(root, directory, *, execution=None):
     import coverage
 
     directory = report_directory(root, directory)
@@ -220,22 +347,60 @@ def generate_report(root, directory):
     cov.xml_report(morfs=morfs, outfile=str(directory / COVERAGE_XML))
     cov.json_report(morfs=morfs, outfile=str(directory / COVERAGE_JSON))
     shutil.copyfile(root / JUNIT_REPORT, directory / JUNIT_REPORT)
-    receipt = dict(state, test_counts=totals, coverage_version=coverage.__version__)
-    receipt["artifacts"] = {name: digest(directory / name)
-                            for name in (COVERAGE_XML, COVERAGE_JSON, JUNIT_REPORT)}
+    receipt = dict(state, test_counts=totals, coverage_version=coverage.__version__,
+                   reporting_python=list(sys.version_info[:3]))
+    names = [COVERAGE_XML, COVERAGE_JSON, JUNIT_REPORT]
+    if execution is not None:
+        receipt["execution"] = execution
+        names.extend(EXECUTION_ARTIFACTS)
+    receipt["artifacts"] = {name: digest(directory / name) for name in names}
     (directory / "receipt.json").write_text(json.dumps(receipt, indent=2) + "\n")
     return check_report(root, directory)
 
 
-def check_report(root, directory):
+
+def executable_inventory(root, names, *, require_target):
+    """Use the real target compiler; retain every 3.12 executable line."""
     import coverage
 
+    analyzer = coverage.Coverage(config_file=False, branch=True)
+    local = {name: set(analyzer.analysis2(str(root / name))[1]) for name in names}
+    if not require_target or sys.version_info[:2] == (3, 12):
+        return local
+    selected = os.environ.get("WALLET_TARGET_PYTHON")
+    require(selected and sys.version_info[:2] == (3, 14),
+            "independent audit needs the operator-selected Python 3.12")
+    program = (
+        "import coverage,json,sys; from pathlib import Path; "
+        "d=json.load(sys.stdin); "
+        "c=coverage.Coverage(config_file=False,branch=True); "
+        "print(json.dumps({'python':list(sys.version_info[:3]),"
+        "'coverage_version':coverage.__version__,"
+        "'files':{n:c.analysis2(str(Path(d['root'])/n))[1] for n in d['names']}}))")
+    result = json.loads(subprocess.check_output(
+        [selected, "-c", program],
+        input=json.dumps({"root": str(root), "names": list(names)}),
+        text=True, timeout=60))
+    require(result.get("python", [])[:2] == [3, 12]
+            and result.get("coverage_version") == "7.16.2"
+            and set(result.get("files", {})) == set(names),
+            "target compiler identity or inventory differs")
+    target = {name: set(lines) for name, lines in result["files"].items()}
+    require(all(local[name] <= target[name] for name in names),
+            "analysis compiler has executable lines absent from the target")
+    return target
+
+def check_report(root, directory, *, require_execution=False):
     directory = report_directory(root, directory)
     receipt = read_json(directory / "receipt.json")
     state = snapshot(root)
     require(all(receipt.get(key) == value for key, value in state.items()),
             "receipt does not match checked-out revision/source/config")
     expected = {COVERAGE_XML, COVERAGE_JSON, JUNIT_REPORT}
+    if require_execution or "execution" in receipt:
+        expected.update(EXECUTION_ARTIFACTS)
+        require(receipt.get("execution") == execution_evidence(directory),
+                "source execution evidence changed")
     require(set(receipt.get("artifacts", {})) == expected, "incomplete artifacts")
     require(all(digest(directory / name) == value
                 for name, value in receipt["artifacts"].items()), "artifact hash mismatch")
@@ -248,14 +413,17 @@ def check_report(root, directory):
     detail = read_json(directory / COVERAGE_JSON)
     require(detail.get("meta", {}).get("branch_coverage") is True, "branch coverage missing")
     require(set(detail.get("files", {})) == set(names), "JSON/XML inventories differ")
-    analyzer = coverage.Coverage(config_file=False, branch=True)
+    if require_execution:
+        require(receipt.get("reporting_python", [])[:2] == [3, 12],
+                "production coverage denominator was not reported under Python 3.12")
+    statements = executable_inventory(root, names, require_target=require_execution)
     for entry in report.findall(".//class"):
         name = entry.get("filename")
         lines = entry.findall("lines/line")
         require(len({line.get("number") for line in lines}) == len(lines),
                 f"duplicate coverage line in {name}")
         recorded = detail["files"][name]
-        expected_lines = set(analyzer.analysis2(str(root / name))[1])
+        expected_lines = statements[name]
         require((set(recorded["executed_lines"]) | set(recorded["missing_lines"])) ==
                 expected_lines, f"executable source omitted in {name}")
         require({int(line.get("number")) for line in lines} == expected_lines,
@@ -374,21 +542,27 @@ def verify_server_gate(root):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("prepare", "assemble", "report", "check", "gate"))
+    parser.add_argument("command", choices=("prepare", "verify-source", "core", "assemble", "report", "check", "gate"))
     args = parser.parse_args()
     root = Path(__file__).resolve().parents[1]
     os.chdir(root)
     try:
         if args.command == "prepare":
             result = {"directory": str(prepare(root, REPORT_DIRECTORY))}
+        elif args.command == "verify-source":
+            result = unchanged(root, root / REPORT_DIRECTORY)
+        elif args.command == "core":
+            result = core_probe(root)
         elif args.command == "assemble":
+            require(sys.version_info[:2] == (3, 12),
+                    "production reporting requires the target Python 3.12")
             result = assemble_measurements(root, root / REPORT_DIRECTORY)
         elif args.command == "report":
             result = generate_report(root, root / REPORT_DIRECTORY)
         elif args.command == "gate":
             result = verify_server_gate(root)
         else:
-            result = check_report(root, root / REPORT_DIRECTORY)
+            result = check_report(root, root / REPORT_DIRECTORY, require_execution=True)
         print(json.dumps(result, indent=2))
         return 0
     except (OSError, ValueError, KeyError) as exc:
