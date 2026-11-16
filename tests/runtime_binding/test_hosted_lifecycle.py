@@ -82,7 +82,8 @@ def test_completed_sqlite_delete_journal_overlap_preserves_exact_committed_event
             def mutation(events, append):
                 append("stage-intake", {"ref": "launch:overlap"})
                 ready.set()
-                assert release.wait(2)
+                if not release.wait(2):
+                    raise RuntimeError("writer synchronization timed out")
             store.mutate(mutation, decision=use())
         except BaseException as error:
             errors.append(error)
@@ -94,7 +95,9 @@ def test_completed_sqlite_delete_journal_overlap_preserves_exact_committed_event
             observed.append(path.name)
             release.set()
             thread.join(2)
-            assert not thread.is_alive() and not errors and not path.exists()
+            assert not thread.is_alive()
+            assert not errors
+            assert not path.exists()
         return original(path, directory)
     thread.start()
     try:
@@ -110,7 +113,8 @@ def test_completed_sqlite_delete_journal_overlap_preserves_exact_committed_event
     finally:
         release.set()
         thread.join(2)
-    assert not thread.is_alive() and not errors
+    assert not thread.is_alive()
+    assert not errors
     assert store.events(decision=use()) == events
 
 
@@ -124,8 +128,9 @@ def test_optional_sqlite_artifact_disappearance_does_not_admit_invalid_files(tmp
     else:
         path.write_bytes(b"untrusted optional SQLite artifact")
         path.chmod(0o644 if artifact == "journal-mode" else 0o600)
+    decision = use()
     with pytest.raises(BindingError):
-        store.events(decision=use())
+        store.events(decision=decision)
 
 
 def test_lifecycle_journal_has_one_concurrent_registration_winner(tmp_path):
