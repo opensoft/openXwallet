@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-# VENDORED from opensoft/openXfactory@87e08c277971bc8a072934df44c291a7e1331ab9; do not edit here.
+# VENDORED from opensoft/openXfactory@371809285508ad4eb53d415103ecddaec5588938; do not edit here.
 # Everything below this header block is byte-identical to the provider.
-# Source: scripts/validate-openspec-cli-pin.py. Current provenance: docs/openspec-cli-pin.md.
+# Current provenance and hashes: docs/openspec-cli-pin.md.
 """Run OpenSpec strict validation through the PINNED CLI, and refuse otherwise.
 
 This file is TWO things at once, and the doubling is the design rather than an
@@ -1041,7 +1041,10 @@ def integrity_of(payload: bytes) -> str:
 
 
 def shasum_of(payload: bytes) -> str:
-    return hashlib.sha1(payload).hexdigest()
+    # npm's legacy dist.shasum is corroborating metadata. The mandatory
+    # SHA-512 integrity check authenticates bytes before this checksum is used.
+    # Mark the compatibility digest honestly so FIPS builds allow it too.
+    return hashlib.sha1(payload, usedforsecurity=False).hexdigest()
 
 
 def verify_artifact(tarball: Path, integrity: str, shasum: str) -> None:

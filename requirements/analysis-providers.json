@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "openspec": {
+    "repository": "opensoft/openXfactory",
+    "commit": "371809285508ad4eb53d415103ecddaec5588938",
+    "main_admission": "pending",
+    "test_paths": [
+      "tests/openspec_cli_pin/test_openspec_cli_pin.py"
+    ],
+    "files": {
+      "tests/openspec_cli_pin/test_openspec_cli_pin.py": "52d38b0fcad12fa372c14f9d8c8b4ac47a6bfd38d9e1e35c1b332c8b57a76c82",
+      "tests/openspec_cli_pin/fixtures/openspec-1.12.0-validate-changes-strict-report-findings.json": "97d2c9e161a1fa1d41e896e0232ab572327968716782bd7e7956da1ca77705ab",
+      "tests/openspec_cli_pin/fixtures/openspec-1.12.0-validate-one-change-strict.json": "d459e940c13b8a205a288a2c7a83929ef71fac94990b3e16c9cb1bc65266c3fc"
+    }
+  }
+}

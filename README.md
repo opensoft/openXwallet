@@ -324,3 +324,6 @@ Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE).
 ## P1 tooling maintenance
 
 [OpenSpec consumption repair](openspec/changes/adopt-p1-openspec-boundaries/proposal.md) and [implementation/evidence](specs/018-p1-openspec-boundaries/plan.md), separate from active runtime work.
+
+Source quality maintenance: [issue #73 acceptance evidence](docs/quality/sonar73-acceptance.md)
+and [feature 019 plan](specs/019-sonar-main-acceptance/plan.md).

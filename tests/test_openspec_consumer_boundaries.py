@@ -11,14 +11,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 BODY_DIGESTS = {
-    "scripts/validate-openspec-cli-pin.py": ("5e4f1001353976f622e8d67c958845a7"
-        "36ae799372e9b7c29f025efd999cd66c"),
-    "scripts/install-pinned-openspec-cli.py": ("082d036c18e40e2794e495633680f62a"
-        "71795115b250ecd38428e451419fb083"),
-    "contracts/openspec-cli-pin.yaml": ("1bab358ce6d5275fcad6fd1af3a4320a"
-        "ebe42d25c158aa0364d680fd4d8fa482"),
-    "contracts/openspec-cli-pin.1.12.0.package-lock.json": ("696dce86e5e5699007129310d9de5327"
-        "95ce48467218fba03b729d38c829e2ca"),
+    "scripts/validate-openspec-cli-pin.py": "42f966ceb3c2ce9f11e4587f90a956a1afc52b1ca75adc1b5ac17ccc09514e29",
+    "scripts/install-pinned-openspec-cli.py": "082d036c18e40e2794e495633680f62a71795115b250ecd38428e451419fb083",
+    "contracts/openspec-cli-pin.yaml": "1bab358ce6d5275fcad6fd1af3a4320aebe42d25c158aa0364d680fd4d8fa482",
+    "contracts/openspec-cli-pin.1.12.0.package-lock.json": "696dce86e5e5699007129310d9de532795ce48467218fba03b729d38c829e2ca"
 }
 
 

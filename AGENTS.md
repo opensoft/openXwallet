@@ -314,3 +314,13 @@ mandatory native cases, H05=29/H11=119, with every accepted baseline preserved.
 Complete immutable-head review/full/native/hosted qualification is pending at
 this source checkpoint; completion receipts will be posted on PR #75. Earlier
 interrupted/failed runs remain diagnostic. No operational authority is inferred.
+
+## Issue #73 complete-source analysis
+
+The Sonar source-analysis and coverage jobs also initialize openWallet/spec,
+because this existing complete-assembly project scans that leg and owns
+finding acceptance there. This is a source-analysis-only exception to the
+runtime/validator two-line init rule. Ordinary runtime and wallet-validation
+gates retain their existing scoped init and never read the spec leg.
+The analysis inventory binds all four exact Git revisions and real executable
+coverage; no source omissions, runtime authority, thresholds or billing change.

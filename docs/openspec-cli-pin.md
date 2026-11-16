@@ -1,3 +1,26 @@
+# Wallet #73 checksum and trust-boundary maintenance (2026-11-16)
+
+Status: draft; provider-main admission pending.
+
+Provider: opensoft/openXfactory@371809285508ad4eb53d415103ecddaec5588938.
+The existing mandatory SHA-512 authentication and 80-package verified closure
+remain in force. npm's SHA-1 corroborating checksum is explicitly nonsecurity
+for FIPS compatibility. This also brings the neutral spec leg onto the already
+qualified credential/profile, artifact, cache and argument boundaries rather
+than patching its older copy. The committed CLI tarball and adapted gate remain
+unchanged. No runtime authority, exclusions, thresholds or billing changes.
+
+| File | Provider body SHA-256 | Complete consumer SHA-256 |
+| --- | --- | --- |
+| scripts/validate-openspec-cli-pin.py | 42f966ceb3c2ce9f11e4587f90a956a1afc52b1ca75adc1b5ac17ccc09514e29 | 2e188db58136328263c5ee725f167a624255802428d946a1c0a5f4f66d39cc1d |
+| scripts/install-pinned-openspec-cli.py | 082d036c18e40e2794e495633680f62a71795115b250ecd38428e451419fb083 | a2d94ac4b9cf911206761ec28e75b69622c7d6798166ab315d12f79157a22a48 |
+| contracts/openspec-cli-pin.yaml | 1bab358ce6d5275fcad6fd1af3a4320aebe42d25c158aa0364d680fd4d8fa482 | ea2efc1c81a9158acbab801b38c23862ac2e0168337e68388319ff40319725bb |
+| contracts/openspec-cli-pin.1.12.0.package-lock.json | 696dce86e5e5699007129310d9de532795ce48467218fba03b729d38c829e2ca | 696dce86e5e5699007129310d9de532795ce48467218fba03b729d38c829e2ca |
+
+Python bodies exclude the three comments after the shebang. YAML excludes
+its three leading comments; JSON is verbatim. The following earlier records
+retain their original measurements and are historical evidence.
+
 # Final P1 argument-boundary consumption (2026-11-16)
 Status: draft
 

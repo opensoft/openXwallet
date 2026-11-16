@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-# VENDORED from opensoft/openXfactory@87e08c277971bc8a072934df44c291a7e1331ab9; do not edit here.
+# VENDORED from opensoft/openXfactory@371809285508ad4eb53d415103ecddaec5588938; do not edit here.
 # Everything below this header block is byte-identical to the provider.
-# Source: scripts/install-pinned-openspec-cli.py. Current provenance: docs/openspec-cli-pin.md.
+# Current provenance and hashes: docs/openspec-cli-pin.md.
 """Install the PINNED OpenSpec CLI and put it on PATH. Judge nothing.
 
 WHAT THIS IS, AND WHAT IT IS NOT. This is an INSTALLER. A green exit means
