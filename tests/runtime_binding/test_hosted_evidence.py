@@ -184,6 +184,11 @@ def _connected_hosted_qualification(k, w, request, tmp_path, *, qualified=False,
     from openwallet_runtime.custody import TLSClient
     k.access = replace(k.access, sources_digest=digest(k.c.config["sources"]))
     retained = {}
+    def cancel_here():
+        error=KeyboardInterrupt("private-combined-cancel-canary")
+        error.add_note("private-combined-cancel-canary")
+        retained["original_cancel"]=error
+        raise error
     def prepare(c, create_proof):
         c.h.claims.update(c.config["launch"])
         c.h.policy["claims"].update({name: c.config["launch"][name] for name in c.h.policy["claims"]})
@@ -202,7 +207,7 @@ def _connected_hosted_qualification(k, w, request, tmp_path, *, qualified=False,
         def traced_run(operation):
             def traced():
                 try:
-                    return operation()
+                    value=operation();retained["operation_finished"]=True;return value
                 except BaseException as error:
                     import traceback
                     frames = [{"file": __import__("pathlib").Path(f.filename).name, "line": f.lineno,
@@ -210,8 +215,18 @@ def _connected_hosted_qualification(k, w, request, tmp_path, *, qualified=False,
                     (tmp_path / "qualification-failure.json").write_text(json.dumps({"type": type(error).__name__,
                         "frames": frames}))
                     raise
+            retained["life_entered"]=True
             return original_run(traced)
         life.run = traced_run
+        if fault in ("cancel-entry-lost","cancel-operation-lost","cancel-closing-lost"):
+            original_call=life.janitor.target.primary.call
+            def lost_cleanup(operation,**kw):
+                value=original_call(operation,**kw)
+                if operation=="cleanup":
+                    retained["cleanup_mutations"]=retained.get("cleanup_mutations",0)+1
+                    raise BindingError("fixture-lost-cleanup-reply")
+                return value
+            life.janitor.target.primary.call=lost_cleanup
         c.config = document(final.configuration)
         c.h.policy = document(final.policy)
         c.h.artifacts = dict(hosted.stage.spec.artifacts)
@@ -241,7 +256,13 @@ def _connected_hosted_qualification(k, w, request, tmp_path, *, qualified=False,
                     raise
             return call
         signer.sign_for_use_observed = debug_operation("custody-use", signer.sign_for_use_observed)
-        life.janitor.target.read_lease = debug_operation("lease-read", life.janitor.target.read_lease)
+        original_lease=debug_operation("lease-read",life.janitor.target.read_lease)
+        def lease(*a,**kw):
+            inject=(fault=="cancel-entry-lost" and retained.get("life_entered")) or (
+                fault=="cancel-closing-lost" and retained.get("operation_finished"))
+            if inject and "original_cancel" not in retained:cancel_here()
+            return original_lease(*a,**kw)
+        life.janitor.target.read_lease=lease
         c.bridge = c.make(create_proof=debug_operation("owning-create", create_proof), lifecycle=life,
             load_config=lambda: final.configuration)
         from workload_factory_binding_runtime.launch import ProcessLaunch
@@ -266,6 +287,7 @@ def _connected_hosted_qualification(k, w, request, tmp_path, *, qualified=False,
             if not retained.get("fault_injected"):
                 retained["fault_injected"]=True
                 if fault=="runner-death":__import__("os")._exit(23)
+                if fault=="cancel-operation-lost":cancel_here()
                 if fault=="cancel":raise KeyboardInterrupt("private-hosted-cancel-canary")
                 if fault=="failure":raise RuntimeError("private-hosted-failure-canary")
                 if fault=="wall-expiry":wall[0]=hosted.clock.value+10
@@ -888,3 +910,19 @@ def test_fresh_audit_only_workflow_needs_no_active_lease_or_writer(k,w,request,t
     after=sum(e["kind"]=="lease-closed" for e in hosted.stores["primary"].events(decision=hosted.use()))
     assert before==after==1
     assert not hosted.temporary.exists() and hosted.shared.read_bytes()==b"retained shared generation"
+
+
+@pytest.mark.parametrize("fault", ["cancel-entry-lost","cancel-operation-lost","cancel-closing-lost"])
+def test_original_cancellation_survives_lost_cleanup_reply_and_read_only_reconciliation(k,w,request,tmp_path,fault):
+    execute,state=_connected_hosted_qualification(k,w,request,tmp_path,qualified=True,fault=fault)
+    with pytest.raises(KeyboardInterrupt) as caught:execute()
+    assert caught.value is state["original_cancel"]
+    q=state["qualifier"];result=q.result
+    assert result.outcome=="cancel" and result.cleanup is None
+    assert state["cleanup_mutations"]==1
+    checked=q.reconcile_cleanup()
+    assert checked.plan_digest==q.bindings.workflow.lifecycle.plan.digest and checked.outcome=="cancel"
+    assert state["cleanup_mutations"]==1
+    assert not state["hosted"].temporary.exists()
+    assert state["hosted"].shared.read_bytes()==b"retained shared generation"
+    with pytest.raises(BindingError,match="^protected-report-refused$"):build_receipt(result,now=k.c.h.now)

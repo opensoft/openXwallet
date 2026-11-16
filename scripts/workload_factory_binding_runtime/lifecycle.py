@@ -335,7 +335,14 @@ class RunLifecycle:
             outcome = "success"
         except BaseException as error:
             outcome = "failure" if isinstance(error, Exception) else "cancel"
-            self.finalize(outcome)
+            try:
+                self.finalize(outcome)
+            except BaseException:
+                if not isinstance(error, Exception):
+                    # Cleanup stays unverified, while its lost reply must not
+                    # replace the original cancellation with an ordinary error.
+                    raise error from None
+                raise
             if isinstance(error, Exception):
                 raise BindingError("lifecycle-operation-failed") from None
             raise
