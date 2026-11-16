@@ -403,7 +403,7 @@ def auxiliary(tool, root, directory):
     shutil.copyfile(root / "pytest-report.xml", runtime / "pytest-report.xml")
     shutil.copyfile(root / "pytest-report.xml", directory / tool.MEASURED_JUNIT)
     nodes = ["synthetic::test_fixture"]
-    phases = [{"phase": phase, "outcome": "passed", "subtest": False, "xfail": False}
+    phases = [{"phase": phase, "outcome": "passed", "subtest": False, "xfail": False, "context": None}
               for phase in ("setup", "call", "teardown")]
     for role, folder, version, core in [
             ("runtime", runtime, [3, 12, 0], None),
@@ -551,14 +551,16 @@ def test_full_source_execution_cannot_be_weakened_or_mislabelled(
     assert not list(directory.glob(".coverage.auxiliary.*"))
 
 
-def test_passing_subtests_are_preserved_and_must_match_both_full_runs(tool):
+@pytest.mark.parametrize("mismatch", ["missing", "parameters", "message"])
+def test_passing_subtests_are_preserved_and_must_match_both_full_runs(tool, mismatch):
     nodes = ["synthetic::test_subtests"]
     fingerprint = hashlib.sha256(
         json.dumps(nodes, separators=(",", ":")).encode()).hexdigest()
-    phases = [{"phase": phase, "outcome": "passed", "subtest": False, "xfail": False}
+    phases = [{"phase": phase, "outcome": "passed", "subtest": False, "xfail": False, "context": None}
               for phase in ("setup", "call", "teardown")]
     phases.insert(1, {"phase": "call", "outcome": "passed", "subtest": True,
-                      "xfail": False})
+                      "xfail": False, "context": {
+                          "message": None, "parameters": {"value": 0}}})
     common = {"coverage_version": "7.16.2", "nodes": nodes,
               "nodeids_sha256": fingerprint, "reports": {nodes[0]: phases},
               "deselected": False, "exitstatus": 0}
@@ -568,7 +570,12 @@ def test_passing_subtests_are_preserved_and_must_match_both_full_runs(tool):
                     "coverage_version": "7.16.2"} for kind in ("parent", "child")}
     assert tool.compare_source_executions(runtime, traced, probe)["runtime"]["tests"] == 1
     traced = json.loads(json.dumps(traced))
-    traced["reports"][nodes[0]].pop(1)
+    if mismatch == "missing":
+        traced["reports"][nodes[0]].pop(1)
+    elif mismatch == "parameters":
+        traced["reports"][nodes[0]][1]["context"]["parameters"]["value"] = 1
+    else:
+        traced["reports"][nodes[0]][1]["context"]["message"] = "different case"
     with pytest.raises(tool.Refusal, match="identical"):
         tool.compare_source_executions(runtime, traced, probe)
 
@@ -614,6 +621,11 @@ def test_real_full_receipt_preserves_subtests_and_ignores_nested_subset(
     assert sum(report["subtest"] for phases in row["reports"].values()
                for report in phases) == 2
     assert tool.validate_source_execution(row, role)["tests"] == 2
+    contexts = [report["context"] for phases in row["reports"].values()
+                for report in phases if report["subtest"]]
+    assert contexts == [{"message": None, "parameters": {"value": value}}
+                        for value in ("1", "2")]
+
 
 
 def test_analysis_wheel_closure_preserves_every_runtime_package_version():

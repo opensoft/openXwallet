@@ -52,9 +52,13 @@ def pytest_deselected(items):
 
 def pytest_runtest_logreport(report):
     if ACTIVE:
+        context = getattr(report, "context", None)
+        identity = None if context is None else json.loads(json.dumps({
+            "message": context.msg, "parameters": dict(context.kwargs),
+        }, sort_keys=True, allow_nan=False))
         REPORTS.setdefault(report.nodeid, []).append({
             "phase": report.when, "outcome": report.outcome,
-            "subtest": getattr(report, "context", None) is not None,
+            "subtest": context is not None, "context": identity,
             "xfail": hasattr(report, "wasxfail"),
         })
 

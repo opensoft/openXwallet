@@ -211,10 +211,19 @@ def validate_core_probe(probe):
 
 def validate_phases(phases):
     require(phases and all(
-        set(p) == {"phase", "outcome", "subtest", "xfail"}
+        set(p) == {"phase", "outcome", "subtest", "xfail", "context"}
         and p["outcome"] == "passed" and p["xfail"] is False
         and type(p["subtest"]) is bool for p in phases),
         "source assertion failed, skipped or expected-failure")
+    for phase in phases:
+        context = phase["context"]
+        require((isinstance(context, dict)
+                 and set(context) == {"message", "parameters"}
+                 and (context["message"] is None or isinstance(context["message"], str))
+                 and isinstance(context["parameters"], dict)
+                 and all(isinstance(key, str) for key in context["parameters"]))
+                if phase["subtest"] else context is None,
+                "source subtest identity missing or malformed")
     regular = [p["phase"] for p in phases if not p["subtest"]]
     require(regular == ["setup", "call", "teardown"],
             "source assertion phases are incomplete or repeated")

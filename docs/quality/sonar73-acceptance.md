@@ -97,7 +97,7 @@ node identities, ordinary/subtest phase outcomes, interpreter, coverage version
 and actual core are recorded and compared before analysis.
 
 The analysis-only 3.14 wheel closure preserves all 18 runtime package versions;
-the frozen 3.12 lock stays unchanged. Both interpreter versions pass all 73
+the frozen 3.12 lock stays unchanged. Both interpreter versions pass all 75
 evidence tests. A real mixed-version calibration preserves same-named source
 identities, different branch hits and zero-hit files. The production report is generated under Python 3.12, retaining its entire
 executable-line denominator. The secondary 3.14 auditor invokes the actual
@@ -130,3 +130,6 @@ with qualified 4834c753 ancestry and an identical merged tree verified. Its nine
 local review roles and required checks passed; the final documentation-only
 hosted review request reached the existing quota. The prior functional head has
 a clean hosted receipt, and no new credits or billing changes were requested.
+
+Full-run receipts also preserve each real subtest message and parameter mapping;
+equal counts with different subtest cases are refused before analysis.
