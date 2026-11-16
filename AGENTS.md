@@ -14,6 +14,7 @@ ownership, validation, versioning, and release constraints.
 
 - Active feature: 017-protected-runtime-qualification; plan:
   specs/017-protected-runtime-qualification/plan.md.
+  Current bounded T012S subplan: specs/017-protected-runtime-qualification/hosting-lifecycle-plan.md.
 - Ratified factory composition: opensoft/openXfactory,
   openspec/changes/prepare-protected-runtime-qualification/.
   Feature 017 tasks.md is the sole implementation list. Brett Heap ratified
@@ -200,7 +201,7 @@ review. The proposed finalizer-only six-observation/18-protection/28-total ledge
 retains default3/13 and all original clocks/current checks. Source ratification and
 landing remain separate; T012R-V and setup/dispatch are uncommissioned.
 
-## Current T012R isolated continuation
+## Historical source-accepted T012R continuation
 
 Brett source-ratified #1322 e813051af8c0 with #70 f6956e324e37 and commissioned
 ordered landing then T012R only in isolation. Normal merges 54f720b6df81 and
@@ -219,3 +220,97 @@ Two complete protected-stage observations share one original Decision and bounde
 Adapter #71 changes the ordinary pytest privilege bootstrap only; protected workflow
 YAML, default refusal, neutral APIs and pins remain unchanged. Local review is complete;
 source ratification, landing and operational authority remain separate gates.
+
+## Historical T012S preparation
+
+Brett source-ratified factory #1326 dc159da61860 with adapter #71 74b4af51322b,
+then directed ordered landing and T012S preparation only. They merged in order
+as 0503c7bf36ea and 7042b295bc72; accepted packet blobs and adapter tree are verified.
+Feature017 hosting-lifecycle-plan.md and hosting-lifecycle-acceptance.md prepare
+H05/H11 staging lease, immutable same-generation final takeover and independent
+scheduler/janitor/audit. tasks.md remains the sole executable list. T012S and
+T012S01-T012S07 stay unchecked/uncommissioned for implementation. T012T-V,
+T001/T013-T015, setup/dispatch and live provider/host acceptance remain separate.
+No lifecycle initialization, scheduler activation or service restart is performed
+by this preparation. Feedback deferred; neither blocked/denied write replayed.
+
+## T012S isolated implementation commission
+
+Brett now commissions implementation/testing of T012S in isolation using the
+prepared lifecycle plan, with factory post-merge CI verified separately. Only
+T012S01-T012S07 are executable; mark completion only after actual checks. Preserve
+all old matrix identities and budgets. T012T-V, setup/dispatch and live qualification
+remain uncommissioned; feedback deferred and neither blocked write replayed.
+
+## Historical T012S isolated candidate qualification
+
+The commissioned T012S/S01-S07 implementation and isolated qualification are
+complete: 105 lifecycle cases, 2,308 full tests plus four subtests and 2,003 mandatory native cases,
+with no failures or skips. All 150 frozen Python/workflow inputs and four pin/dependency files match before/after;
+all 1,898 baseline native identities/fingerprints/anchors are preserved. The seven
+ordered gates, including the default pinned OpenSpec strict verifier, pass. Factory
+post-merge run 43772988866 passes on inherited main fefb5ae4ad72 with the accepted
+six-file packet preserved. Evidence.md records exact CI provenance and receipts.
+
+Both active staging/final leases recheck the actual selected scheduler generation;
+closed-lease cleanup remains independently available. Exact-generation teardown and
+preservation audits pass; task fixtures and native container are removed. This is
+an isolated source candidate, not source ratification, deployment, actual provider
+qualification or T012T-V commissioning. Setup/dispatch remain unauthorized; feedback
+deferred and neither blocked write replayed. The owner commissioned PR #75 publication and local Codex review; exact-head
+CI is recorded on the PR, while owner source acceptance remains pending. The explicit local POSIX reference supplies no external control-host-loss
+watchdog, automatic VM expiry or cloud infrastructure retirement capability.
+
+## T012S publication commission
+
+Brett authorizes opening the T012S PR, hosted source CI, local Codex expert review,
+finding resolution and presentation for ratification. This supplies no source
+acceptance, merge, T012T-V or operational grant. Setup/dispatch remain unauthorized,
+feedback deferred and neither blocked write replayed. Preserve accepted scope and
+budgets; keep CI, local review and source ratification as distinct gates.
+
+T012S07's publication correction includes the ordinary source-CI job cap: 20 to
+45 minutes so its existing full and mandatory native suites can both complete.
+The prior local 154-input receipts remain historical; one ordinary workflow
+hash changes and the other 153 inputs are identical. PR #75 records fresh hosted
+full/native results. Protected defaults and runtime authority budgets are unchanged.
+
+The subsequent journal-capacity fix deep-copies validated events without imposing
+a single-document limit on their aggregate. Its corpus is 107 lifecycle / 2,310
+full / 2,005 native cases. Its new complete 154-input freeze is ready; renewed
+full/native and hosted execution remain pending at this source checkpoint, with
+completion receipts to be posted on PR #75. The
+153/one account above describes only the earlier ordinary-CI cap checkpoint.
+The 63-selected-resource mixed-retention positive preserves original clocks;
+the separate all-run throughput stress remains unverified after its Decision
+expired. Do not infer operational qualification or alter runtime budgets.
+
+The subsequent file-fence correction moves only file claims inside the acquired
+parent/pin generation fence. One combined bounded lock wait samples the original
+Decision; claim-success followed by failure remains consumed. Process/token
+claiming and protected defaults do not change. Its 110 lifecycle / 2,313 full /
+2,008 native corpus needs fresh full/native and exact-head hosted completion;
+those checks remain pending at this immutable source checkpoint. PR #75 will
+record receipts after execution. Existing concurrency/deadline assertions remain.
+
+The optional SQLite rollback-journal correction permits only the artifact's
+FileNotFoundError during a legitimate concurrent DELETE-mode commit. Required
+identities and locked hash/witness validation remain enforced; forbidden WAL/SHM,
+symlink and permission checks still refuse. The actual-writer overlap regression
+and four invalid-artifact controls extend the current corpus to 115 lifecycle /
+2,318 full / 2,013 mandatory native cases, with H05=29/H11=115 and all 1,898
+baseline identities/fingerprints/anchors preserved. The preceding local run's
+initial-registration refusal remains a failed checkpoint with unproven internal
+cause; see hosting-lifecycle-analysis.md for precise causal limits. Renewed source
+review/full/native/exact-head hosted qualification is pending at this checkpoint;
+PR #75 will record completion receipts. No lease, read, role or authority changes.
+
+The validated-clock correction records the latest successful Decision observation
+outside the business savepoint, restoring append state after business rollback.
+It reserves the closing-clock slot under the unchanged 2,048-event cap; a full
+journal refuses all further lifecycle use, including reads. Never renew/reset or
+repair that journal. Current measured corpus: 119 lifecycle / 2,322 full / 2,017
+mandatory native cases, H05=29/H11=119, with every accepted baseline preserved.
+Complete immutable-head review/full/native/hosted qualification is pending at
+this source checkpoint; completion receipts will be posted on PR #75. Earlier
+interrupted/failed runs remain diagnostic. No operational authority is inferred.

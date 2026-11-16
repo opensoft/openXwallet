@@ -1,6 +1,6 @@
 # Preparation and Issuer Slice Evidence
 
-Status: isolated T012H–K source candidate qualified; operational qualification not performed
+Status: isolated T012S source candidate qualified; operational qualification not performed
 Scope: source/isolated fixtures only, with historical preparation and earlier slice evidence
 
 At preparation baseline #49, the new runtime feature had no implementation or live qualification result.
@@ -2294,3 +2294,413 @@ audit; XML/source/review/audit receipts remain outside those roots. The disposab
 native container is absent; accepted checkouts and active benches remain intact.
 Both protected workflow histories (417795073/417795071) remain zero. This is
 isolated fixture cleanup, with no production cleanup/takeover claim.
+
+## 2026-11-15: T012R paired source acceptance and ordered landing
+
+Brett Heap source-ratified factory #1326 at dc159da61860 with adapter #71 at
+74b4af51322b, then directed ordered landing when green and T012S preparation only.
+Owner source records: [factory](https://github.com/opensoft/openXfactory/pull/1326#issuecomment-6901804063)
+and [adapter](https://github.com/opensoft/openXwallet/pull/71#issuecomment-6901804798).
+All effective required exact-head checks and both Sonar gates pass; local nine-role
+Codex/coordinator review has no unresolved actionable finding or review thread.
+
+Factory merged first as 0503c7bf36ea47c5c2b492bdf24ca11eed87347d at 21:42:25Z.
+Actor and PR author are both brettheap, so the standing self-authored-PR exception
+was used for missing human approval only. Effective required checks passed. The
+optional merge-master-approval Python3.15/PyYAML bootstrap failure stays visible;
+no rule/check/workflow was changed to conceal it. The merge tree equals the
+predicted integration with main 5b636c767fcc; every accepted changed packet/ledger
+blob is byte-identical. Unrelated integrated main changes are not attributed to
+the ratified proposal.
+
+Adapter merged normally as 7042b295bc7229748e5b415e5f9ddb3f96a2467e at 21:43:07Z,
+without administrator override. Its whole tree equals the ratified head, including
+all 143 tested Python/workflow inputs. Accepted worktrees, owner checkout, pinned
+CLI and active benches are preserved. The prior R cleanup audit remains intact.
+
+Factory exact-merge main CI started in run 43765166319 and separate source jobs;
+completion is an independent gate and is not asserted by these merge receipts.
+The adapter has no new exact-merge run on the initial readback; PR CI is not
+relabelled as post-merge CI. T012S preparation stays source-only while this is
+verified. See PR CI evidence [factory](https://github.com/opensoft/openXfactory/pull/1326#issuecomment-6901736498)
+and [adapter](https://github.com/opensoft/openXwallet/pull/71#issuecomment-6901483414).
+
+## 2026-11-15: Bounded T012S preparation
+
+The separate 017-hosted-lifecycle-prep worktree starts at the accepted adapter
+merge. hosting-lifecycle-plan.md audits the existing stage store/controller/host
+and finalization/RunLifecycle/RunJanitor/replay interfaces, then defines a retained
+registration/takeover/action journal, independent scheduler/janitor/audit and
+actual same-generation stage-to-final responsibility without a gap or renewal.
+hosting-lifecycle-acceptance.md maps H05/H11 to twelve fault/control families.
+tasks.md alone contains T012S/T012S01-T012S07, all unchecked/uncommissioned for
+implementation; no second factory task list or neutral contract is created.
+
+This preparation runs no T012S test, lifecycle initialization, scheduler, provider
+operation, protected dispatch or service restart. No new case count is guessed.
+The existing 1,898 mandatory identities/fingerprints/anchors and accepted budgets
+are preserved. External-watchdog/conditional-infrastructure retirement, T012T-V,
+T001/T013-T015 and every operational authority remain separate. Feedback deferred;
+neither blocked/denied write replayed.
+
+Private landing/preparation receipts are retained in t012s-preparation-20261115:
+ordered-landing-verification.json, source-ratification records, exact-head CI/rules
+readbacks, merge receipts and scoped source-document verification. No runtime
+qualification of T012S is inferred.
+
+Preparation verification passes contract/neutral pins, syntax, plain/strict adapter
+validation and pinned default OpenSpec --all strict validation. Scoped review is
+in hosting-lifecycle-analysis.md. All task IDs remain unique; T012S plus its seven
+child tasks and T001/T012T-V/T013-T015 remain unchecked. All 143 tested runtime/test/
+workflow inputs are unchanged from accepted R; no new runtime tests were rerun or
+claimed for this document-only preparation. Temporary document cache/scratch is
+removed after verification; landing, source and review receipts remain retained.
+
+Preparation receipt SHA-256:
+
+- `ordered-landing-verification.json`: `8d22faccc88f454e1ee8b30d7023a7d93052aa77c226ed7029adf7bc37190c7f`
+- `preparation-document-gates.json`: `31d8f758c8149036948b9f2fe1ae1702c767e9f5a8b15a3310930e19ddce982a`
+- `preparation-scope-proof.json`: `c777707855f87109ab6b87382fdbec1688435340a4faee4cd6ee570344daff7a`
+
+## 2026-11-15: Commissioned isolated T012S lifecycle candidate
+
+Brett directed verification of factory post-merge CI, then implementation/testing
+of T012S in isolation from the prepared plan. Setup and dispatch remain NOT GRANTED;
+feedback stays deferred and neither historical blocked write is replayed. This
+commission covers T012S01-S07 only, not T012T-V, publication/source acceptance or
+live qualification.
+
+The source realization and limitations are in hosting-lifecycle-plan.md; controls
+and coordinator consistency review are in hosting-lifecycle-acceptance.md and
+hosting-lifecycle-analysis.md. The new implementation uses retained independent
+scheduler/primary/audit journals, explicit mTLS role capabilities, actual worker
+PID/start/session/cgroup observations, same PID-namespace selection, immutable
+actual-full-config takeover, per-generation destructive-attempt consumption and
+fresh independent cleanup audit. Generic lifecycle/replay code, default refusal,
+neutral pins/contracts and all protected workflow YAML are preserved.
+
+The initial focused development batch passes all 80 then-existing nodes. After the scheduler correction, collection measures
+2,282 full nodes and 1,980 required native nodes. The new module fingerprint is
+`4aeea91a85313922960073905c78414460bf6c6bcfdbd4eddc98b4ed1eb56a15`;
+all old 1,898 node identities, module counts/fingerprints and substantive anchors
+are preserved. H05 anchors 21 nodes and H11 anchors all 82 lifecycle nodes. These
+are committed collection expectations, not a generated CI allowance.
+
+The initial full-run harness placed basetemp beside the selected TMPDIR. Two
+existing neutrality export controls correctly refused that path; that run was
+interrupted after 427 passes and is not qualification evidence. The corrected
+run nests basetemp under its selected private TMPDIR. No source test or production
+path boundary was weakened. Development failures and the lost-reply diagnostic
+are retained separately from final qualification.
+
+Private retained receipts live at
+`$WALLET_BINDING_QA_ROOT/t012s-isolated-20261115/`, where the operator resolves
+`WALLET_BINDING_QA_ROOT` from its private host-local qualification receipt. The
+repository never fixes that machine-local value.
+The frozen input manifest has 148 tested Python/workflow files. Scope review proves
+neutral pins, workflow YAML and generic lifecycle/replay source unchanged. The
+development cleanup audit covers 9,540 process-generation records and 614 journal
+summaries, with zero matching live processes; 19 exact development fixture roots
+were removed after audit. Three retained actual cleanup positives confirm run-file
+absence, credential retirement and retained/shared generation preservation. The
+initial journal-only `/tmp/pytest-of-brett/pytest-1126` is already absent. None of
+these fixture receipts is an operational cleanup or protected qualification report.
+
+At this intermediate checkpoint, final ordered/full/OpenSpec/native qualification
+and factory CI readback were pending. Measured completion is recorded below.
+
+### Local review correction before final qualification
+
+A private real-process probe proved that the retained staging acknowledgement could
+remain readable after its selected scheduler died, permitting child creation. The
+old-source full run was stopped and retained as pre-scheduler-fix-full.log/XML;
+its interruption also produced a helper-teardown assertion, requiring actual later
+PID-generation audit rather than a clean-teardown claim. It is not final qualification.
+The source now rechecks the actual scheduler generation on every staging lease
+observation. The new regression and complete protected-start positive both pass
+(2 tests), including original private16 accounting. No new RPC, deadline or budget
+is introduced. The measured module now has 81 nodes; final qualification restarts
+on the corrected 148-file input manifest. No expert-panel or hosted review is claimed.
+
+The final active-lease path had the same reproduced stale-scheduler condition.
+Both active staging/final observations now require the actual selected scheduler
+PID/start/boot to be current. The final regression proves operation is refused
+before entry while independently authenticated janitor/audit cleanup still verifies
+under the closed lease with that scheduler dead. The three targeted controls pass;
+the intermediate run (386 passes, interrupted for review correction) is retained as
+pre-final-lease-fix-full.log/XML and is not final qualification. Final collection
+measures 82 new nodes, 2,282 full nodes and 1,980 mandatory native nodes.
+
+### Factory post-merge CI verified
+
+The exact merge run 43765166319 was cancelled by a subsequent main push. Its first
+replacement 43766903480 was also superseded. The completed inherited-main
+[run 43772988866](https://github.com/opensoft/openXfactory/actions/runs/43772988866)
+passes on fefb5ae4ad7227a53469d5f1c711632d993b0dcf, including its existing quality
+gate. Current main readback equals that head; accepted merge 0503c7bf36ea remains
+its ancestor. The accepted six-file staging-refresh packet is preserved byte for
+byte. No stale rerun, rules change or check override was performed. This CI result
+is separate from the isolated candidate's full/native results and grants no runtime
+authority. Retained receipts: factory-followed-main-ci.json,
+factory-postmerge-ci-verified.json and factory-latest-source-proof.json.
+
+### Final corrected-source qualification and teardown
+
+The corrected source passes all seven ordered repository gates. Scoped checkout
+initialization, both pin checks, syntax, plain and strict validators pass with no
+validator errors/warnings. The full suite passes **2,282 tests**, with zero failures,
+errors or skips, in 1,175.81 seconds. The default pinned OpenSpec verifier validates
+all five targets strictly through @fission-ai/openspec@1.12.0, after rechecking the
+pinned artifact's content address. An initial root-HOME cache permission error is
+retained separately; the successful run selects only a task-local
+OPENSPEC_CLI_PIN_CACHE and leaves the verifier/version/integrity checks intact.
+
+The separate network-none, read-only-source native container passes all **1,980
+mandatory cases** in 1,222.63 seconds and reports **runtime-conformance: PASS**.
+There are zero missing, skipped, deselected, xfailed or nonpassing cases. H05 anchors
+21 nodes and H11 anchors all 82 new lifecycle nodes. The source retains every old
+1,898-node identity/count/fingerprint/anchor. All **148 tested Python/workflow inputs**
+match the pre-run manifest after both runs. The 217 Python3.12 threaded-fork fixture
+DeprecationWarnings are retained in each result; no warning suppression or case
+skip is introduced. These local fixture roles do not qualify deployed administrative
+separation or an external watchdog.
+
+The full external audit covers 6,637 process-generation records, 223 journal
+summaries and 71 role-helper receipts; the native audit covers 6,638 records, 223
+journal summaries and 71 helper receipts. Both have zero matching live task processes
+and zero nonclean teardown receipts. Each retains two independent cleanup positives,
+including the dead-final-scheduler/closed-lease cleanup case: eight selected
+retained/shared file identities preserved, three run files absent, fixture credential
+retired and fresh independent audit retained. Eight additional control-journal
+records are kept for each full/native run. PID counts are records, not distinct
+processes; native numbers are never compared against py-bench's different PID namespace.
+
+The native --rm container's absence is confirmed from the orchestrating daemon and
+independently from Windows-native Docker before its namespace is considered gone.
+Both final fixture roots were removed after audit, with absence verified. Earlier
+19 development roots and seven correction/interruption roots were separately audited
+and removed; their failed/interrupted results remain classified as such. Accepted
+worktrees, owner-code checkout, shared pinned tooling, benches and unrelated jobs
+are preserved. No real provider credentials or operational cleanup action is used.
+
+Retained final receipts under the private evidence root include:
+
+- qualified-inputs-before.json, qualified-results.json and matrix-extension-proof.json;
+- ordered-final-static-gates.json, ordered-final-gate-1..5.log, full-command.json,
+  full.log/XML, openspec-command.json and openspec.log;
+- native-command.json, native-result.json, native.log/XML and native-preflight.json;
+- full-qualified-cleanup-audit.json, native-qualified-cleanup-audit.json and the
+  full/native-retained-control-journals.json records;
+- native-container-absence.json, host-native-container-absence.json,
+  full-fixture-removal.json and native-fixture-removal.json.
+
+T012S and S01-S07 are complete as an isolated source candidate. No new candidate
+PR/hosted CI, formal Codex panel, source ratification, T012T-V, setup/dispatch or live
+hosting/provider acceptance is inferred. Publication/local Codex review and owner
+source acceptance follow a later commission. Feedback remains deferred; neither
+historical blocked write is replayed.
+
+## T012S publication and local review commission
+
+Brett commissions the T012S candidate PR, hosted CI, local Codex review and finding
+resolution, followed by presentation of the exact final head for source ratification.
+Setup/dispatch remain unauthorized, feedback is deferred and neither blocked write
+is replayed. The candidate's local source qualification is recorded above; current
+hosted results and the expert panel remain distinct until observed. Publication
+hygiene replaces the new machine-specific receipt root with WALLET_BINDING_QA_ROOT;
+older historical receipt paths are pre-existing context and are not propagated into
+new source or runbook commands. No runtime input changes in this documentation fix.
+
+## T012S PR #75 publication correction qualification
+
+The owner commissioned opening the T012S source candidate, hosted CI and local
+Codex review. Current main `261084feedea5a4ba0d5324c7f294c2c883e1f32` is integrated
+without dropping the accepted T012R source. The nine-role local expert panel plus
+a Linux/PID-namespace specialist reviewed the candidate and corrections. It found
+six source defects: inode recycling, retention/control-root aliases, cleanup of
+known prestart or persisted-dead generations, shorter cleanup deadlines not reaching
+backends, interrupted scheduler-intake delivery, and excessive token manifests.
+All six have reviewed fixes and substantive regressions. Full lifecycle execution
+then exposed proc-stat ESRCH during worker reaping; precise missing-process
+handling and a deterministic regression close that additional defect.
+
+Corrected qualification passes: 105 lifecycle controls; 2,308 full tests plus four
+subtests; and 2,003 mandatory native conformance nodes. Native H05 has 25 anchored
+nodes and H11 has all 105 lifecycle nodes. No required node is missing, skipped,
+deselected, xfail or nonpassing. The lifecycle fingerprint is
+`6c42d7ff21c2f1c7d3f4b9e2d3e6a2882c5a3d5a715849f9a219924591f59555`.
+Every accepted baseline module count, fingerprint and anchor remains unchanged
+(1,898 nodes). All 150 Python/workflow files and four pin/dependency files have
+identical complete key sets and SHA-256 values before and after qualification.
+Existing contract/owning pins, syntax and plain/strict validators pass. The default
+pinned OpenSpec verifier validates all six items under strict mode after checking
+its content address and complete npm closure; no alternate global CLI was used.
+
+The native run used the pinned existing image with network none, a read-only
+root/source and only the task evidence root writable. Observed process credentials
+are UID1000/GID65534, empty groups and capability sets, and NoNewPrivs1. Actual
+fixture process/credential generations and retained/shared file identities were
+audited before removing exact task roots. Native container absence was checked
+from both the bench and Windows host before its PID namespace was treated as
+removed. Positive independent audits require real run-file absence, issuer
+retirement and retained/shared generation preservation; no actor-only success
+substitutes for readback. Receipts are retained privately under
+`$WALLET_BINDING_QA_ROOT/t012s-publication-20261115/`, including full/native XML,
+input manifests, matrix-extension proof, review synthesis, observed isolation
+boundary, cleanup audits and exact-root removal records.
+
+This commits the corrected source/local qualification result. PR #75 records its
+final immutable head and fresh hosted checks separately. A hosted GitHub Codex
+review request hit the account quota and produced no completed connector review;
+the completed local expert panel supplies the commissioned Codex review evidence.
+Owner source ratification remains pending. No T012T-V work, provider setup,
+protected dispatch, live hosting acceptance or feedback submission is authorized
+by these results; neither historical blocked write was replayed.
+
+## Ordinary source-CI execution-cap correction
+
+Run `43801720583` at `6be8145e5b9567dd7e9d1e15140842acb633cafe` passed
+the full suite: 2,308 passed, three shallow/environment skips and nine subtests
+in 11:55. Its native step was then canceled; the annotation explicitly reports
+the 20-minute job maximum. This is incomplete native qualification.
+
+T012S07 corrects the adapter-owned ordinary job cap to 45 minutes, with no
+change to either suite, step order, native zero-missing/skip enforcement, triggers,
+permissions, privilege/isolation boundaries, protected defaults or runtime budgets.
+Local full/native stages total 37:15 before setup, supporting that bounded cap.
+The historical 154-input local manifests remain intact; 153 inputs are unchanged
+and the ordinary CI workflow is the sole changed hash. Fresh exact-head hosted
+full/native completion is required and recorded on PR #75 after it succeeds.
+See hosting-lifecycle-analysis.md for the reviewed implementation classification.
+
+## Subsequent journal-capacity source qualification
+
+The connector review at `78123c50b08a3752db9dcd34dc8ae6f4a9b36753` found
+that LifecycleStore.events reparsed the complete journal with the single-document
+65,536-byte cap, although each of up to 2,048 events is independently validated.
+Three valid roughly 25 KiB events reproduced that failure. The implementation
+now deep-copies the already validated structures inside the same mutate fence.
+Per-event size, event count, schema, canonical bytes, hash/witness checks and
+original clocks remain unchanged; this is a private T012S02/S05/S07 correction.
+
+Both new controls fail with the old aggregate conversion and pass with the fix.
+The owning mTLS positive selects 63 resources: 30 run files, 31 retained files,
+one shared file and one token; the actual worker becomes the 64th final resource.
+Maximal legal handles grow its primary journal above 64 KiB during actual final
+cleanup, followed by independent audit and retained/shared generation checks.
+The old-copy counterfactual fails while 2.75 seconds remain on its Decision,
+separating the size defect from deadline refusal. A separate all-run stress
+probe exhausted its unchanged 10-second Decision and remained unverified;
+all-run throughput at this storage latency is not qualified. No clock or
+cleanup/read limit was extended to make the positive pass.
+
+The corrected collection is 107 lifecycle / 2,310 full / 2,005 mandatory native
+nodes, with H05=26 and H11=107; every accepted 1,898 baseline identity, digest
+and anchor remains. The earlier 153-unchanged/one-workflow account applies only
+to the CI-cap checkpoint at 78123c5. This subsequent runtime/test correction
+receives a new complete 154-input freeze and renewed full/native execution.
+Renewed immutable-head full/native and hosted checks are pending at this source
+checkpoint; PR #75 will hold completion receipts after execution. Source
+ratification, T012T-V and operational authority remain separate.
+
+## File-fence concurrency correction
+
+The renewed full run at `a78e019f0e7e26280e0a57044f8a414d8b75505f` passed
+2,309 tests but failed the existing concurrent-cleanup control. Retained
+diagnostics show a BlockingIOError after a file action was durably claimed: one
+run file remained present with a consumed attempt, and independent audit refused.
+No cleanup success was reported; the failed run is not qualification evidence.
+
+Files now acquire the parent and pin-directory fences, revalidate the original
+generation/link counts, then claim immediately before the first unlink. A single
+acquisition cutoff of min(one second, original Decision remainder) covers both
+locks; constructors without a Decision remain nonblocking. Identity/ownership
+and permissions are rechecked after waiting. The existing parent -> pins ->
+journal order is preserved. A completed marker does not claim again; failure
+after a successful claim remains consumed and cannot replay an unknown mutation.
+Process/token claim timing, wire fields, schemas, roles, profiles and original
+cleanup/read/authority budgets are unchanged. This implements T012S05/S06/S07.
+
+Two deterministic controls hold the parent or pin fence after observation and
+prove a bounded refusal leaves the original file/anchor unclaimed and unchanged.
+A later explicit cleanup may finish only that unattempted resource under the
+original persisted cleanup_until; the audit then succeeds with one claim/marker
+and one token DELETE. Both controls fail under the prior claim ordering. A third
+control injects an unlink error after claiming and proves subsequent RPCs cannot
+replay it or fabricate successful audit. The original concurrency and short-clock
+assertions stay intact. Five independent repetitions of the formerly intermittent
+concurrency case pass; the initial five focused cases and post-claim/large-journal
+pair pass as well. Dedicated filesystem/concurrency, QA and governance review
+closed without source findings.
+
+The current corpus is 110 lifecycle / 2,313 full / 2,008 mandatory native nodes,
+H05=29 and H11=110; all 1,898 accepted baseline identities/fingerprints/anchors
+remain preserved. At this source checkpoint renewed full/native and hosted
+qualification are pending; PR #75 will receive execution receipts after completion.
+Prior journal/CI checkpoints remain historical. No operational authority,
+source ratification, setup, protected dispatch or feedback submission is inferred.
+
+## Optional SQLite journal overlap correction
+
+The renewed local run at `9891a8412a02d028020de19053886b7b821657ca` ended
+with 2,312 passed and one failure during initial registration, before the existing
+retained-file substitution test performed its mutation. The primary journal held
+only a clock event and no file anchors; native execution was not started. These
+artifacts fit an early identity-check refusal but do not prove its internal cause.
+
+A deterministic actual-writer control independently reproduces a source race:
+a legitimate DELETE-mode commit removes the optional rollback journal between
+an existence check and lstat, refusing a reader despite valid committed events
+and witnesses. The fix inspects that optional journal once and permits only its
+FileNotFoundError. Required database/lock/witness/directory identities, ownership,
+permissions, forbidden WAL/SHM and symlink checks remain enforced; the reader
+still acquires the original journal fence and validates committed hash/witness
+state under its original Decision. No mutation is retried or repaired.
+
+The new overlap control fails on the old code and passes after the correction.
+Four invalid-artifact controls and the existing corruption, concurrent-registration
+and clock controls also pass: 14 focused cases total. This is a T012S02/S06/S07
+implementation correction, with no schema, role, budget or authority change.
+Measured collection is now 115 lifecycle / 2,318 full / 2,013 mandatory native
+nodes; H05=29 and H11=115. All 1,898 accepted baseline identities, fingerprints
+and anchors remain preserved. Renewed immutable-head full/native and hosted
+qualification remain pending at this source checkpoint; completion receipts will
+be posted on PR #75. Earlier failed runs are not qualification evidence. Source
+ratification, T012T-V, setup, protected dispatch and live acceptance remain separate.
+Feedback stays deferred; neither historical blocked write was replayed.
+
+## Final validated-clock durability correction
+
+Exact-head connector review at `ac8910358b34a4f3cd29d9197e9c49d022075910`
+identified a persisted-clock gap: a transaction starting at 1000 and successfully
+validating 1009 could commit only highwater 1000, admitting a fresh request at 1001.
+Two actual SQLite regressions reproduce this for successful and rolled-back
+business operations. The journal now appends the existing last successfully
+validated Decision observation as a clock event outside the business savepoint.
+Rollback first restores the in-memory append sequence and preceding digest to
+match SQL, retaining only committed business events plus the closing clock.
+There is no new clock sample, renewed Decision, or deadline extension.
+
+Review also identified the capacity edge. Business appends reserve the last slot
+for a closing clock. At the unchanged 2,048-event cap the journal refuses further
+lifecycle operations, including reads; exhaustion cannot admit regressed time or
+silently renew/reset/repair the store. Two bounded private-fixture capacity controls
+prove both read-only completion and refused business mutation retain the later
+clock, preserve prior records/witnesses, and refuse subsequent use at exhaustion.
+All four new controls fail before their respective corrections and pass afterward.
+The final focused integrity/clock/journal group has 19 passing cases; the earlier
+four clock/concurrent-cleanup/large-manifest integration cases also pass.
+
+The preceding runs at 99cd867 and ac89103 were interrupted cleanly after 1,254
+and 1,240 passes for source findings, before native execution. They remain partial
+diagnostic evidence. The Sonar regression-assertion correction preserves explicit
+worker error propagation and all main-thread synchronization checks.
+
+Current measured collection is 119 lifecycle / 2,322 full / 2,017 mandatory native
+nodes, H05=29/H11=119. All 1,898 accepted baseline identities, fingerprints and
+anchors remain preserved. This is a private T012S02/S06/S07 implementation
+correction, using the existing clock event/schema and resource/authority bounds.
+Renewed complete immutable-head full/native, local review and hosted qualification
+are pending at this source checkpoint; PR #75 will hold completion receipts.
+Source acceptance, T012T-V, operational setup and protected dispatch remain
+separate and unauthorized. Feedback stays deferred; blocked writes are not replayed.

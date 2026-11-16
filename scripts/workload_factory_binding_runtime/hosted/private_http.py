@@ -18,12 +18,13 @@ class Response:
     body:bytes
 
 class PrivateHttps:
-    def __init__(self,*,ca_file=None,certificate=None,private_key=None,fixture_origin=None,observation_origin=None,server_certificate_digest=None,agent_origin=None,admission_origin=None):
+    def __init__(self,*,ca_file=None,certificate=None,private_key=None,fixture_origin=None,observation_origin=None,server_certificate_digest=None,agent_origin=None,admission_origin=None,lifecycle_origin=None):
         require((certificate is None)==(private_key is None),ERROR)
         self.ca,self.cert,self.key=ca_file,certificate,private_key
         self.observation_origin,self.server_certificate_digest=observation_origin,server_certificate_digest
         self.agent_origin,self.admission_origin=agent_origin,admission_origin
-        require(sum(x is not None for x in (fixture_origin,observation_origin,agent_origin,admission_origin))<=1,ERROR)
+        self.lifecycle_origin=lifecycle_origin
+        require(sum(x is not None for x in (fixture_origin,observation_origin,agent_origin,admission_origin,lifecycle_origin))<=1,ERROR)
         require(observation_origin is None or fixture_origin is None,ERROR)
         self.fixture_origin=fixture_origin
         self.fixture_args=[]
@@ -39,7 +40,7 @@ class PrivateHttps:
                 and all(v is not None for v in (ca_file,certificate,private_key)),ERROR)
             self.fixture_args=["--observation-origin",observation_origin]
 
-        for origin,flag,private in ((agent_origin,"--agent-origin",True),(admission_origin,"--admission-origin",False)):
+        for origin,flag,private in ((agent_origin,"--agent-origin",True),(admission_origin,"--admission-origin",False),(lifecycle_origin,"--lifecycle-origin",True)):
             if origin is None:continue
             selected=urlsplit(origin)
             require(selected.scheme=="https" and selected.hostname and not selected.path and not selected.query
@@ -64,7 +65,8 @@ class PrivateHttps:
                         for pair in headers.items() for x in pair),ERROR)
             if self.observation_origin is not None:require("https://"+u.netloc==self.observation_origin and method=="POST" and u.path=="/readback" and not u.query,ERROR)
             for origin,paths in ((self.agent_origin,("/stage/register","/stage/start","/stage/status")),
-                                 (self.admission_origin,("/v2/plan","/v2/protected"))):
+                                 (self.admission_origin,("/v2/plan","/v2/protected")),
+                                 (self.lifecycle_origin,("/lifecycle/register","/lifecycle/generation","/lifecycle/prepare","/lifecycle/release","/lifecycle/cleanup","/lifecycle/lease","/lifecycle/status","/lifecycle/ack-stage","/lifecycle/ack-final","/lifecycle/cleanup-audit"))):
                 if origin is not None:require("https://"+u.netloc==origin and method=="POST" and u.path in paths and not u.query,ERROR)
             if self.fixture_origin is not None:require("https://"+u.netloc==self.fixture_origin,ERROR)
             materials=self.materials();decision.now();remaining=decision.remaining();require(remaining>0,ERROR)

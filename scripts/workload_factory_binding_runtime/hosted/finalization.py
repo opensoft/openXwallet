@@ -1,7 +1,8 @@
 """Protected-phase reconstruction and independent complete-byte acceptance.
 
-No staging launch, authority issuance, final cleanup takeover or proof readiness
-is implemented. The result is input to unchanged full admission, never its substitute.
+Staging launch and authority issuance are separate capabilities. Explicit T012S
+registration can hand accepted bytes to selected lifecycle construction; the result
+still requires unchanged full admission and never implies proof readiness.
 """
 from dataclasses import dataclass, asdict, replace
 from workload_factory_binding.evidence import BindingError, canonical, digest, integer, require
@@ -180,3 +181,11 @@ def admit_finalized(finalized, context, *, bindings):
         return admit(context, bindings=replace(bindings, load_config=load), deadline=bound.expires_at)
     except Exception:
         raise BindingError(ERROR) from None
+
+
+def register_finalized_lifecycle(finalized, context, *, lifecycle, plan, decision):
+    """Source-selected T012S handoff; no default activation or proof authority."""
+    from .lifecycle import HostedLifecycle
+    require(type(lifecycle) is HostedLifecycle and type(finalized) is FinalizedPlan
+            and context == lifecycle.context and type(decision) is Decision, ERROR)
+    return lifecycle.prepare_final(lifecycle.scope["launch_ref"], finalized, plan, decision=decision)
