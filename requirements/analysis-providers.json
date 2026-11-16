@@ -83,7 +83,7 @@
       "tests/test_yaml_quote_boundaries.py": "07438b3685897860fedb3f2fd547b923d9829cc831ae0036e31aa288f080886c",
       "tests/test_yaml_reader_spaces.py": "e941064690e971f4238604e258745ffb866422f48a1e9934d836c12b542a40d6"
     },
-    "commit": "4f6821312a91f87e10ecfac4498aa48183a09ca2",
+    "commit": "0be1f3b8ff48b4c063a40b1adfc2859a8cb169a9",
     "main_admission": "pending",
     "expected_test_count": 2231,
     "nodeids_sha256": "f962663865181efae28865c42b7560b6c1c8605124f35ffe4b53a3e330a8a9d0",

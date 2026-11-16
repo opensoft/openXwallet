@@ -53,10 +53,10 @@ report and missing real branch-data shards before combining actual measurements.
 All owned Python files, including zero-hit files, remain in the final inventory.
 
 Upstream supplied-artifact repair is openXfactory #1333 at e0e0b9a31ec8f4d5ec2d611d373ce0a918abb5de;
-shape repair is openRepoShape #1331, with final compatibility follow-up at
-4f6821312a91f87e10ecfac4498aa48183a09ca2. Shape remains a candidate pending
+shape repair is openRepoShape #1331, with final import-reference correction at
+0be1f3b8ff48b4c063a40b1adfc2859a8cb169a9. Shape remains a candidate pending
 its full checks and main admission; the supplied-artifact provider is admitted. The current neutral
-root candidate is openWallet #13 at eacd2aa41a8e35c5cec35c92cadd7946d90e1d93;
+root candidate is openWallet #13 at 7351c23e81dfc1d1dead466c7168670d7dfda53e;
 the adapter will be repinned to accepted publication before landing.
 
 
@@ -144,3 +144,19 @@ into the runtime artifact as native-matrix.xml. The complete artifact retains
 that portable native result alongside the separate full-source JUnit and
 measurement evidence. The native command, audit, case identities and limit stay
 unchanged.
+
+Hosted 5895ea11 qualification completed 2,408 full-source passes and 11 subtests
+in 21m04, then all 2,017 native cases in 18m10. The required job completed in
+39m35 within its original 45-minute cap. Both measurements passed: 2,407 CTracer
+cases and one SysMonitor case, collecting the same complete 2,408-case inventory.
+Their union matches the runtime's exact passing phases and subtest contexts.
+This checkpoint predates the stronger parent-data proof and is retained as
+history; final exact-head coverage and main acceptance remain required.
+
+Shape 4f682131 completed 22,446 passes and 409 existing platform/optional skips,
+with only two literal-import reference checks failing. Its production detector
+already recognizes guarded fallback imports. The test-only 0be1f3b8 correction
+retains exact required-name checks, requires all literal names in the current
+provider, and adds two guard-removal controls. All 187 tests in that module pass.
+The full unchanged suite is rerunning; no failing required check is bypassed.
+All eleven managed consumer bytes and their individual hashes remain unchanged.

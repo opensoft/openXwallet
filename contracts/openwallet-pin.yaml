@@ -96,7 +96,7 @@ submodule_path: openWallet
 # above, puts the annotated tag `wallet-v1.6` on this commit. Exactly 40 hex.
 # Issue #73 candidate: paired admitted code and prepared spec/shape repairs.
 # Landing is held until their upstream main acceptance is verified.
-commit: "eacd2aa41a8e35c5cec35c92cadd7946d90e1d93"
+commit: "7351c23e81dfc1d1dead466c7168670d7dfda53e"
 revision_kind: commit
 
 digest_algorithm: sha256
