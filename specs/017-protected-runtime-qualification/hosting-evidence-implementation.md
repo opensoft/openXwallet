@@ -103,3 +103,11 @@ this working source checkpoint; their actual receipts will supersede this status
 
 T012U/V, T001/T013-T015, live report emission, human/domain and consumer acceptance
 remain separate. Feedback deferred; neither historical blocked write replayed.
+
+The broad regression exposed a pre-existing nondeterministic authority replacement
+fixture: unlink/recreate could recycle the stored inode, so the intended different-
+generation mutation was not actually established. The fixture now creates the
+replacement while the original remains linked and asserts distinct device/inode
+before atomic replacement. Its rejection assertions, node identity, parameters and
+module fingerprint are unchanged. This does not qualify same-inode reincarnation
+or change the accepted authority-store model. The failed run remains diagnostic.

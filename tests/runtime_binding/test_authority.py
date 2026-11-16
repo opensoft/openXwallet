@@ -111,9 +111,13 @@ def test_lost_replaced_unsafe_or_regressed_state_refuses_without_reset(a, change
     path = a.root / "state" / DATABASE
     if change == "missing":path.unlink()
     elif change == "replacement":
-        raw = path.read_bytes();path.unlink();path.write_bytes(raw);path.chmod(0o600)
-        # Avoid inode reuse making this test nondeterministic.
-        other = path.with_name("replacement");other.write_bytes(raw);other.chmod(0o600);other.replace(path)
+        # Allocate while the original inode is still linked: unlink/recreate can
+        # recycle the recorded inode and fail to establish this test's mutation.
+        original = (path.stat().st_dev, path.stat().st_ino)
+        other = path.with_name("replacement")
+        other.write_bytes(path.read_bytes());other.chmod(0o600)
+        assert (other.stat().st_dev, other.stat().st_ino) != original
+        other.replace(path)
     elif change == "corrupt":path.write_bytes(b"corrupt")
     elif change == "mode":path.chmod(0o644)
     elif change == "link":os.link(path, path.with_name("alias"))
