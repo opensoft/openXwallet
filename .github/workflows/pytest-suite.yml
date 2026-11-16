@@ -395,6 +395,13 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: "22"
+      - name: Install the shell required by the complete provider corpus
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends zsh
+          test -x /bin/zsh
+          /bin/zsh --version
       - name: Install reviewed source-test and analysis dependencies
         run: |
           pip install --only-binary :all: --require-hashes -r requirements-workload-binding.lock -r requirements/sonar-analysis.lock

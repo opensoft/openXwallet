@@ -193,3 +193,11 @@ The seven original primary checkout heads, working changes and staged changes
 still match their preservation baseline. All original worktree paths and bench
 sessions/panes remain present. Final exact-head CI and published main gate
 acceptance are still required after this admission-only pin update.
+
+The first admitted-pin run, 43981755779 at f7c52604, exposed a missing hosted
+OS dependency: /bin/zsh. Both OpenSpec consumer suites passed all 193 assertions;
+shape passed 2,221 cases but skipped ten zsh cases, so strict conformance refused
+analysis. The source job now installs the distribution-signed zsh package and
+requires its expected path before running the unchanged corpus. No skip allowance,
+case selection, assertion, runtime/native control or gate threshold changes.
+The failed run and its logs remain retained; fresh qualification is required.
