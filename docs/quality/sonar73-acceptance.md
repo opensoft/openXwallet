@@ -25,9 +25,10 @@ complete-source coverage and exact-main gate verification remain pending.
 
 The coverage verifier is adapted from openXfactory@a31e2060e61fcec47a818ccdcd4d8c675a440505.
 It binds every nested revision, exhaustive production Python inventory,
-unchanged source/configuration and actual branch-coverage reports. Its
-75 evidence and provider-boundary tests preserve zero-hit files and refuse missing/forged data,
-lost parent execution, changed nested pins and incomplete/weakened gates.
+unchanged source/configuration and actual branch-coverage reports.
+The earlier 852aac7 checkpoint passed 75 evidence and provider-boundary tests,
+covering zero-hit preservation and refusal of missing/forged data, lost parent
+execution, changed nested pins and incomplete/weakened gates.
 No coverage hits or file identities are synthesized.
 
 The seven primary checkout heads, status, working-diff and staged-diff hashes
