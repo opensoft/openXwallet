@@ -138,3 +138,9 @@ SHA-256; assembly requires that exact regular unlinked SQLite data and actual
 observed arcs before secondary data is copied. Missing, changed, linked, invalid
 or metadata-only parent data refuses acceptance. Normal exit-time coverage
 files remain retained alongside the immutable snapshot.
+
+After the unchanged native command succeeds, its original matrix.xml is copied
+into the runtime artifact as native-matrix.xml. The complete artifact retains
+that portable native result alongside the separate full-source JUnit and
+measurement evidence. The native command, audit, case identities and limit stay
+unchanged.
