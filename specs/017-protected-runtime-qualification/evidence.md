@@ -2394,7 +2394,9 @@ path boundary was weakened. Development failures and the lost-reply diagnostic
 are retained separately from final qualification.
 
 Private retained receipts live at
-`/workspace/projects/.factory-binding-qa/runtime-next-20261112T171205Z/t012s-isolated-20261115/`.
+`$WALLET_BINDING_QA_ROOT/t012s-isolated-20261115/`, where the operator resolves
+`WALLET_BINDING_QA_ROOT` from its private host-local qualification receipt. The
+repository never fixes that machine-local value.
 The frozen input manifest has 148 tested Python/workflow files. Scope review proves
 neutral pins, workflow YAML and generic lifecycle/replay source unchanged. The
 development cleanup audit covers 9,540 process-generation records and 614 journal
@@ -2497,3 +2499,14 @@ PR/hosted CI, formal Codex panel, source ratification, T012T-V, setup/dispatch o
 hosting/provider acceptance is inferred. Publication/local Codex review and owner
 source acceptance follow a later commission. Feedback remains deferred; neither
 historical blocked write is replayed.
+
+## T012S publication and local review commission
+
+Brett commissions the T012S candidate PR, hosted CI, local Codex review and finding
+resolution, followed by presentation of the exact final head for source ratification.
+Setup/dispatch remain unauthorized, feedback is deferred and neither blocked write
+is replayed. The candidate's local source qualification is recorded above; current
+hosted results and the expert panel remain distinct until observed. Publication
+hygiene replaces the new machine-specific receipt root with WALLET_BINDING_QA_ROOT;
+older historical receipt paths are pre-existing context and are not propagated into
+new source or runbook commands. No runtime input changes in this documentation fix.
