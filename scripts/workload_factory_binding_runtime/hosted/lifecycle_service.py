@@ -334,6 +334,14 @@ class CleanupRegistration:
     __call__ = register
 
 
+def _final_cleanup_record(value):
+    require(value["kind"] == "final", ERROR)
+    record = value["record"]
+    _closed(record, "plan_digest scope lease_status resources observed_at valid_until attempt_ref")
+    record["scope"] = RunScope(**record["scope"])
+    record["resources"] = tuple(ResourceReadback(**r) for r in record["resources"])
+    return CleanupReadback(**record)
+
 class FinalLifecyclePorts:
     """Existing RunLifecycle ports; cleanup gets one separate bounded Decision.
 
@@ -387,12 +395,7 @@ class FinalLifecyclePorts:
     def _cleanup_record(self, ref, *, attempt_ref, decision):
         require(ref == self.plan_ref, ERROR)
         value = self.audit.call("cleanup-audit", attempt_ref=attempt_ref, decision=decision)
-        require(value["kind"] == "final", ERROR)
-        record = value["record"]
-        _closed(record, "plan_digest scope lease_status resources observed_at valid_until attempt_ref")
-        record["scope"] = RunScope(**record["scope"])
-        record["resources"] = tuple(ResourceReadback(**r) for r in record["resources"])
-        return CleanupReadback(**record)
+        return _final_cleanup_record(value)
 
 
 class IndependentScheduler:

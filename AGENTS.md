@@ -359,3 +359,11 @@ original clocks, earliest expiries, neutral APIs/pins and default refusal. T012T
 completion still requires actual hosted source positives, boundaries and cleanup;
 component counts alone do not qualify it. T012U/V and operational setup/dispatch
 remain unauthorized; feedback deferred and historical blocked writes unreplayed.
+
+The T012T audit-only client binds the original registered plan/context and existing
+observer TLS client without active config/RunLifecycle construction or a writer.
+Only cleanup routing accepts it; qualification refuses. The shared existing pure
+cleanup validator/parser retain old operation semantics. The fresh-process source
+control passes after lease expiry and refuses wrong scope/worker/window use.
+This is still an isolated candidate pending full/native verification and later
+source publication; no T012U/V or operational commission is inferred.

@@ -835,3 +835,56 @@ def test_cli_parse_cancellation_redacts_private_payload_before_context(monkeypat
     monkeypatch.setattr(module._PrivateParser,"parse_args",cancel)
     assert module.main()==130
     value=capsys.readouterr();assert value.out=="" and value.err=="qualification-cancelled\n"
+
+
+@pytest.mark.parametrize("mode", ["fresh-process","wrong-run","worker-credential","expired","qualify-refused"])
+def test_fresh_audit_only_workflow_needs_no_active_lease_or_writer(k,w,request,tmp_path,mode):
+    from dataclasses import fields
+    from workload_factory_binding_runtime.bootstrap import DispatchContext
+    from workload_factory_binding_runtime.hosted.qualification import RegisteredCleanupClient
+    from workload_factory_binding_runtime.hosted.lifecycle import process_instance
+    from workload_factory_binding_runtime.workflow import QualificationWorkflowBindings,qualify_hosted
+    execute,state=_connected_hosted_qualification(k,w,request,tmp_path,qualified=True)
+    execute();q=state["qualifier"];hosted=state["hosted"];life=q.bindings.workflow.lifecycle
+    original=hosted.life.state(decision=hosted.use())["registration"]
+    # The final lease and proof configuration are expired. Only the original
+    # registered cleanup window and selected observer credentials remain usable.
+    hosted.advance(original["cleanup_until"] if mode=="expired" else original["expires_at"]+1)
+    before=sum(e["kind"]=="lease-closed" for e in hosted.stores["primary"].events(decision=hosted.use()))
+    context=q.bindings.context
+    if mode=="wrong-run":context=replace(context,run_id="999")
+    def new_client():
+        return RegisteredCleanupClient(context=context,plan=life.plan,
+            audit=hosted.audit("worker" if mode=="worker-credential" else "observer"),
+            identity=life.readback.identity,clock=lambda:hosted.clock.value,monotonic=time.monotonic)
+    incoming=DispatchContext(**{f.name:getattr(q.bindings.context,f.name) if hasattr(q.bindings.context,f.name)
+        else getattr(hosted.stage.v.context,f.name) for f in fields(DispatchContext)})
+    def read():return qualify_hosted(incoming,bindings=QualificationWorkflowBindings(new_client()),
+        phase="qualify" if mode=="qualify-refused" else "cleanup")
+    if mode=="fresh-process":
+        import os,subprocess,sys
+        from pathlib import Path
+        from factory_binding.test_owner_integration import private_write
+        from .test_custody import _stop
+        audit=hosted.audit("observer");transport=audit.transport
+        selected=tmp_path/"selected-audit-only.json"
+        private_write(selected,canonical({"plan":asdict(life.plan),"context":asdict(context),
+            "dispatch":asdict(incoming),"identity":asdict(life.readback.identity),"now":hosted.clock.value,
+            "audit":{"origin":audit.origin,"principal":audit.principal,"scope":document(audit.raw),
+                "ca":transport.ca,"certificate":transport.cert,"key":transport.key,
+                "server_certificate_digest":transport.server_certificate_digest}}))
+        process=subprocess.Popen([sys.executable,"-I","-B",str(Path(__file__).with_name("cleanup_observer.py")),str(selected)],
+            stdin=subprocess.DEVNULL,stdout=subprocess.PIPE,stderr=subprocess.PIPE,
+            env={"PATH":os.defpath,"LANG":"C.UTF-8"})
+        instance=process_instance(process.pid)[0];assert instance is not None
+        (tmp_path/"runner-generation.json").write_bytes(canonical({"pid":process.pid,"instance_ref":instance}))
+        try:
+            output,errors=process.communicate(timeout=15)
+            assert process.returncode==0 and errors==b""
+            assert json.loads(output)=={"verified":True,"outcome":"cancel"}
+        finally:_stop(process)
+    else:
+        with pytest.raises(BindingError):read()
+    after=sum(e["kind"]=="lease-closed" for e in hosted.stores["primary"].events(decision=hosted.use()))
+    assert before==after==1
+    assert not hosted.temporary.exists() and hosted.shared.read_bytes()==b"retained shared generation"

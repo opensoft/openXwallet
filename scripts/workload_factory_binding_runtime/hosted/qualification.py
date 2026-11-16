@@ -236,6 +236,75 @@ def _barrier(token, kind, bridge, now, selected, inputs):
                    "verified_claims_digest": digest(dict(valid.claims)), "refusal": "workload-mismatch"})
 
 
+class RegisteredCleanupClient:
+    """One audit-only read over an original authenticated registration.
+
+    Trusted hosting selects the immutable plan/context and existing observer TLS
+    client. No active config, operation grant, writer or RunLifecycle is needed.
+    The service binds the returned plan and original cleanup_until/timeout.
+    """
+    __slots__ = ("_selected", "_lock", "_used")
+
+    @property
+    def context(self):
+        return self._selected[0]
+
+    def __init__(self, *, context, plan, audit, identity, clock, monotonic):
+        from ..lifecycle import _plan
+        from ..loaders import ServiceIdentity
+        from .lifecycle_service import LifecycleClient
+        require(type(context) is WorkflowContext and type(audit) is LifecycleClient
+                and type(identity) is ServiceIdentity and callable(clock) and callable(monotonic),
+                "lifecycle-cleanup-unverified")
+        require(all(type(getattr(context, name)) is str for name in context.__dataclass_fields__),
+                "lifecycle-cleanup-unverified")
+        _plan(plan)
+        from ..config import _handle
+        from workload_factory_binding.evidence import valid_digest
+        for field in ("service_ref", "principal_ref", "credential_ref"):
+            _handle(getattr(identity, field))
+        require(valid_digest(identity.trust_digest), "lifecycle-cleanup-unverified")
+        scope = decode_object(audit.raw)
+        require({"case_ref", "run_id", "run_attempt", "source_commit"} <= set(scope),
+                "lifecycle-cleanup-unverified")
+        require(context.config_digest == plan.scope.config_digest
+                and scope["case_ref"] == plan.scope.case_ref
+                and scope["run_id"] == plan.scope.run_id == context.run_id
+                and scope["run_attempt"] == plan.scope.run_attempt == context.run_attempt
+                and scope["source_commit"] == context.source_commit
+                and audit.principal == identity.principal_ref
+                and identity.principal_ref != plan.janitor.principal_ref
+                and identity.credential_ref != plan.janitor.credential_ref,
+                "lifecycle-cleanup-unverified")
+        self._selected = (context, plan, audit, identity, clock, monotonic)
+        self._lock, self._used = Lock(), False
+
+    def reconcile_cleanup(self):
+        from secrets import token_hex
+        from ..lifecycle import CleanupVerification, verify_cleanup_record
+        from .lifecycle import HostedLifecycle
+        from .lifecycle_service import _final_cleanup_record
+        with self._lock:
+            require(not self._used, "lifecycle-cleanup-unverified")
+            self._used = True
+            _context, plan, audit, identity, clock, monotonic = self._selected
+        try:
+            decision = Decision(clock=clock, monotonic=monotonic)
+            before = decision.now()
+            HostedLifecycle.narrow(decision, before + plan.cleanup_timeout)
+            attempt = "cleanup-attempt:" + token_hex(16)
+            value = audit.call("cleanup-audit", attempt_ref=attempt, decision=decision)
+            record = _final_cleanup_record(value)
+            now = decision.now()
+            verify_cleanup_record(plan, record, before, now, attempt)
+        except Exception:
+            raise BindingError("lifecycle-cleanup-unverified") from None
+        # An audit alone does not establish the dead operation's success.
+        return CleanupVerification(plan.digest, plan.scope, "cancel", now,
+            record.observed_at, record.valid_until, digest(asdict(record)),
+            digest(asdict(identity)), digest(attempt))
+
+
 class Qualifier:
     """One operation inside the supplied lifecycle; no hidden budget or retry."""
     def __init__(self, bindings, *, challenge_id, request, token, observation):
@@ -251,6 +320,7 @@ class Qualifier:
         self.bindings = bindings
         self.inputs = (challenge_id, decode_object(canonical(request)), token, decode_object(canonical(observation)))
         self._lock, self._used, self.result = Lock(), False, None
+        self._cleanup_client = None
 
     def run(self):
         from openwallet_runtime.proof import verify_proof
@@ -394,22 +464,25 @@ class Qualifier:
         from secrets import token_hex
         from ..lifecycle import CleanupVerification
         life = self.bindings.workflow.lifecycle
-        before = life.cleanup_clock()
-        require(integer(before), "qualification-failed")
         from .lifecycle_service import FinalLifecyclePorts
         target = life.readback.target
-        # The hosted service authenticates the immutable registration's original
-        # cleanup_until/timeout. A shorter final lease can expire before that
-        # window begins; it must not invent an earlier audit expiry. This fresh
-        # read-only Decision grants no operation or cleanup mutation authority.
-        deadline = before + life.plan.cleanup_timeout
-        if type(target) is not FinalLifecyclePorts:
-            deadline = min(deadline, life.plan.expires_at + life.plan.cleanup_timeout)
+        if type(target) is FinalLifecyclePorts:
+            with self._lock:
+                if self._cleanup_client is None:
+                    self._cleanup_client = RegisteredCleanupClient(context=self.bindings.context,
+                        plan=life.plan, audit=target.audit, identity=life.readback.identity,
+                        clock=target.clock, monotonic=target.monotonic)
+                client = self._cleanup_client
+            checked = client.reconcile_cleanup()
+            from dataclasses import replace
+            return replace(checked, outcome=self.result.outcome if self.result is not None else "cancel")
+        before = life.cleanup_clock()
+        require(integer(before), "qualification-failed")
+        deadline = min(before + life.plan.cleanup_timeout, life.plan.expires_at + life.plan.cleanup_timeout)
         require(before < deadline, "qualification-failed")
         attempt = "cleanup-attempt:" + token_hex(16)
         try:
-            audit = target.audit_cleanup if type(target) is FinalLifecyclePorts else target.read_cleanup
-            record = audit(life.plan.ref, attempt_ref=attempt, deadline=deadline)
+            record = target.read_cleanup(life.plan.ref, attempt_ref=attempt, deadline=deadline)
             now = life.cleanup_clock()
             require(integer(now) and before <= now < deadline, "qualification-failed")
             floor = max(before, self.result.operation_floor if self.result is not None else before)

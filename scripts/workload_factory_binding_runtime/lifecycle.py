@@ -203,6 +203,28 @@ class _Use:
         self.clock.now()
 
 
+def verify_cleanup_record(plan, record, started, now, attempt):
+    require(type(record) is CleanupReadback and type(record.scope) is RunScope
+            and record.plan_digest == plan.digest and record.scope == plan.scope
+            and record.attempt_ref == attempt
+            and record.lease_status in ("closed", "revoked", "cancelled")
+            and integer(record.observed_at) and integer(record.valid_until)
+            and started <= record.observed_at <= now < record.valid_until <= record.observed_at + 60
+            and type(record.resources) is tuple and len(record.resources) == len(plan.resources),
+            "lifecycle-cleanup-mismatch")
+    require(all(type(r) is ResourceReadback and type(r.present) is bool and type(r.revoked) is bool
+                for r in record.resources), "lifecycle-cleanup-mismatch")
+    observed = {r.ref: r for r in record.resources}
+    require(len(observed) == len(record.resources), "lifecycle-cleanup-mismatch")
+    for selected in plan.resources:
+        actual = observed.get(selected.ref)
+        require(actual is not None and actual.instance_ref == selected.instance_ref, "lifecycle-cleanup-mismatch")
+        if selected.retention == "run":
+            require(not actual.present and (selected.kind != "credential" or actual.revoked),
+                    "lifecycle-cleanup-incomplete")
+        else:
+            require(actual.present and not actual.revoked, "lifecycle-preserved-resource-changed")
+
 class RunLifecycle:
     """One trusted synchronous run; return a value only after verified cleanup.
 
@@ -296,26 +318,7 @@ class RunLifecycle:
         return verification
 
     def _verify_cleanup(self, record, started, now, attempt):
-        require(type(record) is CleanupReadback and type(record.scope) is RunScope
-                and record.plan_digest == self.plan.digest and record.scope == self.plan.scope
-                and record.attempt_ref == attempt
-                and record.lease_status in ("closed", "revoked", "cancelled")
-                and integer(record.observed_at) and integer(record.valid_until)
-                and started <= record.observed_at <= now < record.valid_until <= record.observed_at + 60
-                and type(record.resources) is tuple and len(record.resources) == len(self.plan.resources),
-                "lifecycle-cleanup-mismatch")
-        require(all(type(r) is ResourceReadback and type(r.present) is bool and type(r.revoked) is bool
-                    for r in record.resources), "lifecycle-cleanup-mismatch")
-        observed = {r.ref: r for r in record.resources}
-        require(len(observed) == len(record.resources), "lifecycle-cleanup-mismatch")
-        for selected in self.plan.resources:
-            actual = observed.get(selected.ref)
-            require(actual is not None and actual.instance_ref == selected.instance_ref, "lifecycle-cleanup-mismatch")
-            if selected.retention == "run":
-                require(not actual.present and (selected.kind != "credential" or actual.revoked),
-                        "lifecycle-cleanup-incomplete")
-            else:
-                require(actual.present and not actual.revoked, "lifecycle-preserved-resource-changed")
+        return verify_cleanup_record(self.plan, record, started, now, attempt)
 
     def run(self, operation):
         require(callable(operation), "invalid-lifecycle-operation")
