@@ -435,3 +435,23 @@ def test_portable_qualifier_component_real_proof_barriers_and_cleanup(k, w, tmp_
                 "private_probe_reads":state["qualifier"].bindings.decision._hosted_reads["counts"]["private"]}))
     finally:
         if "fixture" in state:state["fixture"].close()
+
+
+@pytest.mark.parametrize("error", [KeyboardInterrupt("private-cancel-canary"),
+    SystemExit("private-cancel-canary"), GeneratorExit("private-cancel-canary")])
+def test_cli_cancellation_is_fixed_and_never_prints_exception_payload(monkeypatch,tmp_path,capsys,error):
+    import importlib.util
+    from pathlib import Path
+    path=Path(__file__).resolve().parents[2]/"scripts/prepare-protected-runtime.py"
+    spec=importlib.util.spec_from_file_location("prepare_protected_runtime_t012t",path)
+    module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
+    monkeypatch.setattr(module.subprocess,"run",lambda *a,**kw:SimpleNamespace(stdout="b"*40))
+    monkeypatch.setattr(module,"validate_dispatch_context",lambda _context:None)
+    def cancel():raise error
+    monkeypatch.setattr(module,"operational_bindings",cancel)
+    monkeypatch.setattr(module.sys,"argv",[str(path),"--phase","qualify"])
+    output=tmp_path/"must-not-exist";monkeypatch.setenv("GITHUB_OUTPUT",str(output))
+    assert module.main()==130
+    captured=capsys.readouterr()
+    assert captured.out=="" and captured.err=="qualification-cancelled\n"
+    assert not output.exists()

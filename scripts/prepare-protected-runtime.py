@@ -55,9 +55,9 @@ def main():
         with output.open("a", encoding="utf-8") as stream:
             stream.write("ready=true\nenvironment=" + admitted.environment + "\n")
         return 0
-    except Exception as error:
+    except BaseException as error:
         print(safe_error(error), file=sys.stderr)
-        return 2
+        return 2 if isinstance(error, Exception) else 130
 
 
 if __name__ == "__main__":

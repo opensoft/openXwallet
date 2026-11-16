@@ -60,7 +60,11 @@ qualification remains BLOCKED; T012T02-T012T06 and parent T012T remain unchecked
 
 ## Independent component results and proposed next decision
 
-All122 current focused controls pass. The distinct already-accepted portable IPC
+The initial122 focused controls passed. A CLI cancellation correction now catches
+BaseException at the outer CLI boundary, prints only the fixed cancellation code
+and exits130. Three direct interrupt/exit/generator-close canary controls extend
+the current focused collection to125 passing tests. The first broad regression was
+interrupted for this source privacy finding and is diagnostic, not qualification. The distinct already-accepted portable IPC
 lifecycle component runs the actual owning TLS registry/custody, exact replay,
 valid-signed claim negatives, available worker denial, excess-permission mutation
 and BaseException cancellation. It is not substituted for the hosted positive.
@@ -78,7 +82,7 @@ unchanged. The actual hosted positive and timing remain to be tested after exact
 source ratification. If it still cannot fit, stop again for governance; never assume
 this component measurement proves deployed or hosted feasibility.
 
-Collection measures122 new nodes and2,139 native nodes total, preserving every one
+Collection measures125 new nodes and2,142 native nodes total, preserving every one
 of the2,017 accepted node identities, module fingerprints and old anchors. New H10/
 H12 anchors include honest component and refusal controls; they do not clear T014.
 Fresh full/native/ordered validation and external fixture cleanup are pending at
