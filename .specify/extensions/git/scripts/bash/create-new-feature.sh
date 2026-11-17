@@ -6,6 +6,8 @@
 
 set -e
 
+readonly SPECKIT_WORKTREE_MODE='worktree'
+
 JSON_MODE=false
 DRY_RUN=false
 ALLOW_EXISTING=false
@@ -356,6 +358,7 @@ find_worktree_for_branch() {
                     return 0
                 fi
                 ;;
+            *) : ;;
         esac
     done < <(git worktree list --porcelain 2>/dev/null)
 
@@ -411,7 +414,7 @@ BASE_BRANCH=$(get_config_value "base_branch" "main" "SPECKIT_GIT_BASE_BRANCH")
 WORKTREE_ROOT_RAW=$(get_config_value "worktree_root" "$DEFAULT_WORKTREE_ROOT" "SPECKIT_GIT_WORKTREE_ROOT")
 WORKTREE_ROOT=$(resolve_path_from_repo_root "$WORKTREE_ROOT_RAW")
 
-if test "$CHECKOUT_MODE" != "branch" && test "$CHECKOUT_MODE" != "worktree"; then
+if test "$CHECKOUT_MODE" != "branch" && test "$CHECKOUT_MODE" != "$SPECKIT_WORKTREE_MODE"; then
     echo "Error: checkout_mode must be 'branch' or 'worktree' (got '$CHECKOUT_MODE')" >&2
     exit 1
 fi
@@ -510,7 +513,10 @@ fi
 
 # GitHub enforces a 244-byte limit on branch names
 MAX_BRANCH_LENGTH=244
-_byte_length() { printf '%s' "$1" | LC_ALL=C wc -c | tr -d ' '; }
+_byte_length() {
+    local byte_length_input="$1"
+    printf '%s' "$byte_length_input" | LC_ALL=C wc -c | tr -d ' '
+}
 BRANCH_BYTE_LEN=$(_byte_length "$BRANCH_NAME")
 if [[ -n "${GIT_BRANCH_NAME:-}" ]] && test "$BRANCH_BYTE_LEN" -gt $MAX_BRANCH_LENGTH; then
     >&2 echo "Error: GIT_BRANCH_NAME must be 244 bytes or fewer in UTF-8. Provided value is ${BRANCH_BYTE_LEN} bytes."
@@ -531,13 +537,13 @@ elif test "$BRANCH_BYTE_LEN" -gt $MAX_BRANCH_LENGTH; then
 fi
 
 WORKTREE_PATH=""
-if test "$CHECKOUT_MODE" = "worktree"; then
+if test "$CHECKOUT_MODE" = "$SPECKIT_WORKTREE_MODE"; then
     WORKTREE_PATH="$WORKTREE_ROOT/$BRANCH_NAME"
 fi
 
 if test "$DRY_RUN" != true; then
     if test "$HAS_GIT" = true; then
-        if test "$CHECKOUT_MODE" = "worktree"; then
+        if test "$CHECKOUT_MODE" = "$SPECKIT_WORKTREE_MODE"; then
             existing_worktree=$(find_worktree_for_branch "$BRANCH_NAME" || true)
             if [[ -n "$existing_worktree" ]]; then
                 if test "$ALLOW_EXISTING" = true; then
@@ -622,7 +628,7 @@ if test "$DRY_RUN" != true; then
     fi
 
     printf '# To persist: export SPECIFY_FEATURE=%q\n' "$BRANCH_NAME" >&2
-    if test "$CHECKOUT_MODE" = "worktree" && [[ -n "$WORKTREE_PATH" ]]; then
+    if test "$CHECKOUT_MODE" = "$SPECKIT_WORKTREE_MODE" && [[ -n "$WORKTREE_PATH" ]]; then
         write_last_worktree_state "$BRANCH_NAME" "$WORKTREE_PATH" "$BASE_BRANCH"
         printf '# Feature worktree: %q\n' "$WORKTREE_PATH" >&2
     fi
@@ -656,7 +662,7 @@ if $JSON_MODE; then
             _je_worktree="$WORKTREE_PATH"
         fi
         if test "$DRY_RUN" = true; then
-            if test "$CHECKOUT_MODE" = "worktree"; then
+            if test "$CHECKOUT_MODE" = "$SPECKIT_WORKTREE_MODE"; then
                 printf '{"BRANCH_NAME":"%s","FEATURE_NUM":"%s","CHECKOUT_MODE":"%s","HAS_GIT":%s,"BASE_BRANCH":"%s","WORKTREE_PATH":"%s","DRY_RUN":true}\n' \
                     "$_je_branch" "$_je_num" "$_je_mode" "$HAS_GIT" "$_je_base" "$_je_worktree"
             else
@@ -664,7 +670,7 @@ if $JSON_MODE; then
                     "$_je_branch" "$_je_num" "$_je_mode" "$HAS_GIT"
             fi
         else
-            if test "$CHECKOUT_MODE" = "worktree"; then
+            if test "$CHECKOUT_MODE" = "$SPECKIT_WORKTREE_MODE"; then
                 printf '{"BRANCH_NAME":"%s","FEATURE_NUM":"%s","CHECKOUT_MODE":"%s","HAS_GIT":%s,"BASE_BRANCH":"%s","WORKTREE_PATH":"%s"}\n' \
                     "$_je_branch" "$_je_num" "$_je_mode" "$HAS_GIT" "$_je_base" "$_je_worktree"
             else
@@ -678,7 +684,7 @@ else
     echo "FEATURE_NUM: $FEATURE_NUM"
     echo "CHECKOUT_MODE: $CHECKOUT_MODE"
     echo "HAS_GIT: $HAS_GIT"
-    if test "$CHECKOUT_MODE" = "worktree"; then
+    if test "$CHECKOUT_MODE" = "$SPECKIT_WORKTREE_MODE"; then
         echo "BASE_BRANCH: $BASE_BRANCH"
         echo "WORKTREE_PATH: $WORKTREE_PATH"
     fi
