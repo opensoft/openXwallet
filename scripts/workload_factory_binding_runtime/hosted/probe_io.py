@@ -84,6 +84,24 @@ def exchange(client, kind, *, binding, message, now, decision):
     def restore():
         for signum, handler in handlers.items():
             signal.signal(signum, handler)
+    def child():
+        try:
+            os.close(read_fd)
+            # PR_SET_PDEATHSIG plus the post-prctl parent race check prevents
+            # orphaned RPCs if this trusted caller dies before finally runs.
+            require(libc.prctl(1, signal.SIGKILL, 0, 0, 0) == 0 and os.getppid() == parent, ERROR)
+            restore()
+            for signum, frame in pending:
+                handlers[signum](signum, frame)
+            payload = _perform(client, kind, binding=binding, message=message, now=now)
+            os.write(write_fd, b"\x01" + payload)
+        except BaseException:
+            try:
+                os.write(write_fd, b"\x00")
+            except OSError:
+                pass
+        finally:
+            os._exit(0)
     try:
         # CPython executes handlers on main even when another OS thread received
         # the signal. Defer callable Python handlers, rather than merely masking
@@ -96,35 +114,28 @@ def exchange(client, kind, *, binding, message, now, decision):
                 signal.signal(signum, defer)
         pid = os.fork()
         if pid == 0:
-            try:
-                os.close(read_fd)
-                # PR_SET_PDEATHSIG plus the post-prctl parent race check prevents
-                # orphaned RPCs if this trusted caller dies before finally runs.
-                require(libc.prctl(1, signal.SIGKILL, 0, 0, 0) == 0 and os.getppid() == parent, ERROR)
-                restore()
-                for signum, frame in pending:
-                    handlers[signum](signum, frame)
-                payload = _perform(client, kind, binding=binding, message=message, now=now)
-                os.write(write_fd, b"\x01" + payload)
-            except BaseException:
-                try:
-                    os.write(write_fd, b"\x00")
-                except OSError:
-                    pass
-            finally:
-                os._exit(0)
+            child()
         restore()
         for signum, frame in pending:
             handlers[signum](signum, frame)
         owned_write, write_fd = write_fd, None
         os.close(owned_write)
+        raw = bytearray()
         with selectors.DefaultSelector() as selector:
             selector.register(read_fd, selectors.EVENT_READ)
-            require(bool(selector.select(decision.remaining())), ERROR)
-        raw = os.read(read_fd, 66)
+            while True:
+                require(bool(selector.select(decision.remaining())), ERROR)
+                part = os.read(read_fd, 66 - len(raw))
+                if not part:
+                    break
+                raw.extend(part)
+                require(len(raw) <= 65, ERROR)
+        # EOF means the trusted child completed exit, including any source-only
+        # tracing flush. Never SIGKILL a successful child in the middle of saving
+        # genuine measurement. This wait retains the SAME original deadline.
         decision.now()
         require(raw == b"\x01" if kind != "sign" else len(raw) == 65 and raw[:1] == b"\x01", ERROR)
-        return raw[1:]
+        return bytes(raw[1:])
     except Exception:
         raise BindingError(ERROR) from None
     finally:

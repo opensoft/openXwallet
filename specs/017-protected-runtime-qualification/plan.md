@@ -308,8 +308,8 @@ commissioning. No new T012S execution result is claimed.
 
 T012V is commissioned for source publication, exact-head hosted CI and local Codex
 review. The bounded corrective source and measured adapter-owned source-CI cap
-are recorded in hosting-conformance-implementation.md. Its24 new measured controls
+are recorded in hosting-conformance-implementation.md. Its28 new measured controls
 retain all2,215 prior native nodes and2,523 prior full nodes; accepted main adds89
-analysis/coverage controls. Current collection is2,636 full and2,239 native.
+analysis/coverage controls. Current collection is2,640 full and2,243 native.
 Full/native execution, exact-head review/CI and independent audit are still gates.
 Owner source acceptance and all operational decisions remain separate/ungranted.

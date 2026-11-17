@@ -184,3 +184,19 @@ def test_probe_secondary_thread_refuses_before_rpc_or_private_read(probe, k):
     thread = Thread(target=invoke); thread.start(); thread.join(timeout=3)
     assert not thread.is_alive() and caught == ["qualification-failed"]
     assert not probe["calls"] and not hasattr(decision, "_hosted_reads") and _children() == before
+
+
+def test_probe_success_reply_does_not_renew_deadline_while_child_finishes(probe, k, monkeypatch):
+    from workload_factory_binding_runtime.hosted import probe_io
+    before = _children(); exit_process = os._exit
+    def slow_exit(code):
+        time.sleep(2)
+        exit_process(code)
+    monkeypatch.setattr(probe_io.os, "_exit", slow_exit)
+    decision = Decision(clock=lambda:k.c.h.now); decision.end -= 9.4
+    started = time.monotonic()
+    with pytest.raises(BindingError, match="^qualification-failed$"):
+        probe["probe"].check(b"accepted preimage", probe["binding"], now=k.c.h.now, decision=decision)
+    assert time.monotonic() - started < 1.5 and _children() == before
+    assert [v[0] for v in probe["calls"]] == ["resolve"]
+    assert decision._hosted_reads["counts"]["private"] == 1

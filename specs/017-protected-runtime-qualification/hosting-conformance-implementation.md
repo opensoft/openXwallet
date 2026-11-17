@@ -175,3 +175,24 @@ SIGINT delivery and child-side unwind windows. The child inherits no extra OS
 privilege; fork-sensitive inherited locks can only cause bounded refusal, never
 a deadline extension or detached RPC. No general multithreaded-host support or
 external infrastructure/total-control-loss guarantee is claimed by this slice.
+
+A supplemental tracing diagnostic measured67/104 helper statements and0/16
+actual child-operation statements retained under the inherited subprocess-only
+coverage patch. The candidate therefore enables pinned coverage's fork and
+`_exit` patches without exclusions or threshold changes. Parent supervision
+waits for bounded frame plus pipe EOF (child exit/measurement flush), within
+the original Decision; timeout/cancel still kills and reaps before cleanup.
+A success frame never renews that bound. The first captured cancellation also
+survives a secondary privacy cancellation. Superseded af406e0 qualification was
+stopped as diagnostic-only after these findings; a fresh complete qualification
+is required. Actual retained child hits and exact-head hosted timing remain gates.
+
+The final focused diagnostic retains102/112 helper statements and22/24 branches
+with zero exclusions, including16/16 actual resolve/sign/denial path statements.
+A fixed private child call frame makes genuine post-fork execution measurable.
+The measured final collection is2,640 full and2,243 native, retaining all prior
+2,523 full /2,215 native identities. New controls number28 (16 probe and12
+post-cleanup cancellation cases). These focused diagnostics do not substitute
+for the fresh complete full/native runs, exact-head hosted analysis or cleanup
+audit. The main-thread guard, exact four RPCs and original private39/ten-second
+controls remain intact.

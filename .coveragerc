@@ -2,7 +2,10 @@
 branch = True
 parallel = True
 relative_files = False
-patch = subprocess
+patch =
+    subprocess
+    fork
+    _exit
 include =
     ${COVERAGE_ROOT?}/scripts/*
     ${COVERAGE_ROOT?}/specs/*

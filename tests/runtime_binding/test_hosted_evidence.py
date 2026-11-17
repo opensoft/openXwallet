@@ -929,7 +929,7 @@ def test_original_cancellation_survives_lost_cleanup_reply_and_read_only_reconci
 
 
 @pytest.mark.parametrize("error_type", [KeyboardInterrupt, SystemExit, GeneratorExit])
-@pytest.mark.parametrize("clock_fault", ["raises", "before-operation", "before-cleanup"])
+@pytest.mark.parametrize("clock_fault", ["raises", "before-operation", "before-cleanup", "privacy-cancel"])
 def test_original_cancellation_survives_post_cleanup_clock_failure(k, w, request, tmp_path, monkeypatch, error_type, clock_fault):
     from workload_factory_binding_runtime.lifecycle import RunLifecycle
     execute, state = _connected_hosted_qualification(k, w, request, tmp_path, qualified=True)
@@ -957,14 +957,26 @@ def test_original_cancellation_survives_post_cleanup_clock_failure(k, w, request
                 if clock_fault == "raises":
                     raise RuntimeError("private-post-cleanup-clock-canary")
                 return floor - 1 if clock_fault == "before-operation" else cleanup.checked_at - 1
-            monkeypatch.setattr(life, "cleanup_clock", broken_historical_clock)
+            if clock_fault == "privacy-cancel":
+                from workload_factory_binding_runtime.hosted import privacy
+                def cancel_privacy(value):
+                    state["historical_clock_sampled"] = True
+                    raise SystemExit("private-secondary-privacy-cancel-canary")
+                monkeypatch.setattr(privacy, "observe_privacy", cancel_privacy)
+            else:
+                monkeypatch.setattr(life, "cleanup_clock", broken_historical_clock)
             raise
     monkeypatch.setattr(RunLifecycle, "run", instrumented_run)
     with pytest.raises(error_type) as caught:
         execute()
     assert caught.value is original_cancel
     qualifier, hosted = state["qualifier"], state["hosted"]
-    assert state["historical_clock_sampled"] and qualifier.result is None
+    assert state["historical_clock_sampled"]
+    if clock_fault == "privacy-cancel":
+        assert qualifier.result.outcome == "cancel"
+        assert next(v for v in qualifier.result.cases if v.case_id == "H12").status == "failed"
+    else:
+        assert qualifier.result is None
     assert state["verified_cleanup"].plan_digest == qualifier.bindings.workflow.lifecycle.plan.digest
     assert not hosted.temporary.exists() and hosted.shared.read_bytes() == b"retained shared generation"
     assert not hosted.provider.active[hosted.token.credential]

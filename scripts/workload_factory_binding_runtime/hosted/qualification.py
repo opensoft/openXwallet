@@ -417,7 +417,7 @@ class Qualifier:
                 observations.append(CaseObservation("H12", now, digest({"privacy": "refused"}), "failed"))
                 failure = error if failure is None else failure
                 if not isinstance(error, Exception):
-                    outcome, cancelled = "cancel", error
+                    outcome, cancelled = "cancel", cancelled if cancelled is not None else error
                 elif outcome != "cancel":
                     outcome = "failure"
             # Origin is established by the selected operator's actual signature over
