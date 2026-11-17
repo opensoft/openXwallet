@@ -2828,3 +2828,63 @@ and T001/T013-T015 operations remain separate. Setup/dispatch unauthorized, feed
 deferred, historical blocked writes unreplayed. Local combined wall time is
 approximately67.6 minutes; the existing45-minute source job is unchanged and
 actual hosted timing remains a T012V gate.
+
+## 2026-11-17 T012V publication qualification and T013 refresh
+
+
+The publication candidate's executable source is `05101d15ad407264a96818c8527229f1f0273ac0`.
+All seven ordered repository gates pass, including pins, YAML, plain/strict
+validator, the complete full suite and default content-addressed OpenSpec strict
+validation. Full execution passes **2,761 parent tests plus 11 subtests**, zero
+failures/errors/skips, in 1802.872 seconds outer wall time. Mandatory
+native execution passes **2,364 nodes**, zero failures/errors/skips, in
+1619.765 seconds outer wall time; final conformance success follows
+owning-source postflight. All prior 2,523 full and 2,215 native identities remain.
+There are 198 hosted-evidence, 22 total-deadline probe and 115 canonical-journal
+controls; all 64 conformance self-tests remain. Current anchors H10/H11/H12 are
+85/282/142 and R01 is 47; overlapping groups are not independent test counts.
+
+All 365 frozen regular tracked inputs match after both runs. The neutral
+assembly/code/spec pins are respectively `58cfa716c66e5b7f594db19b2d16f2bbc6fe7d9b`,
+`b7c8ca1e0f9bb58674a12ffef89bf5dfc92cc58c` and
+`e0f7467f52f75103e10cb6824ad88de460ec9d39`. The spec checkout is solely the
+accepted main #77 source-analysis exception. Explicit qualification owning code
+remains `bb0e9dae89a771b05f6c235d0a77237288b95c85`; it does not replace a neutral pin.
+
+Independent native observation confirms the selected immutable image, Docker
+network none, only loopback, read-only source/rootfs, UID1000/GID65534, empty groups,
+NoNewPrivs1 and zero effective/permitted/ambient/bounding capabilities. External
+final audit checks **24,537 generation observations**, 842 journals,
+258 helper receipts and all ten positive preservation cases.
+These are observations, not unique process counts. There is no attributable live
+process or initial qualified teardown failure. Exact retained/shared file
+identities remain, run files are absent, credential attempts are retired, file
+pins released and independent cleanup audit retained. Both final owned fixture
+roots and native container are absent. Earlier diagnostics and focused-control
+roots are separately audited and removed; safe reports remain outside fixtures.
+
+Nine-role local Codex expert review plus the master clears this implementation,
+including deadline/cancellation/FD ownership, actual child tracing, real outage
+injection and canonical replay compatibility. Retained focused tracing covers
+145/152 helper statements and 39/42 branches with zero exclusions; actual child
+resolve/sign/denial execution is retained. GitHub connector review is not claimed
+or requested under the owner's local-only instruction.
+
+Earlier interrupted/failed runs remain diagnostic. In particular, the staging
+setup refusal and later 64-resource credential-retirement refusal have no proven
+root cause. The pure byte-compatible replay correction reduces observed repeated
+encoding cost; passing fresh full/native tests do not establish a general timing
+guarantee. No consumed mutation is replayed, and runtime clocks/private39/other
+phase caps and neutral APIs remain unchanged.
+
+Final reconciliation is documentation only; executable/test/pin/workflow inputs
+retain the qualified bytes above. Exact final PR-head hosted CI, actual coverage
+job timing, Sonar and local-review reconciliation are tracked on
+[PR #78](https://github.com/opensoft/openXwallet/pull/78); this record does not
+predeclare their results. Only the sequential source-CI wall cap is 90 minutes;
+separate traced coverage jobs remain at 45 minutes without threshold/exclusion
+changes. Owner exact-head source ratification and landing remain separate.
+T001/T013-T015, real provider/host/protected-origin qualification, external
+control-host-loss watchdog, infrastructure retirement and human/domain/consumer
+acceptance remain open. Setup and protected dispatch remain unauthorized;
+feedback deferred and neither historical blocked write replayed.

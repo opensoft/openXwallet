@@ -1,6 +1,6 @@
 # Offline Qualification and Operator Runbook
 
-Status: isolated T012U conformance/runbook qualified; candidate local and unpublished; T012V and operations remain separate
+Status: T012V locally qualified source candidate on PR #78; exact-head hosted CI and owner acceptance separate; operations ungranted
 
 Current source procedure: [operator source conformance runbook](operator-source-runbook.md),
 [H01-H12 coverage](qualification-matrix.md) and [T012U working plan](hosting-conformance-plan.md).

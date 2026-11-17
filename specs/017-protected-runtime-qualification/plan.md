@@ -2,7 +2,7 @@
 
 **Branch**: `017-protected-runtime-qualification` | **Date**: 2026-11-12
 **Spec**: [spec.md](spec.md)
-**State**: T012T and qualification-only private39 source decisions are accepted; isolated T012T realization and frozen full/native/cleanup qualification are complete; isolated T012U conformance/runbook is complete via [subplan](hosting-conformance-plan.md) and [qualified source record](hosting-conformance-implementation.md); T012V publication and operations remain separate. See [current record](hosting-evidence-budget-realization.md).
+**State**: T012T and qualification-only private39 source decisions are accepted; isolated T012T realization and frozen full/native/cleanup qualification are complete; isolated T012U conformance/runbook is complete via [subplan](hosting-conformance-plan.md) and [qualified source record](hosting-conformance-implementation.md); T012V local full/native/review/cleanup qualification is complete; exact-head hosted CI and owner acceptance remain PR #78 gates, with operations separate. See [current record](hosting-evidence-budget-realization.md).
 
 Bootstrap amendment `fix-protected-runtime-dispatch-bootstrap` was source
 accepted and landed in factory #1311 / adapter #60. The static dispatch selection
@@ -336,3 +336,7 @@ neutral API, capacity or authority and requires no factory contract amendment.
 Owner ratification remains a later exact-head source gate. Add measured static
 controls, rerun the unchanged64-resource case with timing and then all required
 complete/native/hosted gates. Setup/dispatch remain unauthorized.
+
+### T012V current source handoff
+
+See [frozen qualification](hosting-conformance-implementation.md#t012v-frozen-source-qualification-and-current-handoff). The final reconciliation changes documents only after 2,761 full tests plus 11 subtests and all 2,364 mandatory native nodes pass. T013 selection and all scoped operational authority remain ungranted; hosted CI and owner acceptance are separate exact-head PR gates.

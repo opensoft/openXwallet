@@ -1,7 +1,7 @@
 # T013 Scoped Authorization Draft
 
-Status: T012M reconciled after #65 source landing; every operational stage NOT GRANTED
-Updated: 2026-11-14
+Status: T012V source candidate locally qualified; exact-head acceptance pending; every operational stage NOT GRANTED
+Updated: 2026-11-17
 Selections: [operational inputs](operational-inputs.md)
 Accepted bootstrap source: [bootstrap record](workflow-bootstrap.md)
 
@@ -15,8 +15,12 @@ The subsequent planning commission uses the recommended T013 values as the
 source proposal and [Speckit plan](hosting-issuance-plan.md) include an explicit
 static-v2/finalization prerequisite discovered in research; callbacks alone do not
 resolve unknown actual run/process digests. These are draft source proposals, not
-new operational selections, appointments or grants. T012N-V require source acceptance
-and commissioning first; T013 and all four operational stages remain ungranted.
+new operational selections, appointments or grants. Subsequent accepted factory
+profiles and isolated T012O-U implementation are reconciled by the current
+[T012V source candidate](hosting-conformance-implementation.md#t012v-frozen-source-qualification-and-current-handoff)
+on PR #78. Its final-head hosted CI and owner ratification remain separate.
+Neither local qualification nor later source acceptance selects hosting, keys,
+endpoints or operational principals. T013 and all four stages remain ungranted.
 
 ## Decision record to complete
 

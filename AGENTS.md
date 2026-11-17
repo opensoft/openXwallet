@@ -440,3 +440,16 @@ The bounded corrections and delegated source-CI timing rationale are recorded in
 `hosting-conformance-implementation.md`. Owner source ratification and all
 T001/T013-T015 operational decisions remain open; setup/dispatch unauthorized,
 feedback deferred and neither historical denied write may be replayed.
+
+### T012V locally qualified publication candidate
+
+Executable source `05101d15ad407264a96818c8527229f1f0273ac0` passes 2,761 full tests plus 11
+subtests and all 2,364 mandatory native nodes, with every prior identity retained.
+All nine local expert roles clear the source. Independent final audit verifies
+24,537 generation observations and ten preservation cases; final fixture
+roots and native container are absent. The final source handoff is documentation
+only; exact-head hosted CI and owner ratification remain PR #78 gates. See
+feature017 hosting-conformance-implementation.md and operator-source-runbook.md.
+Main #77 analysis/coverage controls remain required. No operational selection or
+grant follows; setup/dispatch unauthorized, feedback deferred, blocked writes
+unreplayed.

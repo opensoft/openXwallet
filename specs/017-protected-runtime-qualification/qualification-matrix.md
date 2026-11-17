@@ -1,18 +1,19 @@
 # Required Qualification Matrix
 
-Status: isolated T012U full/native/cleanup qualified; local unpublished candidate; deployed cases pending
+Status: T012V locally full/native/review/cleanup qualified source candidate on PR #78; owner acceptance and deployed cases pending
 
 
-## Current H01-H12 source coverage (T012U)
+## Current H01-H12 source coverage (T012V)
 
 The [operator source runbook](operator-source-runbook.md) supplies the source,
 isolation, final-verdict and independent teardown procedure. This table maps
 actual existing controls; it does not turn source/fixture results into a live
 protected report. Counts are measured anchored nodes and overlap across groups.
-Current collection is2,523 full parent cases and2,215 mandatory native nodes;
-new final-verdict controls expand test_conformance.py from52 to64. All earlier
-2,203 mandatory nodes, fingerprints outside that expanded module and prior anchors
-remain. Execution completion is recorded in [T012U evidence](hosting-conformance-implementation.md).
+Current collection is 2,761 full parent cases and 2,364 mandatory native nodes;
+all 64 conformance self-tests, prior 2,523 full / 2,215 native identities and
+earlier anchors remain. New source controls cover the probe total Decision,
+cancellation ownership and byte-compatible canonical-journal replay. Execution
+and cleanup completion are recorded in [current evidence](hosting-conformance-implementation.md#t012v-frozen-source-qualification-and-current-handoff).
 
 | Group / anchored nodes | Actual source positive | Independent refusal/mutation | Remaining live gate |
 | --- | --- | --- | --- |
@@ -25,8 +26,8 @@ remain. Execution completion is recorded in [T012U evidence](hosting-conformance
 | H07 /54 | [Credentials](../../tests/runtime_binding/test_hosted_credentials.py), enrollment, launch/lifecycle: allowed controller succeeds and valid worker requests are denied by real process/TLS/kernel controls | Exposed capability, writable/inherited credentials, excess policy or outage must fail denial qualification | Deployed UID/network/IMDS/key-file and administrator exclusion |
 | H08 /87 | [Readback](../../tests/runtime_binding/test_hosted_readback.py): authenticated current sources/protection/control and separately measured guest/state facts | Change one observed fact with candidate fixed; missing fields, wildcard/tag/default or candidate echo refuse | Actual selected authenticated provider/guest fact sources |
 | H09 /40 | [Readback flow](../../tests/runtime_binding/test_hosted_readback_flow.py): complete protected correlation/current source/protection/hold under one original Decision | Late fact mutation, expiry/regression, deadline or shared-budget reset refuse | Real bounded clients and coordinated-source policy; no atomic main guarantee |
-| H10 /75 | [Evidence](../../tests/runtime_binding/test_hosted_evidence.py): complete connected owning proof/replay on one original Decision at38 reads (39 with fixture origin) | Valid-signed audience/environment-only mutations, actual worker denial/excess permission and original/private12 refusal guard | Real protected issuer/custody/source/deployment qualification |
-| H11 /143 | [Lifecycle](../../tests/runtime_binding/test_hosted_lifecycle.py) and evidence: independent cleanup after success/failure/cancel/actual runner death; fresh observer-only process after lease expiry | Lost mutation result, wrong generation/attempt, missing store, stale audit and uncertain cleanup never upgrade; no destructive replay | Actual independent expiry/revocation/absence, external control-host-loss watchdog and infrastructure retirement |
+| H10 /85 | [Evidence](../../tests/runtime_binding/test_hosted_evidence.py): complete connected owning proof/replay on one original Decision at38 reads (39 with fixture origin) | Valid-signed audience/environment-only mutations, actual worker denial/excess permission and original/private12 refusal guard | Real protected issuer/custody/source/deployment qualification |
+| H11 /282 | [Lifecycle](../../tests/runtime_binding/test_hosted_lifecycle.py) and evidence: independent cleanup after success/failure/cancel/actual runner death; fresh observer-only process after lease expiry | Lost mutation result, wrong generation/attempt, missing store, stale audit and uncertain cleanup never upgrade; no destructive replay | Actual independent expiry/revocation/absence, external control-host-loss watchdog and infrastructure retirement |
 | H12 /142 | [Evidence](../../tests/runtime_binding/test_hosted_evidence.py): actual pre-report privacy controls and closed safe projection | Missing/stale/wrong case/source/run/cleanup, raw canaries, CLI parse/cancel errors and fixture-origin promotion refuse | Approved actual protected origin and T014 run; human/domain/consumer gates separate |
 
 All historical I/G/S/L/R/B anchors remain mandatory. R01 additionally anchors all

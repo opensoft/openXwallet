@@ -1,9 +1,9 @@
 # Operator source conformance runbook
 
-Status: isolated T012U qualified; local unpublished source candidate
+Status: T012V locally qualified source candidate on PR #78; owner acceptance pending
 Kind: source-runbook
 Scope: offline source and disposable local fixtures only
-Sole executable feature task: tasks.md T012U
+Sole source publication task: tasks.md T012V; owner acceptance and operations separate
 
 ## Authority and required inputs
 
@@ -15,12 +15,23 @@ permissions, environments, service units and operational state are unauthorized.
 Feedback stays deferred; neither historical blocked write is a runbook step.
 
 Run from the existing feature worktree in its declared Linux bench. Use its
-reviewed hash-locked Python environment, scoped neutral submodules and prefilled
+reviewed hash-locked Python environment, scoped neutral root/code submodules and prefilled
 verified OpenSpec CLI cache. Source/dependency acquisition precedes the offline
 gates and is not part of this recipe. Leave neutral pins, locks, workflows,
 ordinary/staging/finalization/cleanup budgets, original clocks and default refusal
-unchanged. The existing source CI job has a45-minute cap; hosted timing and any
-cap adjustment remain T012V governance, not an inferred permission here.
+unchanged. The sequential ordinary source-CI job cap is 90 minutes under
+T012V delegated wall-time governance; the separate traced coverage jobs retain
+45-minute caps. Actual final-head hosted timing is recorded on PR #78, not
+inferred from local execution. Accepted main #77 separately initializes the
+exact spec leg only for complete-source analysis; runtime gates never read it.
+
+The private Linux qualifier must run on the main Python thread. Secondary-thread
+entry refuses before any probe RPC/private debit. Trusted forked I/O inherits
+the already-loaded TLS context and no extra privilege. One original Decision
+bounds each RPC, reply/EOF and child retirement; failure/cancellation kills and
+reaps before lifecycle cleanup. Fork-sensitive inherited locks can cause bounded
+refusal. This reference does not claim general multithreaded-host support or an
+external watchdog for loss of the entire control host.
 
 Select these non-secret local references outside worker control:
 
@@ -143,10 +154,11 @@ An intermediate pytest pass count, anchor line or tiny self-test corpus verdict
 is insufficient. Final source-check exceptions/cancellation/zero-exit attempts
 emit fixed refusal and cannot leave a final PASS.
 
-Current measured candidate collection is2,523 full parent cases (plus nine passing
-subtests),2,215 mandatory native nodes and64 conformance self-tests. All prior2,203
-native identities and anchors remain. Hosted-evidence module remains186 cases;
-H10=75/H11=143/H12=142. Collection is not a passing execution receipt; current
+Current measured candidate collection is 2,761 full parent cases (plus 11 passing
+subtests), 2,364 mandatory native nodes and 64 conformance self-tests. All prior
+2,523 full and 2,215 native identities and anchors remain. Hosted-evidence module
+has 198 cases; probe controls add 22 and canonical-journal controls 115.
+H10=85/H11=282/H12=142. Collection is not a passing execution receipt; current
 execution/cleanup status is in [implementation evidence](hosting-conformance-implementation.md).
 The [qualification matrix](qualification-matrix.md) maps every H group to actual
 positive/mutation controls and remaining live gates. Anchors overlap and their
@@ -194,11 +206,11 @@ cannot be upgraded by another passing component. Fix source within commissioned
 scope or retain the refusal and request its owning decision. Source success grants
 no live P01/deployed G02/G03/L01, administrator separation, external control-host-loss
 watchdog, conditional infrastructure retirement, human/domain acceptance or
-codeXfactory T002 completion. T012V owns later local review, hosted source CI,
+codeXfactory T002 completion. T012V owns local review, hosted source CI,
 publication and exact-head owner source acceptance. T001/T013-T015 and setup/
 dispatch remain unauthorized; feedback deferred and blocked writes unreplayed.
 
-## Current completion record
+## Historical T012U completion record
 
 Frozen source `6e2f0bfc626ab05b5b0384bc3a97d2816cfd696a` passes the full2,523 tests
 plus nine subtests and all2,215 mandatory native cases. Every prior node/anchor
@@ -221,3 +233,63 @@ interrupt or manual helper retirement. No deadline, cap or assertion was relaxed
 
 These records qualify source/fixtures only. Later hosted CI, review, publication,
 owner source acceptance and every operational/live gate remain separate.
+
+## Current T012V completion record
+
+
+The publication candidate's executable source is `05101d15ad407264a96818c8527229f1f0273ac0`.
+All seven ordered repository gates pass, including pins, YAML, plain/strict
+validator, the complete full suite and default content-addressed OpenSpec strict
+validation. Full execution passes **2,761 parent tests plus 11 subtests**, zero
+failures/errors/skips, in 1802.872 seconds outer wall time. Mandatory
+native execution passes **2,364 nodes**, zero failures/errors/skips, in
+1619.765 seconds outer wall time; final conformance success follows
+owning-source postflight. All prior 2,523 full and 2,215 native identities remain.
+There are 198 hosted-evidence, 22 total-deadline probe and 115 canonical-journal
+controls; all 64 conformance self-tests remain. Current anchors H10/H11/H12 are
+85/282/142 and R01 is 47; overlapping groups are not independent test counts.
+
+All 365 frozen regular tracked inputs match after both runs. The neutral
+assembly/code/spec pins are respectively `58cfa716c66e5b7f594db19b2d16f2bbc6fe7d9b`,
+`b7c8ca1e0f9bb58674a12ffef89bf5dfc92cc58c` and
+`e0f7467f52f75103e10cb6824ad88de460ec9d39`. The spec checkout is solely the
+accepted main #77 source-analysis exception. Explicit qualification owning code
+remains `bb0e9dae89a771b05f6c235d0a77237288b95c85`; it does not replace a neutral pin.
+
+Independent native observation confirms the selected immutable image, Docker
+network none, only loopback, read-only source/rootfs, UID1000/GID65534, empty groups,
+NoNewPrivs1 and zero effective/permitted/ambient/bounding capabilities. External
+final audit checks **24,537 generation observations**, 842 journals,
+258 helper receipts and all ten positive preservation cases.
+These are observations, not unique process counts. There is no attributable live
+process or initial qualified teardown failure. Exact retained/shared file
+identities remain, run files are absent, credential attempts are retired, file
+pins released and independent cleanup audit retained. Both final owned fixture
+roots and native container are absent. Earlier diagnostics and focused-control
+roots are separately audited and removed; safe reports remain outside fixtures.
+
+Nine-role local Codex expert review plus the master clears this implementation,
+including deadline/cancellation/FD ownership, actual child tracing, real outage
+injection and canonical replay compatibility. Retained focused tracing covers
+145/152 helper statements and 39/42 branches with zero exclusions; actual child
+resolve/sign/denial execution is retained. GitHub connector review is not claimed
+or requested under the owner's local-only instruction.
+
+Earlier interrupted/failed runs remain diagnostic. In particular, the staging
+setup refusal and later 64-resource credential-retirement refusal have no proven
+root cause. The pure byte-compatible replay correction reduces observed repeated
+encoding cost; passing fresh full/native tests do not establish a general timing
+guarantee. No consumed mutation is replayed, and runtime clocks/private39/other
+phase caps and neutral APIs remain unchanged.
+
+Final reconciliation is documentation only; executable/test/pin/workflow inputs
+retain the qualified bytes above. Exact final PR-head hosted CI, actual coverage
+job timing, Sonar and local-review reconciliation are tracked on
+[PR #78](https://github.com/opensoft/openXwallet/pull/78); this record does not
+predeclare their results. Only the sequential source-CI wall cap is 90 minutes;
+separate traced coverage jobs remain at 45 minutes without threshold/exclusion
+changes. Owner exact-head source ratification and landing remain separate.
+T001/T013-T015, real provider/host/protected-origin qualification, external
+control-host-loss watchdog, infrastructure retirement and human/domain/consumer
+acceptance remain open. Setup and protected dispatch remain unauthorized;
+feedback deferred and neither historical blocked write replayed.
