@@ -1059,6 +1059,14 @@ def _tooling_run(adapter, name, argv=(), cwd=None, extra_env=None):
                           capture_output=True, text=True)
 
 
+def _load_shared_helper():
+    spec = importlib.util.spec_from_file_location(
+        "shared_tool_for_boundary_test", REPO_ROOT / "scripts/_shared_openspec.py")
+    helper = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(helper)
+    return helper
+
+
 @pytest.mark.parametrize("name", ["validate-openspec-cli-pin.py",
                                   "install-pinned-openspec-cli.py"])
 def test_shared_tool_refuses_changed_adapter_pin_before_package_work(tooling_adapter, name):
@@ -1121,6 +1129,12 @@ def test_shared_tool_refuses_unpinned_runtime_before_execution(tooling_adapter, 
     assert "Traceback" not in result.stderr and "changed source executed" not in result.stderr
     assert "/unavailable/npm" not in result.stderr
 
+    # Exercise the maintained loader against the same real mutated Git input.
+    # The subprocess above independently proves its adapter refusal transport.
+    helper = _load_shared_helper()
+    with pytest.raises(helper.SharedToolRefusal):
+        helper.shared_sources(adapter)
+
 
 def test_shared_verifier_transports_adapter_default_corpus_from_unrelated_cwd(
         tooling_adapter, tmp_path):
@@ -1169,10 +1183,7 @@ def test_shared_installer_executes_only_authenticated_verifier_bytes(
         py_compile.compile(str(source), doraise=True)
         source.write_bytes(canonical)
         os.utime(source, ns=(original.st_atime_ns, original.st_mtime_ns))
-    spec = importlib.util.spec_from_file_location(
-        "shared_tool_for_boundary_test", REPO_ROOT / "scripts/_shared_openspec.py")
-    helper = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(helper)
+    helper = _load_shared_helper()
     authenticated = helper.shared_sources(adapter)
     def capture(root):
         assert root == adapter
@@ -1185,3 +1196,26 @@ def test_shared_installer_executes_only_authenticated_verifier_bytes(
     assert installer.verifier.__file__ == str(source)
     pin = installer.verifier.read_pin(adapter / "contracts/openspec-cli-pin.yaml")
     assert installer.verifier.pinned_version(pin) == "1.12.0"
+
+
+def test_real_shared_installer_help_from_unrelated_directory(tmp_path):
+    # This executes the actual adapter entrypoint and authenticates both pinned
+    # sources before argparse exits. Package work is unavailable, not mocked.
+    result = _tooling_run(REPO_ROOT, "install-pinned-openspec-cli.py",
+                          ["--help"], cwd=tmp_path)
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "usage: install-pinned-openspec-cli.py" in result.stdout
+    assert "--cache-dir" in result.stdout and "--npm" in result.stdout
+    assert not result.stderr
+
+
+def test_shared_dispatch_refuses_unknown_entrypoint_without_executing_source(
+        monkeypatch, capsys):
+    helper = _load_shared_helper()
+    def forbidden(*args, **kwargs):
+        raise AssertionError("unknown entrypoint reached source authentication")
+    monkeypatch.setattr(helper, "shared_sources", forbidden)
+    assert helper.run("operator-selected.py", []) == 2
+    observed = capsys.readouterr()
+    assert not observed.out
+    assert observed.err == "REFUSE pin-unresolvable: unknown shared entrypoint\n"
