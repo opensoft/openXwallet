@@ -239,3 +239,23 @@ main admission, final consumer pins, complete conformance, CI and main acceptanc
 remain pending. The earlier cecc candidate passed all2432 source tests and11
 subtests, including every original2414 case and2017 native case; this is source
 qualification evidence, not final acceptance of the newer candidate.
+
+## Admitted source chain; wallet acceptance pending (2026-11-17)
+
+The qualified provider source 41eab21570efbd942f49b6ca728d286492adf02a is
+admitted on main at 53475872efea351bd6bd65994428ea6692b150f4 with an identical
+tree. Its PR gate evaluates all six conditions at 98.5% new coverage and 0.0%
+duplication, with A ratings, all hotspots reviewed and no ignored conditions.
+Both consumer contexts pass all 214 exact provider assertions without skips.
+
+Neutral code main is ed567edb18a866b16515c86049bfdcdd4722dde9, spec main is
+0fe3151ccc2f3ffe7f72cca35106df46c180b5b7 and neutral root main is
+050bede0263255b1ce94bb312ad7ca63104c7e18. Standard coherent pin updates pass;
+all eight contract-artifact hashes and release/tag identities remain unchanged.
+The actual adapter installer also authenticated a fresh private generation
+from an unrelated working directory and reported CLI version 1.12.0.
+
+All seven primary checkout HEADs, statuses, working-diff and staged-diff hashes
+still match the original preservation snapshot. Original cloud and Python bench
+sessions and panes remain present. Full wallet source/coverage CI and actual
+main all-13-finding/six-condition acceptance remain pending. Issue #73 stays open.
