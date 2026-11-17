@@ -1,3 +1,9 @@
+# Adapter integration under restore-wallet-sonar-main, feature 019.
+# The executable OpenSpec implementation is shared from the exact neutral spec
+# gitlink. This tooling gate explicitly initializes root/code/spec and retains
+# the adapter's own authenticated pin, lock, tarball and strict validation corpus.
+# The historical original workflow provenance below predates this declared
+# initialization/entrypoint integration and remains as its origin record.
 # VENDORED from opensoft/openxFactory@44d8fbaf7d977668973dcd116040c9405416c2ea (#754).
 # Byte-identical to that repository's `.github/workflows/openspec-cli-pin-gate.yml`
 # below this header EXCEPT for ONE DECLARED DIVERGENCE: the final `run:` line, which
@@ -81,6 +87,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Initialize the exact shared tooling and its declared pin
+        run: |
+          git submodule update --init openWallet
+          git -C openWallet submodule update --init code spec
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -93,6 +104,10 @@ jobs:
         with:
           node-version: "22"
 
+      - name: Install hash-pinned dependency for assembly-pin authentication
+        run: "python3 -m pip install --only-binary :all: --require-hashes -r requirements/analysis-shape.lock"
+
+      # Historical provider rationale (the shared CLI remains standard-library):
       # No `pip install`. The verifier is standard-library only, deliberately, on
       # the sibling gate's reasoning: a pin verifier that needed a package
       # installed before it could check which package is installed would be

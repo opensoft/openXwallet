@@ -104,6 +104,7 @@ def test_only_complete_passing_provider_assertions_are_accepted(tool, tmp_path, 
     import types
     module = types.ModuleType("assertions")
     module.__file__ = str(path)
+    module._load = lambda *args: None
     node = "assertions.py::test_synthetic"
     record = {"expected_test_count": 1, "allowed_skips": [],
               "nodeids_sha256": hashlib.sha256(

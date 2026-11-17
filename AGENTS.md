@@ -341,7 +341,9 @@ The Sonar source-analysis and coverage jobs also initialize openWallet/spec,
 because this existing complete-assembly project scans that leg and owns
 finding acceptance there. This is a source-analysis-only exception to the
 runtime/validator two-line init rule. Ordinary runtime and wallet-validation
-gates retain their existing scoped init and never read the spec leg.
+product-validation gates retain their existing root/code scoped init. OpenSpec
+tooling explicitly initializes the pinned spec leg and authenticates its shared
+implementation before execution; it retains the adapter pin, lock and corpus.
 The analysis inventory binds all four exact Git revisions and real executable
 coverage; no source omissions, runtime authority, thresholds or billing change.
 
@@ -453,3 +455,15 @@ feature017 hosting-conformance-implementation.md and operator-source-runbook.md.
 Main #77 analysis/coverage controls remain required. No operational selection or
 grant follows; setup/dispatch unauthorized, feedback deferred, blocked writes
 unreplayed.
+
+### Current T012V accepted-main #79 integration
+
+Main #79 advanced after candidate3ceb qualification. Integrate its accepted
+shared-tool/pin/runtime fixes under the existing T012V task and the bounded
+plan in feature017 hosting-conformance-implementation.md. Old051/3ceb receipts
+remain historical; the new integration needs fresh collection/review/full/native/
+cleanup and hosted qualification before owner ratification. Preserve both matrix
+corpora and every accepted incoming baseline. Exact neutral pins now050bede root,
+ed567ed code and0fe3151 spec; shared OpenSpec tooling authenticates the spec leg,
+while runtime product validation stays code-only. Explicit qualification ownerbb0
+is separate. No setup/dispatch, feedback or blocked-write replay is authorized.

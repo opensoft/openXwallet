@@ -11,8 +11,8 @@ MODULE_COUNTS = {
     "tests/runtime_binding/test_hosted_journal_encoding.py": 115,
     "tests/runtime_binding/test_hosted_evidence.py": 198,
     "tests/runtime_binding/test_hosted_probe_deadline.py": 22,
-    'tests/runtime_binding/test_hosted_lifecycle.py': 119,
-    'tests/runtime_binding/test_hosted_launch.py': 106,
+    'tests/runtime_binding/test_hosted_lifecycle.py': 121,
+    'tests/runtime_binding/test_hosted_launch.py': 109,
     'tests/runtime_binding/test_hosted_budget.py': 34,
     'tests/runtime_binding/test_hosted_readback.py': 135,
     'tests/runtime_binding/test_hosted_readback_flow.py': 42,
@@ -55,8 +55,8 @@ MODULE_DIGESTS = {
     "tests/runtime_binding/test_hosted_journal_encoding.py": "8b2106ce2a8a1935ea2c0c6dd835398ee191aba15e740ef933d2ed793f723aa7",
     "tests/runtime_binding/test_hosted_probe_deadline.py": "bf4342dd12db375d30114e0c7fab94c6cfe88e6a2ba92c09f6105652332081ad",
     "tests/runtime_binding/test_hosted_evidence.py": "386139e3091ffb42e9c9e3a5a2f42de656163988d5baeb723c694192010855ee",
-    'tests/runtime_binding/test_hosted_lifecycle.py': 'c16d8f096dbe399667480eb8c1ddee72ac06bdb5e03144d70622ec4d331b27f7',
-    'tests/runtime_binding/test_hosted_launch.py': 'd5b09a75467ac576dc396d8a25f40532b2aa50f9ee2bda249a65514f723fb4b3',
+    'tests/runtime_binding/test_hosted_lifecycle.py': '1f29a5da2892f430ec9874d88b04278836ba3c8042850310bb4c3fc2b35253a0',
+    'tests/runtime_binding/test_hosted_launch.py': '3d603b8e2ed1492456265e8506132b93193339b8040691f37e6d4da546bc7045',
     'tests/runtime_binding/test_hosted_budget.py': '1480f1f23aa0f5e9302d09df41624f22576c1c70996eed08383ace578f9041f9',
     'tests/runtime_binding/test_hosted_readback.py': '99979d7051ec49f4e5396cd40a110486bac6d1bdf831676758d71e73960ac541',
     'tests/runtime_binding/test_hosted_readback_flow.py': '95503b18f15b44f81ac29fa2ed63bcbb86c47ed5dfb0c31e6fbd9f1d731d0aa7',
@@ -529,3 +529,11 @@ CASES["H11"] += _nodes("test_hosted_journal_encoding",
     "frozen_old_journal_reopens_and_new_append_keeps_v1_hash_and_detached_copy",
     "forged_raw_hash_and_matching_witness_never_admit_noncanonical_or_invalid_body",
     "old_journal_chain_digest_and_witness_corruption_still_refuse")
+
+# Issue #73 nullable retained-state regressions extend this internal source matrix.
+# Existing cases, strict identity checks and native isolation remain unchanged.
+CASES["H03"] += _nodes("test_hosted_launch",
+    "incomplete_running_record_refuses_before_worker_observation")
+CASES["H11"] += _nodes("test_hosted_lifecycle",
+    "stage_release_without_final_plan_preserves_bound_generation",
+    "stage_readback_without_generation_refuses_before_authority_read")

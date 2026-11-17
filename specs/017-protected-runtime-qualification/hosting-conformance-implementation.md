@@ -1,6 +1,6 @@
 # T012U isolated conformance realization
 
-Status: T012U complete; T012V locally qualified source candidate on PR #78; owner acceptance pending
+Status: T012V historical candidate qualified; accepted-main #79 integration and fresh qualification pending
 Kind: implementation-record
 Scope: source/fixture only; no operational grant
 
@@ -342,3 +342,38 @@ T001/T013-T015, real provider/host/protected-origin qualification, external
 control-host-loss watchdog, infrastructure retirement and human/domain/consumer
 acceptance remain open. Setup and protected dispatch remain unauthorized;
 feedback deferred and neither historical blocked write replayed.
+
+## T012V accepted-main #79 integration and requalification plan
+
+Main advanced to `cb66dc2fc92179cd40dd1973cd330fc207b6fd61` after the prior
+candidate's green run. Its accepted shared OpenSpec tooling, authenticated
+provider/pin updates, in-memory compiler inventories and nullable-state guards
+must survive integration. This remains the existing tasks.md T012V source task;
+no new factory profile, source acceptance or operational grant is inferred.
+
+Resolve the sole matrix conflict as an exact union: retain all T012V counts,
+fingerprints and anchors, use the two accepted main module counts/digests, and
+append its exact five nullable-state anchors. Independently collect and compare
+both baselines; never regenerate expected constants in CI. Preserve all other
+27-file incoming baseline changes, with only governed integration documentation
+and the matrix union differing at overlapping paths.
+
+Initialize the accepted neutral root `050bede0263255b1ce94bb312ad7ca63104c7e18`,
+code `ed567edb18a866b16515c86049bfdcdd4722dde9` and spec
+`0fe3151ccc2f3ffe7f72cca35106df46c180b5b7`. Shared OpenSpec tooling now explicitly
+initializes/authenticates the spec leg; runtime/product validation remains code-only.
+The explicit owning qualification source stays
+`bb0e9dae89a771b05f6c235d0a77237288b95c85`, separately from the neutral pin.
+
+Reconcile source documentation, freeze the integrated head and inputs, obtain
+local expert review, then rerun ordered pins/YAML/plain/strict/full/default
+pinned-OpenSpec gates and the mandatory isolated native matrix. Independently
+observe its boundary, audit actual cleanup/retention and remove only owned
+fixtures. Final doc-only reconciliation must prove non-doc input equivalence.
+Publish the new candidate only after local gates; renew exact-head hosted CI,
+coverage/Sonar and review reconciliation before owner ratification. Old receipts
+remain historical and cannot qualify changed pins/runtime/tooling.
+
+Source clocks, private39/other phase budgets, neutral wire contracts, refusing
+protected defaults, coverage integrity and authority boundaries remain unchanged.
+Setup/protected dispatch unauthorized, feedback deferred, blocked writes unreplayed.

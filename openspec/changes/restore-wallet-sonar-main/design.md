@@ -74,3 +74,34 @@ diagnostics remain retained. Original fixture bytes were restored.
 The complete-3.14 approach is not accepted and is superseded by the fixed
 complementary measurement above. Production runtime, fixtures, matrix identities
 and all budgets remain unchanged. This does not commission feature017 work.
+
+## Full-main repair decision (2026-11-16 America/La_Paz)
+
+The main-only findings require explicit local non-null aliases/branches around
+existing fail-closed state checks, plus refusal of an incomplete running unit
+before worker observation. Add negative state regressions without changing any
+accepted timing budget, resource/network control, native identity or authority.
+The neutral service config CLI uses the invocation directory as its default
+bounded root and a separate operator environment selection for other roots;
+LLM-supplied config paths cannot establish their own root. Use descriptor-bound,
+regular-file, bounded reads and refuse before registry/TLS/listener effects.
+Preserve the existing cwd semantics for paths inside an admitted operator config.
+Keep the current 18 package versions/hashes as a real canonical requirements.txt;
+retain the old lock input as a compatibility include and keep wheel/hash checks.
+
+Remove duplicate OpenSpec implementations through shared execution. Publish a
+provider-owned explicit consumer-root API for verifier and installer, preserving
+standalone defaults and separately configured operator authority. Keep the full
+canonical scripts in the neutral spec. The adapter uses bounded wrappers over
+that declared pinned spec implementation, verifies its revision and source bytes,
+and binds its own pin/corpus context. It initializes the tooling spec leg
+explicitly where needed, never fetching or falling back implicitly. Product
+wallet validation keeps its existing code-leg boundary. Preserve independent
+pins, locks, tarballs and corpora. Run every original provider assertion against
+the actual canonical source in both consumer contexts, plus real wrapper
+transport/refusal tests. Do not remove source from the coverage/analyzer
+inventory or replace it with encoded/generated/opaque executable artifacts.
+
+Requalify published provider, neutral leg/root and adapter heads, including all
+original and five newly exposed finding keys, complete real coverage and all six
+unchanged main gate conditions. Keep the first failed main scan as evidence.
