@@ -97,7 +97,7 @@ submodule_path: openWallet
 # above, puts the annotated tag `wallet-v1.6` on this commit. Exactly 40 hex.
 # Issue #73 repair: published neutral root with admitted code, spec and shape.
 # Both leg pins and all eight artifact digests remain verified together.
-commit: "519802bb88dff0f53f9dfbd81ed21006908a4942"
+commit: "93f7d7b68380e405c3f82ff4e3773ec458462d61"
 revision_kind: commit
 
 digest_algorithm: sha256

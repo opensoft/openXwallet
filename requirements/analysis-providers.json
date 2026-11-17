@@ -56,11 +56,11 @@
       "tests/test_yaml_reader_spaces.py"
     ],
     "files": {
-      "scripts/repo_shape.py": "290d6856126193bd9e3617398b646489a78640494c9ef9631f3b79687c1fdb6d",
+      "scripts/repo_shape.py": "52ae3e09fa886220eac7e2aec597044139fe51b6c9b0d9b1f24be5e66859eb45",
       "scripts/validate-repository-naming.py": "b53fc68868f1f0d77acdac0b744f604f2c7cfc72e5c48337626b52de9e20f79f",
-      "templates/assembly-root/scripts/bootstrap.py": "a3a860ce7ce59633c74d2f3390f3bf678b37a7c72ed800059e144aea2fb7a5b1",
+      "templates/assembly-root/scripts/bootstrap.py": "cbba703fb0a0356a803bd2ba8e2b22f4d28cfb2349a87b636ef5d021a22e4465",
       "templates/assembly-root/scripts/validate-manifest.py": "cd0176730cbb6dca5061d7ed6c7406cd071bf19a3a33142b4e5a947cb220d114",
-      "templates/assembly-root/scripts/validate-pins.py": "eb6e09367b6907f1272803e56bbd5e12d838138758d83697bd7b502b5d164503",
+      "templates/assembly-root/scripts/validate-pins.py": "796aca64b8e88b4c8b6e66820a8d6dd988fe216a513a82490ec0b1a5ddd512b7",
       "tests/conftest.py": "e039a1fc4368e32aef390f6a4e57f018c421fa390f4eb516250df9ea1312730b",
       "tests/test_bootstrap_after_bump.py": "5b535404663c75ca821051286f4664e19636f34dd578f6acc3cbb6ffb5f686a4",
       "tests/test_bootstrap_branch_bytes.py": "689d9ab21b7d50e70206bdd3bb396986454ca182ed7756bd7f9473341b9d04e5",
@@ -88,11 +88,11 @@
       "tests/test_yaml_quote_boundaries.py": "07438b3685897860fedb3f2fd547b923d9829cc831ae0036e31aa288f080886c",
       "tests/test_yaml_reader_spaces.py": "e941064690e971f4238604e258745ffb866422f48a1e9934d836c12b542a40d6"
     },
-    "commit": "0be1f3b8ff48b4c063a40b1adfc2859a8cb169a9",
+    "commit": "472b3914883bd11bbff3a3ff3efa3125e36191e8",
     "main_admission": "verified",
     "expected_test_count": 2231,
     "nodeids_sha256": "f962663865181efae28865c42b7560b6c1c8605124f35ffe4b53a3e330a8a9d0",
     "allowed_skips": [],
-    "admitted_main": "833f75564c6ed4b622c3d504f66a84ccdf2537c8"
+    "admitted_main": "472b3914883bd11bbff3a3ff3efa3125e36191e8"
   }
 }
