@@ -339,3 +339,5 @@ Source quality maintenance: [issue #73 acceptance evidence](docs/quality/sonar73
 [feature 019 plan](specs/019-sonar-main-acceptance/plan.md).
 
 Remaining source-quality maintenance: [issue #82 backlog acceptance](docs/quality/backlog-acceptance.md) and [feature 020 plan](specs/020-sonar-backlog/plan.md).
+
+Installed tooling maintenance: [bounded shell predicate repair](docs/quality/installed-shell-repair.md).

@@ -10,3 +10,5 @@
 - [ ] T008 [DIFFICULT] Complete remaining adapter clarity repairs and reviewed integration. files: remaining triaged adapter paths and coherent dependency records; verify: unchanged full/native/coverage/provider/shape pipelines and no newly introduced unresolved findings.
 - [ ] T009 [DIFFICULT] Verify every actionable original key, all 26 previous repairs and unchanged six-condition gate on published main. files: docs/quality/backlog-acceptance.md and final evidence receipt; verify: exact-main Sonar/GitHub readback, exhaustive key accounting and preservation comparison.
 - [ ] T010 [SIMPLE] Reconcile source-qualified evidence and close issue #82 after the required checks. files: README.md, docs/quality/backlog-acceptance.md, specs/020-sonar-backlog; verify: documentation links, immutable hashes, complete disposition accounting and actual final-main acceptance.
+
+- [ ] [O] Qualify bounded installed-shell repairs and coherent neutral-provider pins; verify original keys on published main.

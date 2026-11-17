@@ -3,7 +3,7 @@
 set -euo pipefail
 
 JSON_MODE=false
-if [ "${1:-}" = "--json" ]; then
+if test "${1:-}" = "--json"; then
     JSON_MODE=true
 fi
 
@@ -23,7 +23,7 @@ resolve_config_value() {
     local default_value="$3"
     local config_file="$repo_root/.specify/extensions/git/git-config.yml"
 
-    if [ ! -f "$config_file" ]; then
+    if [[ ! -f "$config_file" ]]; then
         printf '%s\n' "$default_value"
         return 0
     fi
@@ -31,7 +31,7 @@ resolve_config_value() {
     local raw_value
     raw_value=$(awk -F':' -v key="$key" '$1 == key {sub(/^[^:]*:[[:space:]]*/, "", $0); print $0; exit}' "$config_file")
     raw_value=$(trim "${raw_value:-}")
-    if [ -z "$raw_value" ]; then
+    if [[ -z "$raw_value" ]]; then
         printf '%s\n' "$default_value"
     else
         printf '%s\n' "$raw_value"
@@ -53,7 +53,7 @@ resolve_path_from_root() {
     parent_dir=$(dirname "$combined")
     local leaf_name
     leaf_name=$(basename "$combined")
-    if [ -d "$parent_dir" ]; then
+    if [[ -d "$parent_dir" ]]; then
         printf '%s/%s\n' "$(cd "$parent_dir" && pwd -P)" "$leaf_name"
     else
         printf '%s\n' "$combined"
@@ -67,14 +67,14 @@ resolve_main_repo_root() {
     case "$repo_root" in
         */.worktrees/*)
             inferred_root="${repo_root%%/.worktrees/*}"
-            if [ -d "$inferred_root/.specify" ]; then
+            if [[ -d "$inferred_root/.specify" ]]; then
                 (cd "$inferred_root" && pwd -P)
                 return 0
             fi
             ;;
         */worktrees/*)
             inferred_root="${repo_root%%/worktrees/*}"
-            if [ -d "$inferred_root/.specify" ]; then
+            if [[ -d "$inferred_root/.specify" ]]; then
                 (cd "$inferred_root" && pwd -P)
                 return 0
             fi
@@ -87,7 +87,7 @@ resolve_main_repo_root() {
     worktree_parent_name=$(basename "$worktree_parent")
     if [[ "$worktree_parent_name" == *-worktrees ]]; then
         inferred_root="$(dirname "$worktree_parent")/${worktree_parent_name%-worktrees}"
-        if [ -d "$inferred_root/.specify" ]; then
+        if [[ -d "$inferred_root/.specify" ]]; then
             (cd "$inferred_root" && pwd -P)
             return 0
         fi
@@ -96,7 +96,7 @@ resolve_main_repo_root() {
     local common_dir
     common_dir=$(git -C "$repo_root" rev-parse --git-common-dir 2>/dev/null || true)
 
-    if [ -z "$common_dir" ]; then
+    if [[ -z "$common_dir" ]]; then
         printf '%s\n' "$repo_root"
         return 0
     fi
@@ -105,10 +105,10 @@ resolve_main_repo_root() {
         common_dir="$repo_root/$common_dir"
     fi
 
-    if [ "$(basename "$common_dir")" = ".git" ]; then
+    if test "$(basename "$common_dir")" = ".git"; then
         local main_root
         main_root=$(dirname "$common_dir")
-        if [ -d "$main_root" ]; then
+        if [[ -d "$main_root" ]]; then
             (cd "$main_root" && pwd -P)
             return 0
         fi
@@ -121,9 +121,9 @@ worktree_root_has_entries() {
     local candidate="$1"
     local first
 
-    [ -d "$candidate" ] || return 1
+    [[ -d "$candidate" ]] || return 1
     first=$(find "$candidate" -maxdepth 1 -mindepth 1 -type d -print -quit 2>/dev/null || true)
-    [ -n "$first" ]
+    [[ -n "$first" ]]
 }
 
 resolve_worktree_root() {
@@ -148,7 +148,7 @@ resolve_worktree_root() {
 
 canonicalize_if_dir() {
     local candidate="$1"
-    if [ -d "$candidate" ]; then
+    if [[ -d "$candidate" ]]; then
         (cd "$candidate" && pwd -P)
     else
         printf '%s\n' "$candidate"
@@ -194,16 +194,16 @@ PY
 }
 
 REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || true)
-if [ -z "$REPO_ROOT" ]; then
+if [[ -z "$REPO_ROOT" ]]; then
     REPO_ROOT="$SCRIPT_REPO_ROOT"
 fi
-if [ -z "$REPO_ROOT" ] || [ ! -d "$REPO_ROOT/.specify" ]; then
+if [[ -z "$REPO_ROOT" ]] || [[ ! -d "$REPO_ROOT/.specify" ]]; then
     echo "Error: not inside a Git repository or Speckit checkout." >&2
     exit 1
 fi
 
 COMMON_DIR=$(git rev-parse --git-common-dir 2>/dev/null || true)
-if [ -z "$COMMON_DIR" ]; then
+if [[ -z "$COMMON_DIR" ]]; then
     MAIN_REPO_ROOT=$(resolve_main_repo_root "$REPO_ROOT")
     COMMON_DIR="$MAIN_REPO_ROOT/.git"
 fi
@@ -214,7 +214,7 @@ fi
 STATE_FILE="$COMMON_DIR/speckit-last-worktree.json"
 BASE_BRANCH=$(resolve_config_value "$REPO_ROOT" "base_branch" "main")
 
-if [ -f "$STATE_FILE" ]; then
+if [[ -f "$STATE_FILE" ]]; then
     WORKTREE_PATH=""
     BRANCH_NAME=""
     if command -v jq >/dev/null 2>&1; then
@@ -242,7 +242,7 @@ PY
         BRANCH_NAME=$(grep -o '"BRANCH_NAME"[[:space:]]*:[[:space:]]*"[^"]*"' "$STATE_FILE" | sed 's/.*"\([^"]*\)"$/\1/')
     fi
 
-    if [ -n "$WORKTREE_PATH" ] && [ -d "$WORKTREE_PATH" ]; then
+    if [[ -n "$WORKTREE_PATH" ]] && [[ -d "$WORKTREE_PATH" ]]; then
         WORKTREE_PATH=$(canonicalize_if_dir "$WORKTREE_PATH")
         emit_result "$BRANCH_NAME" "$WORKTREE_PATH" "$BASE_BRANCH" "$REPO_ROOT" "state_file"
         exit 0
@@ -251,11 +251,11 @@ fi
 
 WORKTREE_ROOT=$(resolve_worktree_root "$REPO_ROOT")
 LATEST_WORKTREE=""
-if [ -d "$WORKTREE_ROOT" ]; then
+if [[ -d "$WORKTREE_ROOT" ]]; then
     LATEST_WORKTREE=$(find "$WORKTREE_ROOT" -maxdepth 1 -mindepth 1 -type d -printf '%T@ %p\n' 2>/dev/null | sort -nr | awk 'NR == 1 {print $2}')
 fi
 
-if [ -n "$LATEST_WORKTREE" ] && [ -d "$LATEST_WORKTREE" ]; then
+if [[ -n "$LATEST_WORKTREE" ]] && [[ -d "$LATEST_WORKTREE" ]]; then
     LATEST_WORKTREE=$(canonicalize_if_dir "$LATEST_WORKTREE")
     emit_result "$(basename "$LATEST_WORKTREE")" "$LATEST_WORKTREE" "$BASE_BRANCH" "$REPO_ROOT" "worktree_root_fallback"
     exit 0
