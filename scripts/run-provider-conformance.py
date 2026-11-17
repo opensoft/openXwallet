@@ -21,6 +21,7 @@ import subprocess
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+NEUTRAL_SPEC_ROOT = "openWallet/spec"
 VERIFIER = 'scripts/validate-openspec-cli-pin.py'
 INSTALLER = 'scripts/install-pinned-openspec-cli.py'
 CLI_PIN = 'contracts/openspec-cli-pin.yaml'
@@ -28,7 +29,7 @@ CLI_LOCK = 'contracts/openspec-cli-pin.1.12.0.package-lock.json'
 SHAPE_READER = 'scripts/repo_shape.py'
 NAMING_CLI = 'scripts/validate-repository-naming.py'
 MODES = {"openspec-adapter": ("openspec", ""),
-         "openspec-spec": ("openspec", "openWallet/spec"),
+         "openspec-spec": ("openspec", NEUTRAL_SPEC_ROOT),
          "shape": ("shape", "openWallet")}
 PROVIDERS = {
     "openspec": {
@@ -196,7 +197,7 @@ def verify_copies(provider, target, role, revision):
     # There is one executable implementation: the pinned neutral spec leg.
     # Adapter configuration remains independently authenticated in its own root.
     for local, remote in copies.items():
-        source_root = (ROOT / "openWallet/spec"
+        source_root = (ROOT / NEUTRAL_SPEC_ROOT
                        if role == "openspec" and local in (VERIFIER, INSTALLER)
                        else target)
         path = source_root / local
@@ -226,7 +227,7 @@ class CollectionBindings:
         self.nodes = set(nodes)
         if self.role == "openspec":
             for module in modules:
-                shared = ROOT / "openWallet/spec"
+                shared = ROOT / NEUTRAL_SPEC_ROOT
                 module.SCRIPT = shared / VERIFIER
                 module.INSTALLER = shared / INSTALLER
                 module.PIN = self.target / CLI_PIN

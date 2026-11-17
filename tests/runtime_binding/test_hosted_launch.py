@@ -710,8 +710,10 @@ def test_incomplete_running_record_refuses_before_worker_observation(stage, monk
     def forbidden(*args, **kwargs):
         raise AssertionError("incomplete running state reached worker observation")
     monkeypatch.setattr(stage.spec, "observe", forbidden)
+    decision = stage.use()
     with pytest.raises(BindingError, match="hosted-stage-refused"):
-        stage.agent.status(ref, decision=stage.use())
+        stage.agent.status(ref, decision=decision)
     row = stage.agent.store.read(ref, decision=stage.use())
-    assert row["state"] == "running" and row[missing] is None
+    assert row["state"] == "running"
+    assert row[missing] is None
     assert {name: child.pid for name, child in stage.agent.children.items()} == children

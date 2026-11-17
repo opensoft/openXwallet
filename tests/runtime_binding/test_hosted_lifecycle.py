@@ -1251,11 +1251,14 @@ def test_file_failure_after_durable_claim_never_replays_an_unknown_unlink(lh, mo
 def test_stage_release_without_final_plan_preserves_bound_generation(lh):
     lh.launch()
     before = lh.life.state(decision=lh.use())
-    assert before["final"] is None and before["generation"] is not None
+    assert before["final"] is None
+    assert before["generation"] is not None
+    decision = lh.use()
     with pytest.raises(BindingError, match="hosted-lifecycle-refused"):
-        lh.life.release_stage(lh.stage.scope["launch_ref"], decision=lh.use())
+        lh.life.release_stage(lh.stage.scope["launch_ref"], decision=decision)
     after = lh.life.state(decision=lh.use())
-    assert after["final"] is None and not after["released"]
+    assert after["final"] is None
+    assert not after["released"]
     assert after["generation"] == before["generation"]
 
 
@@ -1267,8 +1270,11 @@ def test_stage_readback_without_generation_refuses_before_authority_read(lh, mon
     def forbidden(*args, **kwargs):
         raise AssertionError("generation-less readback reached authority")
     monkeypatch.setattr(lh.life, "stage_lease", forbidden)
+    readback = RegisteredStageReadback(lh.life)
+    decision = lh.use()
     with pytest.raises(BindingError, match="hosted-lifecycle-refused"):
-        RegisteredStageReadback(lh.life).read(lh.stage.scope["launch_ref"], decision=lh.use())
+        readback.read(lh.stage.scope["launch_ref"], decision=decision)
     after = lh.life.state(decision=lh.use())
-    assert after["generation"] is None and not after["released"]
+    assert after["generation"] is None
+    assert not after["released"]
     assert lh.stage.agent.children == {}
