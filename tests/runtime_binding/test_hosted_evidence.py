@@ -325,13 +325,18 @@ def _connected_hosted_qualification(k, w, request, tmp_path, *, qualified=False,
             excess=TLSClient("https://127.0.0.1:"+ready.read_text(),ca_file=k.ca,
                 certificate=k.worker[0],private_key=k.worker[1]);excess.context=worker.context
         if fault=="worker-outage":
-            from openwallet_runtime.custody import RemoteSigner
-            sign=RemoteSigner.sign
-            def disconnect_after_available_positive(self,message):
-                value=sign(self,message)
-                if self.client is positive:worker.port=0  # actual next connection refuses
+            from workload_factory_binding_runtime.hosted import probe_io
+            from .test_custody import _stop
+            exchange = probe_io.exchange
+            def disconnect_after_available_positive(client, kind, **kwargs):
+                value = exchange(client, kind, **kwargs)
+                if client is positive and kind == "sign":
+                    # Parent owns this process. Stop the actual fixture service
+                    # after a real positive signature, never mutate a fork copy.
+                    _stop(k.custody_process)
+                    retained["worker_outage_injected"] = True
                 return value
-            request.getfixturevalue("monkeypatch").setattr(RemoteSigner,"sign",disconnect_after_available_positive)
+            request.getfixturevalue("monkeypatch").setattr(probe_io, "exchange", disconnect_after_available_positive)
         if fault=="privacy-failure":
             from workload_factory_binding_runtime.hosted import privacy
             request.getfixturevalue("monkeypatch").setattr(privacy,"safe_error",lambda error:"private-privacy-canary")
@@ -772,7 +777,9 @@ def test_connected_qualification_faults_keep_original_cleanup_and_cannot_report_
     assert result is not None and result.cleanup is not None
     assert result.outcome==("cancel" if fault=="cancel" else "failure")
     assert q.bindings.decision._hosted_reads["counts"]["private"]<=39
-    if fault=="worker-outage":assert not {"G03","H10"} & {c.case_id for c in result.cases}
+    if fault=="worker-outage":
+        assert state["worker_outage_injected"] and k.custody_process.poll() is not None
+        assert not {"G03","H10"} & {c.case_id for c in result.cases}
     if fault=="privacy-failure":assert {c.case_id:c.status for c in result.cases}["H12"]=="failed"
     if fault=="read-exhaustion":assert q.bindings.decision._hosted_reads["counts"]["private"]==39
     if fault=="origin-mismatch":assert q.bindings.decision._hosted_reads["counts"]["private"]==38  # failed origin skips closing lease read

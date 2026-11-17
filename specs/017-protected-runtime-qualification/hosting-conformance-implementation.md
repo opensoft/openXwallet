@@ -228,3 +228,19 @@ Final collection is2,646 full /2,249 native; all2,523 prior full and2,215 prior
 native identities remain. The34 new controls and inherited89 analysis tests
 are measured additions. Complete ordered/full/native execution and exact-head
 hosted CI/local review/independent audit remain mandatory publication gates.
+
+The full integration review found the prior worker-outage injection mutated only
+a fork-local TLSClient after positive signing. The negative now stops the actual
+owned disposable custody process in the parent after the original positive
+exchange returns. It retains the same returned signature, Decision and every
+failure/cleanup/no-G03/H10/protected-emission assertion, and explicitly checks
+that the outage occurred and the service exited. No production adapter behavior
+or matrix identity changes. This test-side correction needs fresh full/native
+qualification; superseded f2ffdad evidence is diagnostic, never qualification.
+
+The repaired real-outage control and complete original-Decision positive both
+pass (2tests,43.05s). No runtime bytes or test identities changed. The prior
+f2ffdad full run ended normally at the confirmed stale-control failure
+(1,437passed,1failed); it is retained as diagnostic evidence and independently
+audited before fixture retirement. A new frozen source head receives all ordered
+repository gates, the complete full collection and mandatory native matrix.

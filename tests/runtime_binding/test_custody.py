@@ -345,6 +345,7 @@ def _owning_run(k, directory, *, allow_worker_sign=False, fail_after_proof=False
         "ready": str(ready), "policies": policies,
     }, directory, wait=False)
     try:
+        k.custody_process = process  # Owned disposable fixture, never a runtime port.
         deadline = time.monotonic() + 10
         while not ready.exists():
             assert process.poll() is None, "custody exited"
