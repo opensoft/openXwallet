@@ -105,7 +105,7 @@ jobs:
           node-version: "22"
 
       - name: Install hash-pinned dependency for assembly-pin authentication
-        run: python3 -m pip install --only-binary :all: --require-hashes -r requirements/analysis-shape.lock
+        run: "python3 -m pip install --only-binary :all: --require-hashes -r requirements/analysis-shape.lock"
 
       # Historical provider rationale (the shared CLI remains standard-library):
       # No `pip install`. The verifier is standard-library only, deliberately, on
