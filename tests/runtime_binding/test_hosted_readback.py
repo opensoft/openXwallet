@@ -47,8 +47,8 @@ def test_shared_decision_expiry_or_regression_refuses_before_new_read(change):
     if change=="wall":s.now+=10
     elif change=="monotonic":s.mono+=10
     else:s.now-=1
-    consume_target = ReadBudget(use)
-    with pytest.raises(BindingError):consume_target.consume("source")
+    # An invalid original decision must be refused before a new read client exists.
+    with pytest.raises(BindingError):ReadBudget(use)
 
 
 
@@ -331,8 +331,8 @@ def test_guest_facts_are_measured_again_instead_of_echoing_the_candidate(rb,chan
 def test_existing_correlation_counter_cannot_regress_under_new_clients():
     state=clock();use=decision(state);use.api_requests=4;ReadBudget(use).consume("control")
     use.api_requests=0
-    consume_target = ReadBudget(use)
-    with pytest.raises(BindingError):consume_target.consume("source")
+    # An invalid original decision must be refused before a new read client exists.
+    with pytest.raises(BindingError):ReadBudget(use)
 
 
 @pytest.mark.parametrize("group,limit",[("arm",24),("key",3),("private",12)])

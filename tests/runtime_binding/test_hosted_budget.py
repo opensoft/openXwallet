@@ -22,16 +22,15 @@ def test_finalization_members_share_limits_and_no_new_correlation_budget():
     consume_target = ReadBudget(own)
     with pytest.raises(BindingError):consume_target.consume("protection")
     own.api_requests+=1
-    check_target = ReadBudget(root)
-    with pytest.raises(BindingError):check_target.check()
+    # Reconstruction itself must refuse the invalid joined correlation.
+    with pytest.raises(BindingError):ReadBudget(root)
 
 
 @pytest.mark.parametrize("member",[0,1])
 def test_joined_member_correlation_highwater_cannot_regress(member):
     _,root,_,own=pair();selected=(root,own)[member]
     selected.api_requests=2;ReadBudget(own).check();selected.api_requests=1
-    check_target = ReadBudget(root)
-    with pytest.raises(BindingError):check_target.check()
+    with pytest.raises(BindingError):ReadBudget(root)
 
 
 @pytest.mark.parametrize("member",[0,1])
@@ -42,8 +41,7 @@ def test_either_original_clock_remains_authoritative(member,change):
     elif change=="wall-regression":selected.now-=1
     elif change=="monotonic-expiry":selected.mono+=10
     else:selected.mono=-1
-    consume_target = ReadBudget(own if member==0 else root)
-    with pytest.raises(BindingError):consume_target.consume("source")
+    with pytest.raises(BindingError):ReadBudget(own if member==0 else root)
 
 
 def test_earliest_expiry_is_propagated_to_both_original_decisions():

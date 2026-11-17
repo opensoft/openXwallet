@@ -17,3 +17,9 @@ Candidate scope: 154 original keys (71 composite assertions, 82 ambiguous except
 All conjunction predicates/messages, comments, function signatures and decorators are retained. Exception setup is evaluated before the expected operation. The ruleset test now requires list-selection faults to fail in begin_control and detailed-rule faults in finish_control, preserving the two-request bound. The launcher has one documented common refusal exit; all eight actual malformed-input probes preserve status 2 with empty stdout/stderr.
 
 All 2,434 ordered collected node IDs remain identical. Native matrix, runner, isolation and coverage-workload records are byte-unchanged. The four explicit branch/starred/ruleset test repairs pass all 18 parametrized cases in the existing restricted environment. Complete source/native/coverage CI, independent review, publication and main acceptance remain pending.
+
+### Pre-publication review correction
+
+Independent QA/reliability review found that five deliberately invalid-state tests must require ReadBudget reconstruction itself to refuse: its constructor immediately checks the original clocks and shared counters. The candidate's earlier constructor hoists escaped the exception scope. Those 15 parameter cases now target the single refusing constructor. The two staging-clock cases construct a valid budget before clock invalidation and then require both the existing operation and a reconstructed client to refuse.
+
+The first focused candidate run is retained as an interrupted, unqualified diagnostic, including observed failures and its pytest interruption/teardown diagnostic. No production check was relaxed. All 17 affected parameter cases now pass in the same restricted environment. Renewed full qualification and exact-head review remain required after this correction.

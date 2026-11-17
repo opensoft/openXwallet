@@ -627,9 +627,12 @@ def test_staging_cannot_join_upgrade_or_regress_an_existing_ledger():
 def test_staging_cannot_extend_either_original_clock(clock):
     from workload_factory_binding_runtime.hosted.readback import start_staging
     now={'wall':1000,'monotonic':0.};decision=Decision(clock=lambda:now['wall'],monotonic=lambda:now['monotonic'])
-    start_staging(decision);ReadBudget(decision).begin_staging_observation();now[clock]+=10
-    begin_staging_observation_target = ReadBudget(decision)
-    with pytest.raises(BindingError):begin_staging_observation_target.begin_staging_observation()
+    start_staging(decision)
+    staging_budget = ReadBudget(decision)
+    staging_budget.begin_staging_observation()
+    now[clock]+=10
+    with pytest.raises(BindingError):staging_budget.begin_staging_observation()
+    with pytest.raises(BindingError):ReadBudget(decision)
 
 
 def test_each_staging_reader_retains_four_requests_and_aggregate_retains_eight():
