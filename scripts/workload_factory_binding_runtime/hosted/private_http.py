@@ -12,6 +12,9 @@ from ..custody import _read
 from ..github_bootstrap.common import document
 from .nonces import ERROR
 
+_HTTPS_PREFIX = 'https://'
+
+
 @dataclass(frozen=True,repr=False)
 class Response:
     status:int
@@ -63,12 +66,12 @@ class PrivateHttps:
                 and type(body) is bytes and len(body)<=65536 and type(headers) is dict and len(headers)<=12
                 and all(type(x) is str and 0<len(x)<=16384 and all(32<=ord(c)<127 for c in x)
                         for pair in headers.items() for x in pair),ERROR)
-            if self.observation_origin is not None:require("https://"+u.netloc==self.observation_origin and method=="POST" and u.path=="/readback" and not u.query,ERROR)
+            if self.observation_origin is not None:require(_HTTPS_PREFIX+u.netloc==self.observation_origin and method=="POST" and u.path=="/readback" and not u.query,ERROR)
             for origin,paths in ((self.agent_origin,("/stage/register","/stage/start","/stage/status")),
                                  (self.admission_origin,("/v2/plan","/v2/protected")),
                                  (self.lifecycle_origin,("/lifecycle/register","/lifecycle/generation","/lifecycle/prepare","/lifecycle/release","/lifecycle/cleanup","/lifecycle/lease","/lifecycle/status","/lifecycle/ack-stage","/lifecycle/ack-final","/lifecycle/cleanup-audit"))):
-                if origin is not None:require("https://"+u.netloc==origin and method=="POST" and u.path in paths and not u.query,ERROR)
-            if self.fixture_origin is not None:require("https://"+u.netloc==self.fixture_origin,ERROR)
+                if origin is not None:require(_HTTPS_PREFIX+u.netloc==origin and method=="POST" and u.path in paths and not u.query,ERROR)
+            if self.fixture_origin is not None:require(_HTTPS_PREFIX+u.netloc==self.fixture_origin,ERROR)
             materials=self.materials();decision.now();remaining=decision.remaining();require(remaining>0,ERROR)
             process=subprocess.Popen([sys.executable,"-I","-B",str(Path(__file__).with_name("_credential_io.py")),method,url,*self.fixture_args],
                 stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,

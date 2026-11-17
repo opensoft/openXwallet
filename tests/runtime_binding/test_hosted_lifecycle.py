@@ -279,8 +279,10 @@ def test_final_run_lifecycle_independently_verifies_actual_cleanup_and_preservat
     assert runtime.run(lambda: {"inert": True}) == {"inert": True}
     assert runtime.cleanup_verification is not None
     assert not (Path("/proc") / str(worker["pid"])).exists()
-    assert (lh.shared.stat().st_dev, lh.shared.stat().st_ino, lh.shared.read_bytes()) == shared_before
-    assert (retained.stat().st_dev, retained.stat().st_ino) == retained_before
+    actual_shared = (lh.shared.stat().st_dev, lh.shared.stat().st_ino, lh.shared.read_bytes())
+    assert actual_shared == shared_before
+    actual_retained = (retained.stat().st_dev, retained.stat().st_ino)
+    assert actual_retained == retained_before
     assert not lh.provider.active[lh.token.credential]
     assert not lh.temporary.exists()
 
@@ -640,7 +642,8 @@ def test_changed_file_generation_is_preserved_and_never_counted_as_cleanup(lh, r
     call_decision = lh.use()
     with pytest.raises(BindingError):
         call_target.call("cleanup-audit", attempt_ref="cleanup-attempt:changed-file", decision=call_decision)
-    assert (target.stat().st_dev, target.stat().st_ino, target.read_bytes()) == expected
+    actual_target = (target.stat().st_dev, target.stat().st_ino, target.read_bytes())
+    assert actual_target == expected
     assert lh.life.state(decision=lh.use())["registration"] is not None
 
 
@@ -1259,7 +1262,8 @@ def test_large_final_manifest_cleans_and_audits_above_aggregate_document_limit(l
             if resource.retention == "run":
                 assert not path.exists()
             else:
-                assert (path.stat().st_dev, path.stat().st_ino) == kept[resource.ref]
+                actual_resource_identity = (path.stat().st_dev, path.stat().st_ino)
+                assert actual_resource_identity == kept[resource.ref]
     assert not lh.provider.active[lh.token.credential]
     assert not list((lh.stores["primary"].directory / "file-pins").iterdir())
     events = lh.stores["primary"].events(decision=lh.use())
@@ -1302,7 +1306,8 @@ def test_busy_file_fence_keeps_unattempted_generation_available_for_bounded_clea
     assert partial["released"]
     assert partial["registration"] == state["registration"]
     assert target.ref not in {a["resource"]["ref"] for a in partial["actions"].values()}
-    assert (path.stat().st_dev, path.stat().st_ino, path.read_bytes(), path.stat().st_nlink) == original_generation
+    actual_generation = (path.stat().st_dev, path.stat().st_ino, path.read_bytes(), path.stat().st_nlink)
+    assert actual_generation == original_generation
     assert (anchor.stat().st_dev, anchor.stat().st_ino, anchor.stat().st_nlink) == (original_generation[0], original_generation[1], 2)
     assert not any(e["kind"] == "file-retired" and e["data"]["ref"] == target.ref
                    for e in lh.stores["primary"].events(decision=lh.use()))
@@ -1347,7 +1352,8 @@ def test_file_failure_after_durable_claim_never_replays_an_unknown_unlink(lh, mo
     call_decision = lh.use()
     with pytest.raises(BindingError):
         call_target.call("cleanup", outcome="failure", decision=call_decision)
-    assert (lh.temporary.stat().st_dev, lh.temporary.stat().st_ino, lh.temporary.read_bytes()) == generation
+    actual_temporary = (lh.temporary.stat().st_dev, lh.temporary.stat().st_ino, lh.temporary.read_bytes())
+    assert actual_temporary == generation
     assert lh.life.state(decision=lh.use())["actions"] == state["actions"]
     assert not any(e["kind"] == "file-retired" and e["data"]["ref"] == target.ref
                    for e in lh.stores["primary"].events(decision=lh.use()))

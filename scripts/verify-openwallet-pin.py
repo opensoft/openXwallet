@@ -156,6 +156,9 @@ from collections import Counter
 from pathlib import Path, PurePosixPath
 from typing import NamedTuple
 
+_CONJUNCTION = ' and '
+
+
 ROOT = Path(__file__).resolve().parents[1]
 PIN_RELPATH = PurePosixPath("contracts", "openwallet-pin.yaml")
 
@@ -410,7 +413,7 @@ def _require_executed_mount(sub_path: str, leg_path: str) -> None:
     shape check, run with the referent's before a checkout is read: a pin
     naming another valid gitlink would pass every later check against THAT
     checkout while the entrypoints run `openWallet/code/` unverified."""
-    executed = " and ".join(f"{EXECUTED_ROOT_MOUNT}/{member}"
+    executed = _CONJUNCTION.join(f"{EXECUTED_ROOT_MOUNT}/{member}"
                             for member in LOADED_BY_ENTRYPOINTS)
     for field, recorded, mount in (
             ("submodule_path", sub_path, EXECUTED_ROOT_MOUNT),
@@ -419,7 +422,7 @@ def _require_executed_mount(sub_path: str, leg_path: str) -> None:
             raise PinRefusal(
                 "pin-mount-mismatch",
                 f"the pin records {field} {recorded!r}, but "
-                f"{' and '.join(ENTRYPOINTS)} execute the mount {mount!r} "
+                f"{_CONJUNCTION.join(ENTRYPOINTS)} execute the mount {mount!r} "
                 f"({executed}); a pin that names another checkout "
                 "authenticates bytes that never run")
 
@@ -806,7 +809,7 @@ def _require_leg_clean(leg_checkout: Path, shown: str) -> None:
     # `ls-files -v`: "<tag> <path>". A lowercase tag is assume-unchanged; `S`
     # is skip-worktree (`s`, both, is lowercase too).
     flagged = [line[2:] for line in index.stdout.splitlines()
-               if line[:1].islower() or line[:1] == "S"]
+               if line[:1].islower() or line.startswith("S")]
     # What an ignore rule hides from `git status`; a file it already listed
     # is not listed twice.
     hidden = [path for path in others.stdout.split("\0")
@@ -827,12 +830,12 @@ def _require_leg_clean(leg_checkout: Path, shown: str) -> None:
                      "or skip-worktree, whose edits `git status` never "
                      f"reports:\n{_first(flagged, '  ')}")
     if hidden:
-        read = " and ".join(f"{directory}/" for directory in LEG_READ_DIRS)
+        read = _CONJUNCTION.join(f"{directory}/" for directory in LEG_READ_DIRS)
         found.append(f"{len(hidden)} untracked file(s) under {read}, which "
                      "the core reads, hidden from `git status` by an ignore "
                      f"rule:\n{_first(hidden, '  ')}")
     if drift:
-        read = " and ".join(f"{directory}/" for directory in LEG_READ_DIRS)
+        read = _CONJUNCTION.join(f"{directory}/" for directory in LEG_READ_DIRS)
         found.append(f"{len(drift)} tracked path(s) under {read} whose "
                      "CONTENT is not the checked-out commit's, compared byte "
                      "for byte (`git hash-object --no-filters`) and not "

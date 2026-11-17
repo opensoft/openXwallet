@@ -41,7 +41,9 @@ class StageServer(ThreadingMixIn,HTTPServer):
     def process_request_thread(self,request,address):
         try:super().process_request_thread(request,address)
         finally:self.slots.release()
-    def handle_error(self,request,address):pass
+    def handle_error(self,request,address):
+        # Private request failures intentionally produce no server log payload.
+        pass
 
 
 class _Handler(BaseHTTPRequestHandler):
@@ -53,7 +55,9 @@ class _Handler(BaseHTTPRequestHandler):
         try:self.connection.shutdown(2)
         except OSError:pass
     def finish(self):self.timer.cancel();self.timer.join(timeout=1);super().finish()
-    def log_message(self,*args):pass
+    def log_message(self,*args):
+        # Private request metadata is intentionally absent from HTTP logs.
+        pass
     def _reply(self,status,value):
         raw=canonical(value);self.send_response(status);self.send_header("Content-Type","application/json")
         self.send_header("Content-Length",str(len(raw)));self.send_header("Connection","close");self.end_headers()

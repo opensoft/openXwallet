@@ -12,3 +12,5 @@
 - [ ] T010 [SIMPLE] Reconcile source-qualified evidence and close issue #82 after the required checks. files: README.md, docs/quality/backlog-acceptance.md, specs/020-sonar-backlog; verify: documentation links, immutable hashes, complete disposition accounting and actual final-main acceptance.
 
 - [ ] [O] Qualify bounded installed-shell repairs and coherent neutral-provider pins; verify original keys on published main.
+
+- [ ] [O] Qualify the34 source-style repairs and six named observation assertions; retain clock/cap/native inventories and verify live finding keys.

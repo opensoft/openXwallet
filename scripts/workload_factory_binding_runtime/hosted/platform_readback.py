@@ -16,7 +16,7 @@ from .readback import ERROR,ObservationClient,RequestReader,Snapshot
 ARM="https://management.azure.com"
 VERSIONS={"virtualMachines":"2025-04-01&$expand=instanceView","images":"2026-03-01","disks":"2026-03-02",
     "networkInterfaces":"2026-01-01","virtualNetworks":"2026-01-01","networkSecurityGroups":"2026-01-01","publicIPAddresses":"2026-01-01"}
-RESOURCE=re.compile(r"/subscriptions/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/resourceGroups/[A-Za-z0-9_.()-]{1,90}/providers/Microsoft\.(Compute|Network)/([A-Za-z]+)/[A-Za-z0-9_.-]{1,80}(/subnets/[A-Za-z0-9_.-]{1,80})?")
+RESOURCE=re.compile(r"/subscriptions/[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}/resourceGroups/[A-Za-z0-9_.()-]{1,90}/providers/Microsoft\.(Compute|Network)/([A-Za-z]+)/[A-Za-z0-9_.-]{1,80}(/subnets/[A-Za-z0-9_.-]{1,80})?")
 
 
 def resource(value,kind):
@@ -87,7 +87,7 @@ class DeploymentReader:
                 and type(storage.get("dataDisks")) is list,ERROR)
             managed=storage["osDisk"]["managedDisk"]
             require("storageAccountType" not in managed or (type(managed["storageAccountType"]) is str
-                and re.fullmatch(r"[A-Za-z0-9_]{1,64}",managed["storageAccountType"])),ERROR)
+                and re.fullmatch(r"(?a:\w{1,64})",managed["storageAccountType"])),ERROR)
             network_profile=p.get("networkProfile")
             require(tuple(x["managedDisk"]["id"] for x in storage["dataDisks"])==s.disk_ids[1:]
                 and type(network_profile) is dict and type(network_profile.get("networkInterfaces")) is list
@@ -174,7 +174,7 @@ class GuestReader:
             require(type(process) is dict and set(process)=={"pid","start_time","uid","capabilities"}
                 and all(integer(process[k]) and 0<process[k]<=2**63-1 for k in ("pid","start_time","uid"))
                 and process["uid"]==facts["uid"] and process["capabilities"]==[]
-                and facts["denials"]=={k:"denied" for k in ops} and facts["positive_controls"]=={k:"ok" for k in ops},ERROR)
+                and facts["denials"]==dict.fromkeys(ops, "denied") and facts["positive_controls"]==dict.fromkeys(ops, "ok"),ERROR)
             return result
         except Exception:raise BindingError(ERROR) from None
 

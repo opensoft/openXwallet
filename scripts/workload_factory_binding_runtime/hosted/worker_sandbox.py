@@ -53,7 +53,12 @@ def install(*,files,directories,execute):
             fd=os.open(path,os.O_PATH|os.O_CLOEXEC|os.O_NOFOLLOW)
             try:
                 info=os.fstat(fd);require(stat.S_ISDIR(info.st_mode) if is_directory else stat.S_ISREG(info.st_mode))
-                rights=12 if is_directory else (5 if value in execute else 4)
+                if is_directory:
+                    rights=12
+                elif value in execute:
+                    rights=5
+                else:
+                    rights=4
                 require(libc.syscall(445,ruleset,1,ctypes.byref(PathRule(rights,fd)),0)==0)
             finally:os.close(fd)
         require(libc.syscall(446,ruleset,0)==0)

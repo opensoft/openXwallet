@@ -341,3 +341,5 @@ Source quality maintenance: [issue #73 acceptance evidence](docs/quality/sonar73
 Remaining source-quality maintenance: [issue #82 backlog acceptance](docs/quality/backlog-acceptance.md) and [feature 020 plan](specs/020-sonar-backlog/plan.md).
 
 Installed tooling maintenance: [bounded shell predicate repair](docs/quality/installed-shell-repair.md).
+
+Runtime source maintenance: [style repairs and qualification limits](docs/quality/runtime-style-repairs.md).
