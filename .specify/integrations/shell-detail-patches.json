@@ -29,7 +29,7 @@
     {
       "path": ".specify/scripts/bash/common.sh",
       "beforeSha256": "3eb6a529d1a2fcb311228c97686ef5029afd1ce4e2cf0c39e5d1a91313d53963",
-      "afterSha256": "5bbcf4614856235d1f3e22202f0b708d09daefbea2f644155d5ae57e7407e1bd"
+      "afterSha256": "ff96e91345109cf5c2695a9329fb26c0cd2dfd30a29ea61c01eb4b45068bbe26"
     }
   ]
 }
