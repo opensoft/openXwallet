@@ -23,9 +23,10 @@ and accepted strings; storage-account word characters remain ASCII scoped.
 
 The stage fixture uses a yield with ExitStack callbacks registered at the same
 resource-creation sites. Cleanup remains LIFO and both callbacks run even when
-one raises. This uses standard exception chaining within the fixture rather
-than separately registered pytest finalizer failures; no cleanup or failure is
-suppressed. Its injected object and all existing parameterized cases remain.
+one raises. A single failure is raised directly and multiple failures are
+reported together. If setup also failed, the original setup error remains in
+the exception chain. The fixture still supplies the same object for every
+existing parameterized case.
 
 Qualification evidence:
 - Plain and strict validator gates pass;216 focused readback/budget/register
