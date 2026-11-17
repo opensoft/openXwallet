@@ -3,7 +3,7 @@
 set -euo pipefail
 
 JSON_MODE=false
-if test "${1:-}" = "--json"; then
+if [[ "${1:-}" == "--json" && -z "${1#"--json"}" ]]; then
     JSON_MODE=true
 fi
 
@@ -94,7 +94,7 @@ resolve_main_repo_root() {
         fi
     fi
 
-    local common_dir
+    local common_dir common_name
     common_dir=$(git -C "$repo_root" rev-parse --git-common-dir 2>/dev/null || true)
 
     if [[ -z "$common_dir" ]]; then
@@ -106,7 +106,8 @@ resolve_main_repo_root() {
         common_dir="$repo_root/$common_dir"
     fi
 
-    if test "$(basename "$common_dir")" = ".git"; then
+    common_name=$(basename "$common_dir") || :
+    if [[ "$common_name" == ".git" && -z "${common_name#.git}" ]]; then
         local main_root
         main_root=$(dirname "$common_dir")
         if [[ -d "$main_root" ]]; then
