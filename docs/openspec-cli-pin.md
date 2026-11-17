@@ -1,3 +1,44 @@
+## Provider and neutral source admission (2026-11-17)
+
+Provider #1337 is admitted at 53475872efea351bd6bd65994428ea6692b150f4.
+Its complete tree is identical to qualified source
+41eab21570efbd942f49b6ca728d286492adf02a. All six PR gate conditions pass:
+98.5% new coverage, 0.0% duplication, A ratings and all hotspots reviewed.
+Both actual consumer contexts pass all 214 immutable provider assertions,
+including every original 193-case test-file byte. No assertion is skipped.
+The separate provider post-merge run remains under observation.
+
+Neutral code is admitted at ed567edb18a866b16515c86049bfdcdd4722dde9,
+spec at 0fe3151ccc2f3ffe7f72cca35106df46c180b5b7, and the coherent root at
+050bede0263255b1ce94bb312ad7ca63104c7e18. Root and spec merge trees are
+identical to their qualified source trees. All eight contract-artifact hashes
+and release labels remain unchanged. Wallet full CI and actual-main acceptance
+are still pending. Earlier entries below are historical qualification receipts.
+
+## Shared implementation integration (2026-11-16)
+
+Status: prepared; provider #1337, neutral spec/root and adapter admission remain
+pending. The two adapter entrypoints now delegate through
+scripts/_shared_openspec.py to the exact neutral spec implementation. The loader
+verifies the existing root/code pin, the spec gitlink/checkout, and both shared
+source blobs before executing them. Missing, linked, modified or unpinned source
+refuses before package work; there is no duplicate implementation or PATH
+fallback. Tooling explicitly initializes root/code/spec. Product validation
+retains its existing root/code boundary.
+
+The trusted consumer_root API selects this adapter's default pin and corpus.
+Independent operator pin precedence, lock resolution, artifact authentication,
+CLI/dependency versions and strict validation remain unchanged. The standalone
+spec CLI continues to use its own pin and corpus. Complete provider conformance
+runs all 214 assertions in each context, including all 193 original cases, on
+actual source paths. Separate wrapper subprocess tests remove operator-pin
+overrides to prove transport and refuse altered shared source before execution.
+
+The common implementation's exact body hashes and provenance live in the neutral
+spec's docs/openspec-cli-pin.md. Adapter integration hashes and immutable provider
+assertion fingerprints are recorded in requirements/analysis-providers.json.
+Earlier vendoring/admission entries below remain historical receipts.
+
 ## Prepared storage-error follow-up e0e0b9a31ec8
 
 The candidate source is openXfactory PR #1333 at e0e0b9a31ec8f4d5ec2d611d373ce0a918abb5de; main admission remains pending. This extends the authenticated supplied-artifact repair with a structured refusal for staging write or sync failures. The provider suite passes all 193 cases, including disk-full and quota regressions before npm is invoked. The verifier body SHA-256 is 6498736d58ae5b5c08835375f680082622882e5ed815dd84ab32ef3e47d00bf0. The other three provider bodies, CLI version, dependency lock and committed tarball are unchanged. Earlier records below remain historical evidence.

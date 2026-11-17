@@ -341,7 +341,9 @@ The Sonar source-analysis and coverage jobs also initialize openWallet/spec,
 because this existing complete-assembly project scans that leg and owns
 finding acceptance there. This is a source-analysis-only exception to the
 runtime/validator two-line init rule. Ordinary runtime and wallet-validation
-gates retain their existing scoped init and never read the spec leg.
+product-validation gates retain their existing root/code scoped init. OpenSpec
+tooling explicitly initializes the pinned spec leg and authenticates its shared
+implementation before execution; it retains the adapter pin, lock and corpus.
 The analysis inventory binds all four exact Git revisions and real executable
 coverage; no source omissions, runtime authority, thresholds or billing change.
 

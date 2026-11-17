@@ -439,7 +439,7 @@ def executable_inventory(root, names, *, require_target):
     """Use the real target compiler; retain every 3.12 executable line."""
     import coverage
 
-    analyzer = coverage.Coverage(config_file=False, branch=True)
+    analyzer = coverage.Coverage(data_file=None, config_file=False, branch=True)
     local = {name: set(analyzer.analysis2(str(root / name))[1]) for name in names}
     if not require_target or sys.version_info[:2] == (3, 12):
         return local
@@ -449,7 +449,7 @@ def executable_inventory(root, names, *, require_target):
     program = (
         "import coverage,json,sys; from pathlib import Path; "
         "d=json.load(sys.stdin); "
-        "c=coverage.Coverage(config_file=False,branch=True); "
+        "c=coverage.Coverage(data_file=None,config_file=False,branch=True); "
         "print(json.dumps({'python':list(sys.version_info[:3]),"
         "'coverage_version':coverage.__version__,"
         "'files':{n:c.analysis2(str(Path(d['root'])/n))[1] for n in d['names']}}))")

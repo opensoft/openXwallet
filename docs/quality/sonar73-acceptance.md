@@ -1,6 +1,10 @@
 # openXwallet #73 source acceptance
 
-Status: provider repairs are admitted; fresh wallet CI and main acceptance are pending.
+Status: complete-source CI and the PR gate are qualified; published main acceptance is pending.
+
+This record retains the named preparation and failed checkpoints in order.
+Pending states below belong to those checkpoints; the final main result will be
+recorded separately after its required run completes.
 
 The [original issue and gate record](sonar73-before.json) preserves all eight
 finding identities, six original Sonar way conditions and profiles. The
@@ -201,3 +205,57 @@ analysis. The source job now installs the distribution-signed zsh package and
 requires its expected path before running the unchanged corpus. No skip allowance,
 case selection, assertion, runtime/native control or gate threshold changes.
 The failed run and its logs remain retained; fresh qualification is required.
+
+The qualified PR log audit found an empty generated .coverage database at the
+repository root from compiler-only inventory readers. The final closeout uses
+in-memory data for both local and target-interpreter inventory readers, keeping
+all measured data and executable-line results unchanged. A real before/after
+probe reproduced the file creation and confirmed identical statement/exclusion
+sets without a generated file after the correction. No source exclusion is added;
+the final exact-head pipeline and main analysis will requalify the correction.
+
+### First measured main result: additional blockers retained
+
+Main e3eaff635a6d1ea1dd4ca064836f8c4519b6bee2 in run 43989598862 passed all
+four source jobs. All eight original keys are naturally CLOSED/FIXED. Sonar
+computed 83.8% new coverage (83.3% overall), but main remains red: reliability
+and security ratings C and 7.6% duplication. Five newly exposed findings cover
+the neutral service CLI config read, canonical lock discoverability and three
+nullable retained-state uses. The two full canonical OpenSpec copies account
+for nearly all 5,244 duplicated lines. The bounded governance amendment and
+T008-T010 cover the owner/shared-integration repairs; no finding, threshold,
+source file or retained baseline is waived. Issue #73 and T007 remain open.
+
+## Shared implementation correction candidate (2026-11-17)
+
+The provider candidate is 41eab21570efbd942f49b6ca728d286492adf02a, with
+214 passing source assertions. Canonical embedding coverage executes the actual
+source filename; separate source/bytecode attack cases retain scratch paths.
+The installer changed-code coverage is100% and verifier98.21% locally. Validation
+and verdict blocks retain their behavior and main complexity is15 by independent
+review. The neutral spec candidate is1a81be6c108a42ac0ed5f793d5ea2247b8e375fd
+and coherent root candidate0dc636e361aae9f018b5fd8ff50789535a9f1176. Provider
+main admission, final consumer pins, complete conformance, CI and main acceptance
+remain pending. The earlier cecc candidate passed all2432 source tests and11
+subtests, including every original2414 case and2017 native case; this is source
+qualification evidence, not final acceptance of the newer candidate.
+
+## Admitted source chain; wallet acceptance pending (2026-11-17)
+
+The qualified provider source 41eab21570efbd942f49b6ca728d286492adf02a is
+admitted on main at 53475872efea351bd6bd65994428ea6692b150f4 with an identical
+tree. Its PR gate evaluates all six conditions at 98.5% new coverage and 0.0%
+duplication, with A ratings, all hotspots reviewed and no ignored conditions.
+Both consumer contexts pass all 214 exact provider assertions without skips.
+
+Neutral code main is ed567edb18a866b16515c86049bfdcdd4722dde9, spec main is
+0fe3151ccc2f3ffe7f72cca35106df46c180b5b7 and neutral root main is
+050bede0263255b1ce94bb312ad7ca63104c7e18. Standard coherent pin updates pass;
+all eight contract-artifact hashes and release/tag identities remain unchanged.
+The actual adapter installer also authenticated a fresh private generation
+from an unrelated working directory and reported CLI version 1.12.0.
+
+All seven primary checkout HEADs, statuses, working-diff and staged-diff hashes
+still match the original preservation snapshot. Original cloud and Python bench
+sessions and panes remain present. Full wallet source/coverage CI and actual
+main all-13-finding/six-condition acceptance remain pending. Issue #73 stays open.

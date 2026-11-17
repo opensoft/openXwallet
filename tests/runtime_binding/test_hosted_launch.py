@@ -696,3 +696,22 @@ def test_inherited_pipe_signal_controls_refuse_while_fd_queries_remain_allowed(p
 @pytest.mark.parametrize('option',['-c','--help'])
 def test_private_launch_packet_cannot_substitute_python_options_for_selected_worker(sandbox_case,option):
     sandbox_case(option)
+
+
+@pytest.mark.parametrize("missing", ["unit", "generation", "lease"])
+def test_incomplete_running_record_refuses_before_worker_observation(stage, monkeypatch, missing):
+    import sqlite3
+    assert stage.protected.read(stage.v.context, stage.v.token, decision=stage.use()).state == "running"
+    ref = stage.scope["launch_ref"]
+    children = {name: child.pid for name, child in stage.agent.children.items()}
+    with sqlite3.connect(stage.agent.store.directory / "staging.sqlite") as database:
+        # The column is chosen solely from the fixed parameter set above.
+        database.execute("UPDATE stages SET " + missing + "=NULL WHERE ref=?", (ref,))
+    def forbidden(*args, **kwargs):
+        raise AssertionError("incomplete running state reached worker observation")
+    monkeypatch.setattr(stage.spec, "observe", forbidden)
+    with pytest.raises(BindingError, match="hosted-stage-refused"):
+        stage.agent.status(ref, decision=stage.use())
+    row = stage.agent.store.read(ref, decision=stage.use())
+    assert row["state"] == "running" and row[missing] is None
+    assert {name: child.pid for name, child in stage.agent.children.items()} == children

@@ -224,8 +224,10 @@ class HostAgent:
             return {"scope_digest":digest(scope),"state":"indeterminate","unit":row["unit"],"generation":None}
         if row["unit"] is not None and lease and row["lease"] is not None:self.current(decision,row["unit"])
         if row["state"]=="running":
-            generation=row["generation"];require(generation is not None and row["lease"] is not None,ERROR)
-            require(self.worker.observe(generation["pid"],generation["start_time"],row["unit"],decision)==generation,ERROR)
+            unit, generation = row["unit"], row["generation"]
+            if unit is None or generation is None or row["lease"] is None:
+                raise BindingError(ERROR)
+            require(self.worker.observe(generation["pid"],generation["start_time"],unit,decision)==generation,ERROR)
         decision.now();return {"scope_digest":digest(scope),"state":row["state"],"unit":row["unit"],"generation":row["generation"]}
 
     def close(self):

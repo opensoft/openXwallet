@@ -521,8 +521,11 @@ class HostedLifecycle:
 
     def release_stage(self, ref, *, decision):
         state = self._registration(ref, decision)
-        require(state["final"] is not None and not state["closed"] and not state["released"], ERROR)
-        plan = run_plan(state["final"]["plan"])
+        final = state["final"]
+        if final is None:
+            raise BindingError(ERROR)
+        require(not state["closed"] and not state["released"], ERROR)
+        plan = run_plan(final["plan"])
         records = [e["data"] for e in self.audit_store.events(decision=decision) if e["kind"] == "takeover-ack"]
         require(len(records) == 1, ERROR)
         ack = records[0]
@@ -688,9 +691,12 @@ class RegisteredStageReadback:
         from .finalization import StagingReadback
         life = self.lifecycle
         state = life._registration(ref, decision)
-        require(state["generation"] is not None and not state["closed"], ERROR)
+        generation_record = state["generation"]
+        if generation_record is None:
+            raise BindingError(ERROR)
+        require(not state["closed"], ERROR)
         ack = life.stage_lease(life.scope["cleanup_ref"], decision=decision)
-        reg, generation = state["registration"], state["generation"]["generation"]
+        reg, generation = state["registration"], generation_record["generation"]
         projected = {k: life.scope[k] for k in ("launch_ref", "host_ref", "incarnation_ref", "boot_id")}
         projected.update(invocation_ref=reg["unit"]["invocation_ref"], pid=generation["pid"], start_time=generation["start_time"])
         require(ack["scope_digest"] == digest(life.scope) and ack["unit_digest"] == digest(reg["unit"]), ERROR)
