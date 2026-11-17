@@ -1,6 +1,6 @@
 # Operator source conformance runbook
 
-Status: T012V accepted-main #79 integration locally qualified; final-head CI/owner acceptance pending
+Status: T012V accepted-main #80 integration and clarity locally qualified; final-head CI/owner acceptance pending
 Kind: source-runbook
 Scope: offline source and disposable local fixtures only
 Sole source publication task: tasks.md T012V; owner acceptance and operations separate
@@ -296,7 +296,7 @@ control-host-loss watchdog, infrastructure retirement and human/domain/consumer
 acceptance remain open. Setup and protected dispatch remain unauthorized;
 feedback deferred and neither historical blocked write replayed.
 
-## Current accepted-main #79 completion record
+## Historical accepted-main #79 completion record
 
 Executable `223e2c825494041b9104c475a8a294483f6fcaf2` passes 2,781 full tests plus 11 subtests
 and all 2,369 mandatory native cases, with all prior identities preserved.
@@ -308,3 +308,17 @@ Use the [full source/pin/evidence record](hosting-conformance-implementation.md#
 for exact immutable IDs, actual timing and authority limits. Fresh final-head
 hosted CI, evaluated Sonar and owner source ratification remain PR #78 gates;
 this local source runbook grants no operational setup or protected dispatch.
+
+## Current accepted-main #80 completion record
+
+Frozen executable `f9b9bd5a798dd251f404a8e1ed1660c9378af23e` passes 2,781 full tests plus 11
+subtests and all 2,369 mandatory native cases. Every prior identity and static
+expectation remains. Nine source roles clear the integration and clarity fixes.
+Independent final audit checks 25,018 generation observations and all ten
+preservation cases; final fixture roots/native container are absent. Neutral
+root/code/spec are 819de672/fb132776/0fe3151c; qualification owner remains bb0e9dae.
+Focused tracing on this source covers 146/153 helper statements and 39/42 branches
+with zero exclusions and all 22 controls passing. Use the [full current record](hosting-conformance-implementation.md#t012v-main-80-integrated-source-qualification)
+for immutable IDs, actual timing, retained historical failures and limits.
+Fresh final-head hosted CI/evaluated Sonar and owner source ratification remain
+PR #78 gates. This source procedure grants no setup or protected dispatch.

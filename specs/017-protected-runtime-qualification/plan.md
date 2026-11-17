@@ -2,7 +2,7 @@
 
 **Branch**: `017-protected-runtime-qualification` | **Date**: 2026-11-12
 **Spec**: [spec.md](spec.md)
-**State**: T012T and qualification-only private39 source decisions are accepted; isolated T012T realization and frozen full/native/cleanup qualification are complete; isolated T012U conformance/runbook is complete via [subplan](hosting-conformance-plan.md) and [qualified source record](hosting-conformance-implementation.md); T012V accepted-main #79 integration full/native/review/cleanup qualification is complete; exact-head hosted CI and owner acceptance remain PR #78 gates, with operations separate. See [T012T source record](hosting-evidence-budget-realization.md).
+**State**: T012T and qualification-only private39 source decisions are accepted; isolated T012T realization and frozen full/native/cleanup qualification are complete; isolated T012U conformance/runbook is complete via [subplan](hosting-conformance-plan.md) and [qualified source record](hosting-conformance-implementation.md); T012V accepted-main #80 integration and bounded clarity full/native/review/cleanup qualification is complete; exact-head hosted CI and owner acceptance remain PR #78 gates, with operations separate. See [T012T source record](hosting-evidence-budget-realization.md).
 
 Bootstrap amendment `fix-protected-runtime-dispatch-bootstrap` was source
 accepted and landed in factory #1311 / adapter #60. The static dispatch selection
@@ -341,10 +341,19 @@ complete/native/hosted gates. Setup/dispatch remain unauthorized.
 
 See [frozen qualification](hosting-conformance-implementation.md#t012v-frozen-source-qualification-and-current-handoff). The final reconciliation changes documents only after 2,761 full tests plus 11 subtests and all 2,364 mandatory native nodes pass. T013 selection and all scoped operational authority remain ungranted; hosted CI and owner acceptance are separate exact-head PR gates.
 
-### Accepted-main #79 qualification handoff
+### Historical accepted-main #79 qualification handoff
 
-The [current integrated source record](hosting-conformance-implementation.md#t012v-main-79-integrated-source-qualification)
+The [historical main #79 source record](hosting-conformance-implementation.md#t012v-main-79-integrated-source-qualification)
 records 2,781 full tests plus 11 subtests, all 2,369 mandatory native cases,
 unchanged prior identities and independent preservation/cleanup. Accepted main
 shared tooling/pins/nullable guards remain intact. Old receipts are historical;
 fresh final-head hosted CI/Sonar and owner ratification remain separate.
+
+### Accepted-main #80 qualification handoff
+
+The [current integrated source record](hosting-conformance-implementation.md#t012v-main-80-integrated-source-qualification)
+records 2,781 full tests plus 11 subtests and all 2,369 mandatory native cases,
+preserved identities and independent preservation/cleanup. Accepted incoming
+pins/tooling/tests retain exact baseline bytes. Bounded clarity changes retain
+assertion predicates, branch precedence and cancellation/resource boundaries.
+Fresh final-head hosted CI/Sonar and owner source ratification remain separate.

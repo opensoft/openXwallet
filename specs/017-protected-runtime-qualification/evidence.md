@@ -2896,6 +2896,18 @@ all 2,369 mandatory native cases without failures/errors/skips. All 366 input
 hashes and earlier case identities remain; nine integration reviewers clear it.
 Independent final audit checks 25,005 generation observations and ten
 preservation cases, with final fixture roots/native container absent. See the
-[current qualified source record](hosting-conformance-implementation.md#t012v-main-79-integrated-source-qualification).
+[historical main #79 source record](hosting-conformance-implementation.md#t012v-main-79-integrated-source-qualification).
 Old3ceb CI receipts remain historical; new final-head hosted CI/Sonar belongs on
 PR #78 before ratification. No operational selection or grant is supplied.
+
+## 2026-11-17 accepted-main #80 and advisory clarity qualification
+
+Frozen executable `f9b9bd5a798dd251f404a8e1ed1660c9378af23e` passes 2,781 full tests plus 11
+subtests and all 2,369 mandatory native cases without failures/errors/skips.
+All 366 input hashes, prior case identities and static expectations remain.
+Nine exact-head source roles clear the incoming accepted pins and bounded clarity
+changes. Independent final audit checks 25,018 generation observations and
+ten positive preservation cases; final fixture roots/native container are absent.
+See the [current source qualification](hosting-conformance-implementation.md#t012v-main-80-integrated-source-qualification).
+Earlier #79/3ceb receipts stay historical. New final-head hosted CI/Sonar and
+actual owner ratification remain PR #78 gates; no operational grant follows.

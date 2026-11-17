@@ -1,6 +1,6 @@
 # T013 Operational Selection Packet
 
-Status: T012V accepted-main #79 integration locally qualified on PR #78; fresh CI/owner acceptance and T013 selections pending; setup/dispatch NOT GRANTED
+Status: T012V accepted-main #80 integration and clarity locally qualified on PR #78; fresh CI/owner acceptance and T013 selections pending; setup/dispatch NOT GRANTED
 Updated: 2026-11-17
 Governance: `opensoft/openXfactory`, `prepare-protected-runtime-qualification`
 Bootstrap amendment: `fix-protected-runtime-dispatch-bootstrap`
@@ -21,7 +21,7 @@ operational stages remain ungranted.
 
 ## Current candidate and next decision
 
-Executable candidate `223e2c825494041b9104c475a8a294483f6fcaf2` passes 2,781 full tests plus 11 subtests and all 2,369 mandatory native nodes. Nine local expert roles clear it; independent final audit verifies ten preservation cases and fixture/container absence. See [qualification evidence](hosting-conformance-implementation.md#t012v-main-79-integrated-source-qualification). PR #78 records exact-head hosted gates. Owner source acceptance is pending; no execution `accepted_commit` is selected.
+Executable candidate `f9b9bd5a798dd251f404a8e1ed1660c9378af23e` passes 2,781 full tests plus 11 subtests and all 2,369 mandatory native nodes. Nine local expert roles clear it; independent final audit verifies ten preservation cases and fixture/container absence. See [qualification evidence](hosting-conformance-implementation.md#t012v-main-80-integrated-source-qualification). PR #78 records exact-head hosted gates. Owner source acceptance is pending; no execution `accepted_commit` is selected.
 
 ## Historical #65 source acceptance and T012M handoff
 
@@ -59,8 +59,8 @@ remains the review evidence, not a completed connector review.
 At that historical checkpoint the neutral assembly/code pins were
 `b0af7c2ce53d63786a08a20aa3602a6f90345606` /
 `72313daab1f229c049cb90998931564c1904dbbc`. The current candidate inherits
-accepted main #79 assembly `050bede0263255b1ce94bb312ad7ca63104c7e18`, code
-`ed567edb18a866b16515c86049bfdcdd4722dde9` and spec
+accepted main #80 assembly `819de67265bcc189936a5f3b50753a470af6d7e3`, code
+`fb132776c119a153255c1bc6f423734911c98093` and spec
 `0fe3151ccc2f3ffe7f72cca35106df46c180b5b7`. Shared OpenSpec tooling explicitly
 authenticates this spec leg; complete-source analysis also reads it. Product/
 runtime validation remains code-only. Separately selected portable

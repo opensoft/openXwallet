@@ -1,6 +1,6 @@
 # T012U isolated conformance realization
 
-Status: main #79 qualification historical; accepted-main #80/advisory clarity work pending fresh qualification
+Status: main #80 integration and bounded clarity source locally qualified; PR #78 final-head hosted CI and owner acceptance pending
 Kind: implementation-record
 Scope: source/fixture only; no operational grant
 
@@ -480,3 +480,84 @@ failed diagnostics accurately. Only after those gates publish the new head,
 renew hosted CI/coverage/Sonar and present it for owner source ratification.
 T013 and all operational selections/setup/protected dispatch remain ungranted;
 feedback deferred and historical blocked writes unreplayed.
+
+## T012V main #80 integrated source qualification
+
+Accepted main #80 post-merge [run 44057991374](https://github.com/opensoft/openXwallet/actions/runs/44057991374)
+passes on exact merge `51c250151b28743d9e7d0eae2b945fc857884679`.
+That baseline receipt is separate from this candidate qualification. All six
+incoming accepted paths retain their exact bytes. Neutral root/code/spec bind
+respectively `819de67265bcc189936a5f3b50753a470af6d7e3`,
+`fb132776c119a153255c1bc6f423734911c98093` and
+`0fe3151ccc2f3ffe7f72cca35106df46c180b5b7`. The neutral traversal cleanup
+preserves component order, directory-relative O_NOFOLLOW opens and ExitStack
+ownership. Eight contract-artifact digests and locked CLI/dependency bytes are
+unchanged. Shared OpenSpec tooling explicitly initializes/authenticates pinned
+spec source; ordinary product/runtime validation remains code-only. The explicit
+qualification owning code `bb0e9dae89a771b05f6c235d0a77237288b95c85` remains a
+separate selection and is not substituted by these neutral pins.
+
+Frozen executable `f9b9bd5a798dd251f404a8e1ed1660c9378af23e` passes all seven ordered source gates:
+pins, YAML, plain/strict validator, full suite and default authenticated pinned
+OpenSpec strict validation. Full **2,781 parent tests plus 11 subtests** pass in
+2034.750s outer wall time; mandatory native **2,369 cases** pass in
+2071.894s. Both have zero failures/errors/skips. Native final PASS
+follows owning-source postflight. All previous main #79 case identities and
+order, static module counts/fingerprints and matrix anchors remain unchanged.
+H03/H10/H11/H12 are 97/85/284/142; R01 remains 47, conformance self-tests 64,
+hosted-evidence 198, deadline-probe 22 and canonical replay compatibility 115.
+
+The bounded clarity changes address 48 of the preceding scan's 60 maintainability
+advisories: split 42 existing conjunction assertions preserving predicates/order;
+prepare signing outside the expected-origin-refusal context; expand equivalent
+privacy/read-budget/receipt branches; reuse the identical JSON media-type literal.
+Independent AST comparison and all nine local expert roles clear these changes.
+Intentional exception boundaries, cancellation/resource ownership and the three
+co-owned complex functions remain unchanged. The other 12 reviewed advisories are
+nonblocking debt; actual fresh scan results belong on PR #78. No issue status,
+threshold, coverage exclusion or test obligation is changed to obtain a pass.
+Focused existing controls pass 149 budget/legacy-encoding tests and all 22 probe
+tests under actual CTracer:146/153 helper statements and 39/42 branches, zero
+exclusions, including actual child execution. Focused evidence is additional
+regression evidence, not a substitute for complete qualification.
+
+All 366 frozen tracked regular-input hashes and exact neutral/owning
+identities match after execution. The native observation verifies the immutable
+image, network none/only loopback, read-only source/rootfs, UID1000/GID65534,
+empty supplementary groups/capabilities and NoNewPrivs1. Final external audit
+checks **25,018 generation observations**, 854 journals,
+262 helper receipts and all ten positive preservation cases;
+there are no attributable live processes or initial qualified teardown failures.
+These are observations, not unique process counts. Retained/shared file identities
+remain, run files are absent, credential attempts are retired, file pins released
+and independent cleanup audit retained. Both final exact owned fixture roots and
+the named native container are absent; safe reports remain outside fixtures.
+The focused disposable roots were independently audited and removed as well.
+
+Earlier qualification remains historical. In particular, the main #79 first
+native attempt's two transport refusals, diagnostic readback and later complete
+successful run remain recorded above. Their original refusal mechanism is
+unproven; these clarity changes and fresh passes do not establish its cause or a
+general timing guarantee. No consumed mutation or blocked write was replayed.
+
+Accepted main #81 `835f92c5890ec03eac1e72f3c34c5b95f0504093` separately
+adds five Markdown changes and the historical quality receipt
+`docs/quality/sonar73-after.json`. Publication reconciliation must preserve all
+six accepted blobs exactly. This is main/feature019 evidence, not candidate
+qualification. The explicit final documentation/evidence allowance is 15 Markdown
+paths plus that one JSON receipt; all 351 remaining frozen regular inputs,
+including every executable/test/contract/pin/workflow, must retain qualified bytes.
+
+Final reconciliation changes documentation/evidence only. Fresh final
+published-head hosted CI, actual coverage
+job timing, evaluated PR-specific Sonar and document-review receipts belong on
+[PR #78](https://github.com/opensoft/openXwallet/pull/78), and are not predeclared
+here. Only sequential ordinary source CI retains the governed 90-minute cap;
+traced coverage jobs retain 45 minutes. Runtime clocks/private39/other phase caps,
+wire contracts and protected defaults remain unchanged.
+
+Owner exact-head source ratification and landing remain separate. T001/T013-T015,
+real target/principal/key/credential/endpoint selections, deployed qualification,
+external control-host-loss watchdog/infrastructure retirement and consumer/human/
+domain acceptance remain open. Setup/protected dispatch unauthorized; feedback
+deferred and historical blocked writes unreplayed.

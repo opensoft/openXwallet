@@ -1,6 +1,6 @@
 # Required Qualification Matrix
 
-Status: T012V accepted-main #79 integration locally qualified on PR #78; final-head CI, owner acceptance and deployed cases pending
+Status: T012V accepted-main #80 integration and clarity locally qualified on PR #78; final-head CI, owner acceptance and deployed cases pending
 
 
 ## Current H01-H12 source coverage (T012V)
@@ -13,7 +13,7 @@ Current collection is 2,781 full parent cases and 2,369 mandatory native nodes;
 all 64 conformance self-tests, prior 2,761 full / 2,364 native identities and
 earlier anchors remain. New source controls cover the probe total Decision,
 cancellation ownership and byte-compatible canonical-journal replay. Execution
-and cleanup completion are recorded in [current evidence](hosting-conformance-implementation.md#t012v-main-79-integrated-source-qualification).
+and cleanup completion are recorded in [current evidence](hosting-conformance-implementation.md#t012v-main-80-integrated-source-qualification).
 
 | Group / anchored nodes | Actual source positive | Independent refusal/mutation | Remaining live gate |
 | --- | --- | --- | --- |

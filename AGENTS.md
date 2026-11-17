@@ -443,7 +443,7 @@ The bounded corrections and delegated source-CI timing rationale are recorded in
 T001/T013-T015 operational decisions remain open; setup/dispatch unauthorized,
 feedback deferred and neither historical denied write may be replayed.
 
-### T012V locally qualified publication candidate
+### Historical T012V main #77 publication candidate
 
 Executable source `05101d15ad407264a96818c8527229f1f0273ac0` passes 2,761 full tests plus 11
 subtests and all 2,364 mandatory native nodes, with every prior identity retained.
@@ -468,7 +468,7 @@ ed567ed code and0fe3151 spec; shared OpenSpec tooling authenticates the spec leg
 while runtime product validation stays code-only. Explicit qualification ownerbb0
 is separate. No setup/dispatch, feedback or blocked-write replay is authorized.
 
-### Current T012V main #79 qualified source candidate
+### Historical T012V main #79 qualified source candidate
 
 Frozen executable `223e2c825494041b9104c475a8a294483f6fcaf2` passes 2,781 full tests plus
 11 subtests and all 2,369 mandatory native nodes; all 366 input hashes and prior
@@ -481,7 +481,7 @@ limits. Final doc-only reconciliation retains qualified executable bytes; fresh
 final-head hosted CI/Sonar and owner ratification remain PR #78 gates. No
 setup/dispatch, feedback or blocked-write replay is authorized.
 
-### Current T012V main #80 and advisory clarity work
+### Historical T012V main #80 and advisory clarity plan
 
 Accepted main #80 advances pins/tooling/tests after the completed main #79
 qualification. Existing T012V and feature017 hosting-conformance-implementation.md
@@ -490,3 +490,17 @@ all oracles, case identities, wire profiles, budgets, broad cancellation/privacy
 boundaries and lexical resource ownership. Fresh review/full/native/cleanup and
 hosted qualification are required; earlier receipts remain historical. No
 setup/dispatch, feedback or blocked-write replay is authorized.
+
+### Current T012V main #80 qualified source candidate
+
+Frozen executable `f9b9bd5a798dd251f404a8e1ed1660c9378af23e` passes 2,781 full tests plus
+11 subtests and all 2,369 mandatory native nodes; all 366 frozen inputs and prior
+identities remain. Nine exact-head source roles clear the main #80 integration
+and bounded clarity changes. Independent final audit checks 25,018 generation
+observations and ten preservation cases; final fixture roots/container are absent.
+Neutral root/code/spec are 819de672/fb132776/0fe3151c; separate qualification owner
+remains bb0e9dae. Feature017 hosting-conformance-implementation.md records immutable
+identities and actual evidence. Final documentation retains qualified executable
+bytes; fresh final-head hosted CI/Sonar and owner source ratification remain
+PR #78 gates. T001/T013-T015/setup/dispatch remain ungranted; feedback deferred
+and neither blocked write replayed.
