@@ -347,8 +347,6 @@ resolve_template() {
     local repo_root="$2"
     local base="$repo_root/.specify/templates"
 
-    local -r replacement_strategy=replace
-
     # Priority 1: Project overrides
     local override="$base/overrides/${template_name}.md"
     [[ -f "$override" ]] && echo "$override" && return 0
@@ -436,6 +434,7 @@ resolve_template_content() {
     # Collect all layers (highest priority first)
     local -a layer_paths=()
     local -a layer_strategies=()
+    local -r replacement_strategy=replace
 
     # Priority 1: Project overrides (always "replace")
     local override="$base/overrides/${template_name}.md"
