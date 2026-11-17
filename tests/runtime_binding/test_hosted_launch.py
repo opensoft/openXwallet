@@ -28,7 +28,8 @@ def test_stage_reservation_is_durable_and_concurrent_winner_is_unique(tmp_path):
     assert results.count(True)==1
     store=StageStore(path,identity=identity,kind="controller")
     assert store.read("launch:one",decision=use())["state"]=="reserved"
-    with pytest.raises(BindingError):store.reserve("launch:one",{"source":"changed"},decision=use())
+    reserve_decision = use()
+    with pytest.raises(BindingError):store.reserve("launch:one",{"source":"changed"},decision=reserve_decision)
 
 
 @pytest.mark.parametrize("change",["directory","database","permissions","schema","kind","clock"])
@@ -47,7 +48,8 @@ def test_stage_store_loss_replacement_or_regression_never_recreates_scope(tmp_pa
         with pytest.raises(BindingError):store.read("launch:one",decision=late)
         return
     existed=path.exists();db_existed=(path/"staging.sqlite").exists()
-    with pytest.raises(BindingError):store.read("launch:one",decision=use())
+    read_decision = use()
+    with pytest.raises(BindingError):store.read("launch:one",decision=read_decision)
     assert path.exists()==existed
     assert (path/"staging.sqlite").exists()==db_existed
 
@@ -56,7 +58,8 @@ def test_stage_store_loss_replacement_or_regression_never_recreates_scope(tmp_pa
 def test_stage_state_cannot_skip_consumption_or_reopen_old_attempt(tmp_path,transition):
     path=tmp_path/"state";identity=StageStore.initialize(path,kind="host");store=StageStore(path,identity=identity,kind="host")
     store.reserve("launch:one",{"source":"fixed"},decision=use())
-    with pytest.raises(BindingError):store.transition("launch:one",*transition,decision=use())
+    transition_decision = use()
+    with pytest.raises(BindingError):store.transition("launch:one",*transition,decision=transition_decision)
 
 
 @pytest.fixture
@@ -101,7 +104,8 @@ print(json.dumps(results),flush=True)
         try:out,error=process.communicate(json.dumps(value).encode()+b'\n',timeout=5)
         except BaseException:process.kill();process.communicate();raise
         if change in ('-c','--help'):
-            assert process.returncode==2 and out==b''
+            assert process.returncode==2
+            assert out==b''
             return
         assert process.returncode==0,error.decode(errors='replace')
         return json.loads(out)
@@ -165,7 +169,8 @@ def test_valid_protected_identity_does_not_replace_separate_current_grant(stage,
     elif change=='wrong-scope':grant['scope']['run_id']='999'
     elif change=='expired':grant['expires_at']=stage.v.h.now
     else:grant['self_approved']=True
-    with pytest.raises(BindingError):stage.protected.read(stage.v.context,stage.v.token,decision=stage.use())
+    read_decision = stage.use()
+    with pytest.raises(BindingError):stage.protected.read(stage.v.context,stage.v.token,decision=read_decision)
     assert stage.agent.children=={}
     assert not stage.rb.stage_lease_path.exists()
 
@@ -181,7 +186,8 @@ def test_independent_provider_or_context_changes_refuse_before_staging(stage,cha
     elif change=='source-moved':stage.rb.main_sha='f'*40
     else:
         facts=json.loads(stage.rb.plan_fact_path.read_bytes());facts['state']='revoked';stage.rb.plan_fact_path.write_bytes(canonical(facts))
-    with pytest.raises(BindingError):stage.protected.read(stage.v.context,stage.v.token,decision=stage.use())
+    read_decision = stage.use()
+    with pytest.raises(BindingError):stage.protected.read(stage.v.context,stage.v.token,decision=read_decision)
     assert stage.agent.children=={}
     assert stage.v.raw==original
 
@@ -189,7 +195,8 @@ def test_independent_provider_or_context_changes_refuse_before_staging(stage,cha
 @pytest.mark.parametrize('token',['preflight','tampered'])
 def test_wrong_intrinsic_phase_or_signature_never_reaches_launch(stage,token):
     value=stage.v.pre_token if token=='preflight' else stage.v.token[:-10]+'A'*10
-    with pytest.raises(BindingError):stage.protected.read(stage.v.context,value,decision=stage.use())
+    read_decision = stage.use()
+    with pytest.raises(BindingError):stage.protected.read(stage.v.context,value,decision=read_decision)
     assert stage.agent.children=={}
     assert not stage.agent.store.known(stage.scope['launch_ref'],stage.scope,decision=stage.use())
 
@@ -206,7 +213,8 @@ def test_cleanup_acknowledgement_is_independently_read_before_start(stage,change
         else:stage.rb.stage_grant['state']='revoked'
         stage.rb.stage_lease_path.write_bytes(canonical(data))
     stage.controller.register_cleanup=registration
-    with pytest.raises(BindingError):stage.protected.read(stage.v.context,stage.v.token,decision=stage.use())
+    read_decision = stage.use()
+    with pytest.raises(BindingError):stage.protected.read(stage.v.context,stage.v.token,decision=read_decision)
     assert stage.agent.children=={}
     assert stage.controller.store.known(stage.scope['launch_ref'],stage.scope,decision=stage.use())
     assert stage.agent.store.known(stage.scope['launch_ref'],stage.scope,decision=stage.use())
@@ -221,7 +229,8 @@ def test_changed_launch_artifact_or_projection_never_starts_a_worker(stage,chang
         else:
             path=stage.spec.paths['worker' if change=='worker-source' else 'configuration'];path.chmod(0o644);path.write_bytes(path.read_bytes()+b' ')
     stage.controller.register_cleanup=registration
-    with pytest.raises(BindingError):stage.protected.read(stage.v.context,stage.v.token,decision=stage.use())
+    read_decision = stage.use()
+    with pytest.raises(BindingError):stage.protected.read(stage.v.context,stage.v.token,decision=read_decision)
     assert stage.agent.children=={}
     assert stage.agent.store.read(stage.scope['launch_ref'],decision=stage.use())['state']=='start-consumed'
 
@@ -238,7 +247,8 @@ def test_lost_mutation_response_is_consumed_and_recovers_status_without_resubmis
             if not dropped:dropped=True;raise OSError('lost-fixture-response')
         return result
     monkeypatch.setattr(PrivateHttps,'exchange',lost)
-    with pytest.raises(BindingError):stage.protected.read(stage.v.context,stage.v.token,decision=stage.use())
+    read_decision = stage.use()
+    with pytest.raises(BindingError):stage.protected.read(stage.v.context,stage.v.token,decision=read_decision)
     assert calls==[operation]
     later=stage.protected.read(stage.v.context,stage.v.token,decision=stage.use())
     assert later.state==('registered' if operation=='register' else 'running')
@@ -255,7 +265,8 @@ def test_six_status_reads_and_original_expiry_survive_controller_reconstruction(
             correlator=original.correlator,authority=original.authority,host=original.host,store=original.store,register_cleanup=original.register_cleanup)
         assert stage.protected.read(stage.v.context,stage.v.token,decision=stage.use()).state=='running'
     count=len(stage.rb.calls)
-    with pytest.raises(BindingError):stage.protected.read(stage.v.context,stage.v.token,decision=stage.use())
+    read_decision = stage.use()
+    with pytest.raises(BindingError):stage.protected.read(stage.v.context,stage.v.token,decision=read_decision)
     assert len(stage.rb.calls)==count
     assert len(stage.agent.children)==1
 
@@ -263,7 +274,8 @@ def test_six_status_reads_and_original_expiry_survive_controller_reconstruction(
 def test_lease_expiry_cannot_be_renewed_under_existing_launch_reference(stage):
     stage.protected.read(stage.v.context,stage.v.token,decision=stage.use())
     lease=json.loads(stage.rb.stage_lease_path.read_bytes());lease['expires_at']+=1;stage.rb.stage_lease_path.write_bytes(canonical(lease))
-    with pytest.raises(BindingError):stage.protected.read(stage.v.context,stage.v.token,decision=stage.use())
+    read_decision = stage.use()
+    with pytest.raises(BindingError):stage.protected.read(stage.v.context,stage.v.token,decision=read_decision)
     assert len(stage.agent.children)==1
 
 
@@ -286,13 +298,16 @@ def test_worker_privilege_probe_cannot_count_excess_permission_or_outage_as_deni
     stage.host.register(stage.scope['launch_ref'],decision=stage.use())
     if change=='excess-permission':stage.agent_server.permissions['sha256:'+stage.worker_cert[2]]=frozenset({'register','start','status'})
     else:stage.agent_server.shutdown();stage.agent_server.server_close()
-    with pytest.raises(BindingError):probe_worker_denial(channel=worker_channel(stage),scope=stage.scope,decision=stage.use())
+    probe_worker_denial_channel = worker_channel(stage)
+    probe_worker_denial_decision = stage.use()
+    with pytest.raises(BindingError):probe_worker_denial(channel=probe_worker_denial_channel,scope=stage.scope,decision=probe_worker_denial_decision)
     assert stage.agent.children=={}
 
 
 def test_changed_phase_endpoint_is_refused_before_public_request(stage):
     stage.plan.path='/v2/protected'
-    with pytest.raises(BindingError):stage.plan.read(stage.v.context,stage.v.token,decision=stage.use())
+    read_decision = stage.use()
+    with pytest.raises(BindingError):stage.plan.read(stage.v.context,stage.v.token,decision=read_decision)
     assert stage.agent.children=={}
 
 
@@ -355,7 +370,8 @@ def test_current_host_generation_cannot_be_substituted_after_launch(stage,change
         else:value['facts']['generation']['policy_digest']='sha256:'+'f'*64
         return Response(200,canonical(value))
     monkeypatch.setattr(stage.host.channel.transport,'exchange',substituted)
-    with pytest.raises(BindingError):stage.host.status(stage.scope['launch_ref'],decision=stage.use())
+    status_decision = stage.use()
+    with pytest.raises(BindingError):stage.host.status(stage.scope['launch_ref'],decision=status_decision)
     assert len(stage.agent.children)==1
 
 
@@ -366,7 +382,8 @@ def test_concurrent_private_starts_consume_one_attempt_and_launch_one_generation
         try:return stage.host.start(ref,digest(unit),decision=stage.use(),before_send=lambda:None)['state']
         except BindingError:return 'refused'
     with ThreadPoolExecutor(max_workers=4) as pool:results=list(pool.map(start,range(4)))
-    assert results.count('running')==1 and results.count('refused')==3
+    assert results.count('running')==1
+    assert results.count('refused')==3
     assert len(stage.agent.children)==1
     assert stage.agent.store.read(ref,decision=stage.use())['state']=='running'
 
@@ -395,15 +412,20 @@ def test_manager_crash_before_pid_persistence_kills_and_reaps_worker_without_ret
         out,error=p.communicate('start\n',timeout=22)
         assert p.returncode==0,error
         observed=json.loads(out)
-        assert observed['manager_exit']==73 and observed['worker_reaped'] and observed['worker_signal']==9
+        assert observed['manager_exit']==73
+        assert observed['worker_reaped']
+        assert observed['worker_signal']==9
         assert not (Path('/proc')/str(observed['worker_pid'])).exists()
     finally:
         if p.poll() is None:p.kill()
         p.communicate(timeout=3)
     row=store.read(stage.scope['launch_ref'],decision=stage.use())
-    assert row['state']=='start-consumed' and row['generation'] is None
+    assert row['state']=='start-consumed'
+    assert row['generation'] is None
     assert stage.agent.status(stage.scope['launch_ref'],decision=stage.use())['state']=='indeterminate'
-    with pytest.raises(BindingError):stage.agent.start(stage.scope['launch_ref'],digest(unit),decision=stage.use())
+    start_argument_2 = digest(unit)
+    start_decision = stage.use()
+    with pytest.raises(BindingError):stage.agent.start(stage.scope['launch_ref'],start_argument_2,decision=start_decision)
     assert stage.agent.children=={}
 
 
@@ -415,7 +437,8 @@ def test_original_decision_expiry_after_cleanup_registration_prevents_start(stag
         if clock=='wall':stage.v.h.now+=11
         else:stage.v.c.r.clock.mono+=11
     stage.controller.register_cleanup=registration
-    with pytest.raises(BindingError):stage.protected.read(stage.v.context,stage.v.token,decision=stage.use())
+    read_decision = stage.use()
+    with pytest.raises(BindingError):stage.protected.read(stage.v.context,stage.v.token,decision=read_decision)
     assert stage.agent.children=={}
     assert stage.rb.stage_lease_path.exists()
 
@@ -444,13 +467,15 @@ def test_post_spawn_checkpoint_refuses_expiry_or_revocation_before_worker_exec(s
                 stage.rb.stage_lease_path.write_bytes(canonical(lease))
         return child
     monkeypatch.setattr(subprocess,'Popen',spawned)
-    with pytest.raises(BindingError):stage.protected.read(stage.v.context,stage.v.token,decision=stage.use())
+    read_decision = stage.use()
+    with pytest.raises(BindingError):stage.protected.read(stage.v.context,stage.v.token,decision=read_decision)
     assert len(stage.agent.children)==1
     child=stage.agent.children[stage.scope['launch_ref']]
     assert b'_launch_exec.py' in (Path('/proc')/str(child.pid)/'cmdline').read_bytes()
     assert not select_ready(child.stdout)
     row=stage.agent.store.read(stage.scope['launch_ref'],decision=stage.use())
-    assert row['state']=='start-consumed' and row['generation'] is None
+    assert row['state']=='start-consumed'
+    assert row['generation'] is None
 
 
 def select_ready(stream):
@@ -473,8 +498,10 @@ def test_complete_authority_is_refreshed_after_durable_registration(stage,change
         elif change=='review':stage.g.reviews[0]['state']='rejected'
         else:stage.g.run['status']='completed'
     stage.controller.register_cleanup=registered
-    with pytest.raises(BindingError):stage.protected.read(stage.v.context,stage.v.token,decision=stage.use())
-    assert stage.events==['cleanup-durable'] and stage.agent.children=={}
+    read_decision = stage.use()
+    with pytest.raises(BindingError):stage.protected.read(stage.v.context,stage.v.token,decision=read_decision)
+    assert stage.events==['cleanup-durable']
+    assert stage.agent.children=={}
     assert stage.agent.store.read(stage.scope['launch_ref'],decision=stage.use())['state']=='registered'
 
 
@@ -491,8 +518,10 @@ def test_second_observation_expiry_reaches_host_and_prevents_late_execution(stag
         return child
     stage.controller.register_cleanup=registered;stage.agent.start=host_start
     monkeypatch.setattr(subprocess,'Popen',delayed)
-    with pytest.raises(BindingError):stage.protected.read(stage.v.context,stage.v.token,decision=stage.use())
-    assert observed and observed[0]<=expiry
+    read_decision = stage.use()
+    with pytest.raises(BindingError):stage.protected.read(stage.v.context,stage.v.token,decision=read_decision)
+    assert observed
+    assert observed[0]<=expiry
     assert stage.agent.store.read(stage.scope['launch_ref'],decision=stage.use())['generation'] is None
     for child in stage.agent.children.values():
         assert b'_launch_exec.py' in (Path('/proc')/str(child.pid)/'cmdline').read_bytes()
@@ -506,14 +535,17 @@ def test_admission_reply_binds_actual_run_and_accepted_source(stage,field,value,
         response=original(*args,**kwargs);data=json.loads(response.body);data['facts'][field]=value
         return Response(response.status,canonical(data))
     monkeypatch.setattr(stage.plan.channel.transport,'exchange',changed)
-    with pytest.raises(BindingError):stage.plan.read(stage.v.context,stage.v.pre_token,decision=stage.use())
+    read_decision = stage.use()
+    with pytest.raises(BindingError):stage.plan.read(stage.v.context,stage.v.pre_token,decision=read_decision)
     assert stage.agent.children=={}
 
 
 @pytest.mark.parametrize('field,value',[('run_id','999'),('run_attempt','2')])
 def test_readiness_for_server_run_cannot_be_attributed_to_another_context(stage,field,value):
     from dataclasses import replace
-    with pytest.raises(BindingError):stage.plan.read(replace(stage.v.context,**{field:value}),stage.v.pre_token,decision=stage.use())
+    read_argument_1 = replace(stage.v.context,**{field:value})
+    read_decision = stage.use()
+    with pytest.raises(BindingError):stage.plan.read(read_argument_1,stage.v.pre_token,decision=read_decision)
     assert stage.agent.children=={}
 
 
@@ -521,8 +553,10 @@ def test_readiness_for_server_run_cannot_be_attributed_to_another_context(stage,
 def test_public_input_cannot_select_a_broader_allocation(stage,field):
     inputs={k:getattr(stage.v.context,k) for k in ('accepted_commit','selection_digest','preauthorization_ref')};inputs[field]=True
     before=len(stage.rb.calls)
-    with pytest.raises(BindingError):stage.protected.channel.call('/v2/protected',inputs,decision=stage.use(),token=stage.v.token)
-    assert stage.agent.children=={} and len(stage.rb.calls)==before
+    call_decision = stage.use()
+    with pytest.raises(BindingError):stage.protected.channel.call('/v2/protected',inputs,decision=call_decision,token=stage.v.token)
+    assert stage.agent.children=={}
+    assert len(stage.rb.calls)==before
 
 
 @pytest.mark.parametrize('stage',['partial-ready'],indirect=True)
@@ -531,9 +565,13 @@ def test_actual_partial_ready_worker_cannot_block_host_start_or_shutdown(stage):
     ref=stage.scope['launch_ref'];unit=stage.host.register(ref,decision=stage.use())['unit']
     stage.controller.register_cleanup(stage.scope,unit,deadline=stage.use().deadline)
     before=time.monotonic()
-    with pytest.raises(BindingError):stage.agent.start(ref,digest(unit),decision=stage.use())
+    start_argument_2 = digest(unit)
+    start_decision = stage.use()
+    with pytest.raises(BindingError):stage.agent.start(ref,start_argument_2,decision=start_decision)
     assert time.monotonic()-before<5
-    row=stage.agent.store.read(ref,decision=stage.use());assert row['state']=='start-consumed' and row['generation'] is None
+    row=stage.agent.store.read(ref,decision=stage.use())
+    assert row['state']=='start-consumed'
+    assert row['generation'] is None
     assert len(stage.agent.children)==1
     stage.agent.close()
     assert all(p.poll() is not None for p in stage.agent.children.values())
@@ -543,7 +581,8 @@ def test_system_worker_runtime_is_independent_of_writable_test_driver(tmp_path,m
     driver=tmp_path/'tool-cache-python';driver.write_text('fixture only');driver.chmod(0o777)
     monkeypatch.setattr(sys,'executable',str(driver));monkeypatch.setattr(sys,'base_prefix',str(tmp_path))
     selected,roots=system_runtime()
-    assert selected!=driver and all(not p.is_relative_to(tmp_path) and not p.stat().st_mode&0o022 for p in roots)
+    assert selected!=driver
+    assert all(not p.is_relative_to(tmp_path) and not p.stat().st_mode&0o022 for p in roots)
 
 
 @pytest.mark.parametrize('group,limit',[('protection',6),('source',8),('control',4),('private',16),('arm',24),('key',3)])
@@ -551,7 +590,8 @@ def test_protected_staging_group_caps_cannot_be_reset(group,limit):
     from workload_factory_binding_runtime.hosted.readback import start_staging
     decision=use();start_staging(decision)
     for _ in range(limit):ReadBudget(decision).consume(group)
-    with pytest.raises(BindingError):ReadBudget(decision).consume(group)
+    consume_target = ReadBudget(decision)
+    with pytest.raises(BindingError):consume_target.consume(group)
     assert ReadBudget(decision).count(group)==limit
     with pytest.raises(BindingError):start_staging(decision)
 
@@ -574,7 +614,8 @@ def test_two_complete_observations_share_one_26_read_envelope():
 def test_staging_cannot_join_upgrade_or_regress_an_existing_ledger():
     from workload_factory_binding_runtime.hosted.readback import start_staging,start_finalization
     decision=use();start_staging(decision);budget=ReadBudget(decision);budget.consume_correlation()
-    with pytest.raises(BindingError):budget.join(use())
+    join_argument_1 = use()
+    with pytest.raises(BindingError):budget.join(join_argument_1)
     with pytest.raises(BindingError):start_finalization(decision)
     decision.api_requests=0
     with pytest.raises(BindingError):budget.check()
@@ -587,7 +628,8 @@ def test_staging_cannot_extend_either_original_clock(clock):
     from workload_factory_binding_runtime.hosted.readback import start_staging
     now={'wall':1000,'monotonic':0.};decision=Decision(clock=lambda:now['wall'],monotonic=lambda:now['monotonic'])
     start_staging(decision);ReadBudget(decision).begin_staging_observation();now[clock]+=10
-    with pytest.raises(BindingError):ReadBudget(decision).begin_staging_observation()
+    begin_staging_observation_target = ReadBudget(decision)
+    with pytest.raises(BindingError):begin_staging_observation_target.begin_staging_observation()
 
 
 def test_each_staging_reader_retains_four_requests_and_aggregate_retains_eight():
@@ -606,7 +648,8 @@ def test_each_staging_reader_retains_four_requests_and_aggregate_retains_eight()
         with pytest.raises(BindingError):reader.run('789')
         assert len(credentials)==before
     assert len(calls)==len(credentials)==8
-    with pytest.raises(BindingError):provider.decision('opensoft/openXwallet',decision).run('789')
+    run_target = provider.decision('opensoft/openXwallet',decision)
+    with pytest.raises(BindingError):run_target.run('789')
     assert len(calls)==len(credentials)==8
 
 
@@ -649,7 +692,8 @@ print(json.dumps({'result':result,'errno':error,'self_read':list(self_read),'fd_
     def run(operation,sandbox):
         victim=subprocess.Popen([exe,'-I','-B',str(victim_file)],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,close_fds=True)
         try:
-            assert select.select([victim.stdout],[],[],3)[0] and victim.stdout.readline()=='ready\n'
+            assert select.select([victim.stdout],[],[],3)[0]
+            assert victim.stdout.readline()=='ready\n'
             config.write_bytes(canonical({'operation':operation,'pid':victim.pid}))
             if sandbox:
                 message={'files':[exe,loader,str(probe),str(config)],'directories':[str(p) for p in runtime],
@@ -670,27 +714,36 @@ print(json.dumps({'result':result,'errno':error,'self_read':list(self_read),'fd_
 @pytest.mark.parametrize('operation',['queue','thread-queue'])
 def test_actual_queued_signal_denial_has_allowed_same_uid_delivery_control(process_control_probe,operation):
     result,victim=process_control_probe(operation,True)
-    assert result['result']==-1 and result['errno']==1 and not victim['signal_received']
+    assert result['result']==-1
+    assert result['errno']==1
+    assert not victim['signal_received']
     assert result['self_read'][0]>0
     allowed,target=process_control_probe(operation,False)
-    assert allowed['result']==0 and target['signal_received']
+    assert allowed['result']==0
+    assert target['signal_received']
 
 
 def test_actual_parent_limit_write_is_denied_while_self_read_and_unconfined_control_succeed(process_control_probe):
     result,victim=process_control_probe('limits',True)
-    assert result['result']==-1 and result['errno']==1 and result['self_read'][0]>32
+    assert result['result']==-1
+    assert result['errno']==1
+    assert result['self_read'][0]>32
     assert victim['after']==victim['before']
     allowed,target=process_control_probe('limits',False)
-    assert allowed['result']==0 and target['after']==[32,32]
+    assert allowed['result']==0
+    assert target['after']==[32,32]
 
 
 @pytest.mark.parametrize('operation',['owner','async'])
 def test_inherited_pipe_signal_controls_refuse_while_fd_queries_remain_allowed(process_control_probe,operation):
     result,victim=process_control_probe(operation,True)
-    assert result['result']==-1 and result['errno']==1 and result['fd_read_flags']>=0
+    assert result['result']==-1
+    assert result['errno']==1
+    assert result['fd_read_flags']>=0
     assert not victim['signal_received']
     allowed,target=process_control_probe(operation,False)
-    assert allowed['result']==0 and allowed['fd_read_flags']>=0
+    assert allowed['result']==0
+    assert allowed['fd_read_flags']>=0
 
 
 @pytest.mark.parametrize('option',['-c','--help'])

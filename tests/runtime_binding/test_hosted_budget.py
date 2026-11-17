@@ -19,16 +19,19 @@ def test_finalization_members_share_limits_and_no_new_correlation_budget():
     root.api_requests=2;own.api_requests=2
     assert ReadBudget(root).github_requests==ReadBudget(own).github_requests==28
     assert ReadBudget(root).state is ReadBudget(own).state
-    with pytest.raises(BindingError):ReadBudget(own).consume("protection")
+    consume_target = ReadBudget(own)
+    with pytest.raises(BindingError):consume_target.consume("protection")
     own.api_requests+=1
-    with pytest.raises(BindingError):ReadBudget(root).check()
+    check_target = ReadBudget(root)
+    with pytest.raises(BindingError):check_target.check()
 
 
 @pytest.mark.parametrize("member",[0,1])
 def test_joined_member_correlation_highwater_cannot_regress(member):
     _,root,_,own=pair();selected=(root,own)[member]
     selected.api_requests=2;ReadBudget(own).check();selected.api_requests=1
-    with pytest.raises(BindingError):ReadBudget(root).check()
+    check_target = ReadBudget(root)
+    with pytest.raises(BindingError):check_target.check()
 
 
 @pytest.mark.parametrize("member",[0,1])
@@ -39,7 +42,8 @@ def test_either_original_clock_remains_authoritative(member,change):
     elif change=="wall-regression":selected.now-=1
     elif change=="monotonic-expiry":selected.mono+=10
     else:selected.mono=-1
-    with pytest.raises(BindingError):ReadBudget(own if member==0 else root).consume("source")
+    consume_target = ReadBudget(own if member==0 else root)
+    with pytest.raises(BindingError):consume_target.consume("source")
 
 
 def test_earliest_expiry_is_propagated_to_both_original_decisions():
@@ -50,7 +54,8 @@ def test_earliest_expiry_is_propagated_to_both_original_decisions():
 def test_snapshot_limit_refuses_seventh_even_when_read_budget_remains():
     _,root,_,own=pair()
     for i in range(6):ReadBudget(root if i%2 else own).begin_protection()
-    with pytest.raises(BindingError):ReadBudget(root).begin_protection()
+    begin_protection_target = ReadBudget(root)
+    with pytest.raises(BindingError):begin_protection_target.begin_protection()
     assert ReadBudget(root).count("protection")==0
 
 
@@ -67,14 +72,16 @@ def test_unapproved_budget_reconstruction_or_late_upgrade_refuses(change):
             ReadBudget(root).join(own);own=decision(clock())
         elif change=="existing-ledger":ReadBudget(own)
         else:own.api_requests=1
-        with pytest.raises(BindingError):ReadBudget(root).join(own)
+        join_target = ReadBudget(root)
+        with pytest.raises(BindingError):join_target.join(own)
 
 
 @pytest.mark.parametrize("group,limit",[("arm",24),("key",3),("private",12)])
 def test_finalization_keeps_non_github_limits_unchanged(group,limit):
     _,root,_,own=pair()
     for i in range(limit):ReadBudget(root if i%2 else own).consume(group)
-    with pytest.raises(BindingError):ReadBudget(own).consume(group)
+    consume_target = ReadBudget(own)
+    with pytest.raises(BindingError):consume_target.consume(group)
 
 
 @pytest.mark.parametrize("spent",range(5))
@@ -107,7 +114,8 @@ def test_joined_peer_clock_refuses_after_tls_before_application_send(initiator,c
             kwargs["before_send"]()
             sent.append(True);return Response(200,b"{}")
     reader=ProviderReader(credential=lambda **_:"token:fixture",transport=Transport())
-    with pytest.raises(BindingError):reader.decision("opensoft/openXwallet",(root,own)[initiator]).run("789")
+    run_target = reader.decision("opensoft/openXwallet",(root,own)[initiator])
+    with pytest.raises(BindingError):run_target.run("789")
     assert sent==[]
 
 

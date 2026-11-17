@@ -1,0 +1,19 @@
+# Wallet Sonar backlog acceptance
+
+Status: in progress under [issue #82](https://github.com/opensoft/openXwallet/issues/82), separately from completed #73.
+
+The [frozen 1,505-key inventory](backlog-before.jsonl) comes from main 835f92c5890ec03eac1e72f3c34c5b95f0504093 and analysis d040c7d6-3dbb-4fc4-a182-68d0c7daef58. Its SHA-256 is 4e231282a251efc8c2203fdf38e3815a0f7c641713de9e8ec113af5f557c4bbe.
+
+All entries were classified as code smells: 2 blocker, 125 critical, 1,342 major and 36 minor. Initial scanned-path ownership is openXwallet 481, openWallet root 966, openWallet-code 37 and openWallet-spec 21. Severity is a prioritization input, not proof of a runtime defect.
+
+The [feature plan](../../specs/020-sonar-backlog/plan.md) defines owner-first reviewed batches and unchanged acceptance. The [task list](../../specs/020-sonar-backlog/tasks.md) records actual completion. Every original key must receive an evidence-backed disposition; every actionable key must be naturally analysis-fixed on actual main. Non-actionable decisions remain visible without suppressions or manual waivers.
+
+All 26 previously repaired keys, the selected live August baseline, profiles, thresholds, full source scope, genuine coverage, native identities/budgets, active sessions/worktrees and frozen evidence remain acceptance requirements. The prior [history-availability limitation](sonar73-acceptance.md#historical-analysis-availability) remains explicit. Feature-017 PR #78 and operational decisions remain separate.
+
+## Batch B01: adapter refusal and test precision
+
+Candidate scope: 154 original keys (71 composite assertions, 82 ambiguous exception contexts and one duplicate launcher refusal return). The [per-key triage ledger](backlog-triage.json) distinguishes these candidates from the remaining 1,351 pending detailed review; no main fix is claimed yet.
+
+All conjunction predicates/messages, comments, function signatures and decorators are retained. Exception setup is evaluated before the expected operation. The ruleset test now requires list-selection faults to fail in begin_control and detailed-rule faults in finish_control, preserving the two-request bound. The launcher has one documented common refusal exit; all eight actual malformed-input probes preserve status 2 with empty stdout/stderr.
+
+All 2,434 ordered collected node IDs remain identical. Native matrix, runner, isolation and coverage-workload records are byte-unchanged. The four explicit branch/starred/ruleset test repairs pass all 18 parametrized cases in the existing restricted environment. Complete source/native/coverage CI, independent review, publication and main acceptance remain pending.
