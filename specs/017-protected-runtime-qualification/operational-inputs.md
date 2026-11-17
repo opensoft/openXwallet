@@ -1,6 +1,6 @@
 # T013 Operational Selection Packet
 
-Status: T012V exact-refusal clarification awaiting fresh qualification on PR #78; fresh CI/owner acceptance and T013 selections pending; setup/dispatch NOT GRANTED
+Status: T012V source candidate; exact-head validation receipt tracked on PR #78; CI, owner acceptance and T013 selections remain separate gates; setup/dispatch NOT GRANTED
 Updated: 2026-11-17
 Governance: `opensoft/openXfactory`, `prepare-protected-runtime-qualification`
 Bootstrap amendment: `fix-protected-runtime-dispatch-bootstrap`
@@ -14,14 +14,16 @@ private39 source decisions govern the [design basis](hosting-issuance-selections
 and [Speckit plan](hosting-issuance-plan.md). Subsequent commissioning implemented
 T012O-U only in isolation and commissioned T012V publication/CI/local review.
 [PR #78](https://github.com/opensoft/openXwallet/pull/78) is the resulting source
-candidate; its implementation has local full/native/review/cleanup qualification,
-with final-head hosted CI and owner ratification separate. These facts select no
+candidate. This checkpoint records focused correction evidence; complete exact-head
+full/native/review/cleanup and hosted CI results belong to its qualification receipt
+after execution. Earlier named qualification checkpoints remain historical; owner
+source ratification stays separate. These facts select no
 operational target, administrator, credential, endpoint or key. T013 and all four
 operational stages remain ungranted.
 
 ## Current candidate and next decision
 
-Executable candidate `f9b9bd5a798dd251f404a8e1ed1660c9378af23e` passes 2,781 full tests plus 11 subtests and all 2,369 mandatory native nodes. Nine local expert roles clear it; independent final audit verifies ten preservation cases and fixture/container absence. See [qualification evidence](hosting-conformance-implementation.md#t012v-main-80-integrated-source-qualification). PR #78 records exact-head hosted gates. Owner source acceptance is pending; no execution `accepted_commit` is selected.
+Executable candidate `bf0839732d764c2848a4981179e999a44f769d53` retains original runtime limits and all ordered 2801/2389 identities. The actual 22-case untraced/CTracer and five-mutant correction evidence is recorded in [current source](hosting-conformance-implementation.md#t012v-selected-port-deadline-correction). Complete exact-head qualification/cleanup/CI results are maintained in PR #78; owner source acceptance remains separate. No execution `accepted_commit` is selected.
 
 ## Historical #65 source acceptance and T012M handoff
 

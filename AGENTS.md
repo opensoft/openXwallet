@@ -505,7 +505,7 @@ bytes; fresh final-head hosted CI/Sonar and owner source ratification remain
 PR #78 gates. T001/T013-T015/setup/dispatch remain ungranted; feedback deferred
 and neither blocked write replayed.
 
-### Current T012V exact-refusal clarification
+### Historical T012V exact-refusal clarification plan
 
 The existing T012V commission covers the two Sonar S3403 reliability findings
 through a private shared exact-refusal predicate and 20 independent adversarial
@@ -515,3 +515,17 @@ order, lazy reservation absence, catch scopes, all source/case identities and
 clock/read/wire/authority limits. Earlier 1146747 full/native passes are historical;
 fresh source/full/native/cleanup/CI/Sonar and owner acceptance remain gates.
 T001/T013-T015/setup/dispatch ungranted; feedback deferred, blocked writes unreplayed.
+
+### Current T012V selected-port deadline correction
+
+Code candidate `bf0839732d764c2848a4981179e999a44f769d53` incorporates the test-only selected-port correction
+and accepted main #84. Original runtime 10s/private39, loaded credentials/four
+real RPCs, fixed errors, source pins and protected defaults remain. Complete 22
+probe cases pass untraced and under pinned CTracer; five deliberate mutants fail
+the intended identity/deadline/server-prefix/arming assertions. The complete
+ordered 2801/2389 corpus and static fingerprints remain. Current exact-head
+source/document review, full/native/cleanup and hosted CI/Sonar receipts are
+maintained on PR #78; no success is predeclared. See feature017
+hosting-conformance-implementation.md. T012V/owner acceptance and
+T001/T013-T015/setup/dispatch remain ungranted; feedback deferred and blocked
+writes unreplayed.

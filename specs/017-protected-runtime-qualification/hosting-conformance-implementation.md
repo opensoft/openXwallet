@@ -1,6 +1,6 @@
 # T012U isolated conformance realization
 
-Status: exact-refusal clarification pending fresh qualification; earlier full/native receipts historical; owner acceptance pending
+Status: corrected source candidate; exact-head qualification receipt tracked in PR #78; owner acceptance pending
 Kind: implementation-record
 Scope: source/fixture only; no operational grant
 
@@ -595,3 +595,104 @@ then publish and obtain fresh exact-head full CI, evaluated Sonar and local revi
 The earlier runtime passes remain historical, not acceptance of this source change.
 Owner source ratification stays pending. T001/T013-T015, setup and protected dispatch
 remain ungranted; feedback deferred and neither historical blocked write replayed.
+
+## T012V selected-port deadline correction
+
+Code candidate `bf0839732d764c2848a4981179e999a44f769d53` incorporates accepted main #83 and #84
+and the exact-refusal clarification. The final publication may add only the ten
+source-checkpoint Markdown updates; all 369 other regular input bytes must remain
+identical. Exact reviewed, executed and published heads, result artifacts and
+independent cleanup receipts are maintained on [PR #78](https://github.com/opensoft/openXwallet/pull/78).
+This checkpoint records actual focused evidence and the remaining protocol;
+it does not predeclare complete qualification, CI success or owner acceptance.
+
+The prior 4321e1aa checkpoint passes 2,801 full tests plus 11 subtests untraced
+in 2,241.43s (2,243.194s outer), with zero failures/errors/skips. Its independent
+runtime audit checks 12,509 generation observations, 427 journals, 131 helper
+receipts and all five full-suite preservation cases, with no live attribution or
+initial teardown failure. Retained/shared identities remain, run files are absent,
+credential attempts retired and independent audit retained. Those observations
+precede the later tooling interruption and qualify only that recorded scope.
+
+Fresh hosted coverage at 4321e1aa reports three failures in the selected-RPC
+deadline fixture: pause/excess, trickle/denial and trickle/excess. The expected
+fixed-code refusal occurs, but the selected server phase is absent. The test had
+spent 9.4s of its original 10s Decision before all four real TLS RPCs; traced
+prerequisite work could exhaust the remaining .6s before reaching the intended
+fault. This demonstrates invalid control setup for those runs, not a production
+TLS deadline defect. No runtime allowance is increased.
+
+The correction arms the existing original clock once at the selected real
+exchange port. Earlier calls consume that same Decision normally. Every port
+checks the exact client/operation, original Decision identity and unchanged
+deadline/end; the real exchange receives unchanged arguments, with limits checked
+again in finally. The selected port must have more than .6s remaining before a
+forward-only clock shift spends that remainder down to .6s. No new Decision,
+deadline, credential, response or read-budget observation is substituted.
+The original 1.5s post-arm bound includes return and child retirement. Actual
+server phase/credential prefix, private-read count and child set remain asserted,
+so an early unrelated refusal cannot satisfy the control.
+
+The complete 22-case module passes untraced in 10.98s and under pinned coverage
+7.16.2 CTracer in 13.03s. The unchanged production probe measures 146/153 statements
+and 39/42 branches covered, zero exclusions. All five disposable CTracer mutants
+fail their intended assertion: replacement Decision identity, renewed internal
+wait exceeding the same 1.5s bound, selected fixed-code refusal without real I/O,
+prerequisite refusal before arming, and wrong client identity. Mutation failures
+are deliberate diagnostic receipts, not qualification failures or passing
+production results. QA, security and reliability reviews clear the actual test
+patch; all seven focused/mutation fixture roots are independently audited and
+removed. Complete current-head review and qualification remain separate.
+
+Collection retains the exact ordered 2,801 full and 2,389 native identities and
+static module fingerprints from 4321e1aa. Hosted-evidence remains 218 cases;
+H03/H10/H11/H12 remain 97/105/284/142, R01 remains 47, deadline-probe 22,
+conformance self-tests 64 and canonical replay controls 115. No case, skip,
+deselection, exclusion, wire profile, neutral source pin or product API is added.
+
+The private exact-refusal predicate still preserves exact exception class,
+single argument, exact string type/literal and short-circuit order. Independent
+signature checks and the second caller's lazy reservation observation remain.
+All 20 adversarial controls previously pass the original guard; the clarification
+passes 88 focused controls. Actual corrected-file analysis clears both S3403
+inferences; fresh exact-head project analysis remains a required PR gate.
+Accepted main #84 clarifies installed shell predicates and records bounded
+source-quality patches without upgrading hooks; it changes no runtime Python.
+
+Local npm later stalled before OpenSpec output in state D/rtnl_dumpit with an
+active NETLINK_ROUTE dump. Existing processes in both benches showed matching
+networking waits. Installed npm eagerly enumerates interfaces; the specific
+kernel/VPN/resource trigger is unproven. The Docker API subsequently became
+unavailable and later returned externally. This task initiated no WSL, Docker
+or bench restart. Frozen inputs and neutral/owning identities were rechecked;
+the interrupted full tooling container is observed absent afterward. Its prior
+successful runtime audit does not substitute for current complete qualification.
+Earlier deadline, transport and failed-attempt records remain historical above.
+
+Current source qualification requires all seven ordered pin/YAML/plain/strict/
+full/default-authenticated-pinned-OpenSpec gates, zero-failure/error/skip full
+and mandatory native reports, exact input/owner readback, independent cleanup
+and all ten preservation cases, actual source/document review, and fresh hosted
+CI/coverage/evaluated Sonar at the final head. Results are recorded in PR #78's
+exact-head qualification receipt after they exist. Local execution uses the
+approved immutable image, explicit CPU shares 4096/effective weight 303 and
+unchanged caps; ordinary full validation may acquire pinned source packages,
+while mandatory native remains network none/loopback-only with read-only
+source/rootfs, UID 1000/GID 65534, empty groups/capabilities and NoNewPrivs 1.
+This resource profile is not a reliability-under-contention or deployed claim.
+
+Only the ordinary sequential source-CI job has the governed 90-minute cap.
+Traced jobs retain 45 minutes; original runtime 10s/private39 and other phase
+limits remain. Earlier 1146747 hosted runtime/coverage passes and its two Sonar
+reliability failures remain historical. No issue-status waiver, suppression,
+threshold reduction, coverage exclusion or consumed-mutation retry is applied.
+
+Neutral root/code/spec remain 819de672/fb132776/0fe3151c; explicit owning code
+remains separately selected at bb0e9dae. Shared OpenSpec tooling authenticates
+the pinned spec source; ordinary product/runtime validation stays code-only.
+No execution accepted_commit, target, principal, endpoint, key or credential is
+selected. Owner exact-head source ratification and landing remain separate;
+T012V stays unchecked pending the actual owner act. T001/T013-T015, setup/
+protected dispatch, live OIDC/provider minting, deployed protected-origin,
+external control-host-loss retirement and human/domain/consumer gates remain
+ungranted. Feedback deferred; neither historical blocked write replayed.

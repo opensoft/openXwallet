@@ -1,6 +1,6 @@
 # Operator source conformance runbook
 
-Status: T012V exact-refusal clarification awaiting fresh qualification; final-head CI/owner acceptance pending
+Status: T012V source candidate; exact-head validation receipt tracked in PR #78; final-head CI/owner acceptance pending
 Kind: source-runbook
 Scope: offline source and disposable local fixtures only
 Sole source publication task: tasks.md T012V; owner acceptance and operations separate
@@ -159,7 +159,7 @@ emit fixed refusal and cannot leave a final PASS.
 Current measured candidate collection is 2,801 full parent cases (plus 11
 subtests), 2,389 mandatory native nodes and 64 conformance self-tests. All prior
 2,781 full and 2,369 native identities and anchors remain. Hosted-evidence module
-has 198 cases; probe controls add 22 and canonical-journal controls 115.
+has 218 cases; probe controls add 22 and canonical-journal controls 115.
 H03=97/H10=105/H11=284/H12=142. Collection is not a passing execution receipt; current
 execution/cleanup status is in [implementation evidence](hosting-conformance-implementation.md).
 The [qualification matrix](qualification-matrix.md) maps every H group to actual
@@ -322,3 +322,13 @@ with zero exclusions and all 22 controls passing. Use the [full current record](
 for immutable IDs, actual timing, retained historical failures and limits.
 Fresh final-head hosted CI/evaluated Sonar and owner source ratification remain
 PR #78 gates. This source procedure grants no setup or protected dispatch.
+
+## Current source and qualification receipt
+
+Code candidate `bf0839732d764c2848a4981179e999a44f769d53` retains 2801 full and 2389 mandatory native
+identities, hosted-evidence 218/H10=105 and the original operational boundaries.
+The complete 22-case probe module passes untraced and under CTracer; five deliberate
+mutants fail the intended controls. The [source checkpoint](hosting-conformance-implementation.md#t012v-selected-port-deadline-correction)
+explains the corrected fixture and retained historical failures. Read the exact-head
+qualification/cleanup/CI receipt in PR #78 for current executed results. This source
+packet grants no setup, protected dispatch or owner acceptance.

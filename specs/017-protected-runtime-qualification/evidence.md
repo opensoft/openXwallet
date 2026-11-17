@@ -2942,3 +2942,13 @@ Fresh complete full/native, independent cleanup and final-head hosted CI/Sonar
 remain mandatory before owner source acceptance. No rule/status/gate waiver,
 runtime/read/wire change, setup or protected dispatch is supplied. Feedback
 remains deferred; neither historical blocked write is replayed.
+
+## 2026-11-17 selected-port correction checkpoint
+
+Code candidate `bf0839732d764c2848a4981179e999a44f769d53` retains all runtime limits and source pins.
+The complete 22-case probe module passes normally and under pinned CTracer; five
+disposable mutants fail their intended oracle. Complete current-head full/native,
+cleanup, hosted CI/Sonar and review results are recorded after execution in
+[PR #78](https://github.com/opensoft/openXwallet/pull/78). See the
+[current source record](hosting-conformance-implementation.md#t012v-selected-port-deadline-correction).
+This checkpoint supplies no source ratification or operational grant.

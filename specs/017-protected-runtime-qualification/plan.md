@@ -2,7 +2,7 @@
 
 **Branch**: `017-protected-runtime-qualification` | **Date**: 2026-11-12
 **Spec**: [spec.md](spec.md)
-**State**: T012V exact-refusal clarification is in progress under the existing source commission. Earlier main #80 full/native/cleanup receipts remain historical; fresh qualification, CI and owner acceptance are pending. T012T/private39 source decisions remain accepted; operational authority remains separate. See [bounded continuation](hosting-conformance-implementation.md#t012v-exact-signed-claim-refusal-clarification).
+**State**: T012V corrected source candidate; exact-head full/native/cleanup, source/document review and hosted CI/Sonar receipts are maintained on PR #78. Prior checkpoints remain historical. Original runtime/private39 and separate operational authority remain unchanged.
 
 Bootstrap amendment `fix-protected-runtime-dispatch-bootstrap` was source
 accepted and landed in factory #1311 / adapter #60. The static dispatch selection
@@ -357,3 +357,10 @@ preserved identities and independent preservation/cleanup. Accepted incoming
 pins/tooling/tests retain exact baseline bytes. Bounded clarity changes retain
 assertion predicates, branch precedence and cancellation/resource boundaries.
 Fresh final-head hosted CI/Sonar and owner source ratification remain separate.
+
+### Selected-port deadline source checkpoint
+
+The [current correction record](hosting-conformance-implementation.md#t012v-selected-port-deadline-correction)
+records the actual 22-case traced/untraced and five-mutant evidence, retained
+ordered corpus and unchanged limits. Complete validation results and owner
+source acceptance remain distinct PR #78 gates; no setup/dispatch is granted.
