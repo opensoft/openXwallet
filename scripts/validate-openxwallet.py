@@ -1042,6 +1042,37 @@ def _probe_register_rows(f, _s4_tree, _s4_ctx, _register_probe, s4_row,
                 f"got {probe.errors}")
 
 
+def _build_register_probe_tree(tempfile, _s4_ctx, s4_grant, s4_wallet, s4_attest,
+                               register_rows, with_attest, grant, wallet, top,
+                               also, also_attest):
+    base = Path(tempfile.mkdtemp(prefix="s4-selftest-"))
+    ra = base.joinpath(*REGISTER_DIR_PARTS, ATTESTATIONS_DIR)
+    ra.mkdir(parents=True)
+    # wallet-v1.2: the staleness bound is REQUIRED, so every probe tree
+    # declares one. `top` overrides or extends the top level, which is how
+    # the top-level probes below inject an unknown key or a bad bound
+    # WITHOUT any probe having to hand-build a tree.
+    doc = {"register_version": 1, "revocation_staleness_bound": "P7D",
+           "rows": register_rows}
+    if top is not None:
+        doc.update(top)
+        for k, v in top.items():
+            if v is _ABSENT:
+                doc.pop(k, None)
+    (base.joinpath(*REGISTER_DIR_PARTS, REGISTER_FILE)).write_text(
+        yaml.safe_dump(doc), encoding="utf-8")
+    if with_attest:
+        (ra / "custody-attest-wal-s4-probe-0001.yaml").write_text(
+            yaml.safe_dump(s4_attest), encoding="utf-8")
+    # wallet-v1.5: `also` indexes the SECOND commissioned body's records and
+    # `also_attest` writes its custody attestation, so a multi-body probe
+    # needs no hand-built tree either.
+    for extra_attest in also_attest:
+        (ra / f"custody-attest-{extra_attest['subject_wallet_ref']}.yaml"
+         ).write_text(yaml.safe_dump(extra_attest), encoding="utf-8")
+    return base, _s4_ctx(grant or s4_grant, wallet or s4_wallet, *also)
+
+
 def self_test_register_reader(f: Findings, _docs: dict[str, dict],
                               ctx: Context) -> None:
     """The SELF_TEST_TAIL_HOOKS entry, after the corpus note: where the S4 block
@@ -1106,32 +1137,10 @@ def self_test_register_reader(f: Findings, _docs: dict[str, dict],
 
     def _s4_tree(register_rows, with_attest=True, grant=None, wallet=None,
                  top=None, also=(), also_attest=()):
-        base = Path(tempfile.mkdtemp(prefix="s4-selftest-"))
-        ra = base.joinpath(*REGISTER_DIR_PARTS, ATTESTATIONS_DIR)
-        ra.mkdir(parents=True)
-        # wallet-v1.2: the staleness bound is REQUIRED, so every probe tree
-        # declares one. `top` overrides or extends the top level, which is how
-        # the top-level probes below inject an unknown key or a bad bound
-        # WITHOUT any probe having to hand-build a tree.
-        doc = {"register_version": 1, "revocation_staleness_bound": "P7D",
-               "rows": register_rows}
-        if top is not None:
-            doc.update(top)
-            for k, v in top.items():
-                if v is _ABSENT:
-                    doc.pop(k, None)
-        (base.joinpath(*REGISTER_DIR_PARTS, REGISTER_FILE)).write_text(
-            yaml.safe_dump(doc), encoding="utf-8")
-        if with_attest:
-            (ra / "custody-attest-wal-s4-probe-0001.yaml").write_text(
-                yaml.safe_dump(s4_attest), encoding="utf-8")
-        # wallet-v1.5: `also` indexes the SECOND commissioned body's records and
-        # `also_attest` writes its custody attestation, so a multi-body probe
-        # needs no hand-built tree either.
-        for extra_attest in also_attest:
-            (ra / f"custody-attest-{extra_attest['subject_wallet_ref']}.yaml"
-             ).write_text(yaml.safe_dump(extra_attest), encoding="utf-8")
-        return base, _s4_ctx(grant or s4_grant, wallet or s4_wallet, *also)
+        return _build_register_probe_tree(
+            tempfile, _s4_ctx, s4_grant, s4_wallet, s4_attest,
+            register_rows, with_attest, grant, wallet, top, also, also_attest)
+
 
     def _register_probe(label, base, c, expect_codes):
         probe = Findings()

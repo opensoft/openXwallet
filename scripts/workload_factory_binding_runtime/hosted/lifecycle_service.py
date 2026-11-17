@@ -75,6 +75,15 @@ def _validate_cleanup_audit_facts(value, scope, extra, decision):
                 and record["observed_at"] <= decision.now() < record["valid_until"], ERROR)
         _resources(record["resources"])
 
+def _validate_lease_facts(value, scope):
+    _closed(value["scope"], "config_digest case_ref run_id run_attempt lease_ref cleanup_ref receipt_retention_ref")
+    require(value["status"] in ("active", "closed", "revoked", "cancelled")
+            and all(integer(value[k]) for k in ("issued_at", "expires_at", "observed_at", "valid_until"))
+            and value["scope"]["case_ref"] == scope["case_ref"] and value["scope"]["run_id"] == scope["run_id"]
+            and value["scope"]["run_attempt"] == scope["run_attempt"]
+            and value["scope"]["cleanup_ref"] == scope["cleanup_ref"], ERROR)
+
+
 def _facts(operation, value, scope, extra, principal, decision):
     fields = {
         "register": "registration_digest", "prepare": "plan_digest", "release": "state plan_digest",
@@ -108,12 +117,7 @@ def _facts(operation, value, scope, extra, principal, decision):
         require(value["principal_ref"] == principal and integer(value["observed_at"]) and integer(value["expires_at"])
                 and value["observed_at"] <= decision.now() < value["expires_at"] <= value["observed_at"] + 60, ERROR)
     if operation == "lease":
-        _closed(value["scope"], "config_digest case_ref run_id run_attempt lease_ref cleanup_ref receipt_retention_ref")
-        require(value["status"] in ("active", "closed", "revoked", "cancelled")
-                and all(integer(value[k]) for k in ("issued_at", "expires_at", "observed_at", "valid_until"))
-                and value["scope"]["case_ref"] == scope["case_ref"] and value["scope"]["run_id"] == scope["run_id"]
-                and value["scope"]["run_attempt"] == scope["run_attempt"]
-                and value["scope"]["cleanup_ref"] == scope["cleanup_ref"], ERROR)
+        _validate_lease_facts(value, scope)
     if operation == "cleanup-audit":
         _validate_cleanup_audit_facts(value, scope, extra, decision)
 
