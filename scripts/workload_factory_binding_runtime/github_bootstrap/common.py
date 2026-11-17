@@ -15,7 +15,7 @@ def number(value):
 def closed(value, fields):
     require(type(value) is dict and set(value) == set(fields.split()), ERROR)
 
-def document(raw, limit=65536):
+def document_with_canonical(raw, limit=65536):
     require(type(raw) is bytes and 0 < len(raw) <= limit, ERROR)
     def pairs(items):
         result = {}
@@ -27,10 +27,14 @@ def document(raw, limit=65536):
         raise ValueError
     try:
         value = json.loads(raw.decode("utf-8"), object_pairs_hook=pairs, parse_constant=constant)
-        canonical(value)
-        return value
+        encoded = canonical(value)
+        return value, encoded
     except Exception:
         raise BindingError(ERROR) from None
+
+def document(raw, limit=65536):
+    """Existing decoded-document API; validation and refusal behavior unchanged."""
+    return document_with_canonical(raw, limit)[0]
 
 class Decision:
     def __init__(self, *, clock, monotonic=time.monotonic, deadline=None):

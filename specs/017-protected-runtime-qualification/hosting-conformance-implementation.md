@@ -244,3 +244,42 @@ f2ffdad full run ended normally at the confirmed stale-control failure
 (1,437passed,1failed); it is retained as diagnostic evidence and independently
 audited before fixture retirement. A new frozen source head receives all ordered
 repository gates, the complete full collection and mandatory native matrix.
+
+### T012V canonical replay correction and focused evidence
+
+The default R5 run passed 1,888 tests before the 64-resource cleanup control
+failed during credential retirement, after all 30 run-file retirements. Its
+original failure cause remains unproven; it is retained as diagnostic evidence.
+An unchanged focused reproduction passed with cleanup taking 8.6896 seconds
+and only 1.891 seconds remaining before credential retirement. No runtime
+budget was expanded and no consumed retirement was replayed for diagnosis.
+
+The contract, integrity and performance reviews cleared a governed adapter-only
+correction: retain canonical bytes produced by the existing strict parser, use
+those bytes for stored-body equality, and compose the exact existing canonical
+event envelope from that validated body plus four fixed metadata fields. Every
+history, chain, witness, schema, identity, clock, lock, fence, document/event
+limit and durability operation remains in place. Append retains a detached
+decoded body. There is no observation cache or format change.
+
+All 115 new controls pass, including all 16 event kinds against six independent
+RFC8785 byte/hash vectors, malformed and noncanonical documents, a frozen v1
+journal written by the prior implementation, reopening and appending with the
+old digest oracle, caller-mutation isolation, and forged/corrupt bodies and
+witnesses. The new static corpus contains 2,761 full and 2,364 native nodes;
+all prior 2,523 full / 2,215 native identities remain.
+
+Across nine read-only samples of the same retained 67-event journal, median
+complete-load time fell from 14.850 ms to 7.889 ms, about 46.9 percent lower.
+The head digest, decoded-event digest and high-water value match exactly. In
+one focused before/after sample the unchanged 64-resource cleanup fell from
+8.6896 s to 4.8306 s; remaining time before credential retirement increased
+from 1.891 s to 5.587 s. These are local observations, not a general timing
+guarantee or proof of the earlier refusal's cause. Fresh frozen full/native
+and exact-head hosted gates remain required before presenting the candidate.
+
+All 119 existing lifecycle tests also pass on the corrected working tree
+(449.08 seconds), including the original 64-resource control with no timing
+observer. The 115 new byte/legacy/corruption controls pass independently.
+These focused results justify freezing the implementation for fresh complete
+source and mandatory native qualification; hosted timing remains unverified.

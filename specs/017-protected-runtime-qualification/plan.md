@@ -308,8 +308,31 @@ commissioning. No new T012S execution result is claimed.
 
 T012V is commissioned for source publication, exact-head hosted CI and local Codex
 review. The bounded corrective source and measured adapter-owned source-CI cap
-are recorded in hosting-conformance-implementation.md. Its34 new measured controls
+are recorded in hosting-conformance-implementation.md. Its149 new measured controls
 retain all2,215 prior native nodes and2,523 prior full nodes; accepted main adds89
-analysis/coverage controls. Current collection is2,646 full and2,249 native.
+analysis/coverage controls. Current collection is2,761 full and2,364 native.
 Full/native execution, exact-head review/CI and independent audit are still gates.
 Owner source acceptance and all operational decisions remain separate/ungranted.
+
+### T012V bounded canonical journal replay correction
+
+The source review commission covers a pure adapter optimization after the
+64-resource cleanup control exposed narrow headroom: measured cleanup8.6896s
+and1.891s remaining before credential retirement within the unchanged10s
+Decision. The failed complete run reached credential retirement after30durable
+file retirements; its exact underlying refusal is not inferred from that timing.
+
+Preserve document(raw,limit), strict parsing/error mapping, every complete
+history/chain/witness/schema/identity check, clock observation, event/document
+limit, transaction, fence and fsync. Reuse the canonical bytes already produced
+by strict parsing for stored-body equality and exact event hashing. A fixed
+closed event header orders data first per RFC8785. Introduce no observation
+cache or skipped validation. Exact bytes/digests must match canonical(event)
+and old journals must reopen/append with the same schema and witness format.
+
+This is governed adapter-only T012V corrective implementation, assessed by
+contract, integrity and performance reviewers. It changes no factory grammar,
+neutral API, capacity or authority and requires no factory contract amendment.
+Owner ratification remains a later exact-head source gate. Add measured static
+controls, rerun the unchanged64-resource case with timing and then all required
+complete/native/hosted gates. Setup/dispatch remain unauthorized.

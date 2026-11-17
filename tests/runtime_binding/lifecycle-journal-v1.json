@@ -1,0 +1,144 @@
+{
+  "source_head": "559a1ce80f211420684864cbb734154f70b9a3c6",
+  "schema": [
+    "CREATE TABLE metadata (version INTEGER NOT NULL, kind TEXT NOT NULL, nonce TEXT NOT NULL, highwater INTEGER NOT NULL)",
+    "CREATE TABLE events (sequence INTEGER PRIMARY KEY, kind TEXT NOT NULL, body BLOB NOT NULL, previous TEXT NOT NULL, digest TEXT NOT NULL, observed_at INTEGER NOT NULL)"
+  ],
+  "metadata": [
+    1,
+    "primary",
+    "1111111111111111111111111111111111111111111111111111111111111111",
+    1000
+  ],
+  "genesis": "sha256:0825b190eb456b5ccad9c8df287ef1cc161bc461a290b21dc89fd2002df3a9fd",
+  "rows": [
+    {
+      "sequence": 1,
+      "kind": "action-claimed",
+      "raw": "{\"legacy\":\"action-claimed\",\"message\":\"old v1 \\\" \\\\ \\n\",\"nested\":{\"\ud83d\ude00\":{\"a\":[null,true,false,0,1e-7,1e+21]}}}",
+      "previous": "sha256:0825b190eb456b5ccad9c8df287ef1cc161bc461a290b21dc89fd2002df3a9fd",
+      "digest": "sha256:f0c6da4f5f07fbcc9ead94ad1ec2d8a3e7190c3ad4c3487e37bbc84879594d6b",
+      "observed_at": 1000
+    },
+    {
+      "sequence": 2,
+      "kind": "action-observed",
+      "raw": "{\"legacy\":\"action-observed\",\"message\":\"old v1 \\\" \\\\ \\n\",\"nested\":{\"\ud83d\ude00\":{\"a\":[null,true,false,0,1e-7,1e+21]}}}",
+      "previous": "sha256:f0c6da4f5f07fbcc9ead94ad1ec2d8a3e7190c3ad4c3487e37bbc84879594d6b",
+      "digest": "sha256:2a5b931e5a3a3051b08329bf761d79b480d1226b567f0d0071c57570d209958e",
+      "observed_at": 1000
+    },
+    {
+      "sequence": 3,
+      "kind": "cleanup-audit",
+      "raw": "{\"legacy\":\"cleanup-audit\",\"message\":\"old v1 \\\" \\\\ \\n\",\"nested\":{\"\ud83d\ude00\":{\"a\":[null,true,false,0,1e-7,1e+21]}}}",
+      "previous": "sha256:2a5b931e5a3a3051b08329bf761d79b480d1226b567f0d0071c57570d209958e",
+      "digest": "sha256:39fdb3c7267c6f31a1ba0bde66596b3f4cfc68c878abac7a75c763ebe7d26d66",
+      "observed_at": 1000
+    },
+    {
+      "sequence": 4,
+      "kind": "cleanup-request",
+      "raw": "{\"legacy\":\"cleanup-request\",\"message\":\"old v1 \\\" \\\\ \\n\",\"nested\":{\"\ud83d\ude00\":{\"a\":[null,true,false,0,1e-7,1e+21]}}}",
+      "previous": "sha256:39fdb3c7267c6f31a1ba0bde66596b3f4cfc68c878abac7a75c763ebe7d26d66",
+      "digest": "sha256:93c106cde4c2e69cba4d638477452385e9bfe9bf8d14d684f0b55ce9978f1c48",
+      "observed_at": 1000
+    },
+    {
+      "sequence": 5,
+      "kind": "clock",
+      "raw": "{\"legacy\":\"clock\",\"message\":\"old v1 \\\" \\\\ \\n\",\"nested\":{\"\ud83d\ude00\":{\"a\":[null,true,false,0,1e-7,1e+21]}}}",
+      "previous": "sha256:93c106cde4c2e69cba4d638477452385e9bfe9bf8d14d684f0b55ce9978f1c48",
+      "digest": "sha256:bd213e08dfc96932fec2ea9d146d912c0e5d95dcb1803398f6949034c25072f5",
+      "observed_at": 1000
+    },
+    {
+      "sequence": 6,
+      "kind": "file-retired",
+      "raw": "{\"legacy\":\"file-retired\",\"message\":\"old v1 \\\" \\\\ \\n\",\"nested\":{\"\ud83d\ude00\":{\"a\":[null,true,false,0,1e-7,1e+21]}}}",
+      "previous": "sha256:bd213e08dfc96932fec2ea9d146d912c0e5d95dcb1803398f6949034c25072f5",
+      "digest": "sha256:b94ef08673b7629b2ec93f14b68e2bb627579bbfe772ea2ab36fb04e668ff79f",
+      "observed_at": 1000
+    },
+    {
+      "sequence": 7,
+      "kind": "final-intake",
+      "raw": "{\"legacy\":\"final-intake\",\"message\":\"old v1 \\\" \\\\ \\n\",\"nested\":{\"\ud83d\ude00\":{\"a\":[null,true,false,0,1e-7,1e+21]}}}",
+      "previous": "sha256:b94ef08673b7629b2ec93f14b68e2bb627579bbfe772ea2ab36fb04e668ff79f",
+      "digest": "sha256:b01180448c025fd2ac4093232d797e3f7ab9bee4804558272060cf2f8e773a1c",
+      "observed_at": 1000
+    },
+    {
+      "sequence": 8,
+      "kind": "final-plan",
+      "raw": "{\"legacy\":\"final-plan\",\"message\":\"old v1 \\\" \\\\ \\n\",\"nested\":{\"\ud83d\ude00\":{\"a\":[null,true,false,0,1e-7,1e+21]}}}",
+      "previous": "sha256:b01180448c025fd2ac4093232d797e3f7ab9bee4804558272060cf2f8e773a1c",
+      "digest": "sha256:05a5c79ab062cc763903919e80402a6970909e05400ebdfea8b1a89dd57bccd3",
+      "observed_at": 1000
+    },
+    {
+      "sequence": 9,
+      "kind": "generation",
+      "raw": "{\"legacy\":\"generation\",\"message\":\"old v1 \\\" \\\\ \\n\",\"nested\":{\"\ud83d\ude00\":{\"a\":[null,true,false,0,1e-7,1e+21]}}}",
+      "previous": "sha256:05a5c79ab062cc763903919e80402a6970909e05400ebdfea8b1a89dd57bccd3",
+      "digest": "sha256:b2383ffe50bc8d3795ae2b83439c52fdeffdec61aade1fc5008fcae07d5b63bb",
+      "observed_at": 1000
+    },
+    {
+      "sequence": 10,
+      "kind": "lease-closed",
+      "raw": "{\"legacy\":\"lease-closed\",\"message\":\"old v1 \\\" \\\\ \\n\",\"nested\":{\"\ud83d\ude00\":{\"a\":[null,true,false,0,1e-7,1e+21]}}}",
+      "previous": "sha256:b2383ffe50bc8d3795ae2b83439c52fdeffdec61aade1fc5008fcae07d5b63bb",
+      "digest": "sha256:386dabb48822828de30e7bf2f8201cb9502485d46f45ce7defd5bb742ac8a660",
+      "observed_at": 1000
+    },
+    {
+      "sequence": 11,
+      "kind": "prestart-closed",
+      "raw": "{\"legacy\":\"prestart-closed\",\"message\":\"old v1 \\\" \\\\ \\n\",\"nested\":{\"\ud83d\ude00\":{\"a\":[null,true,false,0,1e-7,1e+21]}}}",
+      "previous": "sha256:386dabb48822828de30e7bf2f8201cb9502485d46f45ce7defd5bb742ac8a660",
+      "digest": "sha256:3f9dbd24e90d4718fbc3541d85f60eea74ae7e660054f54eddc508c8f52bddc0",
+      "observed_at": 1000
+    },
+    {
+      "sequence": 12,
+      "kind": "registration",
+      "raw": "{\"legacy\":\"registration\",\"message\":\"old v1 \\\" \\\\ \\n\",\"nested\":{\"\ud83d\ude00\":{\"a\":[null,true,false,0,1e-7,1e+21]}}}",
+      "previous": "sha256:3f9dbd24e90d4718fbc3541d85f60eea74ae7e660054f54eddc508c8f52bddc0",
+      "digest": "sha256:962ca1394245eb3d069134d3a66aa2fd59bd19e500cb11ca6d477cd5f2902b2f",
+      "observed_at": 1000
+    },
+    {
+      "sequence": 13,
+      "kind": "stage-ack",
+      "raw": "{\"legacy\":\"stage-ack\",\"message\":\"old v1 \\\" \\\\ \\n\",\"nested\":{\"\ud83d\ude00\":{\"a\":[null,true,false,0,1e-7,1e+21]}}}",
+      "previous": "sha256:962ca1394245eb3d069134d3a66aa2fd59bd19e500cb11ca6d477cd5f2902b2f",
+      "digest": "sha256:b4ecff59d77938a143f58a87c770baeb902133eb07cdde071717b91d3200a20a",
+      "observed_at": 1000
+    },
+    {
+      "sequence": 14,
+      "kind": "stage-intake",
+      "raw": "{\"legacy\":\"stage-intake\",\"message\":\"old v1 \\\" \\\\ \\n\",\"nested\":{\"\ud83d\ude00\":{\"a\":[null,true,false,0,1e-7,1e+21]}}}",
+      "previous": "sha256:b4ecff59d77938a143f58a87c770baeb902133eb07cdde071717b91d3200a20a",
+      "digest": "sha256:03f908c32abb212824eb711c16258d666369b291b6f94a2592a8e30363ccc505",
+      "observed_at": 1000
+    },
+    {
+      "sequence": 15,
+      "kind": "stage-release",
+      "raw": "{\"legacy\":\"stage-release\",\"message\":\"old v1 \\\" \\\\ \\n\",\"nested\":{\"\ud83d\ude00\":{\"a\":[null,true,false,0,1e-7,1e+21]}}}",
+      "previous": "sha256:03f908c32abb212824eb711c16258d666369b291b6f94a2592a8e30363ccc505",
+      "digest": "sha256:f66193aa69c74ecb741ad70a7255a4d9bc5a84dd2c2aa51038f6d1d203c060d9",
+      "observed_at": 1000
+    },
+    {
+      "sequence": 16,
+      "kind": "takeover-ack",
+      "raw": "{\"legacy\":\"takeover-ack\",\"message\":\"old v1 \\\" \\\\ \\n\",\"nested\":{\"\ud83d\ude00\":{\"a\":[null,true,false,0,1e-7,1e+21]}}}",
+      "previous": "sha256:f66193aa69c74ecb741ad70a7255a4d9bc5a84dd2c2aa51038f6d1d203c060d9",
+      "digest": "sha256:4285b54b53af182e4037aee83cf30ada0bdffed4ed9b1db177eb5558f3696012",
+      "observed_at": 1000
+    }
+  ]
+}
