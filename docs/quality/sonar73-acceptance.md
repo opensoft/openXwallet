@@ -1,6 +1,10 @@
 # openXwallet #73 source acceptance
 
-Status: provider repairs are admitted; fresh wallet CI and main acceptance are pending.
+Status: complete-source CI and the PR gate are qualified; published main acceptance is pending.
+
+This record retains the named preparation and failed checkpoints in order.
+Pending states below belong to those checkpoints; the final main result will be
+recorded separately after its required run completes.
 
 The [original issue and gate record](sonar73-before.json) preserves all eight
 finding identities, six original Sonar way conditions and profiles. The
@@ -201,3 +205,23 @@ analysis. The source job now installs the distribution-signed zsh package and
 requires its expected path before running the unchanged corpus. No skip allowance,
 case selection, assertion, runtime/native control or gate threshold changes.
 The failed run and its logs remain retained; fresh qualification is required.
+
+The qualified PR log audit found an empty generated .coverage database at the
+repository root from compiler-only inventory readers. The final closeout uses
+in-memory data for both local and target-interpreter inventory readers, keeping
+all measured data and executable-line results unchanged. A real before/after
+probe reproduced the file creation and confirmed identical statement/exclusion
+sets without a generated file after the correction. No source exclusion is added;
+the final exact-head pipeline and main analysis will requalify the correction.
+
+### First measured main result: additional blockers retained
+
+Main e3eaff635a6d1ea1dd4ca064836f8c4519b6bee2 in run 43989598862 passed all
+four source jobs. All eight original keys are naturally CLOSED/FIXED. Sonar
+computed 83.8% new coverage (83.3% overall), but main remains red: reliability
+and security ratings C and 7.6% duplication. Five newly exposed findings cover
+the neutral service CLI config read, canonical lock discoverability and three
+nullable retained-state uses. The two full canonical OpenSpec copies account
+for nearly all 5,244 duplicated lines. The bounded governance amendment and
+T008-T010 cover the owner/shared-integration repairs; no finding, threshold,
+source file or retained baseline is waived. Issue #73 and T007 remain open.

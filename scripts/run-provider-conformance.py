@@ -9,6 +9,7 @@ All selected assertions run; coverage filenames and hits are never rewritten.
 from __future__ import annotations
 
 import argparse
+from functools import partial
 from collections import Counter
 import hashlib
 import importlib.util
@@ -191,8 +192,14 @@ def provider_body(path, revision):
 
 
 def verify_copies(provider, target, role, revision):
-    for local, remote in PROVIDERS[role]["copies"].items():
-        path = target / local
+    copies = PROVIDERS[role]["copies"]
+    # There is one executable implementation: the pinned neutral spec leg.
+    # Adapter configuration remains independently authenticated in its own root.
+    for local, remote in copies.items():
+        source_root = (ROOT / "openWallet/spec"
+                       if role == "openspec" and local in (VERIFIER, INSTALLER)
+                       else target)
+        path = source_root / local
         if path.is_symlink() or path.resolve() != path or not path.is_file():
             raise ValueError("linked or missing consumer source")
         body = provider_body(path, revision) if role == "openspec" else path.read_bytes()
@@ -219,9 +226,19 @@ class CollectionBindings:
         self.nodes = set(nodes)
         if self.role == "openspec":
             for module in modules:
-                module.SCRIPT = self.target / VERIFIER
-                module.INSTALLER = self.target / INSTALLER
+                shared = ROOT / "openWallet/spec"
+                module.SCRIPT = shared / VERIFIER
+                module.INSTALLER = shared / INSTALLER
                 module.PIN = self.target / CLI_PIN
+                original = module._load
+                context = self.target
+
+                def load(name, path, original=original, context=context):
+                    loaded = original(name, path)
+                    loaded.main = partial(loaded.main, consumer_root=context)
+                    return loaded
+
+                module._load = load
 
     def pytest_deselected(self, items):
         if items:
@@ -301,6 +318,18 @@ def import_actual_reader(target):
     spec.loader.exec_module(module)
 
 
+def verify_integration(record):
+    declared = record.get("integration", {})
+    expected = {VERIFIER, INSTALLER, "scripts/_shared_openspec.py"}
+    if set(declared) != expected:
+        raise ValueError("shared integration source selection differs")
+    for name, digest in declared.items():
+        path = ROOT / name
+        if (path.is_symlink() or path.resolve() != path or not path.is_file()
+                or hashlib.sha256(path.read_bytes()).hexdigest() != digest):
+            raise ValueError("shared integration source differs")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("mode", choices=tuple(MODES))
@@ -308,6 +337,8 @@ def main():
     role, relative = MODES[args.mode]
     provider, record = provider_checkout(role)
     target = (ROOT / relative).resolve(strict=True)
+    if role == "openspec":
+        verify_integration(record)
     verify_copies(provider, target, role, record["commit"])
     if role == "shape":
         import_actual_reader(target)

@@ -1246,3 +1246,29 @@ def test_file_failure_after_durable_claim_never_replays_an_unknown_unlink(lh, mo
     with pytest.raises(BindingError):
         lh.audit().call("cleanup-audit", attempt_ref="cleanup-attempt:unknown-file", decision=lh.use())
     assert sum(method == "DELETE" and route == "/installation/token" for method, route in lh.provider.calls) == 1
+
+
+def test_stage_release_without_final_plan_preserves_bound_generation(lh):
+    lh.launch()
+    before = lh.life.state(decision=lh.use())
+    assert before["final"] is None and before["generation"] is not None
+    with pytest.raises(BindingError, match="hosted-lifecycle-refused"):
+        lh.life.release_stage(lh.stage.scope["launch_ref"], decision=lh.use())
+    after = lh.life.state(decision=lh.use())
+    assert after["final"] is None and not after["released"]
+    assert after["generation"] == before["generation"]
+
+
+def test_stage_readback_without_generation_refuses_before_authority_read(lh, monkeypatch):
+    from workload_factory_binding_runtime.hosted.lifecycle import RegisteredStageReadback
+    lh.register()
+    before = lh.life.state(decision=lh.use())
+    assert before["generation"] is None
+    def forbidden(*args, **kwargs):
+        raise AssertionError("generation-less readback reached authority")
+    monkeypatch.setattr(lh.life, "stage_lease", forbidden)
+    with pytest.raises(BindingError, match="hosted-lifecycle-refused"):
+        RegisteredStageReadback(lh.life).read(lh.stage.scope["launch_ref"], decision=lh.use())
+    after = lh.life.state(decision=lh.use())
+    assert after["generation"] is None and not after["released"]
+    assert lh.stage.agent.children == {}

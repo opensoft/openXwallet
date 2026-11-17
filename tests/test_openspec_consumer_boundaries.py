@@ -10,10 +10,10 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-PROVIDER_REVISION = "e0e0b9a31ec8f4d5ec2d611d373ce0a918abb5de"
+PROVIDER_REVISION = "bd9859850a7939c8e3120dfaeada020ecef4b083"
 BODY_DIGESTS = {
-    "scripts/validate-openspec-cli-pin.py": "6498736d58ae5b5c08835375f680082622882e5ed815dd84ab32ef3e47d00bf0",
-    "scripts/install-pinned-openspec-cli.py": "082d036c18e40e2794e495633680f62a71795115b250ecd38428e451419fb083",
+    "scripts/validate-openspec-cli-pin.py": "69c658e0e1fb122e9835fafc5e3078e966f9a7b6c33af95654ec245ddbfe4caf",
+    "scripts/install-pinned-openspec-cli.py": "2ef0067678926da91009344b006d67aa9931a46504982329c1f0c7b7dfec1052",
     "contracts/openspec-cli-pin.yaml": "1bab358ce6d5275fcad6fd1af3a4320aebe42d25c158aa0364d680fd4d8fa482",
     "contracts/openspec-cli-pin.1.12.0.package-lock.json": "696dce86e5e5699007129310d9de532795ce48467218fba03b729d38c829e2ca"
 }
@@ -42,11 +42,11 @@ class OpenSpecConsumption(unittest.TestCase):
     def test_all_declared_bodies_equal_the_published_provider(self):
         for name, expected in BODY_DIGESTS.items():
             with self.subTest(path=name):
-                self.assertEqual(hashlib.sha256(provider_body(ROOT / name)).hexdigest(), expected)
+                self.assertEqual(hashlib.sha256(provider_body((ROOT / "openWallet/spec" if name.endswith(".py") else ROOT) / name)).hexdigest(), expected)
 
     def test_pin_addresses_the_complete_committed_dependency_lock(self):
         spec = importlib.util.spec_from_file_location(
-            "consumer_pin_verifier", ROOT / "scripts/validate-openspec-cli-pin.py"
+            "consumer_pin_verifier", ROOT / "openWallet/spec/scripts/validate-openspec-cli-pin.py"
         )
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
@@ -90,7 +90,7 @@ class OpenSpecConsumption(unittest.TestCase):
         for name, index in (("scripts/validate-openspec-cli-pin.py", 2),
                             ("contracts/openspec-cli-pin.yaml", 1)):
             with self.subTest(path=name), tempfile.TemporaryDirectory() as directory:
-                raw = (ROOT / name).read_bytes()
+                raw = ((ROOT / "openWallet/spec" if name.endswith(".py") else ROOT) / name).read_bytes()
                 lines = raw.split(b"\n")
                 lines[index] = b"raise RuntimeError('must never execute')"
                 forged = Path(directory) / Path(name).name

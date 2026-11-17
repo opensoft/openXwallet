@@ -996,3 +996,186 @@ def test_the_real_repository_verifies():
         done.stdout
     assert f"code leg @{REAL['legs']['code']['commit']} in lockstep" in \
         done.stdout, done.stdout
+
+
+# The shared tooling extension uses the same real two-level pin fixture.
+# It adds a spec gitlink without changing ordinary runtime validation.
+@pytest.fixture(scope="module")
+def tooling_upstream(upstream, tmp_path_factory):
+    from dataclasses import replace
+    base = tmp_path_factory.mktemp("shared-openspec")
+    spec = _init(base / "spec")
+    for name in ("validate-openspec-cli-pin.py", "install-pinned-openspec-cli.py"):
+        source = REPO_ROOT / "openWallet/spec/scripts" / name
+        _write(spec, "scripts/" + name, source.read_text())
+        (spec / "scripts" / name).chmod(source.stat().st_mode & 0o777)
+    pin = (REPO_ROOT / "contracts/openspec-cli-pin.yaml").read_text()
+    _write(spec, "contracts/openspec-cli-pin.yaml",
+           pin.split("dispositions:", 1)[0] + "dispositions:\n")
+    lock = "contracts/openspec-cli-pin.1.12.0.package-lock.json"
+    _write(spec, lock, (REPO_ROOT / lock).read_text())
+    _write(spec, "openspec/config.yaml", "schema: spec-driven\n")
+    _git(spec, "add", "scripts", "contracts", "openspec")
+    spec_revision = _commit(spec, "pinned shared tooling")
+    root = base / "root"
+    _clone_at(upstream.root, root, upstream.root_good)
+    _record_gitlink(root, "spec", spec_revision)
+    root_revision = _commit(root, "root with explicit tooling spec")
+    return replace(upstream, root=root, root_good=root_revision), spec, spec_revision
+
+
+@pytest.fixture
+def tooling_adapter(tmp_path, tooling_upstream):
+    up, spec, revision = tooling_upstream
+    adapter = build(tmp_path, up)
+    _clone_at(spec, adapter / "openWallet/spec", revision)
+    for name in ("verify-openwallet-pin.py", "_shared_openspec.py",
+                 "validate-openspec-cli-pin.py", "install-pinned-openspec-cli.py"):
+        _write(adapter, "scripts/" + name, (REPO_ROOT / "scripts" / name).read_text())
+    for name in ("contracts/openspec-cli-pin.yaml",
+                 "contracts/openspec-cli-pin.1.12.0.package-lock.json"):
+        _write(adapter, name, (spec / name).read_text())
+    _write(adapter, "openspec/config.yaml", "schema: spec-driven\n")
+    _git(adapter, "add", "scripts", "contracts", "openspec")
+    _commit(adapter, "adapter uses shared tooling")
+    return adapter
+
+
+def _tooling_run(adapter, name, argv=(), cwd=None, extra_env=None):
+    environment = dict(os.environ)
+    environment.pop("XFACTORY_OPENSPEC_PIN_PATH", None)
+    # Any unexpected package operation fails closed without reaching a network.
+    environment["XFACTORY_NPM_BINARY"] = "/unavailable/npm"
+    environment["OPENSPEC_TELEMETRY"] = "0"
+    environment.update(extra_env or {})
+    return subprocess.run([sys.executable, str(adapter / "scripts" / name), *argv],
+                          cwd=cwd or adapter.parent, env=environment,
+                          capture_output=True, text=True)
+
+
+@pytest.mark.parametrize("name", ["validate-openspec-cli-pin.py",
+                                  "install-pinned-openspec-cli.py"])
+def test_shared_tool_refuses_changed_adapter_pin_before_package_work(tooling_adapter, name):
+    adapter = tooling_adapter
+    (adapter / "contracts/openspec-cli-pin.yaml").write_text("not a pin\n")
+    argv = ["--all", "--no-cache"] if name.startswith("validate") else []
+    sentinel = adapter.parent / "npm-invoked"
+    npm = adapter.parent / "npm"
+    import shlex
+    npm.write_text('#!/bin/sh\n' + "touch " + shlex.quote(str(sentinel))
+                   + '\nexit 93\n')
+    npm.chmod(0o700)
+    control = subprocess.run([str(npm)], capture_output=True)
+    assert control.returncode == 93 and sentinel.exists()
+    sentinel.unlink()
+    result = _tooling_run(adapter, name, argv,
+                          extra_env={"XFACTORY_NPM_BINARY":str(npm)})
+    assert result.returncode == 2
+    assert "REFUSE pin-unreadable:" in result.stderr
+    assert "Traceback" not in result.stderr and not sentinel.exists()
+
+
+@pytest.mark.parametrize("fault", ["missing-root", "missing-spec", "wrong-spec-head",
+                                   "linked-spec", "linked-source", "modified-verifier",
+                                   "modified-installer", "root-pin-mismatch"])
+def test_shared_tool_refuses_unpinned_runtime_before_execution(tooling_adapter, fault):
+    adapter = tooling_adapter
+    spec = adapter / "openWallet/spec"
+    if fault == "missing-root":
+        (adapter / "openWallet").rename(adapter / "saved-neutral")
+    elif fault == "missing-spec":
+        spec.rename(adapter / "saved-spec")
+    elif fault == "linked-spec":
+        saved = adapter / "saved-spec"
+        spec.rename(saved)
+        spec.symlink_to(saved, target_is_directory=True)
+    elif fault == "wrong-spec-head":
+        _git(spec, "-c", "user.name=Synthetic", "-c",
+             "user.email=test@example.invalid", "commit", "--allow-empty",
+             "-qm", "unadmitted spec revision")
+    elif fault == "linked-source":
+        source = spec / "scripts/validate-openspec-cli-pin.py"
+        saved = adapter / "outside.py"
+        saved.write_bytes(source.read_bytes())
+        source.unlink()
+        source.symlink_to(saved)
+    elif fault.startswith("modified-"):
+        name = ("validate-openspec-cli-pin.py" if fault.endswith("verifier")
+                else "install-pinned-openspec-cli.py")
+        with (spec / "scripts" / name).open("a") as stream:
+            stream.write("\nraise RuntimeError('changed source executed')\n")
+    else:
+        pin = adapter / "contracts/openwallet-pin.yaml"
+        text = yaml.safe_load(pin.read_text())
+        text["commit"] = "0" * 40
+        pin.write_text(yaml.safe_dump(text))
+    result = _tooling_run(adapter, "validate-openspec-cli-pin.py", ["--all"])
+    assert result.returncode == 2
+    assert "REFUSE pin-unresolvable:" in result.stderr
+    assert "Traceback" not in result.stderr and "changed source executed" not in result.stderr
+    assert "/unavailable/npm" not in result.stderr
+
+
+def test_shared_verifier_transports_adapter_default_corpus_from_unrelated_cwd(
+        tooling_adapter, tmp_path):
+    import json
+    adapter = tooling_adapter
+    executable = tmp_path / "openspec"
+    observed = tmp_path / "observed"
+    executable.write_text(
+        "#!/usr/bin/env python3\nimport json,os,sys\n"
+        "if '--version' in sys.argv: print('1.12.0')\n"
+        "else:\n"
+        " open(" + repr(str(observed)) + ", 'w').write(os.getcwd())\n"
+        " print(json.dumps({'version':'1.0','items':[{'id':'synthetic','type':'spec','valid':True,'issues':[]}],"
+        "'summary':{'totals':{'passed':1,'failed':0,'items':1}}}))\n")
+    executable.chmod(0o700)
+    result = _tooling_run(adapter, "validate-openspec-cli-pin.py",
+                          ["--all", "--path-mode"],
+                          extra_env={"PATH":str(tmp_path)+os.pathsep+os.environ["PATH"]})
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert observed.read_text() == str(adapter)
+    # The standalone source still selects its own corpus without an override.
+    result = subprocess.run(
+        [sys.executable, str(adapter / "openWallet/spec/scripts/validate-openspec-cli-pin.py"),
+         "--all", "--path-mode"],
+        cwd=tmp_path, env={k:v for k,v in os.environ.items()
+                           if k != "XFACTORY_OPENSPEC_PIN_PATH"} | {"PATH":str(tmp_path)+os.pathsep+os.environ["PATH"]},
+        capture_output=True, text=True)
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert observed.read_text() == str(adapter / "openWallet/spec")
+
+
+@pytest.mark.parametrize("substitution", ["source-after-authentication", "bytecode"])
+def test_shared_installer_executes_only_authenticated_verifier_bytes(
+        tooling_adapter, monkeypatch, substitution):
+    import py_compile
+    adapter = tooling_adapter
+    source = adapter / "openWallet/spec/scripts/validate-openspec-cli-pin.py"
+    marker = adapter.parent / "unverified-code-executed"
+    payload = ("from pathlib import Path; Path(" + repr(str(marker)) + ").touch()\n")
+    canonical = source.read_bytes()
+    if substitution == "bytecode":
+        assert len(payload.encode()) < len(canonical)
+        original = source.stat()
+        source.write_text(payload + "#"*(len(canonical)-len(payload.encode())))
+        os.utime(source, ns=(original.st_atime_ns, original.st_mtime_ns))
+        py_compile.compile(str(source), doraise=True)
+        source.write_bytes(canonical)
+        os.utime(source, ns=(original.st_atime_ns, original.st_mtime_ns))
+    spec = importlib.util.spec_from_file_location(
+        "shared_tool_for_boundary_test", REPO_ROOT / "scripts/_shared_openspec.py")
+    helper = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(helper)
+    authenticated = helper.shared_sources(adapter)
+    def capture(root):
+        assert root == adapter
+        if substitution == "source-after-authentication":
+            source.write_text(payload)
+        return authenticated
+    monkeypatch.setattr(helper, "shared_sources", capture)
+    installer = helper.load_shared("install-pinned-openspec-cli.py", adapter)
+    assert not marker.exists()
+    assert installer.verifier.__file__ == str(source)
+    pin = installer.verifier.read_pin(adapter / "contracts/openspec-cli-pin.yaml")
+    assert installer.verifier.pinned_version(pin) == "1.12.0"
