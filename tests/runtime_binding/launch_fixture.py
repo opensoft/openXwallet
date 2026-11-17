@@ -30,9 +30,32 @@ from factory_binding.test_owner_integration import make_pki
 ROOT=Path(__file__).resolve().parents[2]
 
 
+def _register_stage_teardown(stack):
+    failures = []
+
+    def report_failures():
+        if len(failures) == 1:
+            raise failures[0]
+        if failures:
+            raise BaseExceptionGroup("stage teardown failed", failures)
+
+    def register(callback):
+        def close():
+            try:
+                callback()
+            except BaseException as error:
+                failures.append(error)
+
+        stack.callback(close)
+
+    stack.callback(report_failures)
+    return register
+
+
 @pytest.fixture
 def stage(v,g,rb,tmp_path,request):
     with ExitStack() as cleanup:
+        register_teardown = _register_stage_teardown(cleanup)
         result=SimpleNamespace(v=v,g=g,rb=rb,tmp=tmp_path,events=[])
         executable,runtime=system_runtime()
         roots=dict(v.roots);roots['root:python']=executable.parent;roots['root:runtime']=runtime[0].parent
@@ -75,11 +98,11 @@ def stage(v,g,rb,tmp_path,request):
         spec=WorkerSpec(plan=v.selected,context=v.context,policy=policy,roots=roots,runtime_roots=runtime,gid=os.getegid(),private_files=private_files)
         agent=HostAgent(worker=spec,store=StageStore(host_dir,identity=host_id,kind='host'),authority=authority)
         result.spec,result.agent,result.authority=spec,agent,authority
-        cleanup.callback(agent.close)
+        register_teardown(agent.close)
         servers=[]
         def close_servers():
             for server,thread in reversed(servers):server.shutdown();server.server_close();thread.join(timeout=5);assert not thread.is_alive()
-        cleanup.callback(close_servers)
+        register_teardown(close_servers)
         def serve(service,principal,cert,ca=None,permissions=None):
             server=StageServer(service=service,principal=principal,cert_file=str(cert[0]),key_file=str(cert[1]),
                 clock=lambda:v.h.now,monotonic=lambda:v.c.r.clock.mono,ca_file=str(ca) if ca is not None else None,permissions=permissions)
