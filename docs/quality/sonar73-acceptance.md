@@ -1,10 +1,12 @@
 # openXwallet #73 source acceptance
 
-Status: complete-source CI and the PR gate are qualified; published main acceptance is pending.
+Status: complete-source quality acceptance is verified at published main 51c250151b28743d9e7d0eae2b945fc857884679. The [main receipt](sonar73-after.json) records all 26 scoped findings and the explicit history-preservation limits.
 
-This record retains the named preparation and failed checkpoints in order.
-Pending states below belong to those checkpoints; the final main result will be
-recorded separately after its required run completes.
+This record retains preparation and failed checkpoints in order. Pending states
+in the historical sections belong to those checkpoints. The verified closeout
+at the end records the published result and the server-history discrepancy.
+
+## Historical preparation and qualification records
 
 The [original issue and gate record](sonar73-before.json) preserves all eight
 finding identities, six original Sonar way conditions and profiles. The
@@ -259,3 +261,91 @@ All seven primary checkout HEADs, statuses, working-diff and staged-diff hashes
 still match the original preservation snapshot. Original cloud and Python bench
 sessions and panes remain present. Full wallet source/coverage CI and actual
 main all-13-finding/six-condition acceptance remain pending. Issue #73 stays open.
+
+## Verified main closeout (2026-11-17)
+
+Published main 51c250151b28743d9e7d0eae2b945fc857884679 is qualified by
+[run 44057991374](https://github.com/opensoft/openXwallet/actions/runs/44057991374).
+All five source/measurement/analysis jobs pass. The unchanged six-condition
+Sonar way gate evaluates every condition with none ignored: 83.7% new coverage,
+0.03% new duplication, A reliability/security/maintainability ratings and 100%
+reviewed hotspots. Overall coverage is 83.1%. The
+[receipt](sonar73-after.json) retains the exact API values and source identities.
+
+All eight original findings, five additional main blockers and thirteen
+maintenance findings introduced by the repair are naturally CLOSED/FIXED, with
+issueStatus FIXED and lastChangeSource ANALYSIS. The later corrections in
+[openWallet-code #8](https://github.com/opensoft/openWallet-code/pull/8),
+[openWallet #15](https://github.com/opensoft/openWallet/pull/15), and
+[openXwallet #80](https://github.com/opensoft/openXwallet/pull/80) retain exact
+descriptor traversal and every test predicate, and make exception tests refuse
+setup failures outside the expected operation. The readback reports zero
+unresolved findings created after the preceding repaired-main analysis. The
+other 1,505 unresolved main findings remain outside this 26-key cohort and have
+not been triaged by this closeout.
+
+The selected neutral root is 819de67265bcc189936a5f3b50753a470af6d7e3, code is
+fb132776c119a153255c1bc6f423734911c98093, and spec remains
+0fe3151ccc2f3ffe7f72cca35106df46c180b5b7. Their qualified/merged ancestry and
+identical trees are verified. The shared provider remains qualified source
+41eab21570efbd942f49b6ca728d286492adf02a admitted at
+53475872efea351bd6bd65994428ea6692b150f4. All eight contract-artifact digests and
+release/tag labels remain unchanged.
+
+The source run passes 2,434 full tests plus 11 subtests and all 2,022 required
+native cases without failures or skips. Complementary real measurements cover
+2,433 cases and one case, with complete identical collections, passing phases,
+subtest contexts and genuine parent/child branch data. Both OpenSpec contexts
+pass all 214 provider assertions; shape passes all 2,231 required assertions;
+both real CLI corpora pass all seven strict items. All 90 owned production
+Python files are recognized in the server inventory. Generic clean noncode
+files omitted from the UI have separately recorded tracked bytes and explicit
+text inclusion scope; they are not represented as visible UI components.
+
+The original seven checkout heads, statuses, working-diff and staged-diff
+hashes match their preservation snapshot. Original cloud and Python bench
+sessions and panes remain present. Original commits, tags, failed checkpoints,
+raw coverage artifacts and historical exports remain retained. GitHub Codex
+quota fallback used the previously approved independent local reviews.
+
+### Historical analysis availability
+
+All ten original analysis identity records remain in the unchanged
+[before export](sonar73-before.json), SHA-256
+30e1e28308fdaa8a7f5ca0909146c6c735e0ecf7b3a7872c790ca9f7feae9c02.
+Nine still appear in Sonar's server history. Analysis
+5355fe64-552a-44e0-8212-a3d429a984c2, dated 2026-11-16T14:31:58+0000 at
+d832709a1119c17014287cd15ff8661bfd758cc4, is no longer available server-side and
+its direct lookup returns 404. It was still verified live at the earlier
+2026-11-17T08:48 readback. The full original capture also preserves its original
+VERSION “not provided” event, NONE gate status and absent period; its frozen
+SHA-256 is 972f9c96c589c6a1ae227501aa9116be28fe8ad57abe8e7022704708e6a68ef2.
+
+Sonar documents progressive snapshot retention and event exceptions in its
+[project data lifecycle](https://docs.sonarsource.com/sonarqube-cloud/managing-your-projects/project-data-lifecycle).
+The observed version markers changed across subsequent analyses, but the exact
+deletion cause is not audit-proven. This task performed no snapshot deletion,
+recreation or backdating. The receipt distinguishes live server records from
+frozen exported identities and captured metadata; it does not claim a complete
+export of historical source or measure data.
+
+Acceptance permits only that exact archive-backed identity, verified against
+both frozen hashes and the published ancestor. Every other original identity
+must still match server-side. The August 27 baseline remains live, selected and
+unchanged. The archived row cannot satisfy any current gate, coverage, profile,
+finding or baseline check. Rejection probes cover altered exports, changed
+metadata, a deselected/missing baseline and any second missing original.
+
+### Recorded scanner limits and authority
+
+Nine pre-existing template-shell parse warnings remain identical to the earlier
+main scan. All nine Git blobs are unchanged and pass Bash syntax validation.
+Those warnings, committed binary-bundle indexing diagnostics and historical
+failed checkpoints remain recorded separately; no file exclusion or scanner
+suppression was introduced.
+
+This completes source-quality acceptance for issue #73. Feature 017 and its
+frozen owning-source commit bb0e9dae89a771b05f6c235d0a77237288b95c85 retain their
+separate authority and acceptance boundaries. Existing profiles, rule counts and
+revision fields, thresholds, source scope, native controls, runtime budgets and
+billing remain unchanged.

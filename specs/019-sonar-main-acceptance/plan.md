@@ -12,3 +12,15 @@ canonical CLI duplication through owner fixes and explicit shared consumer
 context. Preserve all 193 original provider assertions per context, add direct
 transport/invalid-state/config-boundary regressions, publish children before
 coherent root/adapter pins, and require the same six main gate conditions.
+
+## Source-quality completion
+
+Main 51c250151b28743d9e7d0eae2b945fc857884679 passes the complete pipeline and
+unchanged six-condition gate. All 26 scoped original/additional/corrective keys
+are naturally analysis-fixed. Exact results, source revisions, preservation and
+the nine-live/ten-exported historical-record distinction are recorded in the
+[receipt](../../docs/quality/sonar73-after.json) and
+[closeout](../../docs/quality/sonar73-acceptance.md). Other unresolved debt and
+unchanged template-shell parser warnings remain separately recorded. Feature
+017, its frozen owner selection and operational acceptance remain separately
+governed.

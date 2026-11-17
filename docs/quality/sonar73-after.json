@@ -1,0 +1,1130 @@
+{
+  "observedAt": "2026-11-17T10:43:16.301523+00:00",
+  "project": "opensoft_openXwallet",
+  "revision": "51c250151b28743d9e7d0eae2b945fc857884679",
+  "analysis": {
+    "key": "11da8553-fdc9-4034-a06c-b0b0d8751467",
+    "date": "2026-11-17T10:23:23+0000",
+    "events": [
+      {
+        "key": "AaHpCU_TndvppZhSohEn",
+        "category": "VERSION",
+        "name": "not provided"
+      }
+    ],
+    "projectVersion": "not provided",
+    "manualNewCodePeriodBaseline": false,
+    "revision": "51c250151b28743d9e7d0eae2b945fc857884679"
+  },
+  "baseline": {
+    "key": "d434a8d1-6d41-4cfe-9413-e1868fc1c18d",
+    "date": "2026-08-27T11:16:42+0000",
+    "events": [],
+    "projectVersion": "not provided",
+    "manualNewCodePeriodBaseline": true,
+    "revision": "63f5a1adac89f017e70bab9a4ffe7cf02d6e6705"
+  },
+  "qualityGate": {
+    "status": "OK",
+    "conditions": [
+      {
+        "status": "OK",
+        "metricKey": "new_reliability_rating",
+        "comparator": "GT",
+        "periodIndex": 1,
+        "errorThreshold": "1",
+        "actualValue": "1"
+      },
+      {
+        "status": "OK",
+        "metricKey": "new_security_rating",
+        "comparator": "GT",
+        "periodIndex": 1,
+        "errorThreshold": "1",
+        "actualValue": "1"
+      },
+      {
+        "status": "OK",
+        "metricKey": "new_maintainability_rating",
+        "comparator": "GT",
+        "periodIndex": 1,
+        "errorThreshold": "1",
+        "actualValue": "1"
+      },
+      {
+        "status": "OK",
+        "metricKey": "new_coverage",
+        "comparator": "LT",
+        "periodIndex": 1,
+        "errorThreshold": "80",
+        "actualValue": "83.7"
+      },
+      {
+        "status": "OK",
+        "metricKey": "new_duplicated_lines_density",
+        "comparator": "GT",
+        "periodIndex": 1,
+        "errorThreshold": "3",
+        "actualValue": "0.0"
+      },
+      {
+        "status": "OK",
+        "metricKey": "new_security_hotspots_reviewed",
+        "comparator": "LT",
+        "periodIndex": 1,
+        "errorThreshold": "100",
+        "actualValue": "100.0"
+      }
+    ],
+    "periods": [
+      {
+        "index": 1,
+        "mode": "manual_baseline",
+        "date": "2026-08-27T11:16:42+0000"
+      }
+    ],
+    "ignoredConditions": false
+  },
+  "gateDefinition": {
+    "id": 9,
+    "name": "Sonar way",
+    "conditions": [
+      {
+        "id": 35,
+        "metric": "new_security_rating",
+        "op": "GT",
+        "error": "1"
+      },
+      {
+        "id": 36,
+        "metric": "new_reliability_rating",
+        "op": "GT",
+        "error": "1"
+      },
+      {
+        "id": 37,
+        "metric": "new_maintainability_rating",
+        "op": "GT",
+        "error": "1"
+      },
+      {
+        "id": 38,
+        "metric": "new_coverage",
+        "op": "LT",
+        "error": "80"
+      },
+      {
+        "id": 39,
+        "metric": "new_duplicated_lines_density",
+        "op": "GT",
+        "error": "3"
+      },
+      {
+        "id": 76287,
+        "metric": "new_security_hotspots_reviewed",
+        "op": "LT",
+        "error": "100"
+      }
+    ],
+    "isBuiltIn": true,
+    "actions": {
+      "rename": false,
+      "setAsDefault": false,
+      "copy": true,
+      "associateProjects": false,
+      "delete": false,
+      "manageConditions": false
+    },
+    "isCleanAsYouCode": true,
+    "isAiCodeAssuredCompliant": false
+  },
+  "qualityProfiles": [
+    {
+      "key": "AZzOAxufZYeV1IAhzv0r",
+      "language": "abap",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 66,
+      "rulesUpdatedAt": "2026-07-29T13:38:50+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0s",
+      "language": "ansible",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 16,
+      "rulesUpdatedAt": "2026-06-18T16:58:04+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0n",
+      "language": "apex",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 96,
+      "rulesUpdatedAt": "2026-10-29T15:54:29+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZz3XeW9jNeBwqrjtVW9",
+      "language": "azurepipelines",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 36,
+      "rulesUpdatedAt": "2026-10-29T15:55:09+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0Z",
+      "language": "azureresourcemanager",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 37,
+      "rulesUpdatedAt": "2026-06-18T17:43:49+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0V",
+      "language": "c",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 212,
+      "rulesUpdatedAt": "2026-09-09T12:44:55+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0K",
+      "language": "cloudformation",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 26,
+      "rulesUpdatedAt": "2026-06-18T17:28:36+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0X",
+      "language": "cobol",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 74,
+      "rulesUpdatedAt": "2026-08-21T13:58:43+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxugZYeV1IAhzv03",
+      "language": "cpp",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 466,
+      "rulesUpdatedAt": "2026-09-09T12:44:36+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxugZYeV1IAhzv06",
+      "language": "cs",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 382,
+      "rulesUpdatedAt": "2026-11-11T11:08:28+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0L",
+      "language": "css",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 50,
+      "rulesUpdatedAt": "2026-11-16T11:11:22+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxugZYeV1IAhzv02",
+      "language": "dart",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 118,
+      "rulesUpdatedAt": "2026-06-18T12:30:08+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZ_SVtzx9vtgtJM14tgG",
+      "language": "dataweave",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 22,
+      "rulesUpdatedAt": "2026-08-05T14:32:11+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0k",
+      "language": "docker",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 61,
+      "rulesUpdatedAt": "2026-10-29T15:56:29+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0P",
+      "language": "flex",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 47,
+      "rulesUpdatedAt": "2026-07-06T08:40:43+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0i",
+      "language": "githubactions",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 45,
+      "rulesUpdatedAt": "2026-10-29T15:58:05+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0U",
+      "language": "go",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 82,
+      "rulesUpdatedAt": "2026-10-05T15:30:38+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZ5pCq0BltFaynLGBKFo",
+      "language": "gosu",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 38,
+      "rulesUpdatedAt": "2026-06-09T16:48:24+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxugZYeV1IAhzv04",
+      "language": "groovy",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 80,
+      "rulesUpdatedAt": "2026-10-26T16:31:19+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0Y",
+      "language": "ipynb",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 438,
+      "rulesUpdatedAt": "2026-11-10T14:45:22+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxugZYeV1IAhzv01",
+      "language": "java",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 670,
+      "rulesUpdatedAt": "2026-10-22T16:39:30+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0c",
+      "language": "jcl",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 11,
+      "rulesUpdatedAt": "2025-03-10T14:01:04+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxugZYeV1IAhzv0z",
+      "language": "js",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 481,
+      "rulesUpdatedAt": "2026-10-14T16:46:14+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0h",
+      "language": "json",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 2,
+      "rulesUpdatedAt": "2026-03-16T15:55:26+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0Q",
+      "language": "jsp",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 0,
+      "rulesUpdatedAt": "2019-01-31T08:12:02+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0T",
+      "language": "kotlin",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 157,
+      "rulesUpdatedAt": "2026-06-25T10:23:39+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxugZYeV1IAhzv00",
+      "language": "kubernetes",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 23,
+      "rulesUpdatedAt": "2026-06-18T16:49:22+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0W",
+      "language": "objc",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 211,
+      "rulesUpdatedAt": "2026-08-12T12:37:53+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0l",
+      "language": "php",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 195,
+      "rulesUpdatedAt": "2026-08-03T18:24:01+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0p",
+      "language": "pli",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 17,
+      "rulesUpdatedAt": "2024-12-18T15:13:01+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0S",
+      "language": "plsql",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 132,
+      "rulesUpdatedAt": "2026-07-07T14:41:56+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZ89KRYCInNrSx-_eGr2",
+      "language": "postgres",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 11,
+      "rulesUpdatedAt": "2026-07-07T15:18:42+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZ3ZRoggFVODNh3tP5z5",
+      "language": "powershell",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 32,
+      "rulesUpdatedAt": "2026-05-27T10:17:24+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxugZYeV1IAhzv0y",
+      "language": "py",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 492,
+      "rulesUpdatedAt": "2026-11-10T14:42:54+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AaBipXaaUmcwpIittQQd",
+      "language": "r",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 76,
+      "rulesUpdatedAt": "2026-09-11T12:49:20+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0m",
+      "language": "rpg",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 33,
+      "rulesUpdatedAt": "2026-06-16T07:53:11+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0e",
+      "language": "ruby",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 66,
+      "rulesUpdatedAt": "2026-09-02T15:02:27+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0q",
+      "language": "rust",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 152,
+      "rulesUpdatedAt": "2026-09-11T07:46:15+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0f",
+      "language": "scala",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 30,
+      "rulesUpdatedAt": "2026-10-26T16:31:37+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxugZYeV1IAhzv0w",
+      "language": "secrets",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 357,
+      "rulesUpdatedAt": "2026-11-04T16:14:21+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0O",
+      "language": "shell",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 23,
+      "rulesUpdatedAt": "2026-10-29T15:55:45+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxugZYeV1IAhzv0x",
+      "language": "swift",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 65,
+      "rulesUpdatedAt": "2026-07-29T11:42:24+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0M",
+      "language": "terraform",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 51,
+      "rulesUpdatedAt": "2026-07-01T09:09:37+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0R",
+      "language": "text",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 11,
+      "rulesUpdatedAt": "2026-05-04T15:20:50+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxugZYeV1IAhzv0u",
+      "language": "ts",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 496,
+      "rulesUpdatedAt": "2026-10-14T16:47:23+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0b",
+      "language": "tsql",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 59,
+      "rulesUpdatedAt": "2026-07-17T12:38:43+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0j",
+      "language": "vb",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 28,
+      "rulesUpdatedAt": "2026-07-06T10:44:22+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0t",
+      "language": "vbnet",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 180,
+      "rulesUpdatedAt": "2026-07-23T15:08:27+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxugZYeV1IAhzv0v",
+      "language": "web",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 61,
+      "rulesUpdatedAt": "2026-10-20T07:01:38+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0a",
+      "language": "xml",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 39,
+      "rulesUpdatedAt": "2026-09-02T15:02:12+0000",
+      "isBuiltIn": true
+    },
+    {
+      "key": "AZzOAxufZYeV1IAhzv0g",
+      "language": "yaml",
+      "name": "Sonar way comprehensive",
+      "activeRuleCount": 2,
+      "rulesUpdatedAt": "2026-03-16T16:16:03+0000",
+      "isBuiltIn": true
+    }
+  ],
+  "settings": {
+    "settings": [
+      {
+        "key": "sonar.autoscan.enabled",
+        "value": "false",
+        "parentValue": "true",
+        "parentOrigin": "INSTANCE"
+      }
+    ]
+  },
+  "measures": [
+    {
+      "metric": "coverage",
+      "value": "83.1",
+      "bestValue": false
+    },
+    {
+      "metric": "branch_coverage",
+      "value": "73.5",
+      "bestValue": false
+    },
+    {
+      "metric": "new_coverage",
+      "periods": [
+        {
+          "index": 1,
+          "value": "83.69946369636963",
+          "bestValue": false
+        }
+      ]
+    },
+    {
+      "metric": "line_coverage",
+      "value": "85.7",
+      "bestValue": false
+    },
+    {
+      "metric": "new_lines_to_cover",
+      "periods": [
+        {
+          "index": 1,
+          "value": "15314"
+        }
+      ]
+    },
+    {
+      "metric": "new_duplicated_lines_density",
+      "periods": [
+        {
+          "index": 1,
+          "value": "0.026710194390859178",
+          "bestValue": false
+        }
+      ]
+    }
+  ],
+  "historyPreservation": {
+    "exportedOriginalCount": 10,
+    "liveOriginalCount": 9,
+    "liveOriginalKeys": [
+      "03ae3f82-b4cb-447a-a61e-3ec2b3e731a3",
+      "19cafad8-33cc-4aa9-8e6a-6d32f80bba28",
+      "26cd6971-b303-4aaf-8070-ca081ad159d1",
+      "2afc8bf0-8b39-4922-a486-889afcb82a33",
+      "41aeff49-ffd2-450d-a96a-6e2050230638",
+      "b410f2bc-4bb8-433f-9d58-c4c0a69fea8e",
+      "d434a8d1-6d41-4cfe-9413-e1868fc1c18d",
+      "e164edc4-4ca7-455a-b521-c7101cbb5fbd",
+      "eba10348-185f-4896-80cf-15c84699d3de"
+    ],
+    "archivedOnlyOriginalKeys": [
+      "5355fe64-552a-44e0-8212-a3d429a984c2"
+    ],
+    "publishedBefore": {
+      "path": "docs/quality/sonar73-before.json",
+      "revision": "e3eaff635a6d1ea1dd4ca064836f8c4519b6bee2",
+      "sha256": "30e1e28308fdaa8a7f5ca0909146c6c735e0ecf7b3a7872c790ca9f7feae9c02"
+    },
+    "archivalRecord": {
+      "observedAt": "2026-11-17T10:36:00.106696+00:00",
+      "project": "opensoft_openXwallet",
+      "knownArchivedOnlyOriginal": {
+        "key": "5355fe64-552a-44e0-8212-a3d429a984c2",
+        "date": "2026-11-16T14:31:58+0000",
+        "events": [
+          {
+            "key": "AaHkxo2O2XsEZRRQQunN",
+            "category": "VERSION",
+            "name": "not provided"
+          }
+        ],
+        "projectVersion": "not provided",
+        "manualNewCodePeriodBaseline": false,
+        "revision": "d832709a1119c17014287cd15ff8661bfd758cc4"
+      },
+      "originalCaptureObservedAt": "2026-11-16T14:49:02.491301+00:00",
+      "originalCaptureSha256": "972f9c96c589c6a1ae227501aa9116be28fe8ad57abe8e7022704708e6a68ef2",
+      "originalProjectStatus": {
+        "status": "NONE",
+        "conditions": [],
+        "periods": []
+      },
+      "originalGateAssignment": {
+        "id": 9,
+        "name": "Sonar way",
+        "default": true
+      },
+      "publishedBefore": {
+        "path": "docs/quality/sonar73-before.json",
+        "revision": "e3eaff635a6d1ea1dd4ca064836f8c4519b6bee2",
+        "sha256": "30e1e28308fdaa8a7f5ca0909146c6c735e0ecf7b3a7872c790ca9f7feae9c02"
+      },
+      "lastConfirmedServerPresence": {
+        "observedAt": "2026-11-17T08:48:40.525062+00:00",
+        "main": "cb66dc2fc92179cd40dd1973cd330fc207b6fd61",
+        "allTenOriginalsVerifiedLive": true,
+        "receiptSha256": "9acc5af7485c181e672eaf8ba35cb268b37af94833efb0aa3a958763b9ec00e9"
+      },
+      "firstObservedAbsent": {
+        "observedAt": "2026-11-17T10:26:12.525259+00:00",
+        "main": "51c250151b28743d9e7d0eae2b945fc857884679",
+        "directAnalysisLookupHTTPStatus": 404
+      },
+      "policy": "https://docs.sonarsource.com/sonarqube-cloud/managing-your-projects/project-data-lifecycle",
+      "assessment": "Consistent with managed snapshot consolidation and version-marker turnover; exact deletion cause is not audit-proven. No snapshot-deletion action was performed by this task."
+    },
+    "preservationScope": "Recorded identities and captured metadata; not full historical source or measure data."
+  },
+  "retainedMainAnalysisCount": 12,
+  "findings": {
+    "originalKeys": [
+      "AaB8u7Hi5rVuGc89yn5B",
+      "AaBJSB2k2Sq2goC8eU36",
+      "AaEiKj51s2OjFVrUKSXp",
+      "AaEiKj5Ms2OjFVrUKSXa",
+      "AaEiKj5Ms2OjFVrUKSXb",
+      "AaEiKj5as2OjFVrUKSXc",
+      "AaEiKj5as2OjFVrUKSXd",
+      "AaEiKj6hs2OjFVrUKSXw"
+    ],
+    "additionalMainBlockerKeys": [
+      "AaHnFr4A0Igpdh-tvVTI",
+      "AaHnFr680Igpdh-tvVTh",
+      "AaHnFsBN0Igpdh-tvVT4",
+      "AaHnFsCk0Igpdh-tvVT5",
+      "AaHnFsCk0Igpdh-tvVT6"
+    ],
+    "introducedMaintenanceKeys": [
+      "AaHosI7Tjf_tJyvZo-Qi",
+      "AaHosI_4jf_tJyvZo-Ql",
+      "AaHosI_4jf_tJyvZo-Qm",
+      "AaHosI_4jf_tJyvZo-Qn",
+      "AaHosI_4jf_tJyvZo-Qo",
+      "AaHosI_4jf_tJyvZo-Qp",
+      "AaHosI_Njf_tJyvZo-Qj",
+      "AaHosI_Njf_tJyvZo-Qk",
+      "AaHosJAejf_tJyvZo-Qq",
+      "AaHosJAejf_tJyvZo-Qr",
+      "AaHosJAejf_tJyvZo-Qs",
+      "AaHosJAejf_tJyvZo-Qt",
+      "AaHosJBjjf_tJyvZo-Qu"
+    ],
+    "requiredCount": 26,
+    "allNaturallyFixedByAnalysis": true,
+    "issues": [
+      {
+        "key": "AaHosI7Tjf_tJyvZo-Qi",
+        "rule": "python:S3776",
+        "status": "CLOSED",
+        "resolution": "FIXED",
+        "issueStatus": "FIXED",
+        "closeDate": "2026-11-17T10:23:23+0000",
+        "lastChangeSource": "ANALYSIS"
+      },
+      {
+        "key": "AaHosJAejf_tJyvZo-Qt",
+        "rule": "python:S9073",
+        "status": "CLOSED",
+        "resolution": "FIXED",
+        "issueStatus": "FIXED",
+        "closeDate": "2026-11-17T10:23:23+0000",
+        "lastChangeSource": "ANALYSIS"
+      },
+      {
+        "key": "AaHosJBjjf_tJyvZo-Qu",
+        "rule": "python:S1192",
+        "status": "CLOSED",
+        "resolution": "FIXED",
+        "issueStatus": "FIXED",
+        "closeDate": "2026-11-17T10:23:23+0000",
+        "lastChangeSource": "ANALYSIS"
+      },
+      {
+        "key": "AaHosJAejf_tJyvZo-Qq",
+        "rule": "python:S9073",
+        "status": "CLOSED",
+        "resolution": "FIXED",
+        "issueStatus": "FIXED",
+        "closeDate": "2026-11-17T10:23:23+0000",
+        "lastChangeSource": "ANALYSIS"
+      },
+      {
+        "key": "AaHosJAejf_tJyvZo-Qr",
+        "rule": "python:S9073",
+        "status": "CLOSED",
+        "resolution": "FIXED",
+        "issueStatus": "FIXED",
+        "closeDate": "2026-11-17T10:23:23+0000",
+        "lastChangeSource": "ANALYSIS"
+      },
+      {
+        "key": "AaHosJAejf_tJyvZo-Qs",
+        "rule": "python:S9073",
+        "status": "CLOSED",
+        "resolution": "FIXED",
+        "issueStatus": "FIXED",
+        "closeDate": "2026-11-17T10:23:23+0000",
+        "lastChangeSource": "ANALYSIS"
+      },
+      {
+        "key": "AaHosI_Njf_tJyvZo-Qj",
+        "rule": "python:S5778",
+        "status": "CLOSED",
+        "resolution": "FIXED",
+        "issueStatus": "FIXED",
+        "closeDate": "2026-11-17T10:23:23+0000",
+        "lastChangeSource": "ANALYSIS"
+      },
+      {
+        "key": "AaHosI_Njf_tJyvZo-Qk",
+        "rule": "python:S9073",
+        "status": "CLOSED",
+        "resolution": "FIXED",
+        "issueStatus": "FIXED",
+        "closeDate": "2026-11-17T10:23:23+0000",
+        "lastChangeSource": "ANALYSIS"
+      },
+      {
+        "key": "AaHosI_4jf_tJyvZo-Ql",
+        "rule": "python:S9073",
+        "status": "CLOSED",
+        "resolution": "FIXED",
+        "issueStatus": "FIXED",
+        "closeDate": "2026-11-17T10:23:23+0000",
+        "lastChangeSource": "ANALYSIS"
+      },
+      {
+        "key": "AaHosI_4jf_tJyvZo-Qm",
+        "rule": "python:S5778",
+        "status": "CLOSED",
+        "resolution": "FIXED",
+        "issueStatus": "FIXED",
+        "closeDate": "2026-11-17T10:23:23+0000",
+        "lastChangeSource": "ANALYSIS"
+      },
+      {
+        "key": "AaHosI_4jf_tJyvZo-Qn",
+        "rule": "python:S9073",
+        "status": "CLOSED",
+        "resolution": "FIXED",
+        "issueStatus": "FIXED",
+        "closeDate": "2026-11-17T10:23:23+0000",
+        "lastChangeSource": "ANALYSIS"
+      },
+      {
+        "key": "AaHosI_4jf_tJyvZo-Qo",
+        "rule": "python:S5778",
+        "status": "CLOSED",
+        "resolution": "FIXED",
+        "issueStatus": "FIXED",
+        "closeDate": "2026-11-17T10:23:23+0000",
+        "lastChangeSource": "ANALYSIS"
+      },
+      {
+        "key": "AaHosI_4jf_tJyvZo-Qp",
+        "rule": "python:S9073",
+        "status": "CLOSED",
+        "resolution": "FIXED",
+        "issueStatus": "FIXED",
+        "closeDate": "2026-11-17T10:23:23+0000",
+        "lastChangeSource": "ANALYSIS"
+      },
+      {
+        "key": "AaHnFr4A0Igpdh-tvVTI",
+        "rule": "pythonsecurity:S8707",
+        "status": "CLOSED",
+        "resolution": "FIXED",
+        "issueStatus": "FIXED",
+        "closeDate": "2026-11-17T08:46:20+0000",
+        "lastChangeSource": "ANALYSIS"
+      },
+      {
+        "key": "AaHnFr680Igpdh-tvVTh",
+        "rule": "text:S8565",
+        "status": "CLOSED",
+        "resolution": "FIXED",
+        "issueStatus": "FIXED",
+        "closeDate": "2026-11-17T08:46:20+0000",
+        "lastChangeSource": "ANALYSIS"
+      },
+      {
+        "key": "AaHnFsCk0Igpdh-tvVT6",
+        "rule": "pythonbugs:S2259",
+        "status": "CLOSED",
+        "resolution": "FIXED",
+        "issueStatus": "FIXED",
+        "closeDate": "2026-11-17T08:46:20+0000",
+        "lastChangeSource": "ANALYSIS"
+      },
+      {
+        "key": "AaHnFsCk0Igpdh-tvVT5",
+        "rule": "pythonbugs:S2259",
+        "status": "CLOSED",
+        "resolution": "FIXED",
+        "issueStatus": "FIXED",
+        "closeDate": "2026-11-17T08:46:20+0000",
+        "lastChangeSource": "ANALYSIS"
+      },
+      {
+        "key": "AaHnFsBN0Igpdh-tvVT4",
+        "rule": "pythonbugs:S2259",
+        "status": "CLOSED",
+        "resolution": "FIXED",
+        "issueStatus": "FIXED",
+        "closeDate": "2026-11-17T08:46:20+0000",
+        "lastChangeSource": "ANALYSIS"
+      },
+      {
+        "key": "AaEiKj5as2OjFVrUKSXc",
+        "rule": "githubactions:S8541",
+        "status": "CLOSED",
+        "resolution": "FIXED",
+        "issueStatus": "FIXED",
+        "closeDate": "2026-11-17T01:18:57+0000",
+        "lastChangeSource": "ANALYSIS"
+      },
+      {
+        "key": "AaEiKj5as2OjFVrUKSXd",
+        "rule": "githubactions:S8544",
+        "status": "CLOSED",
+        "resolution": "FIXED",
+        "issueStatus": "FIXED",
+        "closeDate": "2026-11-17T01:18:57+0000",
+        "lastChangeSource": "ANALYSIS"
+      },
+      {
+        "key": "AaEiKj5Ms2OjFVrUKSXa",
+        "rule": "githubactions:S8541",
+        "status": "CLOSED",
+        "resolution": "FIXED",
+        "issueStatus": "FIXED",
+        "closeDate": "2026-11-17T01:18:57+0000",
+        "lastChangeSource": "ANALYSIS"
+      },
+      {
+        "key": "AaEiKj5Ms2OjFVrUKSXb",
+        "rule": "githubactions:S8544",
+        "status": "CLOSED",
+        "resolution": "FIXED",
+        "issueStatus": "FIXED",
+        "closeDate": "2026-11-17T01:18:57+0000",
+        "lastChangeSource": "ANALYSIS"
+      },
+      {
+        "key": "AaEiKj6hs2OjFVrUKSXw",
+        "rule": "pythonsecurity:S8707",
+        "status": "CLOSED",
+        "resolution": "FIXED",
+        "issueStatus": "FIXED",
+        "closeDate": "2026-11-17T01:18:57+0000",
+        "lastChangeSource": "ANALYSIS"
+      },
+      {
+        "key": "AaEiKj51s2OjFVrUKSXp",
+        "rule": "python:S4790",
+        "status": "CLOSED",
+        "resolution": "FIXED",
+        "issueStatus": "FIXED",
+        "closeDate": "2026-11-17T01:18:57+0000",
+        "lastChangeSource": "ANALYSIS"
+      },
+      {
+        "key": "AaB8u7Hi5rVuGc89yn5B",
+        "rule": "python:S4790",
+        "status": "CLOSED",
+        "resolution": "FIXED",
+        "issueStatus": "FIXED",
+        "closeDate": "2026-11-17T01:18:57+0000",
+        "lastChangeSource": "ANALYSIS"
+      },
+      {
+        "key": "AaBJSB2k2Sq2goC8eU36",
+        "rule": "secrets:S9131",
+        "status": "CLOSED",
+        "resolution": "FIXED",
+        "issueStatus": "FIXED",
+        "closeDate": "2026-11-17T01:18:57+0000",
+        "lastChangeSource": "ANALYSIS"
+      }
+    ]
+  },
+  "sourceSnapshot": {
+    "revision": "51c250151b28743d9e7d0eae2b945fc857884679",
+    "tree": "8271d8ad51fc417b1758fe2f02cd0574c70c9131",
+    "repositories": {
+      ".": {
+        "revision": "51c250151b28743d9e7d0eae2b945fc857884679",
+        "tree": "8271d8ad51fc417b1758fe2f02cd0574c70c9131"
+      },
+      "openWallet": {
+        "revision": "819de67265bcc189936a5f3b50753a470af6d7e3",
+        "tree": "50494c75ce9f0e304c6532a62a817a8f353fad92"
+      },
+      "openWallet/code": {
+        "revision": "fb132776c119a153255c1bc6f423734911c98093",
+        "tree": "92ff22bf47a4bb652a537314f3877427a9840cc4"
+      },
+      "openWallet/spec": {
+        "revision": "0fe3151ccc2f3ffe7f72cca35106df46c180b5b7",
+        "tree": "a0cb1d366ea7ed4c34891506be587c3e188b05c9"
+      }
+    },
+    "sources": {
+      "scripts/_shared_openspec.py": "4cb23e631dc735210f0a214894c545d838b617cedf24f7082fdeff78dc839ac7",
+      "scripts/install-pinned-openspec-cli.py": "579ff05d4f621b33f09ad31523fe280399aab92273c7c113b3a78303fa5220d7",
+      "scripts/neutrality-gate.py": "7939147be0e0530f80a919d599ed4a37a266194262502cdc3acf74f0722b17e3",
+      "scripts/prepare-protected-runtime.py": "b511d0ce008f194bb36b3d29946f4a23fe758f99c8178ebc5a083d83c9018206",
+      "scripts/run-provider-conformance.py": "b8bcbb2e27a763b355e0e4c3e1e0bf066e2f455de0582d7494344c5159a86786",
+      "scripts/validate-carve-manifest.py": "fd1818087036f7683b5bb778de97b914580a7ebc0039de0e26d7b585519a8d95",
+      "scripts/validate-openspec-cli-pin.py": "02955782d25adfd4193ea6f26d9bcc04168ba6d73fc92b079351cd61a56e7887",
+      "scripts/validate-openxwallet.py": "0ceafbcdbc7aa77414f557408a7ad266eccde536329944ecc197bb322d52d0c7",
+      "scripts/validate-sonar-coverage.py": "08db13365e81fd7f174eeb1449ee6ce73579bcfa03487daedae2cd21665833fb",
+      "scripts/verify-contract-pin.py": "4477bbe88baf39d4f37bee14af06edcc40bd60de183e2e0b1f3b21d2ced51c17",
+      "scripts/verify-openwallet-pin.py": "1b5065f1916771ed129ea1bf5ccf9d903800dae73ae30138cc24b6bfaa06054f",
+      "scripts/wallet-yaml-syntax-gate.py": "0f333be7b7b9e59eb71d46138c877f3553b3a87ccf2fa32562b1ce093cdd880e",
+      "scripts/workload_factory_binding/__init__.py": "92e01335a71f071b09a0c8c56cec5218b569cfa08aa5e65a2f976851f47e3bf9",
+      "scripts/workload_factory_binding/evidence.py": "1f95c2b3488574c69b37cd4aaf8af3a2c0cdcd69c64ebdcbc8b43201c51491c0",
+      "scripts/workload_factory_binding/gate.py": "e27c10115d3433fe34a0110698a22a4cabba5a046d742514e63100597d4258b8",
+      "scripts/workload_factory_binding/ledger.py": "a1fb5bbec8fd53a7fa72b91b21562fdb93b769ce1e3b42175d2b224a436dbe3d",
+      "scripts/workload_factory_binding_runtime/__init__.py": "b1463888129305d646279b3385f19d9f6272471c3a616bb81446b6f33859f461",
+      "scripts/workload_factory_binding_runtime/_https_worker.py": "d33834000bc8c790c6e23aa1bab0b4bbd3518f08e638c85f78b21213f0d39765",
+      "scripts/workload_factory_binding_runtime/bootstrap.py": "5d8548ffde04a6b4771d2b878ac4d4af5b5c423999f2df1e38ca71515dde6458",
+      "scripts/workload_factory_binding_runtime/config.py": "05a2b2354ff67de6248b087d4bf6d5b3b7a7bbad03796c349171e9b905fc357b",
+      "scripts/workload_factory_binding_runtime/custody.py": "86a2bf6ce2c7062dbcfe1a5f8ccc465ee756fc3d96e5986523d50185528691c9",
+      "scripts/workload_factory_binding_runtime/evidence.py": "41041ea71d49688f2d015f4c15e9284437689c12963723ccab9d7f49879844f8",
+      "scripts/workload_factory_binding_runtime/github_bootstrap/__init__.py": "11d9271705b62a74ff0c2fe4986ed7e0d82a052aae399c45681496e7c4492ac9",
+      "scripts/workload_factory_binding_runtime/github_bootstrap/_io_worker.py": "ff50d51be3f35905061641b506bf1fe6384e992e6825c93a9d517b062e10b546",
+      "scripts/workload_factory_binding_runtime/github_bootstrap/approval.py": "cd98bfd1f2352a4e8f9661e62db397ad497b72cf823560a019a1744184612a90",
+      "scripts/workload_factory_binding_runtime/github_bootstrap/broker.py": "f9f03bebfac4aa0dde3450c9d0e136e8d310e16d6a20f5077e628137e883818a",
+      "scripts/workload_factory_binding_runtime/github_bootstrap/client.py": "d4acfd412c3a3cc0c35fad3589d67b1fbcd2fdaa5ff4df1999378dee44de47cf",
+      "scripts/workload_factory_binding_runtime/github_bootstrap/common.py": "0b95cedc7e0b339ba25cb1b3d915217e44e862501a22fcac09dc8d7eb33a1a41",
+      "scripts/workload_factory_binding_runtime/github_bootstrap/controller.py": "c306969f2dc8084c4210cf0b852e3e46b9d5bb89e0b5c171e0165f3fd5a61324",
+      "scripts/workload_factory_binding_runtime/github_bootstrap/graph.py": "a413765a9e434754eca68952f27f07a9c9282bdf64ec0fb080fc35d1ee8c1b90",
+      "scripts/workload_factory_binding_runtime/github_bootstrap/https.py": "bc6e689288324d68345c7ad229fd34155c6e3f0ce4ba0ff70936c4b7787094ce",
+      "scripts/workload_factory_binding_runtime/github_bootstrap/identity.py": "aba80c82a0cf9e19eb5703b004262ba708609164d033d93499fd976bcc87660a",
+      "scripts/workload_factory_binding_runtime/github_bootstrap/journal.py": "1c5c9cf462640305baea80508cc2928e8a4fcdba474d0233ed523551e8ada770",
+      "scripts/workload_factory_binding_runtime/github_bootstrap/provider.py": "58ce4b4f9cd9c8d2bc36da95b5e9cc12cd3d0bb3b817cd506793a08df7b179a8",
+      "scripts/workload_factory_binding_runtime/github_bootstrap/session.py": "5d0d467cdc11b226e9f04ea75eacbda19b7b8e95a64b72214cceaec34bb2d477",
+      "scripts/workload_factory_binding_runtime/hosted/__init__.py": "fb53971a4eaa84aad29587f5b5c9a97cf2d32918bb8d9b3448813272920d4cad",
+      "scripts/workload_factory_binding_runtime/hosted/_credential_io.py": "1b130e59b59ead7e338a7da3d2f1ca01da15809cecd4225c67fd768682978766",
+      "scripts/workload_factory_binding_runtime/hosted/_launch_exec.py": "4c4cad5bf216971e04e0dcf654df0274688e4cff795d9cdfca2c949788a3b7a9",
+      "scripts/workload_factory_binding_runtime/hosted/admission.py": "d3a40443f8f160c821a192f765865809b2a3ffb1f56098ad9c0adad84301e8d1",
+      "scripts/workload_factory_binding_runtime/hosted/credential.py": "ecda5f2b0415800e30f82d94ae8007bdc82a0df19d700d3b5613a162d4659045",
+      "scripts/workload_factory_binding_runtime/hosted/enrollment.py": "f6245ffb031d288bda75d132146e8d289080ab4699d59a1597b254fae2ae3663",
+      "scripts/workload_factory_binding_runtime/hosted/file_pins.py": "a63e1b0cee6b9c24f4cf8d31de2c4c0f5acb8fc93917ff055a60c1533eb5fcb4",
+      "scripts/workload_factory_binding_runtime/hosted/finalization.py": "169e4674b4e2e9fdfc924e40db46f9f4016ecb21ae6783b8212c732cdfb5ff59",
+      "scripts/workload_factory_binding_runtime/hosted/github_readback.py": "a0a6e096edfe3171b78200baf939f36ca463f4670e19a59426b61fe9cdf8d33a",
+      "scripts/workload_factory_binding_runtime/hosted/host_agent.py": "1f6a4a2a48a09d8ce4b25a493084ac4f6d49f8faef716fee05a615ea8b4c1b8d",
+      "scripts/workload_factory_binding_runtime/hosted/issuance.py": "c44672c31d2a01bb7bd3f24e1629152fa4c1ef9fce7c764feaae27a556c38144",
+      "scripts/workload_factory_binding_runtime/hosted/lifecycle.py": "0b0a722beb20173666a66ba935e6e328edd470245beb686aea83bdbcb8254345",
+      "scripts/workload_factory_binding_runtime/hosted/lifecycle_service.py": "0e336f3dc22490fa0dc2582f329acfdb0f2a1ef0318f7fffebf9cc28565af9bf",
+      "scripts/workload_factory_binding_runtime/hosted/lifecycle_store.py": "e9349f2e072981be2ced13e377416c220629e29334fd4046305b838f708bf86c",
+      "scripts/workload_factory_binding_runtime/hosted/measurement.py": "0997fe9ac24371ed36389f9f1b717eefa7e4d14ca627f505d5d603f5cd5bbb46",
+      "scripts/workload_factory_binding_runtime/hosted/nonces.py": "4bc6ea4227e24285b89b0f80bbe7b9eb8b19f4cffff9886c74a3a69fa406a575",
+      "scripts/workload_factory_binding_runtime/hosted/plan.py": "3416d3dabde2adbcc3a774ac953f5a4abc5bacc70e96b662637b8e2af680d213",
+      "scripts/workload_factory_binding_runtime/hosted/platform_readback.py": "129b47197392c6a85a33b1d93a84c13d7a8624dd5abb820432681900c93fb1bf",
+      "scripts/workload_factory_binding_runtime/hosted/private_http.py": "1de4426e59b84fcb6ff94eb842d74e4d5c927a9b207d0d7732f5c8407bcadec0",
+      "scripts/workload_factory_binding_runtime/hosted/readback.py": "4ddda063d870acd5dbb1ae0ad7cb7cfb1cc1dd22b4a4b9b1b8c1671c12f022c7",
+      "scripts/workload_factory_binding_runtime/hosted/stage_client.py": "943768ac0eeb34e7672419edd267acc6a49c4cafd2e02f4c5d0872985f29bc4e",
+      "scripts/workload_factory_binding_runtime/hosted/stage_controller.py": "a31afbb75cf703f4641db296aa32d6fbab0b82e0bbe2b40b16662b1bf16cdef6",
+      "scripts/workload_factory_binding_runtime/hosted/stage_http.py": "d239757419c87e17378a107052f7c81d494d0371bb59e90e20fd2290b78b90df",
+      "scripts/workload_factory_binding_runtime/hosted/stage_store.py": "281b3945d895ce4d4e3a48b910cae98cd550c804945b1e9b4ca561c88755a0c6",
+      "scripts/workload_factory_binding_runtime/hosted/staging.py": "93982bba66b8dce533c4403b15e810e584999dda400a475071b9240af321a3e4",
+      "scripts/workload_factory_binding_runtime/hosted/worker_sandbox.py": "1278ecd8fce045ba301469cfaedd6f7365bf9a30f675d7c7e0cba6c49018f6ce",
+      "scripts/workload_factory_binding_runtime/issuer.py": "ef096f2a3d352c0aafc01b0a008a3f9756881e2657f1e65adaeab08836c45622",
+      "scripts/workload_factory_binding_runtime/launch.py": "c61fb5b1b50ad05d16c8ff8a020151299ba7dfe2c8a2a8f5ce76309ebf59bd20",
+      "scripts/workload_factory_binding_runtime/lifecycle.py": "b42d48102ef19bcfd83f09a2a6d1d8b821001f446d077a1f4c71e983595af4c1",
+      "scripts/workload_factory_binding_runtime/loaders.py": "c3e6b8d81f51ef547ed61b5d6b547ce9008e23051a41a97b07226a865760008e",
+      "scripts/workload_factory_binding_runtime/reference_authority/__init__.py": "09272e13c15ebb2ffab62062c7c77cb1ea07e0cb3df2496275462730918c5fd5",
+      "scripts/workload_factory_binding_runtime/reference_authority/client.py": "e9bd3f59ae29e03963864bde3c232a0e858731557a61c2a54152b2845aefe1b7",
+      "scripts/workload_factory_binding_runtime/reference_authority/model.py": "8d3c193deb6f4511f6d8394c2e360b4edaadbadc500d309c67b63d1c40e04af7",
+      "scripts/workload_factory_binding_runtime/reference_authority/store.py": "f08b4a6327252e8001276162a5b7a6aa77d0d6acf3ead9facc4b98f6283577ef",
+      "scripts/workload_factory_binding_runtime/reference_authority/transport.py": "2d5b48a992c723abad8ffaae633478fc91fe9d60d44dae26f1542985885ca795",
+      "scripts/workload_factory_binding_runtime/runtime.py": "b4cbc8cd0e84b623aa42c1535d2b1d4b1ce8c3ad94a83364260300e292a3c247",
+      "scripts/workload_factory_binding_runtime/state.py": "0c3251d08077906ddfc2ee63af4944bf4b177e40e89db35668747103b651a00e",
+      "scripts/workload_factory_binding_runtime/supervisor.py": "9f56a56d253d56b8fa609a7b58536fe35a05241357bd3af0d9c54c372a5a60f2",
+      "scripts/workload_factory_binding_runtime/transport.py": "e83860ce174301c5e853a3a798bb16b594a09a622cffc1f493961582ee314b29",
+      "scripts/workload_factory_binding_runtime/workflow.py": "b211d9415566415d6b98df2322448989a00817e4faeb3df5450fad403375fefe",
+      "openWallet/scripts/bootstrap.py": "a3a860ce7ce59633c74d2f3390f3bf678b37a7c72ed800059e144aea2fb7a5b1",
+      "openWallet/scripts/repo_shape.py": "290d6856126193bd9e3617398b646489a78640494c9ef9631f3b79687c1fdb6d",
+      "openWallet/scripts/validate-manifest.py": "cd0176730cbb6dca5061d7ed6c7406cd071bf19a3a33142b4e5a947cb220d114",
+      "openWallet/scripts/validate-pins.py": "eb6e09367b6907f1272803e56bbd5e12d838138758d83697bd7b502b5d164503",
+      "openWallet/scripts/validate-repository-naming.py": "b53fc68868f1f0d77acdac0b744f604f2c7cfc72e5c48337626b52de9e20f79f",
+      "openWallet/code/openwallet_runtime/__init__.py": "7186763f2d58667fee065de3f3eb213c8fb103436e884476f1ae6abe63462551",
+      "openWallet/code/openwallet_runtime/custody.py": "ecc9176ec2a0dde191e62a85999d48a52c02b8403429e0f883cde96978b2b8a4",
+      "openWallet/code/openwallet_runtime/proof.py": "6e5372ee2216acda62f60a256a51f4b89cc9ad8a3b7a13d2df294c66527ae115",
+      "openWallet/code/openwallet_runtime/reference_service.py": "4e51cd4ca5d44b24febd3f271345b128388f7eafe90f92cc4d383498d27ca34f",
+      "openWallet/code/openwallet_runtime/registry.py": "41bef6d8d18952233e11a343c7fa01f1f1ce88c9fab1a9218e859c6e92dd3087",
+      "openWallet/code/scripts/validate-openxwallet.py": "ac26a57e14d450a6f89999f0eceb28586e02cf8d2a5b295e3a2d486d58091e7e",
+      "openWallet/code/scripts/wallet-yaml-syntax-gate.py": "5eb4383e171131f1e4d5df185ac215552c19a637884f00e7a745af60d700713e",
+      "openWallet/spec/scripts/install-pinned-openspec-cli.py": "a1263f1ebc4e325296b890e1f79d71d211605fbd793e244a7ff25f09787707aa",
+      "openWallet/spec/scripts/validate-openspec-cli-pin.py": "081e06361fdd030c5782ca708b25089179ba0efbc9aa39252613a2501b38d382",
+      "openWallet/spec/specs/006-openxwallet-contracts/evidence/red-proof.py": "342691351e87507f852aef3360feb5a102a38a2aa445513841930f6bfb7cfafd"
+    },
+    "configs": {
+      ".coveragerc": "139edd90980695ea0f0aeacece21835d7a37e8937148ab4b45810d4ed83033c9",
+      "sonar-project.properties": "6b8ccf9656ac530532411d381ce797f6014fbac84029207cc75135507b489d21",
+      "requirements/sonar-analysis.lock": "9059048c3eb0c7db025bf2082f7ce03e39e08653a89f15e7c0f435efd95f7817",
+      "requirements/analysis-shape.lock": "6c3a51aafcf05b09b383965ccf3e855e5f5bdb0da799d2dc14d83c417b353f2d",
+      "requirements/analysis-providers.json": "3de8c0efc7fd7480cd2382878f0d36cfb38f4493d5a2b4f950c530ebc45fc5f6",
+      "requirements/coverage-workload.lock": "3662789c315147e78a58f3394b8815dcfbcabbe0f5eab2f93f2da29805bdbd36"
+    }
+  },
+  "scannedProductionPythonFiles": 90,
+  "scannedOriginalFindingSources": [
+    "openWallet/code/.github/workflows/pytest-suite.yml",
+    "openWallet/code/.github/workflows/wallet-validation.yml",
+    "openWallet/scripts/repo_shape.py",
+    "openWallet/spec/scripts/validate-openspec-cli-pin.py",
+    "scripts/validate-openspec-cli-pin.py"
+  ],
+  "configuredGenericTextSources": {
+    "openWallet/code/contracts/openxwallet/examples/negative/wallet-carries-jwk-private-exponent.yaml": {
+      "sha256": "e3928e19c011b18a519476b3a9d5c2d5e86a42846bfecef360bc961733a9fb79",
+      "repository": "openWallet/code",
+      "evidence": "tracked source in explicit text inclusion scope"
+    }
+  },
+  "validation": {
+    "mainWorkflow": 44057991374,
+    "mainWorkflowURL": "https://github.com/opensoft/openXwallet/actions/runs/44057991374",
+    "allFiveSourceAndAnalysisJobsSucceeded": true,
+    "fullTests": 2434,
+    "fullSubtests": 11,
+    "requiredNativeTests": 2022,
+    "measurementPartitions": [
+      2433,
+      1
+    ],
+    "providerAssertionsPerContext": 214,
+    "providerContexts": 2,
+    "shapeProviderAssertions": 2231,
+    "strictCLIItemsPerCorpus": 7,
+    "localRestrictedFullTests": 2434,
+    "localRestrictedSubtests": 11
+  },
+  "preservation": {
+    "observedAt": "2026-11-17T10:10:57.358184+00:00",
+    "primaryCheckoutCount": 7,
+    "allPrimaryHeadsStatusWorkingAndStagedHashesMatch": true,
+    "originalCloudSessionsAndPanesRetained": true,
+    "originalPythonSessionsAndPanesRetained": true,
+    "immutableTagsAndEightContractArtifactsUnchanged": true
+  },
+  "scope": {
+    "otherUnresolvedMainFindings": 1505,
+    "unresolvedCreatedAfterPriorRepairMain": 0,
+    "otherDebt": "Outside the 26-key acceptance cohort; not triaged by this closeout.",
+    "unchangedTemplateShellParserWarnings": 9,
+    "allNineTemplateShellBlobsUnchangedAndBashSyntaxValid": true,
+    "protectedRuntimeAuthority": "Feature 017 remains separately governed; frozen owning-source commit bb0e9dae89a771b05f6c235d0a77237288b95c85 is unchanged.",
+    "billingChanges": false,
+    "gateThresholdRuleProfileOrExclusionChanges": false
+  },
+  "verification": {
+    "rawAcceptanceReceiptSha256": "e397e3b0f4b3a959fee24d39dc3be24ffdea7a00301d98007ce2a0ebc730e098",
+    "verifierSha256": "4eaeb5e27eca38eeaa735ea17f7e7697cc71d156b1a1450527d5786e09adcc87",
+    "originalPublishedExportSha256": "30e1e28308fdaa8a7f5ca0909146c6c735e0ecf7b3a7872c790ca9f7feae9c02"
+  }
+}
