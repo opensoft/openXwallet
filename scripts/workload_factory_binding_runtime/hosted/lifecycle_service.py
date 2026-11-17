@@ -19,6 +19,10 @@ from .readback import ReadBudget, PROFILE as OBSERVATION_PROFILE
 from .lifecycle import HostedLifecycle, _state, _closed, run_plan
 from .lifecycle_store import LifecycleStore, ERROR
 
+_JSON_TYPE = 'application/json'
+_LIFECYCLE_PREFIX = '/lifecycle/'
+
+
 PROFILE = "openxfactory-hosted-lifecycle-internal-v1"
 PRIMARY = frozenset({"register", "generation", "prepare", "release", "cleanup", "lease", "status"})
 AUDIT = frozenset({"ack-stage", "ack-final", "cleanup-audit", "stage-lease"})
@@ -158,6 +162,7 @@ class LifecycleServer(ThreadingMixIn, HTTPServer):
             self.slots.release()
 
     def handle_error(self, request, address):
+        # Private request failures intentionally produce no server log payload.
         pass
 
 
@@ -183,13 +188,14 @@ class _Handler(BaseHTTPRequestHandler):
         super().finish()
 
     def log_message(self, *_args):
+        # Private request metadata is intentionally absent from HTTP logs.
         pass
 
     def _reply(self, status, value):
         raw = canonical(value)
         require(len(raw) <= 65536, ERROR)
         self.send_response(status)
-        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Type", _JSON_TYPE)
         self.send_header("Content-Length", str(len(raw)))
         self.send_header("Connection", "close")
         self.end_headers()
@@ -203,13 +209,13 @@ class _Handler(BaseHTTPRequestHandler):
         try:
             decision = Decision(clock=self.server.clock, monotonic=self.server.monotonic)
             observation = self.path == "/readback"
-            operation = "stage-lease" if observation else self.path.removeprefix("/lifecycle/")
+            operation = "stage-lease" if observation else self.path.removeprefix(_LIFECYCLE_PREFIX)
             allowed = PRIMARY if self.server.mode == "primary" else AUDIT
-            require(operation in allowed and (observation or self.path == "/lifecycle/" + operation), ERROR)
+            require(operation in allowed and (observation or self.path == _LIFECYCLE_PREFIX + operation), ERROR)
             peer = byte_digest(self.connection.getpeercert(binary_form=True))
             permitted = operation in self.server.permissions.get(peer, frozenset())
             require(sum(len(k) + len(v) for k, v in self.headers.items()) <= 32768
-                    and self.headers.get_all("Content-Type") == ["application/json"]
+                    and self.headers.get_all("Content-Type") == [_JSON_TYPE]
                     and self.headers.get("Transfer-Encoding") is None, ERROR)
             lengths = self.headers.get_all("Content-Length")
             require(lengths and len(lengths) == 1 and lengths[0].isascii() and lengths[0].isdigit()
@@ -299,8 +305,8 @@ class LifecycleClient:
         body = {"profile": PROFILE, "nonce": nonce, "deadline": decision.deadline,
                 "arguments": {"launch_ref": scope["launch_ref"], "scope_digest": digest(scope), **extra}}
         before = decision.now()
-        response = self.transport.exchange("POST", self.origin + "/lifecycle/" + operation,
-            headers={"Content-Type": "application/json", "Accept": "application/json"}, body=canonical(body),
+        response = self.transport.exchange("POST", self.origin + _LIFECYCLE_PREFIX + operation,
+            headers={"Content-Type": _JSON_TYPE, "Accept": _JSON_TYPE}, body=canonical(body),
             decision=decision, before_send=lambda: ReadBudget(decision).check())
         self.current()
         require(type(response) is Response and response.status == 200, ERROR)
@@ -443,8 +449,8 @@ def probe_worker_denial(client, operation, *, decision, **extra):
     scope = document(client.raw)
     raw = canonical({"profile": PROFILE, "nonce": secrets.token_hex(32), "deadline": decision.deadline,
         "arguments": {"launch_ref": scope["launch_ref"], "scope_digest": digest(scope), **extra}})
-    response = client.transport.exchange("POST", client.origin + "/lifecycle/" + operation,
-        headers={"Content-Type": "application/json", "Accept": "application/json"}, body=raw, decision=decision)
+    response = client.transport.exchange("POST", client.origin + _LIFECYCLE_PREFIX + operation,
+        headers={"Content-Type": _JSON_TYPE, "Accept": _JSON_TYPE}, body=raw, decision=decision)
     client.current()
     require(type(response) is Response and response.status == 403
             and document(response.body) == {"error": "hosted-lifecycle-denied"}, ERROR)

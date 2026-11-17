@@ -16,6 +16,9 @@ import time
 from workload_factory_binding.evidence import BindingError, byte_digest, canonical, digest, integer, require
 from ..github_bootstrap.common import document, document_with_canonical
 
+_JOURNAL_LOCK_NAME = 'journal.lock'
+
+
 ERROR = "hosted-lifecycle-refused"
 DB = "lifecycle.sqlite"
 MAX_EVENTS = 2048
@@ -50,7 +53,7 @@ def _identity(directory, witness):
                 pass
         else:
             require(not p.exists() and not p.is_symlink(), ERROR)
-    return (_private(directory, True), _private(directory / DB), _private(directory / "journal.lock"),
+    return (_private(directory, True), _private(directory / DB), _private(directory / _JOURNAL_LOCK_NAME),
             _private(witness, True), _private(witness / "00000000.witness"), _private(directory / "file-pins", True))
 
 
@@ -95,7 +98,7 @@ class LifecycleStore:
             directory.mkdir(mode=0o700)
             witness.mkdir(mode=0o700)
             (directory / "file-pins").mkdir(mode=0o700)
-            for name in (DB, "journal.lock"):
+            for name in (DB, _JOURNAL_LOCK_NAME):
                 fd = os.open(directory / name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
                 os.close(fd)
             nonce = secrets.token_hex(32)
@@ -155,7 +158,7 @@ class LifecycleStore:
         try:
             decision.now()
             require(_identity(self.directory, self.witness) == self.identity, ERROR)
-            lock = os.open(self.directory / "journal.lock", os.O_RDWR | os.O_NOFOLLOW)
+            lock = os.open(self.directory / _JOURNAL_LOCK_NAME, os.O_RDWR | os.O_NOFOLLOW)
             until = time.monotonic() + min(1, decision.remaining())
             while True:
                 try:

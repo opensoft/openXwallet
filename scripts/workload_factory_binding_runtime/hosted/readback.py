@@ -19,7 +19,7 @@ JSON_TYPE="application/json"
 
 
 def _ledger(decision, *, finalization=False, staging=False, qualification=False):
-    return {"counts": {name: 0 for name in LIMITS}, "members": {decision: 0},
+    return {"counts": dict.fromkeys(LIMITS, 0), "members": {decision: 0},
             "finalization": finalization, "staging": staging, "qualification": qualification, "stage_observations": 0, "protection_observations": 0}
 
 
@@ -76,7 +76,14 @@ class ReadBudget:
         expiry = min(member.deadline for member in members)
         for member in members:
             member.clip(expiry)
-        require(self.github_requests <= (26 if self.state["staging"] else (28 if self.state["finalization"] else 13)), ERROR)
+        requests = self.github_requests
+        if self.state["staging"]:
+            request_limit = 26
+        elif self.state["finalization"]:
+            request_limit = 28
+        else:
+            request_limit = 13
+        require(requests <= request_limit, ERROR)
 
     @property
     def github_requests(self):

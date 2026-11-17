@@ -135,6 +135,9 @@ import sys
 from pathlib import Path
 from typing import Any, NamedTuple
 
+_MANIFEST_LABEL = 'the manifest'
+
+
 try:
     import yaml
 except ImportError:  # pragma: no cover - CI installs PyYAML
@@ -523,10 +526,10 @@ def check_shape(doc: dict[str, Any]) -> None:
             "the referent is a commit, and an abbreviation, a branch or a tag "
             "is a movable name")
     if "carve_tag" in doc:
-        _require_str(doc, "carve_tag", "the manifest")
+        _require_str(doc, "carve_tag", _MANIFEST_LABEL)
     if "header" in doc:
-        _require_str(doc, "header", "the manifest")
-    source = _require_str(doc, "source_repository", "the manifest")
+        _require_str(doc, "header", _MANIFEST_LABEL)
+    source = _require_str(doc, "source_repository", _MANIFEST_LABEL)
     if not REPO_RE.match(source):
         raise CarveRefusal("carve-shape-invalid",
                            f"`source_repository: {source!r}` is not `owner/name`")

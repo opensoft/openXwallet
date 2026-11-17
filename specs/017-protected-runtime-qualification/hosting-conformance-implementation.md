@@ -696,3 +696,30 @@ T012V stays unchecked pending the actual owner act. T001/T013-T015, setup/
 protected dispatch, live OIDC/provider minting, deployed protected-origin,
 external control-host-loss retirement and human/domain/consumer gates remain
 ungranted. Feedback deferred; neither historical blocked write replayed.
+
+
+### T012V accepted-main #85/#86 integration plan
+
+Accepted main advanced to `a6a327a36046e130c95b2e654f3b4b5135d9d5de` during
+qualification. The complete receipt for `064103a5e75b27fcfa3602eb8013102047a16134`
+is retained on PR #78 as historical exact-source evidence: all seven gates,
+2,801 full parents plus 11 subtests, 2,389 native cases, original six Sonar
+conditions and independent ten-case preservation/cleanup passed. That old head
+is not a qualification receipt for this integration.
+
+Integrate the accepted runtime clarity, stage fixture teardown-failure aggregation
+and installed-shell repairs under the existing T012V task. Preserve both the
+incoming `dict.fromkeys` and expanded read-limit control flow and T012V's
+qualification flag/private39 allocation. Staging16, finalization protection18,
+GitHub26/28/13, the original Decision clocks and every default refusal remain.
+Retain real TLS/proof/cancellation/privacy and resource-ownership ordering, all
+case identities, neutral pins and wire profiles. No shared installed file is
+manually rewritten beyond the declared readback merge resolution.
+
+Fresh collection, nine-role source review, full ordered gates, mandatory native
+qualification, independent ten-case cleanup audit and exact-head hosted CI/Sonar
+are required before presentation. Final actual-result receipts belong on PR #78;
+checkpoint documents must not predeclare them. Feature017 tasks.md remains the
+sole task list; T012V owner source ratification stays open. T001/T013-T015,
+setup/dispatch and live acceptance stay ungranted, feedback deferred and both
+historical blocked writes unreplayed.

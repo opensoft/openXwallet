@@ -79,6 +79,7 @@ resolve_main_repo_root() {
                 return 0
             fi
             ;;
+        *) : ;;
     esac
 
     local worktree_parent

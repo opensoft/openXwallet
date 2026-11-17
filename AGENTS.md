@@ -516,7 +516,7 @@ clock/read/wire/authority limits. Earlier 1146747 full/native passes are histori
 fresh source/full/native/cleanup/CI/Sonar and owner acceptance remain gates.
 T001/T013-T015/setup/dispatch ungranted; feedback deferred, blocked writes unreplayed.
 
-### Current T012V selected-port deadline correction
+### Historical qualified T012V selected-port deadline correction
 
 Code candidate `bf0839732d764c2848a4981179e999a44f769d53` incorporates the test-only selected-port correction
 and accepted main #84. Original runtime 10s/private39, loaded credentials/four
@@ -529,3 +529,14 @@ maintained on PR #78; no success is predeclared. See feature017
 hosting-conformance-implementation.md. T012V/owner acceptance and
 T001/T013-T015/setup/dispatch remain ungranted; feedback deferred and blocked
 writes unreplayed.
+
+### Current T012V accepted-main #85/#86 integration
+
+Accepted main `a6a327a36046e130c95b2e654f3b4b5135d9d5de` advanced during the
+completed 064103a5 qualification. Its receipt remains historical exact-source
+evidence. Integrate accepted runtime/shell clarity and stage-teardown failure
+aggregation with T012V private39 and exact probe/claim guarantees, following
+feature017 hosting-conformance-implementation.md. Fresh review/collection/full/
+native/cleanup/hosted CI and Sonar at the new frozen head are required. No
+source acceptance or operational authority is inferred; setup/dispatch remain
+unauthorized, feedback deferred and blocked writes unreplayed.
