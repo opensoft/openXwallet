@@ -23,3 +23,9 @@ independent review and published with equal reviewed trees. Their consumer
 integration, exact-head review, existing full CI and actual-main Sonar closure
 remain required. Existing corpus, runtime/native inventories, clocks, coverage,
 rules and baselines stay unchanged. Completed#73 and feature017 remain separate.
+
+The follow-up shell patch records explicit case defaults, names positional
+inputs, and simplifies guards on the installed versions. Its
+[before and after file hashes](../../.specify/integrations/shell-detail-patches.json)
+identify the reviewed openBenches recipe and allow the installed bytes to be
+checked without replacing the hooks or changing the integration version.

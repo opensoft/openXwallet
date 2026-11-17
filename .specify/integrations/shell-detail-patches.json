@@ -1,0 +1,35 @@
+{
+  "schema": "shell-detail-patches-v1",
+  "recipeProvider": {
+    "repository": "opensoft/openBenches",
+    "commit": "f3306cb946ac394a8e3890cb78cc00cb0755b33c"
+  },
+  "preservedIntegrationVersion": "0.12.5.dev0",
+  "files": [
+    {
+      "path": ".specify/extensions/git/scripts/bash/auto-commit.sh",
+      "beforeSha256": "a7e09801446261d7e40cae463e2367839e0f12719d1f906359253a9d8c1dd4cc",
+      "afterSha256": "1a44f5f383a7c8f679cca125f62a3b5573edfaa58ab8ea507d91bd2cafc635ac"
+    },
+    {
+      "path": ".specify/extensions/git/scripts/bash/create-new-feature-branch.sh",
+      "beforeSha256": "91f26099cb103bea6e5680102f568eef94453fab422ab9b8937a7cc8b086af43",
+      "afterSha256": "32b3d0a98d68d72bc99d903f2af35686d00a1141420579deb1dc121509298726"
+    },
+    {
+      "path": ".specify/extensions/git/scripts/bash/create-new-feature.sh",
+      "beforeSha256": "2df7d2d9db21c76b8b3a1e8b269e6d541618e69f3d6578b56139a1e9ba807690",
+      "afterSha256": "233c449919d5f1171d4f7732a3d382e9c6a2b8bc5cbb162e92d3c7a528623f28"
+    },
+    {
+      "path": ".specify/extensions/git/scripts/bash/get-last-worktree.sh",
+      "beforeSha256": "0743eba20d8b45da1b757c0d274b997ff13dafd5ea623aaf596f35001206ca57",
+      "afterSha256": "d61ba009a252581c650a919f523ed55baf0841d4c522bd4f6ca3b51ee05a2759"
+    },
+    {
+      "path": ".specify/scripts/bash/common.sh",
+      "beforeSha256": "3eb6a529d1a2fcb311228c97686ef5029afd1ce4e2cf0c39e5d1a91313d53963",
+      "afterSha256": "b6cc8724e3b67112cf1c8b1d77451606f48b2b2f5aba41a2c861af89ac75198b"
+    }
+  ]
+}
