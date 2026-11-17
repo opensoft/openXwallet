@@ -342,7 +342,8 @@ def test_an_uninitialized_leg_refuses_with_its_own_remediation(
 def test_a_recorded_gitlink_other_than_the_pin_refuses(tmp_path, upstream):
     adapter = build(tmp_path, upstream, gitlink=upstream.root_other)
     err = assert_refused(verify(adapter), "pin-gitlink-mismatch")
-    assert upstream.root_other in err and "read from HEAD" in err, err
+    assert upstream.root_other in err, err
+    assert "read from HEAD" in err, err
 
 
 def test_a_gitlink_recorded_nowhere_refuses(tmp_path, upstream):
@@ -424,7 +425,8 @@ def test_a_flipped_digest_byte_in_the_pin_refuses(tmp_path, upstream):
     pin["files"][3]["sha256"] = _flip(pin["files"][3]["sha256"])
     err = assert_refused(verify(build(tmp_path, upstream, pin=pin)),
                          "pin-digest-mismatch")
-    assert "DIGEST DRIFT" in err and pin["files"][3]["path"] in err, err
+    assert "DIGEST DRIFT" in err, err
+    assert pin["files"][3]["path"] in err, err
 
 
 def test_a_flipped_byte_on_disk_refuses(tmp_path, upstream):
@@ -603,7 +605,8 @@ def test_a_same_size_edit_the_stat_cache_hides_refuses(tmp_path, upstream):
     before = target.stat()
     data = target.read_bytes()
     edited = data.replace(b"# a path-only", b"# A path-only")
-    assert len(edited) == len(data) and edited != data
+    assert len(edited) == len(data)
+    assert edited != data
     target.write_bytes(edited)
     os.utime(target, ns=(before.st_atime_ns, before.st_mtime_ns))
     assert _git(leg, "status", "--porcelain", "--untracked-files=all") == ""
@@ -884,7 +887,8 @@ def test_a_tag_only_or_abbreviated_referent_refuses(tmp_path, upstream,
 def _load_verifier():
     spec = importlib.util.spec_from_file_location("verify_openwallet_pin",
                                                   VERIFIER)
-    assert spec is not None and spec.loader is not None
+    assert spec is not None
+    assert spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
@@ -934,11 +938,12 @@ def _path_below_root(node: ast.expr) -> PurePosixPath:
     rather than being guessed at."""
     parts: list[str] = []
     while isinstance(node, ast.BinOp) and isinstance(node.op, ast.Div):
-        assert isinstance(node.right, ast.Constant) \
-            and isinstance(node.right.value, str), ast.dump(node.right)
+        assert isinstance(node.right, ast.Constant), ast.dump(node.right)
+        assert isinstance(node.right.value, str), ast.dump(node.right)
         parts.append(node.right.value)
         node = node.left
-    assert isinstance(node, ast.Name) and node.id == "ROOT", ast.dump(node)
+    assert isinstance(node, ast.Name), ast.dump(node)
+    assert node.id == "ROOT", ast.dump(node)
     return PurePosixPath(*reversed(parts))
 
 

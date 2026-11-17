@@ -337,3 +337,5 @@ Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE).
 Source quality maintenance: [issue #73 acceptance evidence](docs/quality/sonar73-acceptance.md),
 [verified main receipt](docs/quality/sonar73-after.json), and
 [feature 019 plan](specs/019-sonar-main-acceptance/plan.md).
+
+Remaining source-quality maintenance: [issue #82 backlog acceptance](docs/quality/backlog-acceptance.md) and [feature 020 plan](specs/020-sonar-backlog/plan.md).

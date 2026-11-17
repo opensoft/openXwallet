@@ -606,8 +606,10 @@ def test_primary_parent_shard_must_survive_with_secondary_data(tool, repository,
         data.add_arcs({})
         data.touch_file(str(repository / "scripts/covered.py"))
         data.write()
-        assert data.has_arcs() and data.measured_files() and not data.arcs(
-            str(repository / "scripts/covered.py"))
+        assert data.has_arcs()
+        assert data.measured_files()
+        assert (not data.arcs(
+            str(repository / "scripts/covered.py")))
         row["parent_shard"]["sha256"] = tool.digest(parent)
         (directory / tool.SOURCE_SUITE).write_text(json.dumps(row))
     elif fault == "missing-metadata":

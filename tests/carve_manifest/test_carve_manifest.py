@@ -86,7 +86,8 @@ D7_EDIT_CLASSES = ["validator hunks (a)-(e)", "test split",
 def _load():
     spec = importlib.util.spec_from_file_location("validate_carve_manifest",
                                                   SCRIPT)
-    assert spec is not None and spec.loader is not None
+    assert spec is not None
+    assert spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
@@ -347,9 +348,9 @@ def test_every_code_the_checker_can_emit_is_in_the_vocabulary() -> None:
                 and node.func.id == "CarveRefusal"):
             continue
         first = node.args[0] if node.args else None
-        assert (isinstance(first, ast.Constant)
-                and isinstance(first.value, str)), (
-            f"{SCRIPT}:{node.lineno}: a CarveRefusal(...) call does not open "
+        assert isinstance(first, ast.Constant), (f"{SCRIPT}:{node.lineno}: a CarveRefusal(...) call does not open "
+            "with a string-literal code")
+        assert isinstance(first.value, str), (f"{SCRIPT}:{node.lineno}: a CarveRefusal(...) call does not open "
             "with a string-literal code")
         raised.add(first.value)
     assert len(raised) > 5, raised

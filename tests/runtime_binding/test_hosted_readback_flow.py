@@ -234,7 +234,9 @@ def current_finalizer(v,rb):
 def test_six_fresh_protection_observations_finish_actual_finalization(v,rb):
     seen=current_finalizer(v,rb);result=v.finalize()
     assert result.binding.plan_digest==v.selected.digest
-    assert result.configuration and result.policy and v.h.calls==0
+    assert result.configuration
+    assert result.policy
+    assert v.h.calls==0
     members=set(seen);assert len(members)==2
     states=[ReadBudget(item).state for item in members];assert states[0] is states[1]
     assert ReadBudget(seen[0]).count("protection")==12
@@ -252,7 +254,9 @@ def test_each_finalization_protection_observation_is_fresh_and_independent(v,rb,
             if calls==position:rb.policies["branch_policies"][0]["type"]="tag"
     rb.hook=change
     with pytest.raises(BindingError):v.finalize()
-    assert calls==position and v.plan==original and v.h.calls==0
+    assert calls==position
+    assert v.plan==original
+    assert v.h.calls==0
 
 
 def test_current_finalization_reaches_unchanged_admission_and_owning_proof(v,rb):

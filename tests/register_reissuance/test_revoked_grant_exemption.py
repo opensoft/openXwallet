@@ -204,7 +204,8 @@ def test_a_revoked_predecessor_beside_its_successor_is_clean(tmp_path):
     assert "register-no-active-row" not in _codes(got.stdout), got.stdout
     assert got.returncode == 0, got.stdout + got.stderr
     m = REGISTER_READ_NOTE.search(got.stdout)
-    assert m and m.group(1) == "1", got.stdout
+    assert m, got.stdout
+    assert m.group(1) == "1", got.stdout
 
 
 def test_a_strict_run_of_the_re_issuance_stays_green(tmp_path):
@@ -229,8 +230,9 @@ def test_an_active_review_grant_with_no_row_still_refuses(tmp_path):
     # And it names ONLY the active orphan — never the revoked predecessor.
     offending = [ln for ln in got.stdout.splitlines()
                  if "register-no-active-row" in ln]
-    assert offending and all("grant-mrc-probe-a" not in ln
-                             for ln in offending), got.stdout
+    assert offending, got.stdout
+    assert (all("grant-mrc-probe-a" not in ln
+                             for ln in offending)), got.stdout
     assert got.returncode == 1, got.stdout
 
 

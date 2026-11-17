@@ -33,7 +33,9 @@ def main():
         require(libc.capset(ctypes.byref(Header(0x20080522,0)),ctypes.byref((Data*2)()))==0)
         install(files=value["files"],directories=value["directories"],execute=value["execute"])
         os.execve(executable,command,{"PATH":os.defpath,"LANG":"C.UTF-8"})
-    except Exception:return 2
+    except Exception:
+        # Refuse through the common exit without exposing private launch data.
+        pass
     return 2
 
 

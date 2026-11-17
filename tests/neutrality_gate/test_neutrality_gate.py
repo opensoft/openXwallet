@@ -60,7 +60,8 @@ INIT_LINES = ("git submodule update --init openWallet",
 
 def _load():
     spec = importlib.util.spec_from_file_location("neutrality_gate", GATE)
-    assert spec is not None and spec.loader is not None
+    assert spec is not None
+    assert spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module  # dataclasses resolve their module by name
     spec.loader.exec_module(module)
@@ -455,7 +456,8 @@ def test_every_child_gets_a_tmpdir_inside_the_run(tmp_path: Path) -> None:
     """A temporary file a validator or a suite writes is removed with the
     run's tree, never left in a shared temporary root."""
     with MODULE.children_tmpdir(tmp_path) as tmp:
-        assert tmp.parent == tmp_path and tmp.is_dir()
+        assert tmp.parent == tmp_path
+        assert tmp.is_dir()
         assert MODULE.child_env()["TMPDIR"] == str(tmp)
         # The shim's children inherit it from the shim's own environment.
         assert MODULE.child_env({"X": "1"})["TMPDIR"] == str(tmp)
