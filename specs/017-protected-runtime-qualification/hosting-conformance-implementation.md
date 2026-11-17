@@ -1,6 +1,6 @@
 # T012U isolated conformance realization
 
-Status: T012V historical candidate qualified; accepted-main #79 integration and fresh qualification pending
+Status: accepted-main #79 integration locally qualified; PR #78 exact-head hosted CI and owner acceptance pending
 Kind: implementation-record
 Scope: source/fixture only; no operational grant
 
@@ -286,6 +286,10 @@ source and mandatory native qualification; hosted timing remains unverified.
 
 ## T012V frozen source qualification and current handoff
 
+**Historical checkpoint before accepted main #79.** The current integrated
+qualification is recorded in [the later source record](#t012v-main-79-integrated-source-qualification);
+this heading remains for compatibility with earlier evidence links.
+
 The publication candidate's executable source is `05101d15ad407264a96818c8527229f1f0273ac0`.
 All seven ordered repository gates pass, including pins, YAML, plain/strict
 validator, the complete full suite and default content-addressed OpenSpec strict
@@ -377,3 +381,76 @@ remain historical and cannot qualify changed pins/runtime/tooling.
 Source clocks, private39/other phase budgets, neutral wire contracts, refusing
 protected defaults, coverage integrity and authority boundaries remain unchanged.
 Setup/protected dispatch unauthorized, feedback deferred, blocked writes unreplayed.
+
+## T012V main #79 integrated source qualification
+
+Accepted main post-merge [run 44044155474](https://github.com/opensoft/openXwallet/actions/runs/44044155474)
+passes all five source/coverage/analysis jobs on exact merge `cb66dc2fc92179cd40dd1973cd330fc207b6fd61`.
+That baseline readback is separate from this candidate qualification.
+
+Accepted main #79 advanced after the preceding candidate's green CI. Its exact
+27-file baseline is preserved, except the governed AGENTS continuation and exact
+matrix union. Neutral root/code/spec now bind respectively
+`050bede0263255b1ce94bb312ad7ca63104c7e18`,
+`ed567edb18a866b16515c86049bfdcdd4722dde9` and
+`0fe3151ccc2f3ffe7f72cca35106df46c180b5b7`. Shared OpenSpec tooling explicitly
+initializes/authenticates the pinned spec implementation; product/runtime
+validation remains code-only. The eight contract-artifact digests and CLI
+artifact/lock contents are unchanged. Explicit qualification owning source
+`bb0e9dae89a771b05f6c235d0a77237288b95c85` remains separately selected.
+
+Frozen executable head `223e2c825494041b9104c475a8a294483f6fcaf2` passes all seven ordered gates:
+pins, YAML, plain/strict validator, full suite and default authenticated pinned
+OpenSpec strict validation. Full **2,781 parent tests plus 11 subtests** pass,
+zero failures/errors/skips, in 1978.394s outer wall time. Mandatory
+native **2,369 cases** pass in 1887.413s, zero failures/errors/skips;
+final PASS follows owning-source postflight. All preceding 2,761 full / 2,364
+native identities remain. Twenty full additions comprise 15 shared-tool pin/
+transport controls and five nullable-state controls; native adds those five.
+All static module counts/fingerprints match; H03/H10/H11/H12 are 97/85/284/142,
+R01 remains 47, conformance self-tests 64 and hosted-evidence cases 198.
+
+All 366 frozen regular tracked input hashes and exact neutral/owning
+identities match after execution. Nine local expert roles clear the integrated
+source. Candidate probe, qualifier, canonical replay, source-CI limits and coverage
+configuration retain prior reviewed bytes; accepted nullable guards refuse before
+unsafe observation without new reads, retries or ownership transitions. Shared
+source/tool admission and compiler-only memory readers retain complete coverage
+and provider assertions. Earlier failed/interrupted receipts stay diagnostic. The first integrated native
+run recorded 2,367 passes and two fixed transport refusals: staging read-ack
+before the cancellation/qualifier existed, and large cleanup after 30 file
+retirements with credential state retiring and no audit completion. The failed
+container was absent; independent audit verified 12,491 generation observations,
+427 journals and 131 helper receipts without live attribution or initial teardown
+failure. This does not claim protocol credential retirement for those failed
+scopes. Fresh selected diagnostic cases both passed in 19.81s; large cleanup
+was 2.960s inside the unchanged ten-second bound. The underlying original failure
+mechanism remains unproven. No source, assertion, cap or consumed mutation was
+changed/replayed; diagnostic controls do not replace this fresh complete native
+execution. The original failed fixture root and the separately audited diagnostic
+fixture root were removed. Other preceding successful receipts stay historical, not qualification of changed pins.
+
+Independent native observation confirms only loopback/network none, read-only
+source/rootfs, UID1000/GID65534, empty groups/capabilities and NoNewPrivs1. Final
+external audit checks **25,005 generation observations**, 854 journals,
+262 helper receipts and all ten positive preservation cases;
+there is no attributable live process or initial qualified teardown failure.
+These are observations, not unique process counts. Exact retained/shared file
+identities remain, run files are absent, credentials retired, pins released and
+independent cleanup audit retained. Both exact final fixture roots and the named
+native container are absent; safe reports remain outside fixtures.
+
+Final reconciliation changes documents only and must retain all other qualified
+input bytes. Fresh final-head hosted CI, coverage timing, PR-specific Sonar and
+local reconciliation receipts belong on [PR #78](https://github.com/opensoft/openXwallet/pull/78).
+They are not predeclared here. The earlier scan's 60 reviewed maintainability
+advisories remain visible, not suppressed or blanket false positives. Actual
+new-head scan results remain separate. Sequential source CI retains the bounded
+90-minute cap; traced jobs retain 45 minutes. Runtime clocks/private39/other
+phase caps, protected defaults and wire contracts remain unchanged.
+
+Owner exact-head source ratification and landing remain separate. T001/T013-T015,
+real target/principal/key/credential/endpoint selections, deployed qualification,
+external control-host-loss watchdog/infrastructure retirement and consumer/human/
+domain acceptance remain open. Setup/protected dispatch unauthorized; feedback
+deferred and historical blocked writes unreplayed.

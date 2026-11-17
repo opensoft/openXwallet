@@ -1,6 +1,6 @@
 # T013 Operational Selection Packet
 
-Status: T012V source candidate locally qualified on PR #78; owner acceptance and T013 selections pending; setup/dispatch NOT GRANTED
+Status: T012V accepted-main #79 integration locally qualified on PR #78; fresh CI/owner acceptance and T013 selections pending; setup/dispatch NOT GRANTED
 Updated: 2026-11-17
 Governance: `opensoft/openXfactory`, `prepare-protected-runtime-qualification`
 Bootstrap amendment: `fix-protected-runtime-dispatch-bootstrap`
@@ -21,7 +21,7 @@ operational stages remain ungranted.
 
 ## Current candidate and next decision
 
-Executable candidate `05101d15ad407264a96818c8527229f1f0273ac0` passes 2,761 full tests plus 11 subtests and all 2,364 mandatory native nodes. Nine local expert roles clear it; independent final audit verifies ten preservation cases and fixture/container absence. See [qualification evidence](hosting-conformance-implementation.md#t012v-frozen-source-qualification-and-current-handoff). PR #78 records exact-head hosted gates. Owner source acceptance is pending; no execution `accepted_commit` is selected.
+Executable candidate `223e2c825494041b9104c475a8a294483f6fcaf2` passes 2,781 full tests plus 11 subtests and all 2,369 mandatory native nodes. Nine local expert roles clear it; independent final audit verifies ten preservation cases and fixture/container absence. See [qualification evidence](hosting-conformance-implementation.md#t012v-main-79-integrated-source-qualification). PR #78 records exact-head hosted gates. Owner source acceptance is pending; no execution `accepted_commit` is selected.
 
 ## Historical #65 source acceptance and T012M handoff
 
@@ -59,9 +59,11 @@ remains the review evidence, not a completed connector review.
 At that historical checkpoint the neutral assembly/code pins were
 `b0af7c2ce53d63786a08a20aa3602a6f90345606` /
 `72313daab1f229c049cb90998931564c1904dbbc`. The current candidate inherits
-accepted main #77 assembly `58cfa716c66e5b7f594db19b2d16f2bbc6fe7d9b`, code
-`b7c8ca1e0f9bb58674a12ffef89bf5dfc92cc58c` and analysis-only spec
-`e0f7467f52f75103e10cb6824ad88de460ec9d39`. Separately selected portable
+accepted main #79 assembly `050bede0263255b1ce94bb312ad7ca63104c7e18`, code
+`ed567edb18a866b16515c86049bfdcdd4722dde9` and spec
+`0fe3151ccc2f3ffe7f72cca35106df46c180b5b7`. Shared OpenSpec tooling explicitly
+authenticates this spec leg; complete-source analysis also reads it. Product/
+runtime validation remains code-only. Separately selected portable
 registry/custody qualification code remains
 `bb0e9dae89a771b05f6c235d0a77237288b95c85`; it does not replace a neutral pin.
 No source acceptance here selects a deployment, image, service, credential or

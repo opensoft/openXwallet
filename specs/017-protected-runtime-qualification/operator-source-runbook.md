@@ -1,6 +1,6 @@
 # Operator source conformance runbook
 
-Status: T012V locally qualified source candidate on PR #78; owner acceptance pending
+Status: T012V accepted-main #79 integration locally qualified; final-head CI/owner acceptance pending
 Kind: source-runbook
 Scope: offline source and disposable local fixtures only
 Sole source publication task: tasks.md T012V; owner acceptance and operations separate
@@ -15,15 +15,17 @@ permissions, environments, service units and operational state are unauthorized.
 Feedback stays deferred; neither historical blocked write is a runbook step.
 
 Run from the existing feature worktree in its declared Linux bench. Use its
-reviewed hash-locked Python environment, scoped neutral root/code submodules and prefilled
+reviewed hash-locked Python environment, scoped neutral root/code plus the pinned
+spec leg for shared OpenSpec tooling, and prefilled
 verified OpenSpec CLI cache. Source/dependency acquisition precedes the offline
 gates and is not part of this recipe. Leave neutral pins, locks, workflows,
 ordinary/staging/finalization/cleanup budgets, original clocks and default refusal
 unchanged. The sequential ordinary source-CI job cap is 90 minutes under
 T012V delegated wall-time governance; the separate traced coverage jobs retain
 45-minute caps. Actual final-head hosted timing is recorded on PR #78, not
-inferred from local execution. Accepted main #77 separately initializes the
-exact spec leg only for complete-source analysis; runtime gates never read it.
+inferred from local execution. Accepted main #79 OpenSpec tooling explicitly
+initializes and authenticates shared source in the exact spec leg. Complete-source
+analysis also reads that leg; ordinary product/runtime validation stays code-only.
 
 The private Linux qualifier must run on the main Python thread. Secondary-thread
 entry refuses before any probe RPC/private debit. Trusted forked I/O inherits
@@ -154,11 +156,11 @@ An intermediate pytest pass count, anchor line or tiny self-test corpus verdict
 is insufficient. Final source-check exceptions/cancellation/zero-exit attempts
 emit fixed refusal and cannot leave a final PASS.
 
-Current measured candidate collection is 2,761 full parent cases (plus 11 passing
-subtests), 2,364 mandatory native nodes and 64 conformance self-tests. All prior
-2,523 full and 2,215 native identities and anchors remain. Hosted-evidence module
+Current measured candidate collection is 2,781 full parent cases (plus 11 passing
+subtests), 2,369 mandatory native nodes and 64 conformance self-tests. All prior
+2,761 full and 2,364 native identities and anchors remain. Hosted-evidence module
 has 198 cases; probe controls add 22 and canonical-journal controls 115.
-H10=85/H11=282/H12=142. Collection is not a passing execution receipt; current
+H03=97/H10=85/H11=284/H12=142. Collection is not a passing execution receipt; current
 execution/cleanup status is in [implementation evidence](hosting-conformance-implementation.md).
 The [qualification matrix](qualification-matrix.md) maps every H group to actual
 positive/mutation controls and remaining live gates. Anchors overlap and their
@@ -234,7 +236,7 @@ interrupt or manual helper retirement. No deadline, cap or assertion was relaxed
 These records qualify source/fixtures only. Later hosted CI, review, publication,
 owner source acceptance and every operational/live gate remain separate.
 
-## Current T012V completion record
+## Historical T012V completion before main #79
 
 
 The publication candidate's executable source is `05101d15ad407264a96818c8527229f1f0273ac0`.
@@ -293,3 +295,16 @@ T001/T013-T015, real provider/host/protected-origin qualification, external
 control-host-loss watchdog, infrastructure retirement and human/domain/consumer
 acceptance remain open. Setup and protected dispatch remain unauthorized;
 feedback deferred and neither historical blocked write replayed.
+
+## Current accepted-main #79 completion record
+
+Executable `223e2c825494041b9104c475a8a294483f6fcaf2` passes 2,781 full tests plus 11 subtests
+and all 2,369 mandatory native cases, with all prior identities preserved.
+Nine integration roles clear the source. Independent final audit checks
+25,005 generation observations and all ten preservation cases; final
+owned fixture roots and native container are absent. Neutral root/code/spec are
+050bede/ed567ed/0fe3151; explicit qualification owning code remains bb0e9dae.
+Use the [full source/pin/evidence record](hosting-conformance-implementation.md#t012v-main-79-integrated-source-qualification)
+for exact immutable IDs, actual timing and authority limits. Fresh final-head
+hosted CI, evaluated Sonar and owner source ratification remain PR #78 gates;
+this local source runbook grants no operational setup or protected dispatch.

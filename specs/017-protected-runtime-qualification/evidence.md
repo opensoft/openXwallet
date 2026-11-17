@@ -2888,3 +2888,14 @@ T001/T013-T015, real provider/host/protected-origin qualification, external
 control-host-loss watchdog, infrastructure retirement and human/domain/consumer
 acceptance remain open. Setup and protected dispatch remain unauthorized;
 feedback deferred and neither historical blocked write replayed.
+
+## 2026-11-17 accepted-main #79 integration qualification
+
+Frozen source `223e2c825494041b9104c475a8a294483f6fcaf2` passes 2,781 full tests plus 11 subtests and
+all 2,369 mandatory native cases without failures/errors/skips. All 366 input
+hashes and earlier case identities remain; nine integration reviewers clear it.
+Independent final audit checks 25,005 generation observations and ten
+preservation cases, with final fixture roots/native container absent. See the
+[current qualified source record](hosting-conformance-implementation.md#t012v-main-79-integrated-source-qualification).
+Old3ceb CI receipts remain historical; new final-head hosted CI/Sonar belongs on
+PR #78 before ratification. No operational selection or grant is supplied.

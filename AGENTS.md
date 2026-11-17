@@ -456,7 +456,7 @@ Main #77 analysis/coverage controls remain required. No operational selection or
 grant follows; setup/dispatch unauthorized, feedback deferred, blocked writes
 unreplayed.
 
-### Current T012V accepted-main #79 integration
+### Historical T012V accepted-main #79 integration plan
 
 Main #79 advanced after candidate3ceb qualification. Integrate its accepted
 shared-tool/pin/runtime fixes under the existing T012V task and the bounded
@@ -467,3 +467,16 @@ corpora and every accepted incoming baseline. Exact neutral pins now050bede root
 ed567ed code and0fe3151 spec; shared OpenSpec tooling authenticates the spec leg,
 while runtime product validation stays code-only. Explicit qualification ownerbb0
 is separate. No setup/dispatch, feedback or blocked-write replay is authorized.
+
+### Current T012V main #79 qualified source candidate
+
+Frozen executable `223e2c825494041b9104c475a8a294483f6fcaf2` passes 2,781 full tests plus
+11 subtests and all 2,369 mandatory native nodes; all 366 input hashes and prior
+identities remain. Nine integration expert roles clear it. Independent final
+audit checks 25,005 generation observations and ten preservation cases;
+final fixture roots/native container are absent. Shared OpenSpec tooling uses
+authenticated pinned spec source; product/runtime validation stays code-only.
+Feature017 hosting-conformance-implementation.md records exact source/pins and
+limits. Final doc-only reconciliation retains qualified executable bytes; fresh
+final-head hosted CI/Sonar and owner ratification remain PR #78 gates. No
+setup/dispatch, feedback or blocked-write replay is authorized.
