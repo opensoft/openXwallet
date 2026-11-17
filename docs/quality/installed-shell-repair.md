@@ -29,3 +29,21 @@ inputs, and simplifies guards on the installed versions. Its
 [before and after file hashes](../../.specify/integrations/shell-detail-patches.json)
 identify the reviewed openBenches recipe and allow the installed bytes to be
 checked without replacing the hooks or changing the integration version.
+
+## Typed predicate follow-up
+
+The published adapter analysis identified 112 additional shell findings on test
+calls introduced by the first predicate pass. The follow-up adopts the
+[published canonical recipe](https://github.com/opensoft/openBenches/pull/331)
+at the existing installed versions. Closed flags and shell-produced decimal
+values use Bash conditionals. Raw path, branch, option and manifest comparisons
+use literal guards to preserve exact case under nocasematch.
+
+The published neutral root has a
+[reviewed installed patch](https://github.com/opensoft/openWallet/pull/20).
+Its external modification-time, persisted-depth and interactive selection
+predicates retain strict Bash integer behavior. The adapter's
+[provenance receipt](../../.specify/integrations/typed-predicate-patches.json)
+binds the published recipe to all seven changed adapter files. The repin keeps
+the published code and spec legs and contract artifact digests together.
+Final finding dispositions come from the complete published wallet analysis.
