@@ -196,3 +196,35 @@ post-cleanup cancellation cases). These focused diagnostics do not substitute
 for the fresh complete full/native runs, exact-head hosted analysis or cleanup
 audit. The main-thread guard, exact four RPCs and original private39/ten-second
 controls remain intact.
+
+A final resource-ownership review found that releasing the raw writer variable
+before `close` could leak a descriptor on before-close cancellation. Managed
+FileIO ends now retain descriptor ownership through interrupted close and avoid
+closing a reused integer. Deferral covers their initial ownership acquisition.
+Cleanup independently attempts signal restoration, both ends and owned-child
+reaping, retaining the first cancellation even if reaping is interrupted again.
+Additional controls interrupt before both closes and inject a second cancellation
+during reap; they inspect actual FD closure and the child inventory. The e9a7d19
+full run is diagnostic-only and retired; complete qualification restarts after
+this correction. Runtime caps and neutral APIs remain unchanged.
+
+Callable cancellation handlers remain deferred for the complete owned-I/O and
+retirement interval, with bounded100ms sampling during original-Decision waits.
+At most one pending frame per signal is retained. Handlers are restored and
+cancellation replayed only after both managed ends and the child are retired,
+so a signal between cleanup actions cannot bypass reaping. Separate controls
+signal between cleanup steps and during blocked I/O; no fresh lease or RPC is
+introduced by polling.
+
+Restoration also resumes after an interrupted individual handler installation,
+retains the first cancellation and verifies all selected handlers are restored.
+A real SIGINT during restoration with an additional callable SIGUSR1 handler
+checks that the parent keeps both original handlers after cancellation.
+
+Final managed-ownership focused qualification passes all22 probe controls under
+actual pinned tracing and all12 post-cleanup cancellation controls. The retained
+helper measurement is145/152 statements and39/42 branches with zero exclusions.
+Final collection is2,646 full /2,249 native; all2,523 prior full and2,215 prior
+native identities remain. The34 new controls and inherited89 analysis tests
+are measured additions. Complete ordered/full/native execution and exact-head
+hosted CI/local review/independent audit remain mandatory publication gates.

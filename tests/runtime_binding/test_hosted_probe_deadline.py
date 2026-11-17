@@ -121,16 +121,17 @@ def test_original_decision_bounds_each_actual_tls_rpc_and_reaps_before_return(pr
     assert _children() == before
 
 
-@pytest.mark.parametrize("boundary", ["fork-return", "other-thread", "close", "close-read"])
+@pytest.mark.parametrize("boundary", ["fork-return", "other-thread", "close", "close-read",
+    "close-before", "close-read-before", "double-cancel", "between-cleanup"])
 def test_probe_cancellation_cannot_lose_owned_child(probe, k, monkeypatch, boundary):
+    import io
     from workload_factory_binding_runtime.hosted import probe_io
     before = _children(); original = KeyboardInterrupt("private-probe-cancel-canary")
-    parent = os.getpid(); fork = os.fork; close = os.close; closes = [0]
+    parent = os.getpid(); fork = os.fork; closes = [0]; pipes = []; fds = []
     if boundary in ("fork-return", "other-thread"):
         def interrupted_fork():
             pid = fork()
             if pid:
-                # Real cancellation remains pending until ownership is recorded.
                 if boundary == "other-thread":
                     signal.pthread_kill(probe["receiver_thread"].ident, signal.SIGINT)
                     time.sleep(.02)
@@ -139,24 +140,59 @@ def test_probe_cancellation_cannot_lose_owned_child(probe, k, monkeypatch, bound
             return pid
         monkeypatch.setattr(probe_io.os, "fork", interrupted_fork)
     else:
-        def interrupted_close(fd):
-            value = close(fd)
-            if os.getpid() == parent:
+        class InterruptedPipe(io.FileIO):
+            def close(self):
+                if os.getpid() != parent:
+                    return super().close()
                 closes[0] += 1
-                if closes[0] == (2 if boundary == "close-read" else 1):
+                hit = closes[0] == (2 if boundary.startswith("close-read") else 1)
+                if hit and boundary.endswith("before"):
                     raise original
+                value = super().close()
+                if boundary == "between-cleanup":
+                    if closes[0] == 2:
+                        os.kill(parent, signal.SIGINT)
+                elif hit:
+                    raise original
+                return value
+        def managed(fd, mode, *, buffering):
+            assert buffering == 0
+            value = InterruptedPipe(fd, mode); pipes.append(value); fds.append(fd)
             return value
-        monkeypatch.setattr(probe_io.os, "close", interrupted_close)
+        monkeypatch.setattr(probe_io.os, "fdopen", managed)
+        # Keep the real owned child blocked, without parent server FD reuse
+        # obscuring whether our exact two descriptors were retired.
+        monkeypatch.setattr(probe_io, "_perform", lambda *a, **kw: time.sleep(3))
+        if boundary == "double-cancel":
+            waitpid = os.waitpid; injected = [False]
+            secondary = SystemExit("private-secondary-reap-cancel-canary")
+            def interrupted_waitpid(*a):
+                if os.getpid() == parent and not injected[0]:
+                    injected[0] = True
+                    raise secondary
+                return waitpid(*a)
+            monkeypatch.setattr(probe_io.os, "waitpid", interrupted_waitpid)
     decision = Decision(clock=lambda:k.c.h.now)
-    if boundary == "close-read":
-        probe.update(fault="resolve", mode="pause")
+    if boundary.startswith("close-read") or boundary == "between-cleanup":
         decision.end -= 9.4
-    with pytest.raises(KeyboardInterrupt) as caught:
-        probe["probe"].check(b"accepted preimage", probe["binding"], now=k.c.h.now,
-            decision=decision)
-    if boundary.startswith("close"):
-        assert caught.value is original
+    old_handler = signal.getsignal(signal.SIGINT)
+    if boundary == "between-cleanup":
+        def cancel(signum, frame):
+            raise original
+        signal.signal(signal.SIGINT, cancel)
+    try:
+        with pytest.raises(KeyboardInterrupt) as caught:
+            probe["probe"].check(b"accepted preimage", probe["binding"], now=k.c.h.now, decision=decision)
+    finally:
+        signal.signal(signal.SIGINT, old_handler)
+    if boundary not in ("fork-return", "other-thread"):
+        assert caught.value is original and all(pipe.closed for pipe in pipes)
+        for fd in fds:
+            with pytest.raises(OSError) as closed:
+                os.fstat(fd)
+            assert closed.value.errno == 9
     assert _children() == before
+
 
 
 def test_probe_child_cancellation_cannot_unwind_into_parent_lifecycle(probe, k, monkeypatch):
@@ -200,3 +236,49 @@ def test_probe_success_reply_does_not_renew_deadline_while_child_finishes(probe,
     assert time.monotonic() - started < 1.5 and _children() == before
     assert [v[0] for v in probe["calls"]] == ["resolve"]
     assert decision._hosted_reads["counts"]["private"] == 1
+
+
+def test_probe_observes_cancellation_during_blocked_io_without_waiting_for_lease(probe, k, monkeypatch):
+    from threading import Timer
+    from workload_factory_binding_runtime.hosted import probe_io
+    before = _children()
+    monkeypatch.setattr(probe_io, "_perform", lambda *a, **kw: time.sleep(3))
+    decision = Decision(clock=lambda:k.c.h.now)
+    timer = Timer(.15, lambda:os.kill(os.getpid(), signal.SIGINT))
+    started = time.monotonic(); timer.start()
+    try:
+        with pytest.raises(KeyboardInterrupt):
+            probe["probe"].check(b"accepted preimage", probe["binding"], now=k.c.h.now, decision=decision)
+    finally:
+        timer.cancel(); timer.join(timeout=1)
+    assert time.monotonic() - started < 1.5 and _children() == before
+    assert decision.remaining() > 5 and not probe["calls"]
+
+
+def test_probe_restores_all_handlers_when_first_restoration_is_cancelled(probe, k, monkeypatch):
+    from workload_factory_binding_runtime.hosted import probe_io
+    parent = os.getpid(); before = _children(); setter = signal.signal; injected = [False]
+    original = KeyboardInterrupt("private-restore-cancel-canary")
+    def cancel(signum, frame):
+        raise original
+    def other(signum, frame):
+        pass
+    saved = {sig:signal.getsignal(sig) for sig in (signal.SIGINT, signal.SIGUSR1)}
+    setter(signal.SIGINT, cancel); setter(signal.SIGUSR1, other)
+    def interrupted_restore(signum, handler):
+        value = setter(signum, handler)
+        if os.getpid() == parent and handler is cancel and not injected[0]:
+            injected[0] = True
+            os.kill(parent, signal.SIGINT)
+        return value
+    monkeypatch.setattr(probe_io.signal, "signal", interrupted_restore)
+    try:
+        with pytest.raises(KeyboardInterrupt) as caught:
+            probe["probe"].check(b"accepted preimage", probe["binding"], now=k.c.h.now,
+                decision=Decision(clock=lambda:k.c.h.now))
+        assert caught.value is original and injected[0] and _children() == before
+        assert signal.getsignal(signal.SIGINT) is cancel
+        assert signal.getsignal(signal.SIGUSR1) is other
+    finally:
+        for sig, handler in saved.items():
+            setter(sig, handler)
