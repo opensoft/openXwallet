@@ -186,7 +186,8 @@ def test_probe_cancellation_cannot_lose_owned_child(probe, k, monkeypatch, bound
     finally:
         signal.signal(signal.SIGINT, old_handler)
     if boundary not in ("fork-return", "other-thread"):
-        assert caught.value is original and all(pipe.closed for pipe in pipes)
+        assert caught.value is original
+        assert all(pipe.closed for pipe in pipes)
         for fd in fds:
             with pytest.raises(OSError) as closed:
                 os.fstat(fd)
@@ -207,7 +208,8 @@ def test_probe_child_cancellation_cannot_unwind_into_parent_lifecycle(probe, k, 
     with pytest.raises(BindingError, match="^qualification-failed$"):
         probe["probe"].check(b"accepted preimage", probe["binding"], now=k.c.h.now,
             decision=Decision(clock=lambda:k.c.h.now))
-    assert not probe["calls"] and _children() == before
+    assert not probe["calls"]
+    assert _children() == before
 
 
 def test_probe_secondary_thread_refuses_before_rpc_or_private_read(probe, k):
@@ -218,8 +220,11 @@ def test_probe_secondary_thread_refuses_before_rpc_or_private_read(probe, k):
         except BindingError as error:
             caught.append(str(error))
     thread = Thread(target=invoke); thread.start(); thread.join(timeout=3)
-    assert not thread.is_alive() and caught == ["qualification-failed"]
-    assert not probe["calls"] and not hasattr(decision, "_hosted_reads") and _children() == before
+    assert not thread.is_alive()
+    assert caught == ["qualification-failed"]
+    assert not probe["calls"]
+    assert not hasattr(decision, "_hosted_reads")
+    assert _children() == before
 
 
 def test_probe_success_reply_does_not_renew_deadline_while_child_finishes(probe, k, monkeypatch):
@@ -233,7 +238,8 @@ def test_probe_success_reply_does_not_renew_deadline_while_child_finishes(probe,
     started = time.monotonic()
     with pytest.raises(BindingError, match="^qualification-failed$"):
         probe["probe"].check(b"accepted preimage", probe["binding"], now=k.c.h.now, decision=decision)
-    assert time.monotonic() - started < 1.5 and _children() == before
+    assert time.monotonic() - started < 1.5
+    assert _children() == before
     assert [v[0] for v in probe["calls"]] == ["resolve"]
     assert decision._hosted_reads["counts"]["private"] == 1
 
@@ -251,8 +257,10 @@ def test_probe_observes_cancellation_during_blocked_io_without_waiting_for_lease
             probe["probe"].check(b"accepted preimage", probe["binding"], now=k.c.h.now, decision=decision)
     finally:
         timer.cancel(); timer.join(timeout=1)
-    assert time.monotonic() - started < 1.5 and _children() == before
-    assert decision.remaining() > 5 and not probe["calls"]
+    assert time.monotonic() - started < 1.5
+    assert _children() == before
+    assert decision.remaining() > 5
+    assert not probe["calls"]
 
 
 def test_probe_restores_all_handlers_when_first_restoration_is_cancelled(probe, k, monkeypatch):
@@ -276,7 +284,9 @@ def test_probe_restores_all_handlers_when_first_restoration_is_cancelled(probe, 
         with pytest.raises(KeyboardInterrupt) as caught:
             probe["probe"].check(b"accepted preimage", probe["binding"], now=k.c.h.now,
                 decision=Decision(clock=lambda:k.c.h.now))
-        assert caught.value is original and injected[0] and _children() == before
+        assert caught.value is original
+        assert injected[0]
+        assert _children() == before
         assert signal.getsignal(signal.SIGINT) is cancel
         assert signal.getsignal(signal.SIGUSR1) is other
     finally:

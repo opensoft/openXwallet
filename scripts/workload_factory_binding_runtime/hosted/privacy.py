@@ -26,8 +26,12 @@ def observe_privacy(projection):
             error.__cause__ = ValueError(canary)
             error.__context__ = ValueError(canary)
             error.add_note(canary)
-            expected = ("runtime-service-unavailable" if type(error) is BindingError and error.args == ("runtime-service-unavailable",)
-                        else "qualification-failed" if isinstance(error, Exception) else "qualification-cancelled")
+            if type(error) is BindingError and error.args == ("runtime-service-unavailable",):
+                expected = "runtime-service-unavailable"
+            elif isinstance(error, Exception):
+                expected = "qualification-failed"
+            else:
+                expected = "qualification-cancelled"
             actual = safe_error(error)
             require(type(actual) is str and actual == expected, "protected-report-refused")
             observations.append({"input_digest": digest({"surface": surface, "canary": canary,

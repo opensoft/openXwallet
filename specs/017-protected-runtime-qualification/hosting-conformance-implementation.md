@@ -1,6 +1,6 @@
 # T012U isolated conformance realization
 
-Status: accepted-main #79 integration locally qualified; PR #78 exact-head hosted CI and owner acceptance pending
+Status: main #79 qualification historical; accepted-main #80/advisory clarity work pending fresh qualification
 Kind: implementation-record
 Scope: source/fixture only; no operational grant
 
@@ -454,3 +454,29 @@ real target/principal/key/credential/endpoint selections, deployed qualification
 external control-host-loss watchdog/infrastructure retirement and consumer/human/
 domain acceptance remain open. Setup/protected dispatch unauthorized; feedback
 deferred and historical blocked writes unreplayed.
+
+## T012V accepted-main #80 and bounded advisory-clarity plan
+
+Accepted main #80 advanced neutral root/code pins and source-tool/test readability
+while the previous main #79 qualification completed. Preserve all six incoming
+paths and exact new pins. The separately selected owning qualification source
+remains bb0e9dae; contract artifacts, wire profiles, clocks/read budgets and
+protected defaults do not change. Earlier qualification stays historical.
+
+Under the existing sole T012V task, address reviewed low-impact advisories:
+split the 42 composite test assertions with mechanically verified predicate/order
+preservation; prepare the signed fixture origin before the expected-rejection
+context; expand the three nested conditional sites into equivalent branches;
+and use one local JSON media-type constant. Keep intentional BaseException
+retirement/privacy boundaries and lexical cancellation ownership unchanged.
+Do not add score-driven abstractions, suppressions, gate changes or source/API
+selectors. Existing case identities, anchors and refusal assertions must remain.
+
+Independently remeasure the unchanged expected corpus, review the exact source,
+run focused existing budget/probe controls including genuine child tracing,
+then freeze and run ordered/full/default-pinned-OpenSpec and mandatory native
+qualification. Independently verify teardown/preservation and retain any earlier
+failed diagnostics accurately. Only after those gates publish the new head,
+renew hosted CI/coverage/Sonar and present it for owner source ratification.
+T013 and all operational selections/setup/protected dispatch remain ungranted;
+feedback deferred and historical blocked writes unreplayed.

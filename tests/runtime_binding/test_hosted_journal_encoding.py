@@ -28,7 +28,8 @@ def test_event_bytes_and_hash_equal_independent_canonical_oracle(kind, body):
     assert set(LEGACY_KINDS) == KINDS
     raw = canonical(body)
     decoded, encoded = document_with_canonical(raw)
-    assert decoded == document(raw) and encoded == raw
+    assert decoded == document(raw)
+    assert encoded == raw
     event = {"sequence": 2048, "kind": kind, "data": decoded,
              "previous": "sha256:" + "a" * 64, "observed_at": 9007199254740991}
     result = _event_bytes(event["sequence"], kind, raw, event["previous"], event["observed_at"])
@@ -40,7 +41,9 @@ def test_event_bytes_and_hash_equal_independent_canonical_oracle(kind, body):
 def test_document_decoded_api_keeps_noncanonical_json_acceptance(raw):
     value = document(raw)
     decoded, encoded = document_with_canonical(raw)
-    assert decoded == value and encoded == canonical(value) and encoded != raw
+    assert decoded == value
+    assert encoded == canonical(value)
+    assert encoded != raw
 
 
 @pytest.mark.parametrize("raw", [b'{"a":1,"a":2}', b'{"a":NaN}', b'{"a":1e999}', b'\xff'])
@@ -49,7 +52,8 @@ def test_both_document_apis_keep_same_malformed_refusal(raw):
         document(raw)
     with pytest.raises(BindingError) as second:
         document_with_canonical(raw)
-    assert type(first.value) is type(second.value) and first.value.args == second.value.args
+    assert type(first.value) is type(second.value)
+    assert first.value.args == second.value.args
 
 
 def _old_journal(tmp_path):

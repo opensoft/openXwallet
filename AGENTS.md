@@ -480,3 +480,13 @@ Feature017 hosting-conformance-implementation.md records exact source/pins and
 limits. Final doc-only reconciliation retains qualified executable bytes; fresh
 final-head hosted CI/Sonar and owner ratification remain PR #78 gates. No
 setup/dispatch, feedback or blocked-write replay is authorized.
+
+### Current T012V main #80 and advisory clarity work
+
+Accepted main #80 advances pins/tooling/tests after the completed main #79
+qualification. Existing T012V and feature017 hosting-conformance-implementation.md
+govern the bounded assertion/preparation/branch/media-type cleanup. Preserve
+all oracles, case identities, wire profiles, budgets, broad cancellation/privacy
+boundaries and lexical resource ownership. Fresh review/full/native/cleanup and
+hosted qualification are required; earlier receipts remain historical. No
+setup/dispatch, feedback or blocked-write replay is authorized.

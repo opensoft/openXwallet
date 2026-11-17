@@ -118,9 +118,14 @@ class ReadBudget:
     def consume(self, group):
         self.check()
         require(group in LIMITS, ERROR)
-        limit = ({"protection": 6, "source": 8, "control": 4, "private": 16}.get(group, LIMITS[group])
-                 if self.state["staging"] else (18 if group == "protection" and self.state["finalization"] else
-                     39 if group == "private" and self.state["qualification"] else LIMITS[group]))
+        if self.state["staging"]:
+            limit = {"protection": 6, "source": 8, "control": 4, "private": 16}.get(group, LIMITS[group])
+        elif group == "protection" and self.state["finalization"]:
+            limit = 18
+        elif group == "private" and self.state["qualification"]:
+            limit = 39
+        else:
+            limit = LIMITS[group]
         require(self.state["counts"][group] < limit, ERROR)
         self.state["counts"][group] += 1
         self.check()

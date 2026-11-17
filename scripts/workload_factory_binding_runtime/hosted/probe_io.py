@@ -17,6 +17,7 @@ from workload_factory_binding.evidence import BindingError, canonical, decode_ob
 from .readback import ReadBudget
 
 ERROR = "qualification-failed"
+JSON_MEDIA_TYPE = "application/json"
 
 
 def _perform(client, kind, *, binding, message, now):
@@ -34,10 +35,10 @@ def _perform(client, kind, *, binding, message, now):
     try:
         connection.request("POST", "/v0/sign", body=canonical({"subject_ref": binding.subject_ref,
             "message": base64.urlsafe_b64encode(message).decode()}),
-            headers={"Content-Type": "application/json", "Accept": "application/json"})
+            headers={"Content-Type": JSON_MEDIA_TYPE, "Accept": JSON_MEDIA_TYPE})
         response = connection.getresponse()
         raw = response.read(8193)
-        require(response.status == 403 and response.getheader("Content-Type") == "application/json"
+        require(response.status == 403 and response.getheader("Content-Type") == JSON_MEDIA_TYPE
                 and len(raw) <= 8192 and decode_object(raw) == {"error": "service-refused"}, ERROR)
         return b""
     finally:

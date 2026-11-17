@@ -47,12 +47,15 @@ def vector(c, l):
 
 def test_private_encoder_vector_has_exact_closed_grammar_and_no_authority(vector):
     raw = _project(**vector); value = json.loads(raw)
-    assert raw == canonical(value) and len(raw) <= 16384
+    assert raw == canonical(value)
+    assert len(raw) <= 16384
     assert set(value) == {"profile", "scope", "status", "started_at", "issued_at", "context",
         "phase_provenance_digest", "generation_digest", "issuance_digest", "proof", "cleanup", "results",
         "error_code", "protected_machine_qualified", "human_approval", "domain_effect", "consumer_dependency_lock"}
-    assert value["profile"] == PROFILE and value["status"] == "passed"
-    assert set(value["results"]) == set(CASES) and len(CASES) == 27
+    assert value["profile"] == PROFILE
+    assert value["status"] == "passed"
+    assert set(value["results"]) == set(CASES)
+    assert len(CASES) == 27
     assert all(value[n] is False for n in ("human_approval", "domain_effect", "consumer_dependency_lock"))
     with pytest.raises(BindingError, match="^protected-report-refused$"):
         build_receipt(value, now=vector["now"])
@@ -63,14 +66,16 @@ def test_every_missing_slot_is_unperformed_and_never_qualified(vector, case):
     vector["cases"] = tuple(v for v in vector["cases"] if v.case_id != case)
     result = json.loads(_project(**vector))
     assert result["results"][case] == {"status": "not-performed"}
-    assert result["status"] == "incomplete" and not result["protected_machine_qualified"]
+    assert result["status"] == "incomplete"
+    assert not result["protected_machine_qualified"]
 
 
 @pytest.mark.parametrize("case", CASES)
 def test_every_actual_failed_case_cannot_be_upgraded_by_cleanup(vector, case):
     vector["cases"] = tuple(replace(v, status="failed") if v.case_id == case else v for v in vector["cases"])
     result = json.loads(_project(**vector))
-    assert result["status"] == "failed" and not result["protected_machine_qualified"]
+    assert result["status"] == "failed"
+    assert not result["protected_machine_qualified"]
 
 
 @pytest.mark.parametrize("field", PROOF_FIELDS)
@@ -92,7 +97,8 @@ def test_unavailable_or_placeholder_provenance_cannot_enter_projection(vector, f
 @pytest.mark.parametrize("outcome,status", [("failure", "failed"), ("cancel", "cancelled"), ("incomplete", "incomplete")])
 def test_operation_outcome_remains_authoritative_after_successful_cleanup(vector, outcome, status):
     result = json.loads(_project(**{**vector, "outcome": outcome}))
-    assert result["status"] == status and not result["protected_machine_qualified"]
+    assert result["status"] == status
+    assert not result["protected_machine_qualified"]
 
 
 def test_cancellation_precedes_failed_case_and_cleanup(vector):
@@ -156,7 +162,8 @@ def test_observed_runtime_preserves_actual_reservation_cause_and_no_extra_reads(
     replay = ProofTrace()
     with pytest.raises(BindingError):
         c.bridge.sign_observed(c.h.challenge.id, c.h.request, c.h.token, c.h.observation, trace=replay)
-    assert trace.reservation == "reserved" and replay.reservation == "replay-refused"
+    assert trace.reservation == "reserved"
+    assert replay.reservation == "replay-refused"
     assert len(c.r.transport.calls) == before == 2
     with pytest.raises(BindingError):
         c.bridge.sign_observed(c.h.challenge.id, c.h.request, c.h.token, c.h.observation, trace=trace)
@@ -320,7 +327,8 @@ def _connected_hosted_qualification(k, w, request, tmp_path, *, qualified=False,
             request.addfinalizer(lambda:_stop(process))
             limit=time.monotonic()+10
             while not ready.exists():
-                assert process.poll() is None and time.monotonic()<limit
+                assert process.poll() is None
+                assert time.monotonic()<limit
                 time.sleep(0.02)
             excess=TLSClient("https://127.0.0.1:"+ready.read_text(),ca_file=k.ca,
                 certificate=k.worker[0],private_key=k.worker[1]);excess.context=worker.context
@@ -413,13 +421,15 @@ def test_connected_hosted_proof_refuses_at_original_private_read_cap_and_cleans_
     with pytest.raises(BindingError, match="^qualification-failed$"):
         execute()
     qualifier = retained["qualifier"];result = qualifier.result;hosted = retained["hosted"]
-    assert result is not None and result.cleanup is not None
+    assert result is not None
+    assert result.cleanup is not None
     assert result.outcome == "failure"
     from workload_factory_binding_runtime.hosted.readback import ReadBudget
     assert qualifier.bindings.workflow.lifecycle.janitor.target.operation._hosted_reads["counts"]["private"] == 12
     frames = json.loads((tmp_path / "lease-read-failure.json").read_text())["frames"]
     assert any(f["file"] == "readback.py" and f["function"] == "consume" for f in frames)
-    assert not hosted.temporary.exists() and hosted.shared.read_bytes() == b"retained shared generation"
+    assert not hosted.temporary.exists()
+    assert hosted.shared.read_bytes() == b"retained shared generation"
     with pytest.raises(BindingError, match="^protected-report-refused$"):
         build_receipt(result, now=k.c.h.now)
     with pytest.raises(BindingError):qualifier.run()
@@ -429,7 +439,9 @@ def test_source_accepted_hosted_qualification_completes_on_one_original_decision
     execute, state = _connected_hosted_qualification(k,w,request,tmp_path,qualified=True)
     execute()
     qualifier=state["qualifier"];result=qualifier.result
-    assert result.outcome=="success" and result.proof["status"]=="verified" and result.cleanup is not None
+    assert result.outcome=="success"
+    assert result.proof["status"]=="verified"
+    assert result.cleanup is not None
     decision=qualifier.bindings.decision
     assert decision is qualifier.bindings.workflow.lifecycle.janitor.target.operation
     assert decision._hosted_reads["qualification"] is True
@@ -468,7 +480,9 @@ def test_real_operator_signature_authenticates_exact_fixture_origin_without_live
     v = origin_vector
     scope, proof, until = _origin(v.sign(v.payload), trust=v.trust, principal=v.principal,
         expected=v.expected, now=v.now)
-    assert scope == "isolated-fixture" and proof == digest(v.payload) and until == v.now+10
+    assert scope == "isolated-fixture"
+    assert proof == digest(v.payload)
+    assert until == v.now+10
 
 
 @pytest.mark.parametrize("field", ["config_digest", "case_digest", "run_id", "run_attempt",
@@ -476,8 +490,9 @@ def test_real_operator_signature_authenticates_exact_fixture_origin_without_live
 def test_each_operator_origin_binding_must_match_even_with_a_valid_signature(origin_vector, field):
     from workload_factory_binding_runtime.hosted.qualification import _origin
     v = origin_vector;value = {**v.payload,field:"protected-machine" if field=="scope" else "other"}
+    signed = v.sign(value)
     with pytest.raises(BindingError,match="^protected-report-refused$"):
-        _origin(v.sign(value),trust=v.trust,principal=v.principal,expected=v.expected,now=v.now)
+        _origin(signed,trust=v.trust,principal=v.principal,expected=v.expected,now=v.now)
 
 
 @pytest.mark.parametrize("kind", ["signature", "wrong-key", "expiry", "future", "boolean", "duplicate", "extra", "dict", "oversize"])
@@ -576,7 +591,8 @@ def test_portable_qualifier_component_real_proof_barriers_and_cleanup(k, w, tmp_
             state["excess_process"]=process
             limit=time.monotonic()+10
             while not ready.exists():
-                assert process.poll() is None and time.monotonic()<limit
+                assert process.poll() is None
+                assert time.monotonic()<limit
                 time.sleep(0.02)
             excess=TLSClient("https://127.0.0.1:"+ready.read_text(),ca_file=k.ca,
                 certificate=k.worker[0],private_key=k.worker[1])
@@ -597,10 +613,12 @@ def test_portable_qualifier_component_real_proof_barriers_and_cleanup(k, w, tmp_
             with pytest.raises(KeyboardInterrupt if outcome.startswith("cancel") else BindingError):
                 _owning_run(k,directory,allow_worker_sign=outcome=="worker-excess",before_proof=prepare,perform=perform)
         result=state["qualifier"].result
-        assert result.cleanup is not None and result.outcome==("cancel" if outcome.startswith("cancel") else "failure" if outcome=="worker-excess" else "success")
+        assert result.cleanup is not None
+        assert result.outcome==("cancel" if outcome.startswith("cancel") else "failure" if outcome=="worker-excess" else "success")
         with pytest.raises(BindingError,match="^protected-report-refused$"):build_receipt(result,now=k.c.h.now)
         value=json.loads(result.fixture_receipt(now=k.c.h.now))
-        assert value["scope"]=="isolated-fixture" and not value["protected_machine_qualified"]
+        assert value["scope"]=="isolated-fixture"
+        assert not value["protected_machine_qualified"]
         assert "private-cancel-canary" not in json.dumps(value)
         assert not {"G01","G02","S01",*("H%02d"%n for n in range(1,10))} & {x.case_id for x in result.cases}
         if outcome=="missing-excess":
@@ -635,7 +653,8 @@ def test_cli_cancellation_is_fixed_and_never_prints_exception_payload(monkeypatc
     output=tmp_path/"must-not-exist";monkeypatch.setenv("GITHUB_OUTPUT",str(output))
     assert module.main()==130
     captured=capsys.readouterr()
-    assert captured.out=="" and captured.err=="qualification-cancelled\n"
+    assert captured.out==""
+    assert captured.err=="qualification-cancelled\n"
     assert not output.exists()
 
 
@@ -760,7 +779,9 @@ def test_signed_claim_barrier_detects_independent_removed_check(c,monkeypatch,ki
 def test_connected_authenticated_fixture_origin_uses_last_read_without_live_promotion(k,w,request,tmp_path):
     execute,state=_connected_hosted_qualification(k,w,request,tmp_path,qualified=True,origin=True)
     execute();result=state["qualifier"].result
-    assert result.outcome=="success" and result.proof["status"]=="verified" and result.cleanup is not None
+    assert result.outcome=="success"
+    assert result.proof["status"]=="verified"
+    assert result.cleanup is not None
     assert state["operation_private_reads"]==39
     assert {x.case_id:x.status for x in result.cases}["H12"]=="passed"
     assert result._operational_origin is None
@@ -774,11 +795,13 @@ def test_connected_qualification_faults_keep_original_cleanup_and_cannot_report_
         origin=fault=="origin-mismatch",fault=fault)
     with pytest.raises(KeyboardInterrupt if fault=="cancel" else BindingError):execute()
     q=state["qualifier"];result=q.result
-    assert result is not None and result.cleanup is not None
+    assert result is not None
+    assert result.cleanup is not None
     assert result.outcome==("cancel" if fault=="cancel" else "failure")
     assert q.bindings.decision._hosted_reads["counts"]["private"]<=39
     if fault=="worker-outage":
-        assert state["worker_outage_injected"] and k.custody_process.poll() is not None
+        assert state["worker_outage_injected"]
+        assert k.custody_process.poll() is not None
         assert not {"G03","H10"} & {c.case_id for c in result.cases}
     if fault=="privacy-failure":assert {c.case_id:c.status for c in result.cases}["H12"]=="failed"
     if fault=="read-exhaustion":assert q.bindings.decision._hosted_reads["counts"]["private"]==39
@@ -812,8 +835,10 @@ def test_actual_qualifier_runner_death_keeps_independent_original_cleanup(k,w,re
     execute,state=_connected_hosted_qualification(k,w,request,tmp_path,qualified=True,fault="runner-death")
     with pytest.raises(BindingError,match="^fixture-runner-death$"):execute()
     q=state["qualifier"];hosted=state["hosted"]
-    assert q.result is None and state["death_cleanup"].plan_digest==q.bindings.workflow.lifecycle.plan.digest
-    assert not hosted.temporary.exists() and hosted.shared.read_bytes()==b"retained shared generation"
+    assert q.result is None
+    assert state["death_cleanup"].plan_digest==q.bindings.workflow.lifecycle.plan.digest
+    assert not hosted.temporary.exists()
+    assert hosted.shared.read_bytes()==b"retained shared generation"
     assert not hosted.provider.active[hosted.token.credential]
     assert sum(e["kind"]=="cleanup-request" for e in hosted.stores["scheduler"].events(decision=hosted.use()))==1
     with pytest.raises(BindingError,match="^protected-report-refused$"):build_receipt(q.result,now=hosted.clock.value)
@@ -828,7 +853,8 @@ def test_reconciliation_refuses_after_original_registered_cleanup_window(k,w,req
     with pytest.raises(BindingError,match="^lifecycle-cleanup-unverified$"):q.reconcile_cleanup()
     after=sum(e["kind"]=="lease-closed" for e in hosted.stores["primary"].events(decision=hosted.use()))
     assert before==after==1
-    assert not hosted.temporary.exists() and hosted.shared.read_bytes()==b"retained shared generation"
+    assert not hosted.temporary.exists()
+    assert hosted.shared.read_bytes()==b"retained shared generation"
 
 
 @pytest.mark.parametrize("kind", ["invalid-phase","unknown-argument","missing-phase"])
@@ -847,8 +873,10 @@ def test_cli_parse_failure_never_echoes_private_input_or_reads_context(monkeypat
     output=tmp_path/"never-created";monkeypatch.setenv("GITHUB_OUTPUT",str(output))
     assert module.main()==2
     result=capsys.readouterr()
-    assert result.out=="" and result.err=="workflow-input-unavailable\n"
-    assert canary not in result.err and not output.exists()
+    assert result.out==""
+    assert result.err=="workflow-input-unavailable\n"
+    assert canary not in result.err
+    assert not output.exists()
 
 
 @pytest.mark.parametrize("kind", ["interrupt","exit","generator"])
@@ -863,7 +891,9 @@ def test_cli_parse_cancellation_redacts_private_payload_before_context(monkeypat
     def cancel(*a,**kw):raise error
     monkeypatch.setattr(module._PrivateParser,"parse_args",cancel)
     assert module.main()==130
-    value=capsys.readouterr();assert value.out=="" and value.err=="qualification-cancelled\n"
+    value=capsys.readouterr()
+    assert value.out==""
+    assert value.err=="qualification-cancelled\n"
 
 
 @pytest.mark.parametrize("mode", ["fresh-process","wrong-run","worker-credential","expired","qualify-refused"])
@@ -909,14 +939,16 @@ def test_fresh_audit_only_workflow_needs_no_active_lease_or_writer(k,w,request,t
         (tmp_path/"runner-generation.json").write_bytes(canonical({"pid":process.pid,"instance_ref":instance}))
         try:
             output,errors=process.communicate(timeout=15)
-            assert process.returncode==0 and errors==b""
+            assert process.returncode==0
+            assert errors==b""
             assert json.loads(output)=={"verified":True,"outcome":"cancel"}
         finally:_stop(process)
     else:
         with pytest.raises(BindingError):read()
     after=sum(e["kind"]=="lease-closed" for e in hosted.stores["primary"].events(decision=hosted.use()))
     assert before==after==1
-    assert not hosted.temporary.exists() and hosted.shared.read_bytes()==b"retained shared generation"
+    assert not hosted.temporary.exists()
+    assert hosted.shared.read_bytes()==b"retained shared generation"
 
 
 @pytest.mark.parametrize("fault", ["cancel-entry-lost","cancel-operation-lost","cancel-closing-lost"])
@@ -925,10 +957,12 @@ def test_original_cancellation_survives_lost_cleanup_reply_and_read_only_reconci
     with pytest.raises(KeyboardInterrupt) as caught:execute()
     assert caught.value is state["original_cancel"]
     q=state["qualifier"];result=q.result
-    assert result.outcome=="cancel" and result.cleanup is None
+    assert result.outcome=="cancel"
+    assert result.cleanup is None
     assert state["cleanup_mutations"]==1
     checked=q.reconcile_cleanup()
-    assert checked.plan_digest==q.bindings.workflow.lifecycle.plan.digest and checked.outcome=="cancel"
+    assert checked.plan_digest==q.bindings.workflow.lifecycle.plan.digest
+    assert checked.outcome=="cancel"
     assert state["cleanup_mutations"]==1
     assert not state["hosted"].temporary.exists()
     assert state["hosted"].shared.read_bytes()==b"retained shared generation"
@@ -957,7 +991,9 @@ def test_original_cancellation_survives_post_cleanup_clock_failure(k, w, request
         except BaseException as error:
             assert error is original_cancel
             cleanup = life.cleanup_verification
-            assert cleanup is not None and cleanup.outcome == "cancel" and cleanup.checked_at > floor
+            assert cleanup is not None
+            assert cleanup.outcome == "cancel"
+            assert cleanup.checked_at > floor
             state["verified_cleanup"] = cleanup
             def broken_historical_clock():
                 state["historical_clock_sampled"] = True
@@ -985,7 +1021,8 @@ def test_original_cancellation_survives_post_cleanup_clock_failure(k, w, request
     else:
         assert qualifier.result is None
     assert state["verified_cleanup"].plan_digest == qualifier.bindings.workflow.lifecycle.plan.digest
-    assert not hosted.temporary.exists() and hosted.shared.read_bytes() == b"retained shared generation"
+    assert not hosted.temporary.exists()
+    assert hosted.shared.read_bytes() == b"retained shared generation"
     assert not hosted.provider.active[hosted.token.credential]
     with pytest.raises(BindingError, match="^protected-report-refused$"):
         build_receipt(qualifier.result, now=hosted.clock.value)

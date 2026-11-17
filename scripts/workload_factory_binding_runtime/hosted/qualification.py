@@ -168,10 +168,15 @@ class QualificationResult:
         cases = tuple(CaseResult(c.case_id, 1, int(c.status == "passed"), int(c.status == "failed"), 0, 0,
                                  c.observed_at, c.artifact_digest) for c in self.cases if c.case_id in CASES)
         # Old profile retains its original all-case-before-cleanup ordering.
+        if self.outcome == "success":
+            error = None
+        elif self.outcome == "cancel":
+            error = BindingError("qualification-cancelled")
+        else:
+            error = BindingError("qualification-failed")
         return build_receipt(scope="isolated-fixture", selected=self.selected, cases=cases,
             started_at=self.started_at, now=now, plan=self.plan, cleanup=self.cleanup,
-            error=None if self.outcome == "success" else BindingError("qualification-" +
-                ("cancelled" if self.outcome == "cancel" else "failed")))
+            error=error)
 
 
 def _barrier(token, kind, bridge, now, selected, inputs):
