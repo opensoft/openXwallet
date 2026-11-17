@@ -323,7 +323,7 @@ for immutable IDs, actual timing, retained historical failures and limits.
 Fresh final-head hosted CI/evaluated Sonar and owner source ratification remain
 PR #78 gates. This source procedure grants no setup or protected dispatch.
 
-## Current source and qualification receipt
+## Historical selected-port source and qualification receipt
 
 Code candidate `bf0839732d764c2848a4981179e999a44f769d53` retains 2801 full and 2389 mandatory native
 identities, hosted-evidence 218/H10=105 and the original operational boundaries.
@@ -332,3 +332,10 @@ mutants fail the intended controls. The [source checkpoint](hosting-conformance-
 explains the corrected fixture and retained historical failures. Read the exact-head
 qualification/cleanup/CI receipt in PR #78 for current executed results. This source
 packet grants no setup, protected dispatch or owner acceptance.
+
+## Current accepted-main #85/#86 source checkpoint
+
+Use the [current integration source record](hosting-conformance-implementation.md#t012v-main-85-86-source-checkpoint) and PR #78's actual
+final-head receipt. Code candidate `1728117f3dbe0ebb3fbeb408613e3d04c69067fc` retains all 2801/2389
+identities and passes 135 focused readback controls; complete qualification remains
+required. This runbook supplies no setup, protected dispatch or owner acceptance.

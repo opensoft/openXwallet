@@ -2952,3 +2952,11 @@ cleanup, hosted CI/Sonar and review results are recorded after execution in
 [PR #78](https://github.com/opensoft/openXwallet/pull/78). See the
 [current source record](hosting-conformance-implementation.md#t012v-selected-port-deadline-correction).
 This checkpoint supplies no source ratification or operational grant.
+
+## Current main #85/#86 integration checkpoint
+
+Code candidate `1728117f3dbe0ebb3fbeb408613e3d04c69067fc` preserves the complete ordered 2,801/2,389
+corpus and passes all 135 readback controls. The [current source record](hosting-conformance-implementation.md#t012v-main-85-86-source-checkpoint)
+separates the prior completed 064103a5 receipt from required fresh final-head
+review/full/native/cleanup/hosted CI and Sonar. No source ratification or
+operational grant is supplied.

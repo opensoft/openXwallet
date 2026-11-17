@@ -540,3 +540,8 @@ feature017 hosting-conformance-implementation.md. Fresh review/collection/full/
 native/cleanup/hosted CI and Sonar at the new frozen head are required. No
 source acceptance or operational authority is inferred; setup/dispatch remain
 unauthorized, feedback deferred and blocked writes unreplayed.
+
+The current code candidate is `1728117f3dbe0ebb3fbeb408613e3d04c69067fc`; exact ordered 2801/2389
+collection and all 135 focused readback controls pass. Preserve the 371 non-document
+inputs through final source-checkpoint review. Full/native/cleanup/CI/Sonar remain
+fresh final-head requirements tracked on PR #78, not success claims here.

@@ -723,3 +723,44 @@ checkpoint documents must not predeclare them. Feature017 tasks.md remains the
 sole task list; T012V owner source ratification stays open. T001/T013-T015,
 setup/dispatch and live acceptance stay ungranted, feedback deferred and both
 historical blocked writes unreplayed.
+
+
+## T012V main 85-86 source checkpoint
+
+Code candidate `1728117f3dbe0ebb3fbeb408613e3d04c69067fc` integrates accepted main
+`a6a327a36046e130c95b2e654f3b4b5135d9d5de`. The only conflict resolution
+keeps the qualification ledger flag and private39 branch alongside the incoming
+fresh zero-counter dictionary and expanded staging/finalization/default control
+flow. The original clocks, 26/28/13 GitHub limits, staging16/finalization12,
+protected refusal, wire profiles, neutral pins and separate owning source remain.
+Accepted fixture teardown aggregation retains both server and agent failures;
+installed shell repairs remain the accepted upstream bytes.
+
+Actual collection is unchanged: 2,801 full parent identities and 2,389 native
+identities, exact prior order and static module fingerprints. All 135 readback
+controls pass. These focused results do not replace fresh complete qualification.
+The final source may change only the ten reviewed checkpoint Markdown inputs;
+the other 371 regular inputs must remain byte-identical to this candidate.
+Final reviewed, executed and published heads plus complete results belong on
+[PR #78](https://github.com/opensoft/openXwallet/pull/78) after execution, with no
+complete current-head success predeclared here.
+
+The previous `064103a5e75b27fcfa3602eb8013102047a16134`
+[actual-result receipt](https://github.com/opensoft/openXwallet/pull/78#issuecomment-6963729505)
+remains historical: full 2,801 plus 11 subtests, native 2,389, all seven local
+gates and hosted five-job CI pass. Its independent audit verifies 25,024 generation
+observations, 854 journals, 262 helper receipts and ten preservation cases before
+disposable fixture teardown; all eleven fixture roots and both containers are
+absent. Its six original Sonar conditions pass with 94% new-code coverage and A
+ratings. Its 21 open advisories were reviewed as 20 maintainability and one low
+reliability advisory; none was waived. Incoming main repairs do not promote that
+receipt into evidence for this new integration.
+
+Fresh nine-role source/document review, ordered full gates, mandatory native,
+ten-case independent cleanup and exact-head hosted CI/evaluated Sonar remain
+required before owner ratification. Ordinary sequential source CI retains its
+source-only 90-minute cap; traced jobs retain 45 minutes and runtime 10s/private39
+remain unchanged. T012V stays unchecked pending the actual owner act.
+T001/T013-T015, setup/protected dispatch, live OIDC/provider minting, deployed,
+human and domain acceptance remain ungranted. Feedback deferred; neither blocked
+write replayed.

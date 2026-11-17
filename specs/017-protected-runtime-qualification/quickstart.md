@@ -393,3 +393,8 @@ service, mint credentials, run protected dispatch or publish a live report now.
 Document preparation uses `python3 scripts/validate-openspec-cli-pin.py --all` in
 its default pinned form plus relative-link/scope checks. It creates no new runtime
 case count or live qualification. T012U/V/T001/T013-T015 remain separate.
+
+Current T012V source follows the [main #85/#86 checkpoint](hosting-conformance-implementation.md#t012v-main-85-86-source-checkpoint);
+its fresh final-head qualification/cleanup/CI and owner source ratification remain
+PR #78 gates. Earlier receipts are historical. This source record selects no
+operational accepted_commit and grants no setup or protected dispatch.

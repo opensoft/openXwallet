@@ -360,7 +360,7 @@ Fresh final-head hosted CI/Sonar and owner source ratification remain separate.
 
 ### Selected-port deadline source checkpoint
 
-The [current correction record](hosting-conformance-implementation.md#t012v-selected-port-deadline-correction)
+The [historical selected-port correction record](hosting-conformance-implementation.md#t012v-selected-port-deadline-correction)
 records the actual 22-case traced/untraced and five-mutant evidence, retained
 ordered corpus and unchanged limits. Complete validation results and owner
 source acceptance remain distinct PR #78 gates; no setup/dispatch is granted.
@@ -370,3 +370,9 @@ Current T012V continuation integrates accepted main #85/#86 under the bounded
 plan in hosting-conformance-implementation.md. The 064103a5 receipt remains
 historical; fresh final-head qualification and owner source ratification remain
 required. No T001/T013-T015/setup/dispatch grant is inferred.
+
+### Current accepted-main #85/#86 source checkpoint
+
+The [current integration record](hosting-conformance-implementation.md#t012v-main-85-86-source-checkpoint) names candidate `1728117f3dbe0ebb3fbeb408613e3d04c69067fc`,
+preserved source limits and actual 135-control/collection evidence. Complete fresh
+qualification and owner source ratification remain separate gates on PR #78.

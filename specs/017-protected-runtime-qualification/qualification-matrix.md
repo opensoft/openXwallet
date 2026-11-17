@@ -13,7 +13,7 @@ Current measured collection is 2,801 full parent cases and 2,389 mandatory nativ
 all 64 conformance self-tests, prior 2,781 full / 2,369 native identities and
 earlier anchors remain. New source controls cover the probe total Decision,
 cancellation ownership and byte-compatible canonical-journal replay. Execution and cleanup receipts are tracked on [PR #78](https://github.com/opensoft/openXwallet/pull/78).
-The [current source checkpoint](hosting-conformance-implementation.md#t012v-selected-port-deadline-correction)
+The [current source checkpoint](hosting-conformance-implementation.md#t012v-main-85-86-source-checkpoint)
 records the correction and required qualification protocol.
 
 | Group / anchored nodes | Actual source positive | Independent refusal/mutation | Remaining live gate |
@@ -136,3 +136,8 @@ postflight; all setup/call/teardown phases pass. Independent native boundary and
 are removed. [As-built evidence](hosting-conformance-implementation.md) retains
 failed diagnostics and limits. No protected P01, live receipt or source publication
 is inferred. T012V and T001/T013-T015 remain separate.
+
+Current T012V source follows the [main #85/#86 checkpoint](hosting-conformance-implementation.md#t012v-main-85-86-source-checkpoint);
+its fresh final-head qualification/cleanup/CI and owner source ratification remain
+PR #78 gates. Earlier receipts are historical. This source record selects no
+operational accepted_commit and grants no setup or protected dispatch.

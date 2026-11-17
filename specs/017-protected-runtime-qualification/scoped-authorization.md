@@ -17,7 +17,7 @@ static-v2/finalization prerequisite discovered in research; callbacks alone do n
 resolve unknown actual run/process digests. These are draft source proposals, not
 new operational selections, appointments or grants. Subsequent accepted factory
 profiles and isolated T012O-U implementation are reconciled by the current
-[T012V source candidate](hosting-conformance-implementation.md#t012v-selected-port-deadline-correction)
+[T012V source candidate](hosting-conformance-implementation.md#t012v-main-85-86-source-checkpoint)
 on PR #78. Its final-head hosted CI and owner ratification remain separate.
 Neither local qualification nor later source acceptance selects hosting, keys,
 endpoints or operational principals. T013 and all four stages remain ungranted.
@@ -133,3 +133,8 @@ owners, distinct dispatcher/reviewer, actual bootstrap/controller hosting, issua
 and resource/budget/window limits. They can commission the required source
 integrations without authorizing setup or dispatch. Source bootstrap acceptance
 is complete; live hosting/authentication and operational decisions remain open.
+
+Current T012V source follows the [main #85/#86 checkpoint](hosting-conformance-implementation.md#t012v-main-85-86-source-checkpoint);
+its fresh final-head qualification/cleanup/CI and owner source ratification remain
+PR #78 gates. Earlier receipts are historical. This source record selects no
+operational accepted_commit and grants no setup or protected dispatch.
