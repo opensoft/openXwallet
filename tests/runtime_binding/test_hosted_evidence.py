@@ -926,3 +926,47 @@ def test_original_cancellation_survives_lost_cleanup_reply_and_read_only_reconci
     assert not state["hosted"].temporary.exists()
     assert state["hosted"].shared.read_bytes()==b"retained shared generation"
     with pytest.raises(BindingError,match="^protected-report-refused$"):build_receipt(result,now=k.c.h.now)
+
+
+@pytest.mark.parametrize("error_type", [KeyboardInterrupt, SystemExit, GeneratorExit])
+@pytest.mark.parametrize("clock_fault", ["raises", "before-operation", "before-cleanup"])
+def test_original_cancellation_survives_post_cleanup_clock_failure(k, w, request, tmp_path, monkeypatch, error_type, clock_fault):
+    from workload_factory_binding_runtime.lifecycle import RunLifecycle
+    execute, state = _connected_hosted_qualification(k, w, request, tmp_path, qualified=True)
+    original_cancel = error_type("private-post-cleanup-cancel-canary")
+    original_cancel.add_note("private-post-cleanup-cancel-canary")
+    original_run = RunLifecycle.run
+    def instrumented_run(life, operation):
+        qualifier = state.get("qualifier")
+        if qualifier is None or life is not qualifier.bindings.workflow.lifecycle:
+            return original_run(life, operation)
+        floor = qualifier.bindings.decision.last
+        def cancel_operation():
+            hosted = state["hosted"]
+            hosted.advance(hosted.clock.value + 1)
+            raise original_cancel
+        try:
+            return original_run(life, cancel_operation)
+        except BaseException as error:
+            assert error is original_cancel
+            cleanup = life.cleanup_verification
+            assert cleanup is not None and cleanup.outcome == "cancel" and cleanup.checked_at > floor
+            state["verified_cleanup"] = cleanup
+            def broken_historical_clock():
+                state["historical_clock_sampled"] = True
+                if clock_fault == "raises":
+                    raise RuntimeError("private-post-cleanup-clock-canary")
+                return floor - 1 if clock_fault == "before-operation" else cleanup.checked_at - 1
+            monkeypatch.setattr(life, "cleanup_clock", broken_historical_clock)
+            raise
+    monkeypatch.setattr(RunLifecycle, "run", instrumented_run)
+    with pytest.raises(error_type) as caught:
+        execute()
+    assert caught.value is original_cancel
+    qualifier, hosted = state["qualifier"], state["hosted"]
+    assert state["historical_clock_sampled"] and qualifier.result is None
+    assert state["verified_cleanup"].plan_digest == qualifier.bindings.workflow.lifecycle.plan.digest
+    assert not hosted.temporary.exists() and hosted.shared.read_bytes() == b"retained shared generation"
+    assert not hosted.provider.active[hosted.token.credential]
+    with pytest.raises(BindingError, match="^protected-report-refused$"):
+        build_receipt(qualifier.result, now=hosted.clock.value)

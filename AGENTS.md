@@ -431,3 +431,12 @@ scoped diagnostic helper retirement, timings and unchanged45-minute hosted-CI ga
 Final reconciliation changes documents only. Candidate remains local/unpublished;
 T012V and T001/T013-T015 stay separate. Keep setup/dispatch unauthorized, feedback
 deferred and both historical blocked writes unreplayed.
+
+### T012V source publication commission
+
+Brett commissioned candidate PR #78, hosted ordinary source CI, local Codex
+review and governed budget-blocker fixes. Feature017 remains the sole task list.
+The bounded corrections and delegated source-CI timing rationale are recorded in
+`hosting-conformance-implementation.md`. Owner source ratification and all
+T001/T013-T015 operational decisions remain open; setup/dispatch unauthorized,
+feedback deferred and neither historical denied write may be replayed.

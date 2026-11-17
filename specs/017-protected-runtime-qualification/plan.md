@@ -305,3 +305,11 @@ internal interfaces remain the governing basis; no neutral/public contract chang
 The only implementation list is tasks.md, T012S/T012S01-T012S07, all unchecked.
 Preparation is complete; isolated implementation and all operations need separate
 commissioning. No new T012S execution result is claimed.
+
+T012V is commissioned for source publication, exact-head hosted CI and local Codex
+review. The bounded corrective source and measured adapter-owned source-CI cap
+are recorded in hosting-conformance-implementation.md. Its24 new measured controls
+retain all2,215 prior native nodes and2,523 prior full nodes; accepted main adds89
+analysis/coverage controls. Current collection is2,636 full and2,239 native.
+Full/native execution, exact-head review/CI and independent audit are still gates.
+Owner source acceptance and all operational decisions remain separate/ungranted.

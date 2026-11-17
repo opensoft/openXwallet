@@ -60,47 +60,24 @@ class WorkerProbe:
     excess: object = None
 
     def check(self, message, binding, *, now, decision):
-        import base64
-        import http.client
         from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
-        from openwallet_runtime.custody import TLSClient, RemoteRegistry, RemoteSigner
+        from openwallet_runtime.custody import TLSClient
+        from .probe_io import exchange
         require(type(self.worker) is TLSClient and type(self.positive) is TLSClient
                 and type(message) is bytes and 0 < len(message) <= 8192, "qualification-failed")
-        def call(operation):
-            ReadBudget(decision).consume("private")
-            decision.now()
-            value = operation()
-            decision.now()
-            return value
-        actual = call(lambda: RemoteRegistry(self.worker).resolve(binding.subject_ref, now=now))
-        require(actual == binding, "qualification-failed")
-        signature = call(lambda: RemoteSigner(self.positive, subject_ref=binding.subject_ref).sign(message))
+        def call(client, kind):
+            return exchange(client, kind, message=message, binding=binding, now=now, decision=decision)
+        call(self.worker, "resolve")
+        signature = call(self.positive, "sign")
         key = Ed25519PublicKey.from_public_bytes(binding.public_key)
         key.verify(signature, message)
-        # The neutral client collapses all HTTP errors. Inspect the existing wire
-        # response directly so a 500, redirect or malformed body is never denial.
-        def denied():
-            client = self.worker
-            connection = http.client.HTTPSConnection(client.host, client.port,
-                context=client.context, timeout=min(client.timeout, decision.remaining()))
-            try:
-                connection.request("POST", "/v0/sign", body=canonical({"subject_ref": binding.subject_ref,
-                    "message": base64.urlsafe_b64encode(message).decode()}),
-                    headers={"Content-Type": "application/json", "Accept": "application/json"})
-                response = connection.getresponse()
-                raw = response.read(8193)
-                require(response.status == 403 and response.getheader("Content-Type") == "application/json"
-                        and len(raw) <= 8192 and decode_object(raw) == {"error": "service-refused"},
-                        "qualification-failed")
-            finally:
-                connection.close()
-        call(denied)
+        call(self.worker, "deny")
         if self.excess is None:
             return None
         require(type(self.excess) is TLSClient and self.excess.context is self.worker.context
                 and (self.excess.host, self.excess.port) != (self.worker.host, self.worker.port),
                 "qualification-failed")
-        control = call(lambda: RemoteSigner(self.excess, subject_ref=binding.subject_ref).sign(message))
+        control = call(self.excess, "sign")
         key.verify(control, message)
         return digest({"preimage_digest": byte_digest(message), "binding_digest": _binding_digest(binding),
             "positive_signature_digest": byte_digest(signature), "excess_signature_digest": byte_digest(control),
@@ -419,39 +396,46 @@ class Qualifier:
             outcome = "failure" if isinstance(error, Exception) else "cancel"
             if not isinstance(error, Exception):
                 cancelled = error
-        cleanup = life.cleanup_verification
-        # Read an independent historical clock only; do not renew the original
-        # Decision to encode post-cleanup privacy facts.
-        now = life.cleanup_clock()
-        require(integer(now) and now >= floor, "qualification-failed")
-        if cleanup is not None:
-            require(now >= cleanup.checked_at, "qualification-failed")
-            observations.append(CaseObservation("H11", now, digest(asdict(cleanup)), "passed"))
-            observations.append(CaseObservation("L01", cleanup.observed_at, digest(asdict(cleanup)), "passed"))
-        # Observe the actual pre-report projection and independent canary controls;
-        # never hash final report bytes into their own embedded observation.
-        from .privacy import observe_privacy
         try:
-            privacy = observe_privacy({"config_digest": selected.config_digest, "proof": proof,
-                "cleanup_digest": None if cleanup is None else digest(asdict(cleanup))})
-            observations.append(CaseObservation("H12", now, privacy, "passed"))
-        except BaseException as error:
-            observations.append(CaseObservation("H12", now, digest({"privacy": "refused"}), "failed"))
-            failure = error if failure is None else failure
-            if not isinstance(error, Exception):
-                outcome, cancelled = "cancel", error
-            elif outcome != "cancel":
-                outcome = "failure"
-        # Origin is established by the selected operator's actual signature over
-        # these exact observations. A genuine issuer token or transport class by
-        # itself cannot upgrade an isolated fixture/control-plane observation.
-        operational = origin_scope == "protected-machine" and origin_digest is not None
-        phase_digest = digest({"admission": None if phase is None else asdict(phase),
-            "finalization": asdict(b.finalized.binding), "readback_digest": selected.readback_digest,
-            "workload_digest": None if trace.workload is None else digest(dict(trace.workload.claims))})
-        self.result = QualificationResult(selected, life.plan, cleanup, started, floor, outcome,
-            origin_digest or phase_digest, b.finalized.binding.generation_digest, issuance, tuple(observations),
-            MappingProxyType(proof), _RESULT_SEAL, _RESULT_SEAL if operational else None)
+            cleanup = life.cleanup_verification
+            # Read an independent historical clock only; do not renew the original
+            # Decision to encode post-cleanup privacy facts.
+            now = life.cleanup_clock()
+            require(integer(now) and now >= floor, "qualification-failed")
+            if cleanup is not None:
+                require(now >= cleanup.checked_at, "qualification-failed")
+                observations.append(CaseObservation("H11", now, digest(asdict(cleanup)), "passed"))
+                observations.append(CaseObservation("L01", cleanup.observed_at, digest(asdict(cleanup)), "passed"))
+            # Observe the actual pre-report projection and independent canary controls;
+            # never hash final report bytes into their own embedded observation.
+            from .privacy import observe_privacy
+            try:
+                privacy = observe_privacy({"config_digest": selected.config_digest, "proof": proof,
+                    "cleanup_digest": None if cleanup is None else digest(asdict(cleanup))})
+                observations.append(CaseObservation("H12", now, privacy, "passed"))
+            except BaseException as error:
+                observations.append(CaseObservation("H12", now, digest({"privacy": "refused"}), "failed"))
+                failure = error if failure is None else failure
+                if not isinstance(error, Exception):
+                    outcome, cancelled = "cancel", error
+                elif outcome != "cancel":
+                    outcome = "failure"
+            # Origin is established by the selected operator's actual signature over
+            # these exact observations. A genuine issuer token or transport class by
+            # itself cannot upgrade an isolated fixture/control-plane observation.
+            operational = origin_scope == "protected-machine" and origin_digest is not None
+            phase_digest = digest({"admission": None if phase is None else asdict(phase),
+                "finalization": asdict(b.finalized.binding), "readback_digest": selected.readback_digest,
+                "workload_digest": None if trace.workload is None else digest(dict(trace.workload.claims))})
+            self.result = QualificationResult(selected, life.plan, cleanup, started, floor, outcome,
+                origin_digest or phase_digest, b.finalized.binding.generation_digest, issuance, tuple(observations),
+                MappingProxyType(proof), _RESULT_SEAL, _RESULT_SEAL if operational else None)
+        except BaseException:
+            # A secondary observation/report error cannot turn an already captured
+            # cancellation into ordinary failure. Unavailable facts produce no result.
+            if cancelled is not None:
+                raise cancelled
+            raise
         if cancelled is not None:
             raise cancelled
         if failure is not None:

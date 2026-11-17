@@ -140,3 +140,38 @@ claimed by these local checks. T012V, T001/T013-T015, protected origin/P01, depl
 administration, external watchdog/conditional infrastructure and human/domain/
 consumer acceptance remain separate. Setup/dispatch unauthorized; feedback deferred;
 neither historical blocked write is replayed.
+
+## T012V publication commission and review corrections
+
+The owner commissioned candidate PR publication, hosted source CI, local Codex
+review and resolution of CI budget blockers. PR #78 starts at `8edb62fb756e`.
+Accepted main #77 is integrated mechanically; its coverage, provider, exact-pin
+and analysis-only spec checkout controls remain required. Initial nine-role local
+review found two P2 corrections: total Decision-bound worker probe I/O and
+preservation of original cancellation when post-cleanup observation fails.
+Corrections use the same loaded neutral TLS credentials, four existing RPCs and
+private39 profile; child I/O is killed/reaped before lifecycle cleanup and on
+parent death. No neutral protocol or runtime authority is expanded.
+
+T012S07 and T012V already delegate measured bounded adapter source-CI wall caps.
+The prior measured sequential full/native stages take 2197.915 + 1855.909 =
+4053.824 seconds (67.564 minutes). The candidate raises only that source job cap
+from45 to90 minutes (25 percent allowance rounds up to90); ten-second runtime
+Decision, read budgets, matrix assertions and coverage gates stay unchanged.
+This is a bounded candidate choice, not hosted timing evidence. The separate
+45-minute coverage jobs require actual traced hosted evidence before any claim
+that their budgets fit. A new factory runtime profile is unnecessary for this
+already delegated source-CI choice. Exact integrated/fixed qualification, local
+re-review, hosted CI and independent fixture audit remain pending.
+
+This source commission does not ratify #78 or authorize setup/dispatch, live OIDC,
+provider minting, human/domain/consumer acceptance, feedback or blocked writes.
+
+The private Linux probe adapter requires the trusted qualifier on the main Python
+thread and refuses secondary-thread entry before an RPC/private read. Callable
+signal handlers are briefly deferred across fork/PID acquisition, then restored
+and replayed inside protected parent/child cleanup. This closes both cross-thread
+SIGINT delivery and child-side unwind windows. The child inherits no extra OS
+privilege; fork-sensitive inherited locks can only cause bounded refusal, never
+a deadline extension or detached RPC. No general multithreaded-host support or
+external infrastructure/total-control-loss guarantee is claimed by this slice.
