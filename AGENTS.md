@@ -335,6 +335,26 @@ change, provider service, setup or protected dispatch follows. T012U-V/T001/T013
 live report/consumer/human/domain acceptance remain separate. Feedback stays
 deferred and neither historical blocked write is replayed.
 
+## Issue #73 complete-source analysis
+
+The Sonar source-analysis and coverage jobs also initialize openWallet/spec,
+because this existing complete-assembly project scans that leg and owns
+finding acceptance there. This is a source-analysis-only exception to the
+runtime/validator two-line init rule. Ordinary runtime and wallet-validation
+gates retain their existing scoped init and never read the spec leg.
+The analysis inventory binds all four exact Git revisions and real executable
+coverage; no source omissions, runtime authority, thresholds or billing change.
+
+
+### Source-analysis conformance providers
+
+The #73 analysis job may fetch the immutable public provider revisions declared
+in requirements/analysis-providers.json and execute their fixed test selections
+against the actual copied consumer files. Both main admission and exact source
+bytes are required. This is additional source-only conformance; it grants no
+runtime, credential, broker, dispatch or operational authority. No test assertion
+may be deselected or waived to produce coverage.
+
 ## T012T isolated implementation commission
 
 Brett source-ratified factory #1332 aa1896ded7ef with wallet #76 56471096ff98

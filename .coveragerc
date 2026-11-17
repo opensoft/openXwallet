@@ -1,0 +1,19 @@
+[run]
+branch = True
+parallel = True
+relative_files = False
+patch = subprocess
+include =
+    ${COVERAGE_ROOT?}/scripts/*
+    ${COVERAGE_ROOT?}/specs/*
+    ${COVERAGE_ROOT?}/openspec/*
+    ${COVERAGE_ROOT?}/openWallet/scripts/*
+    ${COVERAGE_ROOT?}/openWallet/spec/scripts/*
+    ${COVERAGE_ROOT?}/openWallet/spec/specs/*
+    ${COVERAGE_ROOT?}/openWallet/spec/openspec/*
+    ${COVERAGE_ROOT?}/openWallet/code/scripts/*
+    ${COVERAGE_ROOT?}/openWallet/code/openwallet_runtime/*
+data_file = ${COVERAGE_FILE?}
+
+[report]
+include_namespace_packages = True
