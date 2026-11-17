@@ -1,6 +1,6 @@
 # Operator source conformance runbook
 
-Status: T012U candidate; frozen full/native qualification pending
+Status: isolated T012U qualified; local unpublished source candidate
 Kind: source-runbook
 Scope: offline source and disposable local fixtures only
 Sole executable feature task: tasks.md T012U
@@ -46,7 +46,8 @@ With the selected environment and source-test boundary already established:
 set -eu
 QUAL_REPO_ROOT=$(git rev-parse --show-toplevel)
 test "$(id -u)" -ne 0
-test -z "$(git status --porcelain --untracked-files=all)"
+QUAL_SOURCE_STATUS=$(git status --porcelain --untracked-files=all)
+test -z "$QUAL_SOURCE_STATUS"
 : "${QUAL_PYTHON:?select the reviewed absolute Python executable}"
 : "${WALLET_BINDING_OWNER_CODE:?select the accepted clean owner}"
 : "${QUAL_EVIDENCE_PARENT:?select the private external evidence parent}"
@@ -68,7 +69,8 @@ PYTHON
 git rev-parse HEAD HEAD^{tree} > "$QUAL_EVIDENCE_ROOT/source.txt"
 git ls-files --stage > "$QUAL_EVIDENCE_ROOT/tracked-inputs.txt"
 git -C "$WALLET_BINDING_OWNER_CODE" rev-parse HEAD > "$QUAL_EVIDENCE_ROOT/owner.txt"
-test -z "$(git -C "$WALLET_BINDING_OWNER_CODE" status --porcelain --untracked-files=all)"
+QUAL_OWNER_STATUS=$(git -C "$WALLET_BINDING_OWNER_CODE" status --porcelain --untracked-files=all)
+test -z "$QUAL_OWNER_STATUS"
 
 "$QUAL_PYTHON" -B scripts/verify-contract-pin.py
 "$QUAL_PYTHON" -B scripts/verify-openwallet-pin.py
@@ -82,7 +84,9 @@ TMPDIR="$QUAL_EVIDENCE_ROOT" PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONDONTWRITEBYT
 OPENSPEC_TELEMETRY=0 "$QUAL_PYTHON" -B scripts/validate-openspec-cli-pin.py --all
 ```
 
-Execute sequentially and stop on the first nonzero exit. Check the canonical
+Execute sequentially and stop on the first nonzero exit. The status assignments
+preserve Git command failure; an empty captured output alone is insufficient.
+Both source/owner prechecks have clean, dirty and command-error shell controls. Check the canonical
 resolved evidence root is not a symlink, lies outside source and has the expected
 UID/mode0700 before any fixture creation/removal. Independently hash every tracked
 regular-file input and retain gitlink modes/SHAs before and after each gate; a HEAD
@@ -139,7 +143,7 @@ An intermediate pytest pass count, anchor line or tiny self-test corpus verdict
 is insufficient. Final source-check exceptions/cancellation/zero-exit attempts
 emit fixed refusal and cannot leave a final PASS.
 
-Current measured candidate collection is2,523 full parent cases (plus existing
+Current measured candidate collection is2,523 full parent cases (plus nine passing
 subtests),2,215 mandatory native nodes and64 conformance self-tests. All prior2,203
 native identities and anchors remain. Hosted-evidence module remains186 cases;
 H10=75/H11=143/H12=142. Collection is not a passing execution receipt; current
@@ -193,3 +197,27 @@ watchdog, conditional infrastructure retirement, human/domain acceptance or
 codeXfactory T002 completion. T012V owns later local review, hosted source CI,
 publication and exact-head owner source acceptance. T001/T013-T015 and setup/
 dispatch remain unauthorized; feedback deferred and blocked writes unreplayed.
+
+## Current completion record
+
+Frozen source `6e2f0bfc626ab05b5b0384bc3a97d2816cfd696a` passes the full2,523 tests
+plus nine subtests and all2,215 mandatory native cases. Every prior node/anchor
+remains; all64 conformance self-tests pass. The final native success line follows
+owning-source postflight and pairs with exit0, zero errors/skips and unchanged
+338-file/source-gitlink verification. Both actual hosted positives retain38-read
+proof/cleanup measurements; the fixture-origin variant checks39 without live
+promotion. Independent final audit verifies21,879 generation records and all ten
+preservation cases, with no live attribution or initial teardown failure. Both
+final fixture roots and the native container are absent; receipts remain.
+
+The first full attempt had a setup/staging hosted-issuance refusal before the
+intended runner-death boundary; its internal cause is unproven. An external
+diagnostic SIGINT was absorbed before a separate cancellation injection, producing
+a second diagnostic failure and three same-UID fixture helpers waiting at Python
+shutdown. Only those verified direct descendant generations were retired; all
+diagnostic roots were independently audited and removed. An unchanged focused
+reproduction, fresh full run and native run pass. Qualified runs used no external
+interrupt or manual helper retirement. No deadline, cap or assertion was relaxed.
+
+These records qualify source/fixtures only. Later hosted CI, review, publication,
+owner source acceptance and every operational/live gate remain separate.

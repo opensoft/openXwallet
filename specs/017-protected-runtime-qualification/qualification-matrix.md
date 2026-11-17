@@ -1,6 +1,6 @@
 # Required Qualification Matrix
 
-Status: T012T isolated candidate complete; T012U full/native conformance candidate under qualification; deployed cases pending
+Status: isolated T012U full/native/cleanup qualified; local unpublished candidate; deployed cases pending
 
 
 ## Current H01-H12 source coverage (T012U)
@@ -121,3 +121,16 @@ and one owning proof/replay with independent cleanup on all four outcomes.
 Provider observations/tokens are synthetic and dispatch uses deterministic doubles.
 The existing closed R01 receipt vocabulary is unchanged; these additional internal
 anchors do not extend protected-machine receipt scope or clear live P01/G02/G03.
+
+## T012U completed source result
+
+At `6e2f0bfc626ab05b5b0384bc3a97d2816cfd696a`, full2,523 plus nine subtests and
+mandatory-native2,215 pass with zero failures/errors/skips. All64 conformance
+self-tests and every prior node/anchor remain; unaffected module fingerprints are
+unchanged. R01=47 and H01-H12
+counts above match actual native output. The final PASS follows exact-owning-source
+postflight; all setup/call/teardown phases pass. Independent native boundary and
+21,879-generation/ten-positive final preservation audit pass; exact owned roots
+are removed. [As-built evidence](hosting-conformance-implementation.md) retains
+failed diagnostics and limits. No protected P01, live receipt or source publication
+is inferred. T012V and T001/T013-T015 remain separate.

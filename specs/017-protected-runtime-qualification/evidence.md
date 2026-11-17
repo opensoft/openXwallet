@@ -2799,3 +2799,32 @@ Only documentation is reconciled after the frozen runtime tests. No hosted runti
 CI/source acceptance or operational qualification is inferred. T012U/V and
 T001/T013-T015 remain separate; setup/dispatch unauthorized, feedback deferred,
 and historical blocked writes unreplayed.
+
+## T012U isolated conformance and operator source runbook completed
+
+Brett commissioned only T012U after T012T. Tested source
+`6e2f0bfc626ab05b5b0384bc3a97d2816cfd696a` passes2,523 full parent cases plus nine
+subtests and all2,215 mandatory native cases with zero failures/errors/skips.
+All64 conformance self-tests and186 hosted-evidence cases pass in both; every old
+node identity/anchor remains and unaffected module fingerprints are unchanged, R01=47 and all H01-H12 counts preserved.
+The conformance CLI now emits its final success only after exact owning-source
+postflight. The [operator runbook](operator-source-runbook.md) and
+[coverage map](qualification-matrix.md) describe actual source facts and separate
+live gates. Six shell controls verify source/owner Git-status failures stop the
+recipe; no runtime/workflow/pin/dependency input changes.
+
+All338 frozen regular-file hashes and neutral gitlink match after execution;
+independent native boundary and21,879-generation/ten-positive preservation audit
+pass. Both final fixture roots and native container are absent; receipts remain.
+[As-built evidence](hosting-conformance-implementation.md) records the earlier
+unexplained staging refusal, passing unchanged focused reproduction, interrupt-
+induced diagnostic failure and scoped helper retirement, then fresh passing
+full/native results without source/limit/assertion changes. No failed/interrupted
+run is promoted to qualification. The later completion commit changes documents
+only and retains the tested Python/workflow/pin/dependency bytes.
+
+Only isolated T012U is complete. T012V review/hosted CI/publication/source acceptance
+and T001/T013-T015 operations remain separate. Setup/dispatch unauthorized, feedback
+deferred, historical blocked writes unreplayed. Local combined wall time is
+approximately67.6 minutes; the existing45-minute source job is unchanged and
+actual hosted timing remains a T012V gate.

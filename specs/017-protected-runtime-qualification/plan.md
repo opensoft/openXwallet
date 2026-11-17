@@ -2,7 +2,7 @@
 
 **Branch**: `017-protected-runtime-qualification` | **Date**: 2026-11-12
 **Spec**: [spec.md](spec.md)
-**State**: T012T and qualification-only private39 source decisions are accepted; isolated T012T realization and frozen full/native/cleanup qualification are complete; isolated T012U conformance/runbook is now commissioned via [subplan](hosting-conformance-plan.md); T012V publication and operations remain separate. See [current record](hosting-evidence-budget-realization.md).
+**State**: T012T and qualification-only private39 source decisions are accepted; isolated T012T realization and frozen full/native/cleanup qualification are complete; isolated T012U conformance/runbook is complete via [subplan](hosting-conformance-plan.md) and [qualified source record](hosting-conformance-implementation.md); T012V publication and operations remain separate. See [current record](hosting-evidence-budget-realization.md).
 
 Bootstrap amendment `fix-protected-runtime-dispatch-bootstrap` was source
 accepted and landed in factory #1311 / adapter #60. The static dispatch selection

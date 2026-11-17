@@ -1,6 +1,6 @@
 # T012U isolated conformance realization
 
-Status: candidate; frozen full/native and external fixture audit pending
+Status: isolated T012U complete; local unpublished source candidate
 Kind: implementation-record
 Scope: source/fixture only; local unpublished candidate
 
@@ -54,8 +54,8 @@ removal. qualification-matrix.md maps actual positives/mutations for all H group
 quickstart.md links the current source procedure while preserving historical
 preparation checkpoints. The runbook contains no setup/OIDC/mint/dispatch command.
 
-Full/native frozen execution, final source hash and independent teardown receipts
-remain pending. Earlier T012T timing/failure observations stay historical; no new
+At that focused checkpoint, frozen full/native and independent teardown receipts
+remained pending; the completed verification follows below. Earlier T012T timing/failure observations stay historical; no new
 hosted CI or protected machine acceptance is inferred. T012V must assess actual
 hosted runtime budget before publication; the existing45-minute timeout is intact.
 
@@ -64,3 +64,79 @@ inputs, service/source roles, read/clock budgets, default refusal and dependency
 lock remain unchanged. T001/T013-T015, actual provider/guest administration,
 external watchdog/conditional infrastructure, human/domain/consumer gates stay
 separate. Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.
+
+## Completed immutable-source verification
+
+Tested head: `6e2f0bfc626ab05b5b0384bc3a97d2816cfd696a`. All338 tracked regular-file
+SHA256 inputs and the unchanged neutral gitlink
+`b0af7c2ce53d63786a08a20aa3602a6f90345606` match after native execution.
+The final completion reconciliation changes documentation only; all tested Python,
+workflow, dependency and pin inputs retain their bytes. T012U is now checked in
+the sole tasks.md list; no later task or owner/operational checkbox is completed.
+
+| Gate | Actual result |
+| --- | --- |
+| Contract/owning pin, YAML, plain/strict validators | Pass |
+| Full repository suite |2,523 passed plus nine passing subtests; zero failures/errors/skips |
+| Pinned OpenSpec all-target gate | Pass |
+| Mandatory native collection and all phases | All2,215 passed; conformance PASS; zero missing/skipped/deselected/nonpassing cases |
+| Conformance self-tests | All64 pass in full and native runs; original52 nodes retained |
+| Hosted evidence | All186 pass in both; actual38-read proof plus independently verified cleanup; fixture-origin variant39 remains source-only |
+| Source-case anchors | R01=47; all H01-H12 groups and every earlier anchor retained |
+| Runbook preflight | Six clean/dirty/Git-error shell controls pass after documentation correction |
+
+The final native success verdict is emitted exactly once, after owning-source
+postflight and the pytest summary. An independent live observer corroborates the
+pinned image, network none, read-only root/source, only the task-owned fixture
+write mount, UID1000/GID65534, no groups, NoNewPrivs1, four zero capability sets
+and only loopback. Clean-environment assertions survive exec. The container is
+absent after exit0; source and owning selection remain clean.
+
+Final external audit checks21,879 process-generation records,
+748 journals and234 helper receipts in the correct namespaces.
+All ten preservation cases (five per run) retain exact shared/retained file
+generations and independent audit, remove run files, retire credentials and
+release file pins. No attributable live PID or initial teardown failure remains.
+Only the two exact owned fixture roots are removed; logs, XML, measurements,
+hashes and audit/removal receipts remain outside them. Earlier diagnostic/control
+roots are audited/removed separately.
+
+## Diagnostic limits and source runbook correction
+
+The first complete full attempt records2,521 passes, nine passing subtests and
+two failures. The original runner-death control receives hosted-issuance-refused
+during staging/setup before any runner-generation record; its internal cause is
+unproven. Source/runtime and that test are unchanged by T012U. An unchanged focused
+reproduction passes. A diagnostic SIGINT is then caught before the planned
+cancel-closing injection, causing KeyError original_cancel. The test summary
+completes, but Python waits for three same-UID fixture helpers. Their direct
+parent, PID/start time, UID and owned-root arguments are independently verified;
+only those three are stopped with SIGTERM, after tests finish. External audit
+finds no live attribution and removes both diagnostic roots. This is retained
+failed diagnostic evidence, not qualification or an additional independent defect.
+
+A fresh full run and native run pass on the same frozen source, with no external
+interrupts or manual helper retirement. No deadline, cap, assertion, collection
+requirement or runtime behavior is changed to pass. Stop-on-first-failure is an
+external full-run diagnostic control only; the passing run executes every case.
+The mandatory native CLI remains fixed and unselectable.
+
+A separate shell control reproduces both runbook status prechecks continuing when
+Git fails because test -z hides the command-substitution exit status. Capturing
+status in an assignment under set -e before testing emptiness corrects the recipe.
+Both source/owner clean, dirty and error cases now return0/1/128 respectively;
+error never reaches the next step. This final documentation-only change is checked
+separately and changes no Python, runtime or workflow input.
+
+## Timings and remaining authority
+
+Fresh full/native outer wall time is2197.915s/1855.909s,
+approximately67.6 minutes combined locally. Each passing pytest run emits358
+existing multiprocessing fork/thread warnings; they are not represented as absent.
+The accepted45-minute ordinary source-CI timeout remains unchanged. Actual hosted
+performance and any governed budget adjustment belong to T012V before publication.
+No hosted CI, local expert panel, PR publication or new owner source acceptance is
+claimed by these local checks. T012V, T001/T013-T015, protected origin/P01, deployed
+administration, external watchdog/conditional infrastructure and human/domain/
+consumer acceptance remain separate. Setup/dispatch unauthorized; feedback deferred;
+neither historical blocked write is replayed.

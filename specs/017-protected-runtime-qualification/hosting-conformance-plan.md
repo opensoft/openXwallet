@@ -1,6 +1,6 @@
 # T012U isolated conformance and operator source runbook
 
-Status: commissioned; implementation and fresh qualification pending
+Status: isolated T012U complete; local unpublished source candidate
 Kind: implementation-plan
 Scope: T012U only; source/fixture conformance and documentation
 Governance: openXfactory add-protected-runtime-hosting-issuance, with accepted report and qualification-budget amendments
@@ -49,3 +49,14 @@ failed/interrupted runs diagnostic. Local timings do not qualify the unchanged
 45-minute hosted source CI job; actual hosted budget assessment and publication
 remain T012V. T001/T013-T015, setup/dispatch and live acceptance remain unauthorized.
 Feedback stays deferred; neither historical blocked write is replayed.
+
+## Completed handoff
+
+T012U passes at tested head `6e2f0bfc626ab05b5b0384bc3a97d2816cfd696a`:2,523 full
+parent cases plus nine subtests and all2,215 mandatory native cases;64 conformance
+self-tests and all prior identities/anchors remain. Ordered gates, native boundary
+and independent21,879-generation/ten-positive cleanup audit pass. Both final owned
+fixture roots are removed. See [as-built record](hosting-conformance-implementation.md)
+for actual source hashes, diagnostics, timings and the separate T012V/live boundary.
+The final documentation-only reconciliation preserves tested Python/workflow/pin
+inputs; no source publication or operational act is commissioned by completion.

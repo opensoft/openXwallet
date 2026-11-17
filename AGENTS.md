@@ -394,3 +394,20 @@ reconcile operator source coverage/commands and audit fixture cleanup. T012U sta
 unchecked until frozen full/native and external teardown verification complete.
 T012V publication/hosted CI and T001/T013-T015 operations remain separate. Keep
 setup/dispatch unauthorized, feedback deferred and blocked writes unreplayed.
+
+## Completed T012U isolated conformance and operator source runbook
+
+Brett's T012U commission is complete at tested source
+`6e2f0bfc626ab05b5b0384bc3a97d2816cfd696a`:2,523 full tests plus nine subtests,
+all2,215 mandatory native nodes,64 conformance self-tests and186 hosted-evidence
+cases pass with zero failures/errors/skips. Final success follows owning-source
+postflight. Prior identities/anchors survive, R01=47 and all H01-H12 remain.
+Operator source commands and their six Git-status shell controls pass. Independent
+native boundary and21,879-generation/ten-positive preservation audit pass; final
+owned fixture roots and native container are absent. See
+`specs/017-protected-runtime-qualification/hosting-conformance-implementation.md`
+for exact hashes, retained failed diagnostics,
+scoped diagnostic helper retirement, timings and unchanged45-minute hosted-CI gate.
+Final reconciliation changes documents only. Candidate remains local/unpublished;
+T012V and T001/T013-T015 stay separate. Keep setup/dispatch unauthorized, feedback
+deferred and both historical blocked writes unreplayed.
