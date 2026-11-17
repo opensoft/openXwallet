@@ -1,0 +1,84 @@
+{
+  "schema": "source-quality-local-patch-v1",
+  "upstreamRecipe": {
+    "repository": "opensoft/openBenches",
+    "commit": "e098b640233897c1d6ca071bb4ad7e476d618a9e",
+    "purpose": "Reviewed predicate spelling recipe; these installed legacy variants are not asserted byte-identical to current upstream scripts."
+  },
+  "preservedIntegrationVersion": true,
+  "behavior": "Strict numeric and case-sensitive comparisons retain test builtin semantics; only bounded quoted/literal unary operands use double brackets. No hook upgrade or active-session change.",
+  "files": [
+    {
+      "path": ".specify/extensions/git/scripts/bash/auto-commit.sh",
+      "beforeSha256": "e12ff0e010c8891bbe7445950ea00a49ef7e0b387b050e382fed57bd09d0c8bc",
+      "afterSha256": "a7e09801446261d7e40cae463e2367839e0f12719d1f906359253a9d8c1dd4cc",
+      "count": 13,
+      "unaryDoubleBracket": 6,
+      "strictBuiltinTest": 7,
+      "inverseReconstruction": true
+    },
+    {
+      "path": ".specify/extensions/git/scripts/bash/create-new-feature-branch.sh",
+      "beforeSha256": "3d7730a2d277451cd668afc46157bbb800f823626075f37170dccd872022993c",
+      "afterSha256": "91f26099cb103bea6e5680102f568eef94453fab422ab9b8937a7cc8b086af43",
+      "count": 54,
+      "unaryDoubleBracket": 23,
+      "strictBuiltinTest": 31,
+      "inverseReconstruction": true
+    },
+    {
+      "path": ".specify/extensions/git/scripts/bash/create-new-feature.sh",
+      "beforeSha256": "db04f1d565c8ecba12441fb5146fffaa56d633f09bfc09add8e1960ad72f76a4",
+      "afterSha256": "2df7d2d9db21c76b8b3a1e8b269e6d541618e69f3d6578b56139a1e9ba807690",
+      "count": 75,
+      "unaryDoubleBracket": 32,
+      "strictBuiltinTest": 43,
+      "inverseReconstruction": true
+    },
+    {
+      "path": ".specify/extensions/git/scripts/bash/get-last-worktree.sh",
+      "beforeSha256": "b161c44191cf24d2f38cd60334bf474392241f6b7ea10cd01610ce027c64e1ea",
+      "afterSha256": "0743eba20d8b45da1b757c0d274b997ff13dafd5ea623aaf596f35001206ca57",
+      "count": 23,
+      "unaryDoubleBracket": 21,
+      "strictBuiltinTest": 2,
+      "inverseReconstruction": true
+    },
+    {
+      "path": ".specify/extensions/git/scripts/bash/git-common.sh",
+      "beforeSha256": "5d2451b6c4ceee67e0f1b524e1ef1e4114cc08ccb173b5c2908fb031c540d7e5",
+      "afterSha256": "69e0e25af448c7231b3b0ac8ea7a02629e388af6169988f5e3ca35b5efe9d764",
+      "count": 2,
+      "unaryDoubleBracket": 2,
+      "strictBuiltinTest": 0,
+      "inverseReconstruction": true
+    },
+    {
+      "path": ".specify/extensions/git/scripts/bash/initialize-repo.sh",
+      "beforeSha256": "19f1a8bcb591d988a516bd661f9da7029b5a6f265ab27a769d390099104d0763",
+      "afterSha256": "5a55c227e5934381714eaa4468a252b463b857f80f28130c339c39874a23a9bd",
+      "count": 5,
+      "unaryDoubleBracket": 4,
+      "strictBuiltinTest": 1,
+      "inverseReconstruction": true
+    },
+    {
+      "path": ".specify/scripts/bash/common.sh",
+      "beforeSha256": "2bbc23eb0c1795c6808086fb28c13080c98fd9a6d3817fc6aec8d27b465cbaa9",
+      "afterSha256": "3eb6a529d1a2fcb311228c97686ef5029afd1ce4e2cf0c39e5d1a91313d53963",
+      "count": 44,
+      "unaryDoubleBracket": 34,
+      "strictBuiltinTest": 10,
+      "inverseReconstruction": true
+    },
+    {
+      "path": ".specify/scripts/bash/create-new-feature.sh",
+      "beforeSha256": "0fc636621e9cf07898f848815927438b647a0ac06581720e3ad5a547a73f1b37",
+      "afterSha256": "85ecf2d778a97c9905e35c6da78b3d6eb3aaf45164b609c84d450970c490d654",
+      "count": 31,
+      "unaryDoubleBracket": 13,
+      "strictBuiltinTest": 18,
+      "inverseReconstruction": true
+    }
+  ]
+}
