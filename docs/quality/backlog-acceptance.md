@@ -31,3 +31,17 @@ At e43d2b1, the unchanged source run reports 2,416 passed, 18 failed and 11 subt
 The synthetic child now explicitly selects confcutdir at its existing fixture root. A controlled before/after probe changes only that boundary and passes in 0.5 seconds under the unchanged 20-second timeout. The production conformance plugin, mandatory native runner/matrix/isolation and all audit checks remain byte-unchanged. Both newly introduced mixed-case file-tuple locals are also renamed; whole-file alpha-normalized AST equality holds. Renewed focused/full and hosted main verification remain pending.
 
 The renewed focused run passes all 76 selected cases, including all 18 full-run failures and the earlier constructor/special-case checks. Full final-head qualification and hosted main acceptance remain pending.
+
+
+The first hosted B01 run at 4ad4277 passed the complete Python suite, the unchanged
+2,022-case native audit, source conformance and both coverage partitions. Sonar
+reported no open PR findings, but its existing gate refused 0% coverage on the
+two changed launcher-refusal lines. The correction extends the existing two
+Python-option refusal cases with the same real launcher parser in-process,
+asserting status 2, silent output and no OS, ctypes or sandbox effect. Their
+original subprocess checks remain, with stderr silence now asserted as well.
+No test ID, native inventory, coverage partition, production code or threshold
+is removed or changed by this correction. Final-head review, renewed CI and
+published-main acceptance remain required; the earlier reviews apply to 4ad4277.
+
+Focused measurement through the unchanged coverage configuration passes both existing option cases and records both changed refusal lines (38 and 39) as executed. All 2,434 ordered test IDs and every native contract/runner/workload-lock byte still match the accepted baseline; all six static gates pass. This focused evidence is not a substitute for renewed hosted qualification or final-head independent review.

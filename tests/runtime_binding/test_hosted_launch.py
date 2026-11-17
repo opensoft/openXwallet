@@ -106,6 +106,7 @@ print(json.dumps(results),flush=True)
         if change in ('-c','--help'):
             assert process.returncode==2
             assert out==b''
+            assert error==b''
             return
         assert process.returncode==0,error.decode(errors='replace')
         return json.loads(out)
@@ -750,8 +751,44 @@ def test_inherited_pipe_signal_controls_refuse_while_fd_queries_remain_allowed(p
 
 
 @pytest.mark.parametrize('option',['-c','--help'])
-def test_private_launch_packet_cannot_substitute_python_options_for_selected_worker(sandbox_case,option):
+def test_private_launch_packet_cannot_substitute_python_options_for_selected_worker(
+        sandbox_case, option, monkeypatch, capsys):
     sandbox_case(option)
+    import io
+    from types import SimpleNamespace
+    attempted = []
+
+    class UnreachableOS:
+        def __getattr__(self, name):
+            attempted.append(name)
+            raise RuntimeError("effect after invalid launch packet")
+
+    def forbidden_effect(*_args, **_kwargs):
+        attempted.append("effect")
+        raise RuntimeError("effect after invalid launch packet")
+
+    executable = str(Path(sys.executable).resolve(strict=True))
+    packet = {
+        "files": [], "directories": [], "execute": [executable],
+        "argv": [executable, "-I", "-B", option, "private-fixture-value"],
+        "uid": os.geteuid(), "gid": os.getegid(), "parent_pid": os.getpid(),
+    }
+    with monkeypatch.context() as patch:
+        # Keep this private helper's import-path setup scoped to this test.
+        patch.setattr(sys, "path", list(sys.path))
+        from workload_factory_binding_runtime.hosted import _launch_exec
+        patch.setattr(_launch_exec, "sys", SimpleNamespace(
+            executable=sys.executable,
+            stdin=SimpleNamespace(buffer=io.BytesIO(canonical(packet) + b"\n"))))
+        patch.setattr(_launch_exec, "os", UnreachableOS())
+        patch.setattr(_launch_exec, "ctypes", SimpleNamespace(CDLL=forbidden_effect))
+        patch.setattr(_launch_exec, "install", forbidden_effect)
+        result = _launch_exec.main()
+    assert result == 2
+    assert attempted == []
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    assert captured.err == ""
 
 
 @pytest.mark.parametrize("missing", ["unit", "generation", "lease"])
