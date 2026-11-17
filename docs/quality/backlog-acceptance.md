@@ -23,3 +23,11 @@ All 2,434 ordered collected node IDs remain identical. Native matrix, runner, is
 Independent QA/reliability review found that five deliberately invalid-state tests must require ReadBudget reconstruction itself to refuse: its constructor immediately checks the original clocks and shared counters. The candidate's earlier constructor hoists escaped the exception scope. Those 15 parameter cases now target the single refusing constructor. The two staging-clock cases construct a valid budget before clock invalidation and then require both the existing operation and a reconstructed client to refuse.
 
 The first focused candidate run is retained as an interrupted, unqualified diagnostic, including observed failures and its pytest interruption/teardown diagnostic. No production check was relaxed. All 17 affected parameter cases now pass in the same restricted environment. Renewed full qualification and exact-head review remain required after this correction.
+
+### Frozen full-run diagnostics and fixture fence
+
+At e43d2b1, the unchanged source run reports 2,416 passed, 18 failed and 11 subtests passed. Twelve failures are timeouts in unchanged synthetic conformance self-tests; six are worker-startup failures. Accepted main reproduces the synthetic timeout and a worker-startup failure, while a subsequent candidate worker replay passes. These remain unqualified diagnostics, not evidence of a clean full run.
+
+The synthetic child now explicitly selects confcutdir at its existing fixture root. A controlled before/after probe changes only that boundary and passes in 0.5 seconds under the unchanged 20-second timeout. The production conformance plugin, mandatory native runner/matrix/isolation and all audit checks remain byte-unchanged. Both newly introduced mixed-case file-tuple locals are also renamed; whole-file alpha-normalized AST equality holds. Renewed focused/full and hosted main verification remain pending.
+
+The renewed focused run passes all 76 selected cases, including all 18 full-run failures and the earlier constructor/special-case checks. Full final-head qualification and hosted main acceptance remain pending.

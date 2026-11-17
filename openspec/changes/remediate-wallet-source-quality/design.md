@@ -29,3 +29,9 @@ Non-goals: new wallet/authority/runtime behavior, changed release artifacts, fea
 ## Migration Plan
 
 Land owner fixes before coherent consumers. Preserve source and failed checkpoints; rollback uses a normal reviewed revert/pin update rather than rewriting history. No deployment follows this source maintenance. The only executable adapter list is specs/020-sonar-backlog/tasks.md.
+
+## Bounded implementation-time finding: synthetic pytest discovery
+
+The full local run at e43d2b1 passed 2,416 cases plus 11 subtests but failed 18 cases. Twelve were synthetic conformance-child timeouts; the unchanged accepted main reproduced that timeout. A phase probe located it in pytest collection. Setting confcutdir to the synthetic fixture's already selected root changed the control result from the unchanged 20-second timeout to PASS in 0.5 seconds.
+
+The self-test child now explicitly fences discovery at that fixture root. This enforces its existing tiny-corpus contract without changing production ConformancePlugin, audit counts/phases/digests, native runner/matrix/isolation files or any time limit. All twelve passing/refusing mutation cases must still behave as declared. Six worker-startup failures remain diagnostic until renewed focused/full qualification; accepted-main and candidate replay already differ nondeterministically, so no source cause is claimed for them.

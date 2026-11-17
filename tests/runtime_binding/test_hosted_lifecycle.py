@@ -853,10 +853,10 @@ def test_retained_run_alias_is_rejected_before_any_anchor(tmp_path, request, ali
         second = tmp_path / "alias"
         os.link(target, second)
     store, _ = journal(tmp_path)
-    PosixResources_files = ((FileResource("resource:retained", target, "retained"),
+    posix_resources_files = ((FileResource("resource:retained", target, "retained"),
             FileResource("resource:alias", second, "run")))
     with pytest.raises(BindingError):
-        PosixResources(files=PosixResources_files, worker_ref="resource:worker", pins=store)
+        PosixResources(files=posix_resources_files, worker_ref="resource:worker", pins=store)
     assert target.read_bytes() == b"retained generation"
     assert not list((store.directory / "file-pins").iterdir())
 
@@ -1109,9 +1109,9 @@ def test_token_manifest_over_cleanup_budget_is_rejected_before_registration(lh):
         original = lh.life.resources
         tokens = tuple(TokenResource(f"resource:token-{n}", cap, retire)
                        for n, cap in enumerate((lh.token, *extras)))
-        PosixResources_files = tuple(v for v in original.selected.values() if type(v) is FileResource)
+        posix_resources_files = tuple(v for v in original.selected.values() if type(v) is FileResource)
         with pytest.raises(BindingError):
-            PosixResources(files=PosixResources_files,
+            PosixResources(files=posix_resources_files,
                 tokens=tokens, worker_ref=original.worker_ref, pins=lh.stores["primary"])
         assert lh.life.state(decision=lh.use())["registration"] is None
         assert not list((lh.stores["primary"].directory / "file-pins").iterdir())
