@@ -84,6 +84,12 @@ def _validate_lease_facts(value, scope):
             and value["scope"]["cleanup_ref"] == scope["cleanup_ref"], ERROR)
 
 
+def _validate_fact_digests(value):
+    for name in ("registration_digest", "plan_digest", "generation_digest", "scope_digest", "unit_digest"):
+        if name in value:
+            require(valid_digest(value[name]), ERROR)
+
+
 def _facts(operation, value, scope, extra, principal, decision):
     fields = {
         "register": "registration_digest", "prepare": "plan_digest", "release": "state plan_digest",
@@ -95,9 +101,7 @@ def _facts(operation, value, scope, extra, principal, decision):
     }
     if operation in fields:
         _closed(value, fields[operation])
-    for name in ("registration_digest", "plan_digest", "generation_digest", "scope_digest", "unit_digest"):
-        if name in value:
-            require(valid_digest(value[name]), ERROR)
+    _validate_fact_digests(value)
     if operation == "generation":
         _validate_generation_facts(value, scope)
     if operation in ("cleanup", "status"):
