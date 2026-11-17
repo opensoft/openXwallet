@@ -1002,26 +1002,32 @@ def test_the_real_repository_verifies():
 # It adds a spec gitlink without changing ordinary runtime validation.
 @pytest.fixture(scope="module")
 def tooling_upstream(upstream, tmp_path_factory):
-    from dataclasses import replace
-    base = tmp_path_factory.mktemp("shared-openspec")
-    spec = _init(base / "spec")
-    for name in ("validate-openspec-cli-pin.py", "install-pinned-openspec-cli.py"):
-        source = REPO_ROOT / "openWallet/spec/scripts" / name
-        _write(spec, "scripts/" + name, source.read_text())
-        (spec / "scripts" / name).chmod(source.stat().st_mode & 0o777)
-    pin = (REPO_ROOT / "contracts/openspec-cli-pin.yaml").read_text()
-    _write(spec, "contracts/openspec-cli-pin.yaml",
-           pin.split("\ndispositions:\n", 1)[0] + "\ndispositions:\n")
-    lock = "contracts/openspec-cli-pin.1.12.0.package-lock.json"
-    _write(spec, lock, (REPO_ROOT / lock).read_text())
-    _write(spec, "openspec/config.yaml", "schema: spec-driven\n")
-    _git(spec, "add", "scripts", "contracts", "openspec")
-    spec_revision = _commit(spec, "pinned shared tooling")
-    root = base / "root"
-    _clone_at(upstream.root, root, upstream.root_good)
-    _record_gitlink(root, "spec", spec_revision)
-    root_revision = _commit(root, "root with explicit tooling spec")
-    return replace(upstream, root=root, root_good=root_revision), spec, spec_revision
+    with pytest.MonkeyPatch.context() as environment:
+        environment.setenv("GIT_CONFIG_GLOBAL", os.devnull)
+        environment.setenv("GIT_CONFIG_NOSYSTEM", "1")
+        from dataclasses import replace
+        base = tmp_path_factory.mktemp("shared-openspec")
+        spec = _init(base / "spec")
+        for name in ("validate-openspec-cli-pin.py", "install-pinned-openspec-cli.py"):
+            source = REPO_ROOT / "openWallet/spec/scripts" / name
+            _write(spec, "scripts/" + name, source.read_text())
+            (spec / "scripts" / name).chmod(source.stat().st_mode & 0o777)
+        pin = (REPO_ROOT / "contracts/openspec-cli-pin.yaml").read_text()
+        _write(spec, "contracts/openspec-cli-pin.yaml",
+               pin.split("\ndispositions:\n", 1)[0] + "\ndispositions:\n")
+        lock = "contracts/openspec-cli-pin.1.12.0.package-lock.json"
+        _write(spec, lock, (REPO_ROOT / lock).read_text())
+        _write(spec, "openspec/config.yaml", "schema: spec-driven\n")
+        _git(spec, "add", "scripts", "contracts", "openspec")
+        spec_revision = _commit(spec, "pinned shared tooling")
+        root = base / "root"
+        _clone_at(upstream.root, root, upstream.root_good)
+        _git(root, "config", "user.name", "openwallet-pin-test")
+        _git(root, "config", "user.email", "openwallet-pin-test@example.invalid")
+        _git(root, "config", "commit.gpgsign", "false")
+        _record_gitlink(root, "spec", spec_revision)
+        root_revision = _commit(root, "root with explicit tooling spec")
+        return replace(upstream, root=root, root_good=root_revision), spec, spec_revision
 
 
 @pytest.fixture
