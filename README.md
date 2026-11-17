@@ -334,5 +334,6 @@ Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE).
   The factory owns the unratified `add-protected-runtime-report` decision. Preparation
   changes documents only; source realization, setup/dispatch and live acceptance remain separate.
 
-Source quality maintenance: [issue #73 acceptance evidence](docs/quality/sonar73-acceptance.md)
-and [feature 019 plan](specs/019-sonar-main-acceptance/plan.md).
+Source quality maintenance: [issue #73 acceptance evidence](docs/quality/sonar73-acceptance.md),
+[verified main receipt](docs/quality/sonar73-after.json), and
+[feature 019 plan](specs/019-sonar-main-acceptance/plan.md).

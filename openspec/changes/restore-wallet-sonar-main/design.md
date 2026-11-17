@@ -105,3 +105,20 @@ inventory or replace it with encoded/generated/opaque executable artifacts.
 Requalify published provider, neutral leg/root and adapter heads, including all
 original and five newly exposed finding keys, complete real coverage and all six
 unchanged main gate conditions. Keep the first failed main scan as evidence.
+
+## Final evidence reconciliation
+
+The published main closeout verifies all 26 scoped keys, complete executed-test
+coverage, the unchanged six conditions, coherent published pins and preserved
+sessions/worktrees. Current evidence is linked from
+[feature 019](../../../specs/019-sonar-main-acceptance/plan.md).
+
+The final history audit distinguishes nine original records still live in
+Sonar from all ten recorded identities retained in immutable exports. Exactly
+one original server snapshot is unavailable; its exact identity and captured
+original metadata are hash-bound to the frozen before export and original
+capture. The deletion cause is not audit-proven. This is an explicit evidence
+availability record: the August baseline stays live and selected, every other
+original live identity remains required, and archived data cannot qualify any
+current gate, coverage, profile or finding check. No historical snapshot was
+recreated or backdated. Full historical source/measure export is not claimed.
