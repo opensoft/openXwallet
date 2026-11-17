@@ -1080,13 +1080,15 @@ def test_shared_tool_refuses_changed_adapter_pin_before_package_work(tooling_ada
                    + '\nexit 93\n')
     npm.chmod(0o700)
     control = subprocess.run([str(npm)], capture_output=True)
-    assert control.returncode == 93 and sentinel.exists()
+    assert control.returncode == 93
+    assert sentinel.exists()
     sentinel.unlink()
     result = _tooling_run(adapter, name, argv,
                           extra_env={"XFACTORY_NPM_BINARY":str(npm)})
     assert result.returncode == 2
     assert "REFUSE pin-unreadable:" in result.stderr
-    assert "Traceback" not in result.stderr and not sentinel.exists()
+    assert "Traceback" not in result.stderr
+    assert not sentinel.exists()
 
 
 @pytest.mark.parametrize("fault", ["missing-root", "missing-spec", "wrong-spec-head",
@@ -1126,7 +1128,8 @@ def test_shared_tool_refuses_unpinned_runtime_before_execution(tooling_adapter, 
     result = _tooling_run(adapter, "validate-openspec-cli-pin.py", ["--all"])
     assert result.returncode == 2
     assert "REFUSE pin-unresolvable:" in result.stderr
-    assert "Traceback" not in result.stderr and "changed source executed" not in result.stderr
+    assert "Traceback" not in result.stderr
+    assert "changed source executed" not in result.stderr
     assert "/unavailable/npm" not in result.stderr
 
     # Exercise the maintained loader against the same real mutated Git input.
@@ -1205,7 +1208,8 @@ def test_real_shared_installer_help_from_unrelated_directory(tmp_path):
                           ["--help"], cwd=tmp_path)
     assert result.returncode == 0, result.stdout + result.stderr
     assert "usage: install-pinned-openspec-cli.py" in result.stdout
-    assert "--cache-dir" in result.stdout and "--npm" in result.stdout
+    assert "--cache-dir" in result.stdout
+    assert "--npm" in result.stdout
     assert not result.stderr
 
 
