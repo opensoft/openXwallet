@@ -2,22 +2,22 @@
   "schema_version": 1,
   "openspec": {
     "repository": "opensoft/openXfactory",
-    "commit": "bd9859850a7939c8e3120dfaeada020ecef4b083",
+    "commit": "41eab21570efbd942f49b6ca728d286492adf02a",
     "main_admission": "pending",
     "test_paths": [
       "tests/openspec_cli_pin/test_openspec_cli_pin.py"
     ],
     "files": {
-      "tests/openspec_cli_pin/test_openspec_cli_pin.py": "e38a337c4cbf4e51fac538f0b56a9a9d558638f5f9fea4fd6b703b29f17a1e1c",
+      "tests/openspec_cli_pin/test_openspec_cli_pin.py": "b653fe098e0afef40c4233bab9c0bdebf3815c9b033c0ff2cd4f9341742ec9d7",
       "tests/openspec_cli_pin/fixtures/openspec-1.12.0-validate-changes-strict-report-findings.json": "97d2c9e161a1fa1d41e896e0232ab572327968716782bd7e7956da1ca77705ab",
       "tests/openspec_cli_pin/fixtures/openspec-1.12.0-validate-one-change-strict.json": "d459e940c13b8a205a288a2c7a83929ef71fac94990b3e16c9cb1bc65266c3fc",
-      "scripts/validate-openspec-cli-pin.py": "69c658e0e1fb122e9835fafc5e3078e966f9a7b6c33af95654ec245ddbfe4caf",
+      "scripts/validate-openspec-cli-pin.py": "53437679d7f7a8a398d7408ff173898c645219b85aa3c324f979c39f2d980ba7",
       "scripts/install-pinned-openspec-cli.py": "2ef0067678926da91009344b006d67aa9931a46504982329c1f0c7b7dfec1052",
       "contracts/openspec-cli-pin.yaml": "1bab358ce6d5275fcad6fd1af3a4320aebe42d25c158aa0364d680fd4d8fa482",
       "contracts/openspec-cli-pin.1.12.0.package-lock.json": "696dce86e5e5699007129310d9de532795ce48467218fba03b729d38c829e2ca"
     },
-    "expected_test_count": 211,
-    "nodeids_sha256": "53f9fbfdecccc35122e7961522441a7cea43bb087809fa269c769d78f9b3acb6",
+    "expected_test_count": 214,
+    "nodeids_sha256": "ffbdbacbe37eab5272646a2851853d33f76c0cdd3acd517e2816aee2bd6f4741",
     "allowed_skips": [],
     "admitted_main": "",
     "integration": {

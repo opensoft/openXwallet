@@ -13,7 +13,7 @@ The trusted consumer_root API selects this adapter's default pin and corpus.
 Independent operator pin precedence, lock resolution, artifact authentication,
 CLI/dependency versions and strict validation remain unchanged. The standalone
 spec CLI continues to use its own pin and corpus. Complete provider conformance
-runs all 211 assertions in each context, including all 193 original cases, on
+runs all 214 assertions in each context, including all 193 original cases, on
 actual source paths. Separate wrapper subprocess tests remove operator-pin
 overrides to prove transport and refuse altered shared source before execution.
 

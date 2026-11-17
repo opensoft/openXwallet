@@ -225,3 +225,17 @@ nullable retained-state uses. The two full canonical OpenSpec copies account
 for nearly all 5,244 duplicated lines. The bounded governance amendment and
 T008-T010 cover the owner/shared-integration repairs; no finding, threshold,
 source file or retained baseline is waived. Issue #73 and T007 remain open.
+
+## Shared implementation correction candidate (2026-11-17)
+
+The provider candidate is 41eab21570efbd942f49b6ca728d286492adf02a, with
+214 passing source assertions. Canonical embedding coverage executes the actual
+source filename; separate source/bytecode attack cases retain scratch paths.
+The installer changed-code coverage is100% and verifier98.21% locally. Validation
+and verdict blocks retain their behavior and main complexity is15 by independent
+review. The neutral spec candidate is1a81be6c108a42ac0ed5f793d5ea2247b8e375fd
+and coherent root candidate0dc636e361aae9f018b5fd8ff50789535a9f1176. Provider
+main admission, final consumer pins, complete conformance, CI and main acceptance
+remain pending. The earlier cecc candidate passed all2432 source tests and11
+subtests, including every original2414 case and2017 native case; this is source
+qualification evidence, not final acceptance of the newer candidate.
