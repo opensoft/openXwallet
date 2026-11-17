@@ -1,6 +1,10 @@
 # Offline Qualification and Operator Runbook
 
-Status: T002–T012L source accepted; T012M handoff complete; T013 preparation refreshed; no operational authorization supplied
+Status: T012T isolated candidate complete; T012U conformance/runbook commissioned; publication and operations remain separate
+
+Current source procedure: [operator source conformance runbook](operator-source-runbook.md),
+[H01-H12 coverage](qualification-matrix.md) and [T012U working plan](hosting-conformance-plan.md).
+Earlier sections below retain their named historical source checkpoints.
 
 ## Issuer-Only Library Boundary
 
@@ -321,10 +325,11 @@ worker/admin separation, source-update policy, final accepted source SHA, runtim
 services/state/lifecycle and explicit staged owner authority. Live qualify/cleanup
 clients and protected-machine receipt promotion require separately reviewed source.
 Do not bypass the default refusal or use fixture keys, stores, IDs or grants as
-operational inputs. Both protected workflows still have zero runs.
+operational inputs. At that source checkpoint, both protected workflows had zero runs; this
+runbook makes no fresh live workflow-run claim.
 
 
-## Hosting/issuance proposal is not activation
+## Historical hosting/issuance preparation checkpoint
 
 [The proposed source plan](hosting-issuance-plan.md) and [selection basis](hosting-issuance-selections.md)
 are draft planning artifacts. The existing static-v1 and full preflight path do
@@ -373,7 +378,7 @@ These are isolated source results only. T012T-V, publication/review/source accep
 actual services, setup, dispatch, total-control-host-loss watchdogs and cloud
 conditional retirement remain separate gates. Feedback remains deferred.
 
-## T012T preparation after source-accepted lifecycle
+## Historical T012T preparation after source-accepted lifecycle
 
 PR #75 is source accepted and landed as `d832709a1119c17014287cd15ff8661bfd758cc4`;
 its exact-merge ordinary source CI passes the full suite and all2,017 native cases.

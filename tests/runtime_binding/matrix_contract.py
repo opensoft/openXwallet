@@ -29,7 +29,7 @@ MODULE_COUNTS = {
     "tests/runtime_binding/test_bootstrap.py": 78,
     "tests/runtime_binding/test_workflow.py": 83,
     "tests/runtime_binding/test_evidence.py": 89,
-    "tests/runtime_binding/test_conformance.py": 52,
+    "tests/runtime_binding/test_conformance.py": 64,
     "tests/runtime_binding/test_authenticated_loaders.py": 5,
     "tests/runtime_binding/test_config.py": 158,
     "tests/runtime_binding/test_custody.py": 61,
@@ -73,7 +73,7 @@ MODULE_DIGESTS = {
     "tests/factory_binding/test_owner_integration.py": "86981b81d151002dfa65c46e59021d04800552076f3ceb0b91697aba62b59f14",
     "tests/runtime_binding/test_authenticated_loaders.py": "48f8b019c9e9068f117b862e7906772263ed770f026f09af03506d07f7950062",
     "tests/runtime_binding/test_config.py": "d52b813f04a9136ec1a552024ce2472a8f1588c3d5775129b1f1bd5f0e539664",
-    "tests/runtime_binding/test_conformance.py": "6be10aed156b24c48c5768ec65e8d83d5eff1084b296487370f2647e66bd82ad",
+    "tests/runtime_binding/test_conformance.py": "7d6876b9b5cba036ca9624afb091a4354be39b6922f78aff32f55835caf50caf",
     "tests/runtime_binding/test_custody.py": "fe8ace24f91702792d817fd8fb78795bd24974a8757ceeb5334ef7787560c9cd",
     "tests/runtime_binding/test_evidence.py": "35e3356dfcd2e14639ba303db63f4c7aea5bcebc52af15d83be6fbc28581abae",
     "tests/runtime_binding/test_https.py": "eda9d445ef7dbb03646859c3b24730d4a3e73fdd6147dfc309cdeb642194eecc",
@@ -499,3 +499,7 @@ CASES["H11"] += _nodes("test_hosted_evidence",
 
 CASES["H11"] += _nodes("test_hosted_evidence",
     "original_cancellation_survives_lost_cleanup_reply_and_read_only_reconciliation")
+
+# T012U: the final source verdict follows actual owning-source postflight.
+CASES["R01"] += _nodes("test_conformance",
+    "final_owner_check_precedes_source_success_and_never_leaks_failure")

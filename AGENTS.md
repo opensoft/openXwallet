@@ -382,3 +382,15 @@ Task/evidence reconciliation is documentation-only after those tests. Only T012T
 is complete; candidate publication, T012U/V and all operational gates remain
 separate and unauthorized. Keep setup/dispatch unauthorized, feedback deferred,
 and neither historical blocked write replayed.
+
+## T012U isolated conformance and runbook commission
+
+Brett now commissions only T012U implementation/testing under the existing factory
+hosting/issuance/report decisions. Use hosting-conformance-plan.md and the sole
+tasks.md T012U entry. Preserve all2,203 baseline native nodes/anchors, neutral
+APIs/pins, clocks/budgets, workflows/inputs and refusing runtime defaults. Correct
+the source test runner's premature success verdict and add real pytest controls;
+reconcile operator source coverage/commands and audit fixture cleanup. T012U stays
+unchecked until frozen full/native and external teardown verification complete.
+T012V publication/hosted CI and T001/T013-T015 operations remain separate. Keep
+setup/dispatch unauthorized, feedback deferred and blocked writes unreplayed.
