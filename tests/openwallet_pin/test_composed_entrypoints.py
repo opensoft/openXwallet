@@ -192,7 +192,8 @@ def test_a_core_without_the_composition_contract_refuses(tmp_path):
     root = _scratch_root(tmp_path, core="def main():\n    return 0\n")
     err = _assert_refused(_run(root, VALIDATOR, "."), "core-unloadable",
                           CORE_REMEDIATION)
-    assert "'GRANT_RULES'" in err and "'SELF_TEST_HOOKS'" in err, err
+    assert "'GRANT_RULES'" in err, err
+    assert "'SELF_TEST_HOOKS'" in err, err
     assert "'decode_public_key_multibase'" in err, err
 
 

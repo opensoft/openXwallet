@@ -64,8 +64,9 @@ def test_lifecycle_store_loss_replacement_corruption_or_rollback_refuses(tmp_pat
         (store.witness / "unexpected").write_text("not an admitted journal event")
     else:
         (store.directory / "lifecycle.sqlite").chmod(0o644)
+    events_decision = use()
     with pytest.raises(BindingError):
-        store.events(decision=use())
+        store.events(decision=events_decision)
 
 
 
@@ -150,8 +151,9 @@ def test_lifecycle_journal_has_one_concurrent_registration_winner(tmp_path):
 def test_lifecycle_highwater_and_original_decision_cannot_regress_or_renew(tmp_path):
     store, _ = journal(tmp_path)
     store.record("stage-intake", {"ref": "launch:one"}, decision=use(1002))
+    events_decision = use(1001)
     with pytest.raises(BindingError):
-        store.events(decision=use(1001))
+        store.events(decision=events_decision)
     now = [1002]
     decision = Decision(clock=lambda: now[0], monotonic=lambda: 0.)
     now[0] = 1012
@@ -237,7 +239,9 @@ from workload_factory_binding_runtime.hosted.lifecycle_service import probe_work
 def test_independent_durable_registration_precedes_one_actual_sandboxed_worker(lh):
     value = lh.launch(full=True)
     state = lh.life.state(decision=lh.use())
-    assert value.state == "running" and state["registration"] and state["generation"]
+    assert value.state == "running"
+    assert state["registration"]
+    assert state["generation"]
     assert len({p.pid for p in lh.processes} | {__import__("os").getpid()}) == 4
     assert ReadBudget(lh.stage.seen[-1]).count("private") == 16
     assert lh.life.stage_lease(lh.stage.scope["cleanup_ref"], decision=lh.use())["state"] == "acknowledged"
@@ -250,13 +254,16 @@ def test_actual_full_finalization_and_immutable_takeover_have_no_cleanup_gap(lh)
     assert ReadBudget(lh.stage.seen[-1]).count("private") == 12
     lh.primary().call("prepare", decision=lh.use())
     assert lh.life.state(decision=lh.use())["released"] is False
+    call_target = lh.primary()
+    call_decision = lh.use()
     with pytest.raises(BindingError):
-        lh.primary().call("lease", plan_ref=plan.ref, decision=lh.use())
+        call_target.call("lease", plan_ref=plan.ref, decision=call_decision)
     lh.audit().call("ack-final", decision=lh.use())
     assert lh.life.state(decision=lh.use())["released"] is False
     lh.primary().call("release", decision=lh.use())
     state = lh.life.state(decision=lh.use())
-    assert state["released"] is True and state["final"]["binding"]["config_digest"] == finalized.binding.config_digest
+    assert state["released"] is True
+    assert state["final"]["binding"]["config_digest"] == finalized.binding.config_digest
     assert state["final"]["plan"]["expires_at"] <= state["registration"]["expires_at"]
 
 
@@ -298,10 +305,12 @@ from workload_factory_binding_runtime.hosted.readback import PROFILE as OBSERVAT
 def test_stage_registration_acknowledgement_requires_actual_scheduler_process(lh):
     lh.processes[0].kill()
     lh.processes[0].join(timeout=3)
+    read_decision = lh.use()
     with pytest.raises(BindingError):
-        lh.stage.protected.read(lh.stage.v.context, lh.stage.v.token, decision=lh.use())
+        lh.stage.protected.read(lh.stage.v.context, lh.stage.v.token, decision=read_decision)
     state = lh.life.state(decision=lh.use())
-    assert state["registration"] is not None and state["generation"] is None
+    assert state["registration"] is not None
+    assert state["generation"] is None
     assert not lh.stage.agent.children
     assert not state["released"]
 
@@ -312,8 +321,9 @@ def test_missing_registration_or_independent_ack_store_never_starts_a_worker(lh,
     replacement = store.directory.with_name(store.directory.name + "-held")
     store.directory.rename(replacement)
     try:
+        read_decision = lh.use()
         with pytest.raises(BindingError):
-            lh.stage.protected.read(lh.stage.v.context, lh.stage.v.token, decision=lh.use())
+            lh.stage.protected.read(lh.stage.v.context, lh.stage.v.token, decision=read_decision)
         assert not lh.stage.agent.children
         assert not store.directory.exists()
     finally:
@@ -332,13 +342,16 @@ def test_lost_registration_or_ack_reply_retains_stage_without_mutation_retry(lh,
             raise BindingError("fixture-reply-lost")
         return value
     monkeypatch.setattr(capability, "call", lose)
+    read_decision = lh.use()
     with pytest.raises(BindingError):
-        lh.stage.protected.read(lh.stage.v.context, lh.stage.v.token, decision=lh.use())
+        lh.stage.protected.read(lh.stage.v.context, lh.stage.v.token, decision=read_decision)
     assert not lh.stage.agent.children
     assert lh.stage.protected.read(lh.stage.v.context, lh.stage.v.token, decision=lh.use()).state == "registered"
     assert calls.count(reply) == 1
     state = lh.life.state(decision=lh.use())
-    assert state["registration"] and state["generation"] is None and not state["released"]
+    assert state["registration"]
+    assert state["generation"] is None
+    assert not state["released"]
 
 
 @pytest.mark.parametrize("operation", sorted(PRIMARY))
@@ -390,15 +403,18 @@ def test_independent_lease_observation_explicitly_denies_worker_with_available_p
     response = transport.exchange("POST", selected.origin + "/readback", headers={"Content-Type": "application/json"},
         body=canonical({"profile": OBSERVATION_PROFILE, "operation": "stage-lease",
                         "reference": lh.stage.scope["cleanup_ref"], "nonce": secrets.token_hex(32)}), decision=lh.use())
-    assert response.status == 403 and json.loads(response.body) == {"error": "hosted-lifecycle-denied"}
+    assert response.status == 403
+    assert json.loads(response.body) == {"error": "hosted-lifecycle-denied"}
 
 
 @pytest.mark.parametrize("lh", ["excess-worker"], indirect=True)
 def test_excess_lifecycle_permission_breaks_worker_denial_positive(lh):
     lh.register()
     assert lh.primary("worker").call("status", decision=lh.use())["owner"] == "stage"
+    probe_worker_denial_argument_1 = lh.primary("worker")
+    probe_worker_denial_decision = lh.use()
     with pytest.raises(BindingError):
-        probe_worker_denial(lh.primary("worker"), "status", decision=lh.use())
+        probe_worker_denial(probe_worker_denial_argument_1, "status", decision=probe_worker_denial_decision)
 
 
 def test_lifecycle_service_outage_does_not_count_as_worker_denial(lh):
@@ -406,8 +422,10 @@ def test_lifecycle_service_outage_does_not_count_as_worker_denial(lh):
     assert lh.primary().call("status", decision=lh.use())
     lh.processes[1].kill()
     lh.processes[1].join(timeout=3)
+    probe_worker_denial_argument_1 = lh.primary("worker")
+    probe_worker_denial_decision = lh.use()
     with pytest.raises(BindingError):
-        probe_worker_denial(lh.primary("worker"), "status", decision=lh.use())
+        probe_worker_denial(probe_worker_denial_argument_1, "status", decision=probe_worker_denial_decision)
 
 
 @pytest.mark.parametrize("field", ["path", "url", "principal_ref", "resources", "final_plan", "unit_digest", "worker_ref", "accepted_commit"])
@@ -418,7 +436,8 @@ def test_lifecycle_request_cannot_select_control_targets_or_authority(lh, field)
         "arguments": {"launch_ref": lh.stage.scope["launch_ref"], "scope_digest": digest(lh.stage.scope), field: "fixture:unapproved"}}
     response = client.transport.exchange("POST", client.origin + "/lifecycle/status", headers={"Content-Type": "application/json"},
         body=canonical(body), decision=lh.use())
-    assert response.status == 400 and json.loads(response.body) == {"error": "hosted-lifecycle-refused"}
+    assert response.status == 400
+    assert json.loads(response.body) == {"error": "hosted-lifecycle-refused"}
     assert client.call("status", decision=lh.use())["owner"] == "stage"
     assert not lh.life.state(decision=lh.use())["actions"]
 
@@ -445,10 +464,14 @@ def test_independent_final_source_or_scope_mutation_refuses_before_stage_release
     elif change == "lease": raw["plan"]["expires_at"] += 1
     else: raw["plan"]["scope"]["cleanup_ref"] = "cleanup:other"
     lh.final_path.write_bytes(canonical(raw))
+    call_target = lh.primary()
+    call_decision = lh.use()
     with pytest.raises(BindingError):
-        lh.primary().call("prepare", decision=lh.use())
+        call_target.call("prepare", decision=call_decision)
     state = lh.life.state(decision=lh.use())
-    assert not state["released"] and state["final"] is None and state["registration"]
+    assert not state["released"]
+    assert state["final"] is None
+    assert state["registration"]
 
 
 def test_final_takeover_requires_actual_independent_ack_and_preserves_generation(lh):
@@ -456,18 +479,26 @@ def test_final_takeover_requires_actual_independent_ack_and_preserves_generation
     lh.finalize()
     before = lh.life.state(decision=lh.use())["generation"]
     lh.primary().call("prepare", decision=lh.use())
+    call_target = lh.primary()
+    call_decision = lh.use()
     with pytest.raises(BindingError):
-        lh.primary().call("release", decision=lh.use())
+        call_target.call("release", decision=call_decision)
     lh.audit().call("ack-final", decision=lh.use())
     lh.primary().call("release", decision=lh.use())
     state = lh.life.state(decision=lh.use())
-    assert state["generation"] == before and state["released"]
+    assert state["generation"] == before
+    assert state["released"]
+    call_target_2 = lh.primary()
+    call_decision_2 = lh.use()
     with pytest.raises(BindingError):
-        lh.primary().call("release", decision=lh.use())
+        call_target_2.call("release", decision=call_decision_2)
+    call_target_3 = lh.primary()
+    call_decision_3 = lh.use()
     with pytest.raises(BindingError):
-        lh.primary().call("prepare", decision=lh.use())
+        call_target_3.call("prepare", decision=call_decision_3)
+    stage_lease_decision = lh.use()
     with pytest.raises(BindingError):
-        lh.life.stage_lease(lh.stage.scope["cleanup_ref"], decision=lh.use())
+        lh.life.stage_lease(lh.stage.scope["cleanup_ref"], decision=stage_lease_decision)
 
 
 @pytest.mark.parametrize("boundary", ["before-prepare", "after-prepare", "after-ack", "after-release"])
@@ -501,7 +532,8 @@ def test_independent_scheduler_cleans_after_actual_runner_death_at_takeover_boun
     else:
         pytest.fail("independent registered expiry cleanup was not observed")
     assert result["kind"] == ("final" if boundary == "after-release" else "stage")
-    assert lh.shared.exists() and lh.stage.v.h.ledger.path.exists()
+    assert lh.shared.exists()
+    assert lh.stage.v.h.ledger.path.exists()
     assert not lh.provider.active[lh.token.credential]
     assert sum(e["kind"] == "cleanup-request" for e in lh.stores["scheduler"].events(decision=lh.use())) == 1
 
@@ -515,8 +547,15 @@ def test_dead_scheduler_never_receives_released_cleanup_responsibility(lh, bound
         lh.audit().call("ack-final", decision=lh.use())
     lh.processes[0].kill()
     lh.processes[0].join(timeout=3)
+    if boundary == "before-ack":
+        finalizer = lh.audit()
+        final_action = "ack-final"
+    else:
+        finalizer = lh.primary()
+        final_action = "release"
+    final_decision = lh.use()
     with pytest.raises(BindingError):
-        lh.audit().call("ack-final", decision=lh.use()) if boundary == "before-ack" else lh.primary().call("release", decision=lh.use())
+        finalizer.call(final_action, decision=final_decision)
     assert not lh.life.state(decision=lh.use())["released"]
 
 
@@ -533,8 +572,10 @@ def test_expired_or_regressed_takeover_cannot_release_original_stage(lh, change)
         lh.advance(lh.plan.expires_at)
     else:
         lh.advance(lh.clock.value - 1)
+    call_target = lh.primary()
+    call_decision = lh.use()
     with pytest.raises(BindingError):
-        lh.primary().call("release", decision=lh.use())
+        call_target.call("release", decision=call_decision)
     if change == "clock-regressed":
         lh.advance(original_time)
     assert not lh.life.state(decision=lh.use())["released"]
@@ -595,8 +636,10 @@ def test_changed_file_generation_is_preserved_and_never_counted_as_cleanup(lh, r
         lh.primary().call("cleanup", outcome="failure", decision=lh.use())
     except BindingError:
         pass
+    call_target = lh.audit()
+    call_decision = lh.use()
     with pytest.raises(BindingError):
-        lh.audit().call("cleanup-audit", attempt_ref="cleanup-attempt:changed-file", decision=lh.use())
+        call_target.call("cleanup-audit", attempt_ref="cleanup-attempt:changed-file", decision=call_decision)
     assert (target.stat().st_dev, target.stat().st_ino, target.read_bytes()) == expected
     assert lh.life.state(decision=lh.use())["registration"] is not None
 
@@ -621,8 +664,10 @@ def test_lost_retirement_result_is_read_only_reconciled_without_second_delete(lh
     lh.launch()
     lh.provider.changes["retirement-outage"] = True
     lh.provider.changes["still-active"] = still_active
+    call_target = lh.primary()
+    call_decision = lh.use()
     with pytest.raises(BindingError):
-        lh.primary().call("cleanup", outcome="failure", decision=lh.use())
+        call_target.call("cleanup", outcome="failure", decision=call_decision)
     deletes = sum(method == "DELETE" and path == "/installation/token" for method, path in lh.provider.calls)
     assert deletes == 1
     try:
@@ -631,8 +676,10 @@ def test_lost_retirement_result_is_read_only_reconciled_without_second_delete(lh
         assert still_active
     assert sum(method == "DELETE" and path == "/installation/token" for method, path in lh.provider.calls) == 1
     if still_active:
+        call_target_2 = lh.audit()
+        call_decision_2 = lh.use()
         with pytest.raises(BindingError):
-            lh.audit().call("cleanup-audit", attempt_ref="cleanup-attempt:retirement-unknown", decision=lh.use())
+            call_target_2.call("cleanup-audit", attempt_ref="cleanup-attempt:retirement-unknown", decision=call_decision_2)
     else:
         assert lh.audit().call("cleanup-audit", attempt_ref="cleanup-attempt:retired", decision=lh.use())["kind"] == "stage"
 
@@ -688,7 +735,8 @@ def test_lost_cleanup_response_cannot_be_replayed_or_reported_as_verified(lh, mo
     monkeypatch.setattr(primary, "call", lost)
     with pytest.raises(BindingError, match="lifecycle-cleanup-unverified"):
         runtime.run(lambda: "inert-complete")
-    assert calls == ["cleanup"] and runtime.cleanup_verification is None, errors
+    assert calls == ["cleanup"], errors
+    assert runtime.cleanup_verification is None, errors
     assert lh.audit().call("cleanup-audit", attempt_ref="cleanup-attempt:independent-reconciliation", decision=lh.use())["kind"] == "final"
     assert sum(method == "DELETE" and path == "/installation/token" for method, path in lh.provider.calls) == 1
 
@@ -704,13 +752,20 @@ def test_actual_unpersisted_worker_generation_retains_owner_and_refuses_false_cl
     lh.launch(bind=False)
     with sqlite3.connect(lh.stage.agent.store.directory / "staging.sqlite") as db:
         db.execute("UPDATE stages SET state='start-consumed',generation=NULL")
+    call_target = lh.primary()
+    call_decision = lh.use()
     with pytest.raises(BindingError):
-        lh.primary().call("cleanup", outcome="failure", decision=lh.use())
+        call_target.call("cleanup", outcome="failure", decision=call_decision)
+    call_target_2 = lh.audit()
+    call_decision_2 = lh.use()
     with pytest.raises(BindingError):
-        lh.audit().call("cleanup-audit", attempt_ref="cleanup-attempt:unpersisted", decision=lh.use())
+        call_target_2.call("cleanup-audit", attempt_ref="cleanup-attempt:unpersisted", decision=call_decision_2)
     state = lh.life.state(decision=lh.use())
-    assert state["registration"] is not None and state["generation"] is None
-    assert state["closed"] and not state["released"] and not state["actions"]
+    assert state["registration"] is not None
+    assert state["generation"] is None
+    assert state["closed"]
+    assert not state["released"]
+    assert not state["actions"]
     assert len(lh.stage.agent.children) == 1
     assert sum(e["kind"] == "registration" for e in lh.stores["primary"].events(decision=lh.use())) == 1
 
@@ -725,11 +780,14 @@ def test_different_pid_namespace_never_interprets_an_owned_process_as_absent(lh,
     before = getattr(selected, attribute)
     try:
         setattr(selected, attribute, (before[0], before[1] + 1))
-        with pytest.raises(BindingError):
-            if target == "lifecycle":
-                lh.life.state(decision=lh.use())
-            else:
-                lh.life.resources.observe(resource, decision=lh.use())
+        if target == "lifecycle":
+            state_decision = lh.use()
+            with pytest.raises(BindingError):
+                lh.life.state(decision=state_decision)
+        else:
+            observe_decision = lh.use()
+            with pytest.raises(BindingError):
+                lh.life.resources.observe(resource, decision=observe_decision)
     finally:
         setattr(selected, attribute, before)
     assert not lh.life.state(decision=lh.use())["actions"]
@@ -748,7 +806,8 @@ def test_dead_acknowledged_scheduler_refuses_start_before_any_child_creation(lh)
         lh.stage.agent.start(lh.stage.scope["launch_ref"], digest(unit), decision=decision)
     assert not lh.stage.agent.children
     row = lh.stage.agent.store.read(lh.stage.scope["launch_ref"], decision=lh.use())
-    assert row["state"] == "start-consumed" and row["generation"] is None
+    assert row["state"] == "start-consumed"
+    assert row["generation"] is None
     assert lh.life.state(decision=lh.use())["registration"] is not None
 
 
@@ -760,8 +819,10 @@ def test_dead_final_scheduler_refuses_operation_but_independent_closed_lease_cle
     runtime = lh.runtime()
     lh.processes[0].kill()
     lh.processes[0].join(timeout=3)
+    call_target = lh.primary()
+    call_decision = lh.use()
     with pytest.raises(BindingError):
-        lh.primary().call("lease", plan_ref=lh.plan.ref, decision=lh.use())
+        call_target.call("lease", plan_ref=lh.plan.ref, decision=call_decision)
     entered = []
     with pytest.raises(BindingError, match="lifecycle-operation-failed"):
         runtime.run(lambda: entered.append(True))
@@ -792,9 +853,10 @@ def test_retained_run_alias_is_rejected_before_any_anchor(tmp_path, request, ali
         second = tmp_path / "alias"
         os.link(target, second)
     store, _ = journal(tmp_path)
+    posix_resources_files = ((FileResource("resource:retained", target, "retained"),
+            FileResource("resource:alias", second, "run")))
     with pytest.raises(BindingError):
-        PosixResources(files=(FileResource("resource:retained", target, "retained"),
-            FileResource("resource:alias", second, "run")), worker_ref="resource:worker", pins=store)
+        PosixResources(files=posix_resources_files, worker_ref="resource:worker", pins=store)
     assert target.read_bytes() == b"retained generation"
     assert not list((store.directory / "file-pins").iterdir())
 
@@ -806,7 +868,8 @@ def test_run_anchor_prevents_inode_recycling_and_preserves_fenced_replacement(tm
     expected, = resources.inventory(decision=use(), initialize=True)
     original = target.stat()
     anchor = store.directory / "file-pins" / resources.files.slot(expected.ref)
-    assert anchor.stat().st_ino == original.st_ino and original.st_nlink == 2
+    assert anchor.stat().st_ino == original.st_ino
+    assert original.st_nlink == 2
     directory = os.open(tmp_path, os.O_RDONLY | os.O_DIRECTORY)
     try:
         fcntl.flock(directory, fcntl.LOCK_EX)
@@ -818,8 +881,9 @@ def test_run_anchor_prevents_inode_recycling_and_preserves_fenced_replacement(tm
     finally:
         os.close(directory)
     assert resources.observe(expected, decision=use()).instance_ref != expected.instance_ref
+    cleanup_decision = use()
     with pytest.raises(BindingError):
-        resources.cleanup(expected, decision=use())
+        resources.cleanup(expected, decision=cleanup_decision)
     assert target.read_bytes() == b"replacement generation"
     assert anchor.read_bytes() == b"original generation"
 
@@ -830,13 +894,16 @@ def test_successful_file_retirement_removes_anchor_and_preserves_any_later_path(
     resources, store = file_provider(tmp_path, request, [FileResource("resource:file", target, "run")])
     expected, = resources.inventory(decision=use(), initialize=True)
     resources.cleanup(expected, decision=use())
-    assert not target.exists() and not list((store.directory / "file-pins").iterdir())
+    assert not target.exists()
+    assert not list((store.directory / "file-pins").iterdir())
     assert resources.observe(expected, decision=use()).present is False
     target.write_bytes(b"new slot generation")
     actual = resources.observe(expected, decision=use())
-    assert actual.present and actual.instance_ref != expected.instance_ref
+    assert actual.present
+    assert actual.instance_ref != expected.instance_ref
+    cleanup_decision = use()
     with pytest.raises(BindingError):
-        resources.cleanup(expected, decision=use())
+        resources.cleanup(expected, decision=cleanup_decision)
     assert target.read_bytes() == b"new slot generation"
     assert sum(e["kind"] == "file-retired" for e in store.events(decision=use())) == 1
 
@@ -853,7 +920,8 @@ def test_missing_file_anchor_never_recreates_or_adopts_a_generation(tmp_path, re
                    lambda: resources.inventory(decision=use())):
         with pytest.raises(BindingError):
             action()
-    assert not anchor.exists() and target.read_bytes() == b"original"
+    assert not anchor.exists()
+    assert target.read_bytes() == b"original"
 
 
 def test_fresh_file_provider_cannot_adopt_a_registered_epoch(lh, request):
@@ -866,8 +934,9 @@ def test_fresh_file_provider_cannot_adopt_a_registered_epoch(lh, request):
     assert fresh.epoch != original.epoch
     try:
         lh.life.resources = fresh
+        state_decision = lh.use()
         with pytest.raises(BindingError):
-            lh.life.state(decision=lh.use())
+            lh.life.state(decision=state_decision)
     finally:
         lh.life.resources = original
     assert lh.life.state(decision=lh.use())["registration"] is not None
@@ -895,7 +964,8 @@ def test_known_control_state_can_never_be_selected_as_a_run_file(lh, request, ta
             resources=resources, janitor=life.janitor, auditor=life.auditor, scheduler=json.loads(life.scheduler),
             host_pid_namespace=life.host_pid_namespace, final_authority_principal=life.final_authority_principal,
             cleanup_until=life.cleanup_until, retained_roots=(lh.stage.controller.store.directory,))
-    assert path.exists() and not list((lh.stores["primary"].directory / "file-pins").iterdir())
+    assert path.exists()
+    assert not list((lh.stores["primary"].directory / "file-pins").iterdir())
     assert lh.life.state(decision=lh.use())["registration"] is None
 
 
@@ -917,10 +987,14 @@ def test_independent_expiry_retires_registered_scope_that_never_started(lh):
     lh.advance(registration["expires_at"])
     tick_cleanup(lh)
     record = lh.audit().call("cleanup-audit", attempt_ref="cleanup-attempt:prestart", decision=lh.use())
-    assert record["kind"] == "stage" and all(r["ref"] != lh.life.resources.worker_ref for r in record["resources"])
+    assert record["kind"] == "stage"
+    assert all(r["ref"] != lh.life.resources.worker_ref for r in record["resources"])
     state = lh.life.state(decision=lh.use())
-    assert state["closed"] and state["prestart_closed"] and state["generation"] is None
-    assert not lh.stage.agent.children and not lh.temporary.exists()
+    assert state["closed"]
+    assert state["prestart_closed"]
+    assert state["generation"] is None
+    assert not lh.stage.agent.children
+    assert not lh.temporary.exists()
     assert not lh.provider.active[lh.token.credential]
 
 
@@ -935,7 +1009,8 @@ def test_persisted_worker_exit_before_lifecycle_binding_still_retires_exact_scop
     record = lh.audit().call("cleanup-audit", attempt_ref="cleanup-attempt:known-dead", decision=lh.use())
     assert record["kind"] == "stage"
     assert lh.life.state(decision=lh.use())["generation"]["generation"] == row["generation"]
-    assert not lh.temporary.exists() and not lh.provider.active[lh.token.credential]
+    assert not lh.temporary.exists()
+    assert not lh.provider.active[lh.token.credential]
 
 
 @pytest.mark.parametrize("lh", ["short-cleanup"], indirect=True)
@@ -956,8 +1031,11 @@ def test_short_cleanup_timeout_bounds_backend_on_the_same_wall_and_monotonic_dec
     monkeypatch.setattr(lh.life.resources, "cleanup", delayed)
     with pytest.raises(BindingError):
         lh.life.cleanup(lh.stage.scope["launch_ref"], "failure", decision=decision)
-    assert called and called[0][0] == lh.clock.value + 1 and called[0][1] <= 1
-    assert lh.temporary.exists() and lh.provider.active[lh.token.credential]
+    assert called
+    assert called[0][0] == lh.clock.value + 1
+    assert called[0][1] <= 1
+    assert lh.temporary.exists()
+    assert lh.provider.active[lh.token.credential]
 
 
 @pytest.mark.parametrize("lh", ["intake-crash"], indirect=True)
@@ -968,7 +1046,8 @@ def test_primary_death_after_registration_commit_is_discovered_without_replaying
     lh.processes[1].join(timeout=3)
     assert lh.processes[1].exitcode == 23
     state = lh.life.state(decision=lh.use())
-    assert state["registration"] and state["generation"] is None
+    assert state["registration"]
+    assert state["generation"] is None
     assert not any(e["kind"] == "stage-intake" for e in lh.stores["scheduler"].events(decision=lh.use()))
     anchor = lh.stores["primary"].directory / "file-pins" / lh.life.resources.files.slot("resource:temporary")
     assert anchor.stat().st_ino == lh.temporary.stat().st_ino
@@ -982,18 +1061,25 @@ def test_primary_death_after_registration_commit_is_discovered_without_replaying
         finally:
             os.close(fd)
     lh.restart_primary()
+    call_target = lh.audit()
+    call_decision = lh.use()
     with pytest.raises(BindingError):
-        lh.audit().call("ack-stage", decision=lh.use())
+        call_target.call("ack-stage", decision=call_decision)
     lh.advance(state["registration"]["expires_at"])
     tick_cleanup(lh)
     if replacement:
+        call_target_2 = lh.audit()
+        call_decision_2 = lh.use()
         with pytest.raises(BindingError):
-            lh.audit().call("cleanup-audit", attempt_ref="cleanup-attempt:registration-crash", decision=lh.use())
-        assert lh.temporary.read_bytes() == b"replacement after API actor crash" and anchor.exists()
+            call_target_2.call("cleanup-audit", attempt_ref="cleanup-attempt:registration-crash", decision=call_decision_2)
+        assert lh.temporary.read_bytes() == b"replacement after API actor crash"
+        assert anchor.exists()
     else:
         record = lh.audit().call("cleanup-audit", attempt_ref="cleanup-attempt:registration-crash", decision=lh.use())
-        assert record["kind"] == "stage" and not lh.temporary.exists()
-    assert not lh.stage.agent.children and not lh.provider.active[lh.token.credential]
+        assert record["kind"] == "stage"
+        assert not lh.temporary.exists()
+    assert not lh.stage.agent.children
+    assert not lh.provider.active[lh.token.credential]
     assert sum(e["kind"] == "registration" for e in lh.stores["primary"].events(decision=lh.use())) == 1
 
 
@@ -1006,7 +1092,8 @@ def test_maximum_selected_token_manifest_completes_cleanup_within_private12(lh, 
         lh.takeover()
     lh.primary().call("cleanup", outcome="failure", decision=lh.use())
     record = lh.audit().call("cleanup-audit", attempt_ref="cleanup-attempt:three-tokens", decision=lh.use())
-    assert record["kind"] == owner and len(lh.tokens) == 3
+    assert record["kind"] == owner
+    assert len(lh.tokens) == 3
     assert all(not lh.provider.active[cap.credential] for cap in lh.tokens)
     assert sum(method == "DELETE" and path == "/installation/token" for method, path in lh.provider.calls) == 3
 
@@ -1022,8 +1109,9 @@ def test_token_manifest_over_cleanup_budget_is_rejected_before_registration(lh):
         original = lh.life.resources
         tokens = tuple(TokenResource(f"resource:token-{n}", cap, retire)
                        for n, cap in enumerate((lh.token, *extras)))
+        posix_resources_files = tuple(v for v in original.selected.values() if type(v) is FileResource)
         with pytest.raises(BindingError):
-            PosixResources(files=tuple(v for v in original.selected.values() if type(v) is FileResource),
+            PosixResources(files=posix_resources_files,
                 tokens=tokens, worker_ref=original.worker_ref, pins=lh.stores["primary"])
         assert lh.life.state(decision=lh.use())["registration"] is None
         assert not list((lh.stores["primary"].directory / "file-pins").iterdir())
@@ -1043,14 +1131,18 @@ def test_file_retirement_without_durable_marker_stays_unverified_and_never_repla
             raise BindingError("fixture-lost-retirement-marker")
         return original(kind, data, **kwargs)
     monkeypatch.setattr(store, "record", lost)
+    cleanup_decision = use()
     with pytest.raises(BindingError, match="fixture-lost-retirement-marker"):
-        resources.cleanup(expected, decision=use())
-    assert not target.exists() and not list((store.directory / "file-pins").iterdir())
+        resources.cleanup(expected, decision=cleanup_decision)
+    assert not target.exists()
+    assert not list((store.directory / "file-pins").iterdir())
     target.write_bytes(b"newer generation")
+    observe_decision = use()
     with pytest.raises(BindingError):
-        resources.observe(expected, decision=use())
+        resources.observe(expected, decision=observe_decision)
+    cleanup_decision_2 = use()
     with pytest.raises(BindingError):
-        resources.cleanup(expected, decision=use())
+        resources.cleanup(expected, decision=cleanup_decision_2)
     assert target.read_bytes() == b"newer generation"
 
 
@@ -1090,15 +1182,19 @@ def test_actual_host_manager_death_preserves_independent_cleanup_of_persisted_ge
         out, error = process.communicate("start\n", timeout=22)
         assert process.returncode == 0, error
         result = json.loads(out)
-        assert result["manager_exit"] == 73 and result["worker_reaped"] and result["worker_signal"] == 9
+        assert result["manager_exit"] == 73
+        assert result["worker_reaped"]
+        assert result["worker_signal"] == 9
         assert process_instance(result["worker_pid"])[0] is None
         assert all(role.is_alive() for role in lh.processes[:3])
         row = stage.agent.store.read(stage.scope["launch_ref"], decision=lh.use())
-        assert row["state"] == "running" and row["generation"] is not None
+        assert row["state"] == "running"
+        assert row["generation"] is not None
         assert lh.life.state(decision=lh.use())["generation"] is None
         lh.primary().call("cleanup", outcome="failure", decision=lh.use())
         record = lh.audit().call("cleanup-audit", attempt_ref="cleanup-attempt:real-manager-death", decision=lh.use())
-        assert record["kind"] == "stage" and not lh.provider.active[lh.token.credential]
+        assert record["kind"] == "stage"
+        assert not lh.provider.active[lh.token.credential]
         assert not lh.temporary.exists()
     finally:
         if process.poll() is None:
@@ -1123,12 +1219,14 @@ def test_lifecycle_aggregate_snapshot_exceeds_document_limit_without_raising_eve
         store.record("stage-intake", {**payload, "index": n}, decision=use())
     events = store.events(decision=use())
     assert len(canonical(events)) > 65536
-    assert len(events) < 2048 and all(len(canonical(e["data"])) <= 65536 for e in events)
+    assert len(events) < 2048
+    assert all(len(canonical(e["data"])) <= 65536 for e in events)
     events[1]["data"]["nested"]["value"] = "caller mutation"
     reopened = LifecycleStore(store.directory, store.witness, identity=identity, kind="primary")
     assert reopened.events(decision=use())[1]["data"]["nested"]["value"] == payload["nested"]["value"]
+    record_decision = use()
     with pytest.raises(BindingError):
-        reopened.record("stage-intake", {"value": "x" * 65536}, decision=use())
+        reopened.record("stage-intake", {"value": "x" * 65536}, decision=record_decision)
     assert len(reopened.events(decision=use())) == len(events)
 
 
@@ -1147,7 +1245,8 @@ def test_large_final_manifest_cleans_and_audits_above_aggregate_document_limit(l
             for r in resources if r.kind == "file" and r.retention != "run"}
     lh.primary().call("cleanup", outcome="success", decision=lh.use())
     audit = lh.audit().call("cleanup-audit", attempt_ref="cleanup-attempt:large-manifest", decision=lh.use())
-    assert audit["kind"] == "final" and len(audit["record"]["resources"]) == 64
+    assert audit["kind"] == "final"
+    assert len(audit["record"]["resources"]) == 64
     actual = {r["ref"]: r for r in audit["record"]["resources"]}
     for resource in resources:
         observed = actual[resource.ref]
@@ -1165,7 +1264,8 @@ def test_large_final_manifest_cleans_and_audits_above_aggregate_document_limit(l
     assert not list((lh.stores["primary"].directory / "file-pins").iterdir())
     events = lh.stores["primary"].events(decision=lh.use())
     assert len(canonical(events)) > 65536
-    assert len(events) < 2048 and all(len(canonical(e["data"])) <= 65536 for e in events)
+    assert len(events) < 2048
+    assert all(len(canonical(e["data"])) <= 65536 for e in events)
 
 
 @pytest.mark.parametrize("fence", ["parent", "pins"])
@@ -1193,18 +1293,23 @@ def test_busy_file_fence_keeps_unattempted_generation_available_for_bounded_clea
         finally:
             os.close(fd)
     monkeypatch.setattr(lh.life.resources, "cleanup", hold_after_observation)
+    cleanup_decision = lh.use()
     with pytest.raises(BindingError):
-        lh.life.cleanup(lh.stage.scope["launch_ref"], "failure", decision=lh.use())
+        lh.life.cleanup(lh.stage.scope["launch_ref"], "failure", decision=cleanup_decision)
     partial = lh.life.state(decision=lh.use())
-    assert blocked and partial["closed"] and partial["released"]
+    assert blocked
+    assert partial["closed"]
+    assert partial["released"]
     assert partial["registration"] == state["registration"]
     assert target.ref not in {a["resource"]["ref"] for a in partial["actions"].values()}
     assert (path.stat().st_dev, path.stat().st_ino, path.read_bytes(), path.stat().st_nlink) == original_generation
     assert (anchor.stat().st_dev, anchor.stat().st_ino, anchor.stat().st_nlink) == (original_generation[0], original_generation[1], 2)
     assert not any(e["kind"] == "file-retired" and e["data"]["ref"] == target.ref
                    for e in lh.stores["primary"].events(decision=lh.use()))
+    call_target = lh.audit()
+    call_decision = lh.use()
     with pytest.raises(BindingError):
-        lh.audit().call("cleanup-audit", attempt_ref="cleanup-attempt:still-owned", decision=lh.use())
+        call_target.call("cleanup-audit", attempt_ref="cleanup-attempt:still-owned", decision=call_decision)
     monkeypatch.setattr(lh.life.resources, "cleanup", backend)
     lh.primary().call("cleanup", outcome="failure", decision=lh.use())
     assert lh.audit().call("cleanup-audit", attempt_ref="cleanup-attempt:fence-released", decision=lh.use())["kind"] == "final"
@@ -1231,20 +1336,25 @@ def test_file_failure_after_durable_claim_never_replays_an_unknown_unlink(lh, mo
             raise OSError("fixture file mutation result unavailable")
         return unlink(path, *args, **kwargs)
     monkeypatch.setattr(os, "unlink", fail_unlink)
+    cleanup_decision = lh.use()
     with pytest.raises(BindingError):
-        lh.life.cleanup(lh.stage.scope["launch_ref"], "failure", decision=lh.use())
+        lh.life.cleanup(lh.stage.scope["launch_ref"], "failure", decision=cleanup_decision)
     monkeypatch.setattr(os, "unlink", unlink)
     state = lh.life.state(decision=lh.use())
     assert attempted == [True]
     assert sum(a["resource"]["ref"] == target.ref for a in state["actions"].values()) == 1
+    call_target = lh.primary()
+    call_decision = lh.use()
     with pytest.raises(BindingError):
-        lh.primary().call("cleanup", outcome="failure", decision=lh.use())
+        call_target.call("cleanup", outcome="failure", decision=call_decision)
     assert (lh.temporary.stat().st_dev, lh.temporary.stat().st_ino, lh.temporary.read_bytes()) == generation
     assert lh.life.state(decision=lh.use())["actions"] == state["actions"]
     assert not any(e["kind"] == "file-retired" and e["data"]["ref"] == target.ref
                    for e in lh.stores["primary"].events(decision=lh.use()))
+    call_target_2 = lh.audit()
+    call_decision_2 = lh.use()
     with pytest.raises(BindingError):
-        lh.audit().call("cleanup-audit", attempt_ref="cleanup-attempt:unknown-file", decision=lh.use())
+        call_target_2.call("cleanup-audit", attempt_ref="cleanup-attempt:unknown-file", decision=call_decision_2)
     assert sum(method == "DELETE" and route == "/installation/token" for method, route in lh.provider.calls) == 1
 
 

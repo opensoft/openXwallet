@@ -212,7 +212,7 @@ def test_real_pytest_reports_cannot_hide_nonconformance(tmp_path, mutation):
         "plugin.audit = MatrixAudit({'test_sample.py': " + str(expected_count)
         + "}, {'I01': ('test_sample.py::test_one',)}, digests=" + repr(digests) + ")",
         "raise SystemExit(pytest.main(" + repr([str(tmp_path / "test_sample.py"), "-q", "-c", os.devnull,
-                                               "--rootdir=" + str(tmp_path), "-p", "no:cacheprovider"]
+                                               "--rootdir=" + str(tmp_path), "--confcutdir=" + str(tmp_path), "-p", "no:cacheprovider"]
                                               + (["-k", "absent"] if mutation == "deselect" else []))
         + ", plugins=[plugin]))",
     ])

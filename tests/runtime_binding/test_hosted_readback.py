@@ -27,7 +27,8 @@ def decision(s):return Decision(clock=lambda:s.now,monotonic=lambda:s.mono)
 def test_read_groups_share_one_deadline_and_cannot_reset_by_new_client(group,limit):
     s=clock();use=decision(s)
     for _ in range(limit):ReadBudget(use).consume(group)
-    with pytest.raises(BindingError):ReadBudget(use).consume(group)
+    consume_target = ReadBudget(use)
+    with pytest.raises(BindingError):consume_target.consume(group)
     assert use.api_requests==0
 
 
@@ -36,7 +37,8 @@ def test_correlation_budget_is_included_in_the_thirteen_request_ceiling():
     for group,limit in [("protection",3),("source",4),("control",2)]:
         for _ in range(limit):ReadBudget(use).consume(group)
     assert ReadBudget(use).github_requests==13
-    with pytest.raises(BindingError):ReadBudget(use).consume("source")
+    consume_target = ReadBudget(use)
+    with pytest.raises(BindingError):consume_target.consume("source")
 
 
 @pytest.mark.parametrize("change",["wall","monotonic","regression"])
@@ -45,7 +47,8 @@ def test_shared_decision_expiry_or_regression_refuses_before_new_read(change):
     if change=="wall":s.now+=10
     elif change=="monotonic":s.mono+=10
     else:s.now-=1
-    with pytest.raises(BindingError):ReadBudget(use).consume("source")
+    # An invalid original decision must be refused before a new read client exists.
+    with pytest.raises(BindingError):ReadBudget(use)
 
 
 
@@ -126,9 +129,13 @@ def test_current_source_update_controls_are_complete_and_bounded(rb,change):
     elif change=="inactive":rb.rule["enforcement"]="disabled"
     else:rb.rule.pop("rules")
     github=rb.github();use=rb.use()
-    with pytest.raises(BindingError):
+    if change in ("extra-set", "wrong-set"):
+        with pytest.raises(BindingError):
+            github.begin_control(42,decision=use)
+    else:
         identifier=github.begin_control(42,decision=use)
-        github.finish_control(identifier,decision=use)
+        with pytest.raises(BindingError):
+            github.finish_control(identifier,decision=use)
     assert ReadBudget(use).count("control")<=2
 
 
@@ -324,14 +331,16 @@ def test_guest_facts_are_measured_again_instead_of_echoing_the_candidate(rb,chan
 def test_existing_correlation_counter_cannot_regress_under_new_clients():
     state=clock();use=decision(state);use.api_requests=4;ReadBudget(use).consume("control")
     use.api_requests=0
-    with pytest.raises(BindingError):ReadBudget(use).consume("source")
+    # An invalid original decision must be refused before a new read client exists.
+    with pytest.raises(BindingError):ReadBudget(use)
 
 
 @pytest.mark.parametrize("group,limit",[("arm",24),("key",3),("private",12)])
 def test_non_github_readers_have_fixed_shared_operation_bounds(group,limit):
     state=clock();use=decision(state)
     for _ in range(limit):ReadBudget(use).consume(group)
-    with pytest.raises(BindingError):ReadBudget(use).consume(group)
+    consume_target = ReadBudget(use)
+    with pytest.raises(BindingError):consume_target.consume(group)
 
 
 @pytest.mark.parametrize("where",["credential","tls-checkpoint","response"])
@@ -383,7 +392,8 @@ def test_actual_tls_shared_correlation_refuses_before_application_data(rb,change
             kwargs["before_send"]=expired
             reply=transport.exchange(*args,**kwargs);return Response(reply.status,reply.body)
     selected=ProviderReader(credential=lambda **_:"token:fixture",transport=ActualTransport())
-    with pytest.raises(BindingError):selected.decision("opensoft/openXwallet",own).run("789")
+    run_target = selected.decision("opensoft/openXwallet",own)
+    with pytest.raises(BindingError):run_target.run("789")
     assert rb.calls==[]
 
 
@@ -395,7 +405,8 @@ def test_approved_provider_reference_metadata_is_retained_and_drift_refuses(rb,f
     reader.read(decision=rb.use())
     if field=="disk-storage-type":vm["storageProfile"]["osDisk"]["managedDisk"]["storageAccountType"]="Premium_LRS"
     else:vm["networkProfile"]["networkInterfaces"][0]["properties"][{"nic-primary":"primary","nic-delete-option":"deleteOption"}[field]]=False if field=="nic-primary" else "Delete"
-    with pytest.raises(BindingError):reader.read(decision=rb.use())
+    read_decision = rb.use()
+    with pytest.raises(BindingError):reader.read(decision=read_decision)
 
 
 @pytest.mark.parametrize("field",["disk-storage-type","nic-primary","nic-delete-option"])
@@ -406,4 +417,5 @@ def test_approved_model_hash_cannot_replace_typed_reference_metadata(rb,field):
     selection=replace(rb.deployment,model_digest=digest({k:v for k,v in vm.items() if k!="instanceView"}))
     from workload_factory_binding_runtime.hosted.platform_readback import DeploymentReader
     reader=DeploymentReader(selection=selection,reader=rb.reader,principal_ref="principal:arm-reader")
-    with pytest.raises(BindingError):reader.read(decision=rb.use())
+    read_decision = rb.use()
+    with pytest.raises(BindingError):reader.read(decision=read_decision)
