@@ -8,5 +8,7 @@
 - [x] T006 Review exact heads, land compatible adapter pins and justified retained baseline.
 - [x] T008 Publish explicit provider consumer-root API and remove adapter implementation duplication through verified shared neutral tooling.
 - [x] T009 Repair and regress the five full-main reliability/security findings at their owners; preserve valid behavior and package versions.
-- [ ] T010 Requalify all coherent published heads, coverage and original/new finding keys with the unchanged full main gate.
-- [ ] T007 Verify published main gate, all eight original keys and preservation; close issue #73 with evidence.
+- [x] T010 Requalify all coherent published heads, coverage and original/new finding keys with the unchanged full main gate.
+- [x] T007 Verify published main gate, all eight original keys and preservation; close issue #73 with evidence.
+
+Completion evidence: [verified main receipt](../../docs/quality/sonar73-after.json) and [closeout](../../docs/quality/sonar73-acceptance.md). The explicit nine-live/ten-exported history distinction is part of that evidence; all current quality and baseline checks remain enforced.
