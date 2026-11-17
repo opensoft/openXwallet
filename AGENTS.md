@@ -491,7 +491,7 @@ boundaries and lexical resource ownership. Fresh review/full/native/cleanup and
 hosted qualification are required; earlier receipts remain historical. No
 setup/dispatch, feedback or blocked-write replay is authorized.
 
-### Current T012V main #80 qualified source candidate
+### Historical T012V main #80 qualified source candidate
 
 Frozen executable `f9b9bd5a798dd251f404a8e1ed1660c9378af23e` passes 2,781 full tests plus
 11 subtests and all 2,369 mandatory native nodes; all 366 frozen inputs and prior
@@ -504,3 +504,14 @@ identities and actual evidence. Final documentation retains qualified executable
 bytes; fresh final-head hosted CI/Sonar and owner source ratification remain
 PR #78 gates. T001/T013-T015/setup/dispatch remain ungranted; feedback deferred
 and neither blocked write replayed.
+
+### Current T012V exact-refusal clarification
+
+The existing T012V commission covers the two Sonar S3403 reliability findings
+through a private shared exact-refusal predicate and 20 independent adversarial
+controls. The governing bounded plan is recorded in feature017
+hosting-conformance-implementation.md. Preserve original predicate/evaluation
+order, lazy reservation absence, catch scopes, all source/case identities and
+clock/read/wire/authority limits. Earlier 1146747 full/native passes are historical;
+fresh source/full/native/cleanup/CI/Sonar and owner acceptance remain gates.
+T001/T013-T015/setup/dispatch ungranted; feedback deferred, blocked writes unreplayed.

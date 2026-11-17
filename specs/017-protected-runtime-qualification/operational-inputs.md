@@ -1,6 +1,6 @@
 # T013 Operational Selection Packet
 
-Status: T012V accepted-main #80 integration and clarity locally qualified on PR #78; fresh CI/owner acceptance and T013 selections pending; setup/dispatch NOT GRANTED
+Status: T012V exact-refusal clarification awaiting fresh qualification on PR #78; fresh CI/owner acceptance and T013 selections pending; setup/dispatch NOT GRANTED
 Updated: 2026-11-17
 Governance: `opensoft/openXfactory`, `prepare-protected-runtime-qualification`
 Bootstrap amendment: `fix-protected-runtime-dispatch-bootstrap`

@@ -1,6 +1,6 @@
 # Operator source conformance runbook
 
-Status: T012V accepted-main #80 integration and clarity locally qualified; final-head CI/owner acceptance pending
+Status: T012V exact-refusal clarification awaiting fresh qualification; final-head CI/owner acceptance pending
 Kind: source-runbook
 Scope: offline source and disposable local fixtures only
 Sole source publication task: tasks.md T012V; owner acceptance and operations separate
@@ -156,11 +156,11 @@ An intermediate pytest pass count, anchor line or tiny self-test corpus verdict
 is insufficient. Final source-check exceptions/cancellation/zero-exit attempts
 emit fixed refusal and cannot leave a final PASS.
 
-Current measured candidate collection is 2,781 full parent cases (plus 11 passing
-subtests), 2,369 mandatory native nodes and 64 conformance self-tests. All prior
-2,761 full and 2,364 native identities and anchors remain. Hosted-evidence module
+Current measured candidate collection is 2,801 full parent cases (plus 11
+subtests), 2,389 mandatory native nodes and 64 conformance self-tests. All prior
+2,781 full and 2,369 native identities and anchors remain. Hosted-evidence module
 has 198 cases; probe controls add 22 and canonical-journal controls 115.
-H03=97/H10=85/H11=284/H12=142. Collection is not a passing execution receipt; current
+H03=97/H10=105/H11=284/H12=142. Collection is not a passing execution receipt; current
 execution/cleanup status is in [implementation evidence](hosting-conformance-implementation.md).
 The [qualification matrix](qualification-matrix.md) maps every H group to actual
 positive/mutation controls and remaining live gates. Anchors overlap and their
@@ -309,7 +309,7 @@ for exact immutable IDs, actual timing and authority limits. Fresh final-head
 hosted CI, evaluated Sonar and owner source ratification remain PR #78 gates;
 this local source runbook grants no operational setup or protected dispatch.
 
-## Current accepted-main #80 completion record
+## Historical accepted-main #80 completion record
 
 Frozen executable `f9b9bd5a798dd251f404a8e1ed1660c9378af23e` passes 2,781 full tests plus 11
 subtests and all 2,369 mandatory native cases. Every prior identity and static

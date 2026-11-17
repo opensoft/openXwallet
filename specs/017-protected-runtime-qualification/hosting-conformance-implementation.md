@@ -1,6 +1,6 @@
 # T012U isolated conformance realization
 
-Status: main #80 integration and bounded clarity source locally qualified; PR #78 final-head hosted CI and owner acceptance pending
+Status: exact-refusal clarification pending fresh qualification; earlier full/native receipts historical; owner acceptance pending
 Kind: implementation-record
 Scope: source/fixture only; no operational grant
 
@@ -561,3 +561,37 @@ real target/principal/key/credential/endpoint selections, deployed qualification
 external control-host-loss watchdog/infrastructure retirement and consumer/human/
 domain acceptance remain open. Setup/protected dispatch unauthorized; feedback
 deferred and historical blocked writes unreplayed.
+
+## T012V exact signed-claim refusal clarification
+
+The published 1146747 candidate passes hosted full/native qualification and both
+coverage partitions. Actual PR #78 Sonar analysis nevertheless reports two S3403
+reliability blockers on the exact `type(error) is BindingError` checks. Direct
+issue offsets identify that comparison; successful real signed counterfactuals
+prove it can be true. Whole-file local analyzer reproduction reports both;
+self-contained identical checks do not. The analyzer's internal cause is unproven.
+
+Under the existing sole T012V publication/finding-resolution task, centralize the
+duplicated signed-claim refusal invariant in one private pure predicate. Preserve
+verbatim exact exception-class identity, one argument, exact string type and the
+workload-mismatch literal, in original short-circuit order. The second caller must
+keep reservation absence outside and after that predicate. Preserve catch scopes,
+crypto verification, clocks, read budgets, wire profiles and every other capability.
+This is one shared security invariant, not a new admission selector or callback.
+No source/issue suppression, status acceptance, gate or threshold change is allowed.
+
+Add 20 independent port-mutation controls: both refusal sites with one permitted
+shape and eight invalid/spoofing shapes, plus two consumed-reservation variants.
+Preserve real signed counterfactual preparation and all existing both-kind signature
+and removed-check controls. Establish the new controls on the original guard, then
+apply the extraction and verify identical behavior. Preserve every old node; commit
+only newly measured module counts/fingerprints and H10 anchors. Expected additive
+corpus is 2,801 full parent cases and 2,389 native nodes, pending actual measurement.
+
+Freeze/review the new source, run the seven ordered gates and mandatory native
+qualification, independently audit preservation/retirement and remove exact owned
+fixture roots. Reconcile documents without changing qualified executable bytes,
+then publish and obtain fresh exact-head full CI, evaluated Sonar and local review.
+The earlier runtime passes remain historical, not acceptance of this source change.
+Owner source ratification stays pending. T001/T013-T015, setup and protected dispatch
+remain ungranted; feedback deferred and neither historical blocked write replayed.

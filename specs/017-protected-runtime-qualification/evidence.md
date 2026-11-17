@@ -2908,6 +2908,37 @@ All 366 input hashes, prior case identities and static expectations remain.
 Nine exact-head source roles clear the incoming accepted pins and bounded clarity
 changes. Independent final audit checks 25,018 generation observations and
 ten positive preservation cases; final fixture roots/native container are absent.
-See the [current source qualification](hosting-conformance-implementation.md#t012v-main-80-integrated-source-qualification).
+See the [historical main #80 source qualification](hosting-conformance-implementation.md#t012v-main-80-integrated-source-qualification).
 Earlier #79/3ceb receipts stay historical. New final-head hosted CI/Sonar and
 actual owner ratification remain PR #78 gates; no operational grant follows.
+
+## 2026-11-17 T012V exact-refusal clarification evidence
+
+Published 1146747 passes hosted run 44082058742 full 2,781 tests plus 11 subtests
+and all 2,369 mandatory native cases, zero failures/errors/skips; runtime job 3734s.
+Main coverage passes its complete partition in 1535s, plus the fixed complementary
+case separately. The subsequent PR-specific Sonar scan fails reliability on two
+S3403 exact-class checks, with the other five original conditions passing
+(94.0% coverage, 0.0% duplication, 100% hotspots reviewed). These successful runtime
+receipts remain historical and do not qualify the corrected source.
+
+A whole-file local analyzer reproduces both reports at the first class-identity
+comparison. An identical self-contained guard has no report; the original
+successful signed counterfactuals also contradict an always-false comparison.
+The exact analyzer inference cause remains unproven. A shared private predicate
+with the four original ordered checks clears both findings in whole-file analysis.
+
+Twenty independent refusal-port controls first pass against the original guard.
+The extraction then passes 88 focused controls: 20 new adversarial cases, four
+existing signed-barrier controls and 64 conformance self-tests. Actual modified
+product analysis has only its prior three maintenance advisories; actual modified
+test analysis has zero issues. AST comparison proves original predicate/order,
+lazy reservation check and every other barrier statement unchanged.
+
+Measured collection is 2,801 full cases and 2,389 native cases; all previous
+2,781/2,369 IDs and their relative order remain. The only updated static module
+expectation is hosted-evidence 218; H10 measures 105, other anchors unchanged.
+Fresh complete full/native, independent cleanup and final-head hosted CI/Sonar
+remain mandatory before owner source acceptance. No rule/status/gate waiver,
+runtime/read/wire change, setup or protected dispatch is supplied. Feedback
+remains deferred; neither historical blocked write is replayed.

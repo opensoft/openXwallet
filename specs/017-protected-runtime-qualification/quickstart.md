@@ -1,6 +1,6 @@
 # Offline Qualification and Operator Runbook
 
-Status: T012V accepted-main #80 integration and clarity locally qualified on PR #78; final-head hosted CI and owner acceptance separate; operations ungranted
+Status: T012V exact-refusal clarification awaiting fresh qualification on PR #78; final-head hosted CI and owner acceptance separate; operations ungranted
 
 Current source procedure: [operator source conformance runbook](operator-source-runbook.md),
 [H01-H12 coverage](qualification-matrix.md) and [T012U working plan](hosting-conformance-plan.md).

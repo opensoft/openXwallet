@@ -9,7 +9,7 @@ ROOTS = ("tests/runtime_binding", "tests/factory_binding/test_binding.py",
 
 MODULE_COUNTS = {
     "tests/runtime_binding/test_hosted_journal_encoding.py": 115,
-    "tests/runtime_binding/test_hosted_evidence.py": 198,
+    "tests/runtime_binding/test_hosted_evidence.py": 218,
     "tests/runtime_binding/test_hosted_probe_deadline.py": 22,
     'tests/runtime_binding/test_hosted_lifecycle.py': 121,
     'tests/runtime_binding/test_hosted_launch.py': 109,
@@ -54,7 +54,7 @@ MODULE_COUNTS = {
 MODULE_DIGESTS = {
     "tests/runtime_binding/test_hosted_journal_encoding.py": "8b2106ce2a8a1935ea2c0c6dd835398ee191aba15e740ef933d2ed793f723aa7",
     "tests/runtime_binding/test_hosted_probe_deadline.py": "bf4342dd12db375d30114e0c7fab94c6cfe88e6a2ba92c09f6105652332081ad",
-    "tests/runtime_binding/test_hosted_evidence.py": "386139e3091ffb42e9c9e3a5a2f42de656163988d5baeb723c694192010855ee",
+    "tests/runtime_binding/test_hosted_evidence.py": "65ace8af9a19e5ab8ecf85164f6bdf50b0aa5a868414ccb16cf2b7df8652e922",
     'tests/runtime_binding/test_hosted_lifecycle.py': '1f29a5da2892f430ec9874d88b04278836ba3c8042850310bb4c3fc2b35253a0',
     'tests/runtime_binding/test_hosted_launch.py': '3d603b8e2ed1492456265e8506132b93193339b8040691f37e6d4da546bc7045',
     'tests/runtime_binding/test_hosted_budget.py': '1480f1f23aa0f5e9302d09df41624f22576c1c70996eed08383ace578f9041f9',
@@ -537,3 +537,8 @@ CASES["H03"] += _nodes("test_hosted_launch",
 CASES["H11"] += _nodes("test_hosted_lifecycle",
     "stage_release_without_final_plan_preserves_bound_generation",
     "stage_readback_without_generation_refuses_before_authority_read")
+
+# T012V: exact signed-claim refusal identity/shape and lazy reservation controls.
+CASES["H10"] += _nodes("test_hosted_evidence",
+    "claim_barrier_requires_exact_refusal_shape",
+    "claim_barrier_refuses_consumed_reservation")

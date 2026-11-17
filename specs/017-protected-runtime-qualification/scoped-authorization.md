@@ -1,6 +1,6 @@
 # T013 Scoped Authorization Draft
 
-Status: T012V accepted-main #80 integration and clarity locally qualified; final-head CI/acceptance pending; every operational stage NOT GRANTED
+Status: T012V exact-refusal clarification awaiting fresh qualification; final-head CI/acceptance pending; every operational stage NOT GRANTED
 Updated: 2026-11-17
 Selections: [operational inputs](operational-inputs.md)
 Accepted bootstrap source: [bootstrap record](workflow-bootstrap.md)

@@ -179,6 +179,12 @@ class QualificationResult:
             error=error)
 
 
+def _is_workload_mismatch(error):
+    """One exact fixed-code refusal invariant for both signed-claim barriers."""
+    return (type(error) is BindingError and len(error.args) == 1
+            and type(error.args[0]) is str and error.args[0] == "workload-mismatch")
+
+
 def _barrier(token, kind, bridge, now, selected, inputs):
     # First establish a signature-valid single-claim counterfactual. The payload
     # is untrusted until this independent verification has succeeded.
@@ -201,16 +207,14 @@ def _barrier(token, kind, bridge, now, selected, inputs):
     try:
         IssuerWorkloadVerifier(audience=audience, source=bridge.issuer_source).verify(token, expected, now=now)
     except BindingError as error:
-        require(type(error) is BindingError and len(error.args) == 1 and type(error.args[0]) is str
-                and error.args[0] == "workload-mismatch", "qualification-failed")
+        require(_is_workload_mismatch(error), "qualification-failed")
     else:
         raise BindingError("qualification-failed")
     negative = ProofTrace()
     try:
         bridge.sign_observed(inputs[0], inputs[1], token, inputs[3], trace=negative)
     except BindingError as error:
-        require(type(error) is BindingError and len(error.args) == 1 and type(error.args[0]) is str
-                and error.args[0] == "workload-mismatch" and negative.reservation is None,
+        require(_is_workload_mismatch(error) and negative.reservation is None,
                 "qualification-failed")
     else:
         raise BindingError("qualification-failed")

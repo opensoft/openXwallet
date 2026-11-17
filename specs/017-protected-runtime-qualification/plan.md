@@ -2,7 +2,7 @@
 
 **Branch**: `017-protected-runtime-qualification` | **Date**: 2026-11-12
 **Spec**: [spec.md](spec.md)
-**State**: T012T and qualification-only private39 source decisions are accepted; isolated T012T realization and frozen full/native/cleanup qualification are complete; isolated T012U conformance/runbook is complete via [subplan](hosting-conformance-plan.md) and [qualified source record](hosting-conformance-implementation.md); T012V accepted-main #80 integration and bounded clarity full/native/review/cleanup qualification is complete; exact-head hosted CI and owner acceptance remain PR #78 gates, with operations separate. See [T012T source record](hosting-evidence-budget-realization.md).
+**State**: T012V exact-refusal clarification is in progress under the existing source commission. Earlier main #80 full/native/cleanup receipts remain historical; fresh qualification, CI and owner acceptance are pending. T012T/private39 source decisions remain accepted; operational authority remains separate. See [bounded continuation](hosting-conformance-implementation.md#t012v-exact-signed-claim-refusal-clarification).
 
 Bootstrap amendment `fix-protected-runtime-dispatch-bootstrap` was source
 accepted and landed in factory #1311 / adapter #60. The static dispatch selection
@@ -349,9 +349,9 @@ unchanged prior identities and independent preservation/cleanup. Accepted main
 shared tooling/pins/nullable guards remain intact. Old receipts are historical;
 fresh final-head hosted CI/Sonar and owner ratification remain separate.
 
-### Accepted-main #80 qualification handoff
+### Historical accepted-main #80 qualification handoff
 
-The [current integrated source record](hosting-conformance-implementation.md#t012v-main-80-integrated-source-qualification)
+The [historical main #80 source record](hosting-conformance-implementation.md#t012v-main-80-integrated-source-qualification)
 records 2,781 full tests plus 11 subtests and all 2,369 mandatory native cases,
 preserved identities and independent preservation/cleanup. Accepted incoming
 pins/tooling/tests retain exact baseline bytes. Bounded clarity changes retain

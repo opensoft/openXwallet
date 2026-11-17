@@ -1026,3 +1026,107 @@ def test_original_cancellation_survives_post_cleanup_clock_failure(k, w, request
     assert not hosted.provider.active[hosted.token.credential]
     with pytest.raises(BindingError, match="^protected-report-refused$"):
         build_receipt(qualifier.result, now=hosted.clock.value)
+
+
+
+@pytest.mark.parametrize("site", ["verifier", "bridge"])
+@pytest.mark.parametrize("shape", [
+    "exact", "subclass", "class-spoof", "class-equality-spoof", "no-args",
+    "two-args", "wrong-code", "string-subclass", "equal-nonstring",
+])
+def test_claim_barrier_requires_exact_refusal_shape(c, monkeypatch, site, shape):
+    from workload_factory_binding_runtime.issuer import IssuerWorkloadVerifier
+    from workload_factory_binding_runtime.runtime import RuntimeBridge
+
+    class ChildError(BindingError):
+        pass
+
+    class ClassSpoofError(BindingError):
+        @property
+        def __class__(self):
+            return BindingError
+
+    class EqualErrorType(type):
+        __hash__ = type.__hash__
+
+        def __eq__(cls, other):
+            return other is BindingError
+
+    class ClassEqualityError(BindingError, metaclass=EqualErrorType):
+        pass
+
+    class CodeText(str):
+        pass
+
+    class EqualCode:
+        def __eq__(self, other):
+            return other == "workload-mismatch"
+
+    errors = {
+        "exact": BindingError("workload-mismatch"),
+        "subclass": ChildError("workload-mismatch"),
+        "class-spoof": ClassSpoofError("workload-mismatch"),
+        "class-equality-spoof": ClassEqualityError("workload-mismatch"),
+        "no-args": BindingError(),
+        "two-args": BindingError("workload-mismatch", "extra"),
+        "wrong-code": BindingError("issuer-unavailable"),
+        "string-subclass": BindingError(CodeText("workload-mismatch")),
+        "equal-nonstring": BindingError(EqualCode()),
+    }
+    refusal = errors[shape]
+    c.run()
+    selected = validate_config(c.bridge.load_config(), trust=c.trust)
+    token = jwt(c.h.issuer_key, {**c.h.claims, "aud": "independent-negative"})
+    inputs = (c.h.challenge.id, c.h.request, c.h.token, c.h.observation)
+    original_verify = IssuerWorkloadVerifier.verify
+    original_sign = RuntimeBridge.sign_observed
+    verify_calls, bridge_calls = [], []
+
+    def verify(self, *args, **kwargs):
+        verify_calls.append(None)
+        if site == "verifier" and len(verify_calls) == 2:
+            raise refusal
+        return original_verify(self, *args, **kwargs)
+
+    def sign(self, *args, **kwargs):
+        bridge_calls.append(kwargs["trace"])
+        if site == "bridge":
+            raise refusal
+        return original_sign(self, *args, **kwargs)
+
+    monkeypatch.setattr(IssuerWorkloadVerifier, "verify", verify)
+    monkeypatch.setattr(RuntimeBridge, "sign_observed", sign)
+    if shape == "exact":
+        result = _barrier(token, "audience", c.bridge, c.h.now, selected, inputs)
+        assert result.startswith("sha256:")
+        assert len(bridge_calls) == 1
+        assert bridge_calls[0].reservation is None
+    else:
+        with pytest.raises(BindingError, match="^qualification-failed$"):
+            _barrier(token, "audience", c.bridge, c.h.now, selected, inputs)
+        expected_bridge_calls = 0 if site == "verifier" else 1
+        assert len(bridge_calls) == expected_bridge_calls
+        assert len(verify_calls) == 2
+
+
+@pytest.mark.parametrize("reservation", ["reserved", "replay-refused"])
+def test_claim_barrier_refuses_consumed_reservation(c, monkeypatch, reservation):
+    from workload_factory_binding_runtime.runtime import RuntimeBridge
+
+    c.run()
+    selected = validate_config(c.bridge.load_config(), trust=c.trust)
+    token = jwt(c.h.issuer_key, {**c.h.claims, "aud": "independent-negative"})
+    inputs = (c.h.challenge.id, c.h.request, c.h.token, c.h.observation)
+    traces = []
+
+    def sign(self, *args, **kwargs):
+        trace = kwargs["trace"]
+        trace.reservation = reservation
+        traces.append(trace)
+        raise BindingError("workload-mismatch")
+
+    monkeypatch.setattr(RuntimeBridge, "sign_observed", sign)
+    with pytest.raises(BindingError, match="^qualification-failed$"):
+        _barrier(token, "audience", c.bridge, c.h.now, selected, inputs)
+    assert len(traces) == 1
+    assert traces[0].reservation == reservation
