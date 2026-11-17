@@ -835,7 +835,8 @@ def test_dead_final_scheduler_refuses_operation_but_independent_closed_lease_cle
     assert not lh.provider.active[lh.token.credential]
 
 
-from workload_factory_binding_runtime.hosted.lifecycle import PosixResources, FileResource, TokenResource, HostedLifecycle
+from workload_factory_binding_runtime.hosted.lifecycle import (PosixResources, FileResource, TokenResource, HostedLifecycle,
+    LifecycleActors, LifecycleStores)
 from workload_factory_binding_runtime.hosted.issuance import InstallationRetirer
 import fcntl
 
@@ -963,8 +964,10 @@ def test_known_control_state_can_never_be_selected_as_a_run_file(lh, request, ta
     life = lh.life
     with pytest.raises(BindingError):
         HostedLifecycle(plan=life.plan, context=life.context, policy=life.policy,
-            host_store=life.host_store, store=life.store, intake=life.intake, audit_store=life.audit_store,
-            resources=resources, janitor=life.janitor, auditor=life.auditor, scheduler=json.loads(life.scheduler),
+            host_store=life.host_store,
+            stores=LifecycleStores(primary=life.store, intake=life.intake, audit=life.audit_store),
+            resources=resources,
+            actors=LifecycleActors(janitor=life.janitor, auditor=life.auditor, scheduler=json.loads(life.scheduler)),
             host_pid_namespace=life.host_pid_namespace, final_authority_principal=life.final_authority_principal,
             cleanup_until=life.cleanup_until, retained_roots=(lh.stage.controller.store.directory,))
     assert path.exists()

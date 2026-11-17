@@ -726,23 +726,11 @@ def _is_written_bytecode(path: str) -> bool:
         "__pycache__" in parts.parts or parts.suffix in BYTECODE_SUFFIXES)
 
 
-def _content_drift(leg_checkout: Path, shown: str) -> list[str]:
-    """Every tracked path under LEG_READ_DIRS whose working-tree CONTENT is
-    not its blob at the leg's HEAD, each with why. Content, never git's stat
-    cache, which a same-size edit with a restored mtime fools. The regular
-    files are hashed as raw bytes by ONE `git hash-object --no-filters
-    --stdin-paths`; a symbolic link is compared by its link text."""
-    listed = _git(leg_checkout, "ls-tree", "-r", "-z", "HEAD", "--",
-                  *LEG_READ_DIRS)
-    if listed.returncode != 0:
-        raise PinRefusal(
-            "pin-leg-dirty",
-            f"`git ls-tree -r HEAD` could not be read in {shown} (exit "
-            f"{listed.returncode}: {listed.stderr.strip()}); a leg whose "
-            "tree cannot be read is not known to be its commit")
+def _classify_tracked_content(leg_checkout: Path, records: str
+                              ) -> tuple[list[str], list[tuple[str, str]]]:
     drift: list[str] = []
     regular: list[tuple[str, str]] = []
-    for record in filter(None, listed.stdout.split("\0")):
+    for record in filter(None, records.split("\0")):
         meta, _, path = record.partition("\t")
         mode, _, oid = meta.split(" ")
         target = leg_checkout / path
@@ -760,6 +748,24 @@ def _content_drift(leg_checkout: Path, shown: str) -> list[str]:
         else:
             drift.append(f"{path!r} (tracked mode {mode}, which this check "
                          "cannot compare)")
+    return drift, regular
+
+
+def _content_drift(leg_checkout: Path, shown: str) -> list[str]:
+    """Every tracked path under LEG_READ_DIRS whose working-tree CONTENT is
+    not its blob at the leg's HEAD, each with why. Content, never git's stat
+    cache, which a same-size edit with a restored mtime fools. The regular
+    files are hashed as raw bytes by ONE `git hash-object --no-filters
+    --stdin-paths`; a symbolic link is compared by its link text."""
+    listed = _git(leg_checkout, "ls-tree", "-r", "-z", "HEAD", "--",
+                  *LEG_READ_DIRS)
+    if listed.returncode != 0:
+        raise PinRefusal(
+            "pin-leg-dirty",
+            f"`git ls-tree -r HEAD` could not be read in {shown} (exit "
+            f"{listed.returncode}: {listed.stderr.strip()}); a leg whose "
+            "tree cannot be read is not known to be its commit")
+    drift, regular = _classify_tracked_content(leg_checkout, listed.stdout)
     if not regular:
         return drift
     hashed = _git(leg_checkout, "hash-object", "--no-filters", "--stdin-paths",

@@ -343,3 +343,5 @@ Remaining source-quality maintenance: [issue #82 backlog acceptance](docs/qualit
 Installed tooling maintenance: [bounded shell predicate repair](docs/quality/installed-shell-repair.md).
 
 Runtime source maintenance: [style repairs and qualification limits](docs/quality/runtime-style-repairs.md).
+
+Runtime validation maintenance: [guard and lifecycle responsibilities](docs/quality/runtime-complexity-repairs.md).

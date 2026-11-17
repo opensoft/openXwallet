@@ -65,6 +65,36 @@ class DeploymentReader:
             and value["properties"].get("provisioningState")=="Succeeded" and "nextLink" not in value,ERROR)
         return value
 
+    @staticmethod
+    def _validated_identity(vm,s):
+        identity=vm.get("identity");require(type(identity) is dict and digest(identity)==s.identity_digest,ERROR)
+        if s.role=="worker":require(identity=={"type":"None"},ERROR)
+        else:
+            require(identity.get("type")=="UserAssigned" and set(identity)=={"type","userAssignedIdentities"}
+                and type(identity["userAssignedIdentities"]) is dict and 0<len(identity["userAssignedIdentities"])<=3,ERROR)
+            for entry in identity["userAssignedIdentities"].values():
+                require(type(entry) is dict and set(entry)=={"clientId","principalId"}
+                    and all(type(v) is str and re.fullmatch(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",v) for v in entry.values()),ERROR)
+        return identity
+
+    def _read_network(self,s,decision):
+        nic=self.get(s.nic_id,"networkInterfaces",decision);subnet=self.get(s.subnet_id,"virtualNetworks",decision)
+        nsg=self.get(s.nsg_id,"networkSecurityGroups",decision);np=nic["properties"];sp=subnet["properties"]
+        require(np.get("virtualMachine")=={"id":s.vm_id} and type(np.get("ipConfigurations")) is list
+            and len(np["ipConfigurations"])==1 and np.get("enableIPForwarding") is False
+            and sp.get("networkSecurityGroup")=={"id":s.nsg_id}
+            and ("networkSecurityGroup" not in np or np["networkSecurityGroup"]=={"id":s.nsg_id}),ERROR)
+        ip=np["ipConfigurations"][0]["properties"]
+        require(ip.get("subnet")=={"id":s.subnet_id} and type(ip.get("privateIPAddress")) is str
+            and (ip.get("publicIPAddress") if s.public_ip_id is not None else "publicIPAddress" not in ip)
+            and type(nsg["properties"].get("securityRules")) is list
+            and type(nsg["properties"].get("defaultSecurityRules")) is list,ERROR)
+        network={"nic":np,"subnet":sp,"nsg":nsg["properties"]}
+        if s.public_ip_id is not None:
+            require(ip["publicIPAddress"]=={"id":s.public_ip_id},ERROR)
+            network["public_ip"]=self.get(s.public_ip_id,"publicIPAddresses",decision)["properties"]
+        return network
+
     def read(self,*,decision):
         try:
             before=decision.now();s=self.selection;require(canonical(s.record())==self.record,ERROR)
@@ -72,14 +102,7 @@ class DeploymentReader:
             require(p.get("vmId")==s.incarnation_id and type(p.get("instanceView")) is dict
                 and type(p["instanceView"].get("statuses")) is list
                 and any(x.get("code")=="PowerState/running" for x in p["instanceView"]["statuses"] if type(x) is dict),ERROR)
-            identity=vm.get("identity");require(type(identity) is dict and digest(identity)==s.identity_digest,ERROR)
-            if s.role=="worker":require(identity=={"type":"None"},ERROR)
-            else:
-                require(identity.get("type")=="UserAssigned" and set(identity)=={"type","userAssignedIdentities"}
-                    and type(identity["userAssignedIdentities"]) is dict and 0<len(identity["userAssignedIdentities"])<=3,ERROR)
-                for entry in identity["userAssignedIdentities"].values():
-                    require(type(entry) is dict and set(entry)=={"clientId","principalId"}
-                        and all(type(v) is str and re.fullmatch(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",v) for v in entry.values()),ERROR)
+            identity=self._validated_identity(vm,s)
             model={k:v for k,v in p.items() if k!="instanceView"};require(digest(model)==s.model_digest,ERROR)
             storage=p.get("storageProfile");require(type(storage) is dict and storage.get("imageReference")=={"id":s.image_id}
                 and type(storage.get("osDisk")) is dict and type(storage["osDisk"].get("managedDisk")) is dict
@@ -102,21 +125,7 @@ class DeploymentReader:
             require(all(x.get("managedBy")==s.vm_id and x["properties"].get("diskState")=="Attached" for x in disks),ERROR)
             store={"image":image["properties"],"disks":[x["properties"] for x in disks]}
             require(digest(store)==s.storage_digest,ERROR)
-            nic=self.get(s.nic_id,"networkInterfaces",decision);subnet=self.get(s.subnet_id,"virtualNetworks",decision)
-            nsg=self.get(s.nsg_id,"networkSecurityGroups",decision);np=nic["properties"];sp=subnet["properties"]
-            require(np.get("virtualMachine")=={"id":s.vm_id} and type(np.get("ipConfigurations")) is list
-                and len(np["ipConfigurations"])==1 and np.get("enableIPForwarding") is False
-                and sp.get("networkSecurityGroup")=={"id":s.nsg_id}
-                and ("networkSecurityGroup" not in np or np["networkSecurityGroup"]=={"id":s.nsg_id}),ERROR)
-            ip=np["ipConfigurations"][0]["properties"]
-            require(ip.get("subnet")=={"id":s.subnet_id} and type(ip.get("privateIPAddress")) is str
-                and (ip.get("publicIPAddress") if s.public_ip_id is not None else "publicIPAddress" not in ip)
-                and type(nsg["properties"].get("securityRules")) is list
-                and type(nsg["properties"].get("defaultSecurityRules")) is list,ERROR)
-            network={"nic":np,"subnet":sp,"nsg":nsg["properties"]}
-            if s.public_ip_id is not None:
-                require(ip["publicIPAddress"]=={"id":s.public_ip_id},ERROR)
-                network["public_ip"]=self.get(s.public_ip_id,"publicIPAddresses",decision)["properties"]
+            network=self._read_network(s,decision)
             require(digest(network)==s.network_digest,ERROR);decision.now()
             facts={"vm_id":vm["id"],"incarnation_id":p["vmId"],"identity":identity,"model_digest":digest(model),
                 "storage_digest":digest(store),"network_digest":digest(network),"image_id":storage["imageReference"]["id"]}

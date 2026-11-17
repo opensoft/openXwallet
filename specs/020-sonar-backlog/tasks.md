@@ -14,3 +14,5 @@
 - [ ] [O] Qualify bounded installed-shell repairs and coherent neutral-provider pins; verify original keys on published main.
 
 - [ ] [O] Qualify the34 source-style repairs and six named observation assertions; retain clock/cap/native inventories and verify live finding keys.
+
+- [ ] [O] Qualify the guard and lifecycle refactors with the existing native, source coverage and Sonar checks.

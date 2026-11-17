@@ -44,6 +44,19 @@ class StageController:
             plan.digest,self.context.accepted_commit,self.context.source_commit,self.context.run_id,self.context.run_attempt,
             value["configuration_template"]["launch"]["environment"],value["staging_policy"]["launch_ref"],state,decision.deadline)
 
+    def _existing_stage_state(self,ref,status_counted,decision):
+        if not status_counted:self.store.status_read(ref,decision=decision)
+        row=self.store.read(ref,decision=decision);status=self.host.status(ref,decision=decision)
+        if row["unit"] is not None:require(canonical(status["unit"])==canonical(row["unit"]),ERROR)
+        elif status["state"]=="registered":
+            self.store.transition(ref,"reserved","registered",decision=decision,unit=status["unit"])
+        if status["state"]=="running":
+            require(row["state"] in ("start-consumed","running") and row["unit"] is not None,ERROR)
+            if row["generation"] is None:
+                self.store.transition(ref,"start-consumed","running",decision=decision,generation=status["generation"])
+            else:require(canonical(status["generation"])==canonical(row["generation"]),ERROR)
+        return status["state"]
+
     def handle(self,phase,inputs,token,*,decision):
         try:
             require(phase in ("preflight","protected"),ERROR);self._inputs(inputs)
@@ -63,17 +76,8 @@ class StageController:
             ref=scope["launch_ref"]
             new=self.store.reserve(ref,scope,decision=decision,expires_at=grant["expires_at"])
             if not new:
-                if not status_counted:self.store.status_read(ref,decision=decision)
-                row=self.store.read(ref,decision=decision);status=self.host.status(ref,decision=decision)
-                if row["unit"] is not None:require(canonical(status["unit"])==canonical(row["unit"]),ERROR)
-                elif status["state"]=="registered":
-                    self.store.transition(ref,"reserved","registered",decision=decision,unit=status["unit"])
-                if status["state"]=="running":
-                    require(row["state"] in ("start-consumed","running") and row["unit"] is not None,ERROR)
-                    if row["generation"] is None:
-                        self.store.transition(ref,"start-consumed","running",decision=decision,generation=status["generation"])
-                    else:require(canonical(status["generation"])==canonical(row["generation"]),ERROR)
-                return self._admission(plan,phase,status["state"],decision)
+                state=self._existing_stage_state(ref,status_counted,decision)
+                return self._admission(plan,phase,state,decision)
             registered=self.host.register(ref,decision=decision)
             require(registered["state"]=="registered" and registered["scope_digest"]==digest(scope),ERROR)
             unit=registered["unit"];self.store.transition(ref,"reserved","registered",decision=decision,unit=unit)

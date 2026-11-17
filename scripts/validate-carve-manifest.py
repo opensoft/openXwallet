@@ -481,8 +481,7 @@ def _closed_mapping(value: Any, keys: frozenset[str], where: str,
 # check 1 — shape
 # --------------------------------------------------------------------------
 
-def check_shape(doc: dict[str, Any]) -> None:
-    """Everything answerable from the document alone, before any git call."""
+def _check_manifest_header(doc: dict[str, Any]) -> None:
     version = doc.get("schema_version")
     if (not isinstance(version, int) or isinstance(version, bool)
             or version != SCHEMA_VERSION):
@@ -534,6 +533,8 @@ def check_shape(doc: dict[str, Any]) -> None:
         raise CarveRefusal("carve-shape-invalid",
                            f"`source_repository: {source!r}` is not `owner/name`")
 
+
+def _check_destinations(doc: dict[str, Any]) -> None:
     destinations = doc["destinations"]
     if not isinstance(destinations, dict) or not destinations:
         raise CarveRefusal("carve-shape-invalid",
@@ -559,6 +560,8 @@ def check_shape(doc: dict[str, Any]) -> None:
                 f"`destinations.{key}.leg: {entry.get('leg')!r}` is not one of "
                 f"{list(LEGS)!r}")
 
+
+def _check_declared_vocabularies(doc: dict[str, Any]) -> None:
     classes = doc["edit_classes"]
     if not isinstance(classes, list) or tuple(classes) != EDIT_CLASSES:
         raise CarveRefusal(
@@ -579,6 +582,8 @@ def check_shape(doc: dict[str, Any]) -> None:
             f"does not know; the known set is {list(KNOWN_NOT_MOVED_REASONS)!r}"
             " — declared AND known, so a file may not widen it by declaring it")
 
+
+def _check_leg_classification(doc: dict[str, Any]) -> None:
     classification = _closed_mapping(doc["leg_classification"],
                                      LEG_CLASSIFICATION_KEYS,
                                      "`leg_classification:`")
@@ -597,6 +602,8 @@ def check_shape(doc: dict[str, Any]) -> None:
                            "`leg_classification.policy_sha256` is not 64 "
                            "lowercase hex characters")
 
+
+def _check_leg_overrides(doc: dict[str, Any]) -> None:
     overrides = doc["leg_overrides"]
     if not isinstance(overrides, dict) or not overrides:
         raise CarveRefusal("carve-shape-invalid",
@@ -622,6 +629,19 @@ def check_shape(doc: dict[str, Any]) -> None:
                                f"{where}.leg: {entry['leg']!r} is not one of "
                                f"{list(LEGS)!r}")
 
+
+def check_shape(doc: dict[str, Any]) -> None:
+    """Everything answerable from the document alone, before any git call."""
+    _check_manifest_header(doc)
+
+    _check_destinations(doc)
+
+    _check_declared_vocabularies(doc)
+
+    _check_leg_classification(doc)
+
+    _check_leg_overrides(doc)
+
     moved_paths = doc["moved_paths"]
     if not isinstance(moved_paths, list) or not moved_paths:
         raise CarveRefusal("carve-shape-invalid",
@@ -639,6 +659,37 @@ def check_shape(doc: dict[str, Any]) -> None:
                            f"`rows:` is not a non-empty list ({rows!r})")
     for index, row in enumerate(rows):
         _check_row_shape(index, row, moved_paths)
+
+
+def _check_moved_row_shape(row: dict, where: str, source_path: str,
+                           disposition: str, moved_paths: list[str]) -> None:
+    mode = row.get("git_mode")
+    if not isinstance(mode, str) or not MODE_RE.match(mode):
+        raise CarveRefusal(
+            "carve-shape-invalid",
+            f"{where} declares `git_mode: {mode!r}`; a QUOTED git file mode "
+            "is required (an unquoted 100644 parses as an int)")
+    digest = row.get("sha256")
+    if not isinstance(digest, str) or not SHA256_RE.match(digest):
+        raise CarveRefusal(
+            "carve-shape-invalid",
+            f"{where} declares `sha256: {digest!r}`, which is not 64 "
+            "lowercase hex characters")
+    _require_str(row, "destination", where)
+    _require_str(row, "destination_path", where)
+    default = _closed_mapping(row.get("leg_default"), LEG_DEFAULT_KEYS,
+                              f"{where}.leg_default")
+    _require_str(default, "leg", f"{where}.leg_default")
+    _require_str(default, "rule", f"{where}.leg_default")
+    if "leg_override" in row:
+        _require_str(row, "leg_override", where)
+    if not in_surface(source_path, moved_paths):
+        raise CarveRefusal(
+            "carve-shape-invalid",
+            f"{where} is `{disposition}` and lies under no `moved_paths:` "
+            "entry; the surface is what is watched at the revision under "
+            "test, and a moved file outside it could change after the "
+            "carve commit without any refusal")
 
 
 def _check_row_shape(index: int, row: Any, moved_paths: list[str]) -> None:
@@ -676,38 +727,39 @@ def _check_row_shape(index: int, row: Any, moved_paths: list[str]) -> None:
             raise CarveRefusal("carve-shape-invalid",
                                f"{where} is `{disposition}` and lacks `{key}:`")
     if disposition in MOVED_DISPOSITIONS:
-        mode = row.get("git_mode")
-        if not isinstance(mode, str) or not MODE_RE.match(mode):
-            raise CarveRefusal(
-                "carve-shape-invalid",
-                f"{where} declares `git_mode: {mode!r}`; a QUOTED git file mode "
-                "is required (an unquoted 100644 parses as an int)")
-        digest = row.get("sha256")
-        if not isinstance(digest, str) or not SHA256_RE.match(digest):
-            raise CarveRefusal(
-                "carve-shape-invalid",
-                f"{where} declares `sha256: {digest!r}`, which is not 64 "
-                "lowercase hex characters")
-        _require_str(row, "destination", where)
-        _require_str(row, "destination_path", where)
-        default = _closed_mapping(row.get("leg_default"), LEG_DEFAULT_KEYS,
-                                  f"{where}.leg_default")
-        _require_str(default, "leg", f"{where}.leg_default")
-        _require_str(default, "rule", f"{where}.leg_default")
-        if "leg_override" in row:
-            _require_str(row, "leg_override", where)
-        if not in_surface(source_path, moved_paths):
-            raise CarveRefusal(
-                "carve-shape-invalid",
-                f"{where} is `{disposition}` and lies under no `moved_paths:` "
-                "entry; the surface is what is watched at the revision under "
-                "test, and a moved file outside it could change after the "
-                "carve commit without any refusal")
+        _check_moved_row_shape(row, where, source_path, disposition, moved_paths)
     else:
         _require_str(row, "reason", where)
         _require_str(row, "evidence", where)
     if "edits" in row:
         _check_edits_shape(where, row["edits"])
+
+
+def _check_edit_shape(where: str, position: int, edit: Any) -> None:
+    at = f"{where}.edits[{position}]"
+    _closed_mapping(edit, EDIT_KEYS, at, required=frozenset({"class",
+                                                             "lines"}))
+    if not isinstance(edit.get("class"), str) or not edit["class"]:
+        raise CarveRefusal("carve-shape-invalid",
+                           f"{at} declares `class: {edit.get('class')!r}`")
+    lines = edit.get("lines")
+    if not isinstance(lines, list) or not lines:
+        raise CarveRefusal(
+            "carve-shape-invalid",
+            f"{at} declares `lines: {lines!r}`; at least one line number at "
+            "the carve commit is required, or `moved_with_declared_edit` "
+            "is only a label")
+    for line in lines:
+        if not isinstance(line, int) or isinstance(line, bool) or line < 1:
+            raise CarveRefusal(
+                "carve-shape-invalid",
+                f"{at} declares the line {line!r}; line numbers are "
+                "positive integers")
+    if "note" in edit and (not isinstance(edit["note"], str)
+                           or not edit["note"].strip()):
+        raise CarveRefusal("carve-shape-invalid",
+                           f"{at} declares `note: {edit['note']!r}`; a "
+                           "note is prose or it is absent")
 
 
 def _check_edits_shape(where: str, edits: Any) -> None:
@@ -716,30 +768,8 @@ def _check_edits_shape(where: str, edits: Any) -> None:
                            f"{where} declares `edits:` as {edits!r}; a list "
                            "is required")
     for position, edit in enumerate(edits):
-        at = f"{where}.edits[{position}]"
-        _closed_mapping(edit, EDIT_KEYS, at, required=frozenset({"class",
-                                                                 "lines"}))
-        if not isinstance(edit.get("class"), str) or not edit["class"]:
-            raise CarveRefusal("carve-shape-invalid",
-                               f"{at} declares `class: {edit.get('class')!r}`")
-        lines = edit.get("lines")
-        if not isinstance(lines, list) or not lines:
-            raise CarveRefusal(
-                "carve-shape-invalid",
-                f"{at} declares `lines: {lines!r}`; at least one line number at "
-                "the carve commit is required, or `moved_with_declared_edit` "
-                "is only a label")
-        for line in lines:
-            if not isinstance(line, int) or isinstance(line, bool) or line < 1:
-                raise CarveRefusal(
-                    "carve-shape-invalid",
-                    f"{at} declares the line {line!r}; line numbers are "
-                    "positive integers")
-        if "note" in edit and (not isinstance(edit["note"], str)
-                               or not edit["note"].strip()):
-            raise CarveRefusal("carve-shape-invalid",
-                               f"{at} declares `note: {edit['note']!r}`; a "
-                               "note is prose or it is absent")
+        _check_edit_shape(where, position, edit)
+
 
 
 def in_surface(path: str, moved_paths: list[str]) -> bool:
@@ -797,6 +827,111 @@ def check_revision(repo: Path, doc: dict, at: str | None) -> str:
 # check 3 — digests
 # --------------------------------------------------------------------------
 
+def _check_declared_edit_lines(row, index, path, commit, content) -> None:
+    total = count_lines(content)
+    for position, edit in enumerate(row.get("edits") or []):
+        for line in edit["lines"]:
+            if line > total:
+                raise CarveRefusal(
+                    "carve-shape-invalid",
+                    f"rows[{index}].edits[{position}] ({path}) names line "
+                    f"{line}, and the blob at {commit[:12]} has {total} "
+                    "line(s); a declared edit at a line the file does not "
+                    "have cannot be checked at the destination")
+
+
+def _verify_referent_row(repo, doc, referent, commit, index, row) -> None:
+    path = row["source_path"]
+    if path not in referent:
+        raise CarveRefusal(
+            "carve-path-absent",
+            f"rows[{index}] records a sha256 for {path}, which "
+            f"{doc['source_repository']}@{commit[:12]} does not carry as a "
+            "file; a digest of nothing is not a digest")
+    if referent[path].mode != row["git_mode"]:
+        raise CarveRefusal(
+            "carve-digest-mismatch",
+            f"{path}: MODE DRIFT — the manifest records git_mode "
+            f"{row['git_mode']} and the tree at {commit[:12]} carries "
+            f"{referent[path].mode}")
+    content = blob_at(repo, commit, path)
+    if content is None:  # pragma: no cover - ls-tree already said blob
+        raise CarveRefusal("carve-path-absent",
+                           f"{path} could not be read as a blob at "
+                           f"{commit[:12]}")
+    actual = hashlib.sha256(content).hexdigest()
+    if actual != row["sha256"]:
+        raise CarveRefusal(
+            "carve-digest-mismatch",
+            f"{path}: DIGEST DRIFT\n"
+            f"  recorded   {row['sha256']}\n"
+            f"  recomputed {actual}\n"
+            f"the bytes at {commit[:12]} are not the bytes this row "
+            "promises the destination")
+    _check_declared_edit_lines(row, index, path, commit, content)
+
+
+
+def _skip_tested_digest(row, path, index, tested, verified_at, phase) -> bool:
+    retained = row.get("retained_here")
+    if phase == PHASE_POST_SHED:
+        if retained == RETAINED_SHED:
+            if path in tested:
+                raise CarveRefusal(
+                    "carve-shed-incomplete",
+                    f"{path}: STILL PRESENT UNDER A POST-SHED MANIFEST — "
+                    f"rows[{index}] declares it `retained_here: shed`, the "
+                    f"manifest declares `phase: {PHASE_POST_SHED}`, and "
+                    f"{verified_at[:12]} still carries it. Either this "
+                    "commit is missing the deletion, or the phase was "
+                    "flipped ahead of the shed")
+            return True
+        if retained == RETAINED_RETIRED:
+            if path not in tested:
+                return True
+        else:
+            # A `kept` moved row: the adapter rebuild rewrites these at the
+            # same path (the validator, the syntax-gate entrypoint, the
+            # manifest, the CHANGELOG, the workflows), so after the shed
+            # they are this repository's again. Presence is check 4's, as
+            # it is for every `kept` row under `post-shed`.
+            return True
+    return False
+
+
+def _verify_tested_row(repo, row, index, referent, tested, verified_at, phase, commit) -> None:
+    path = row["source_path"]
+    if _skip_tested_digest(row, path, index, tested, verified_at, phase):
+        return
+    if path not in tested:
+        raise CarveRefusal(
+            "carve-path-absent",
+            f"{path}: DELETED SINCE THE CARVE — rows[{index}] declares it "
+            f"`{row['disposition']}` at {commit[:12]}, and "
+            f"{verified_at[:12]} no longer carries it. A source the tree "
+            "has dropped is a move nobody can review at the destination: "
+            "have a new carve commit named, or — if this is the adapter "
+            f"rebuild's shed — declare `phase: {PHASE_POST_SHED}` in the "
+            "SAME commit")
+    if tested[path].mode != referent[path].mode:
+        raise CarveRefusal(
+            "carve-digest-mismatch",
+            f"{path}: MODE DRIFT SINCE THE CARVE — {row['git_mode']} at "
+            f"{commit[:12]}, {tested[path].mode} at {verified_at[:12]}")
+    if tested[path].oid == referent[path].oid:
+        return
+    content = blob_at(repo, verified_at, path)
+    moved_to = (hashlib.sha256(content).hexdigest()
+                if content is not None else "<unreadable>")
+    raise CarveRefusal(
+        "carve-digest-mismatch",
+        f"{path}: CHANGED SINCE THE CARVE\n"
+        f"  at carve_commit {commit[:12]}  {row['sha256']}\n"
+        f"  at {verified_at[:12]}              {moved_to}\n"
+        "the carve ships the bytes at the carve commit, so an edit made on "
+        "`main` since is an edit the destination never receives")
+
+
 def check_digests(repo: Path, doc: dict, referent: dict[str, TreeEntry],
                   tested: dict[str, TreeEntry], verified_at: str,
                   phase: str) -> int:
@@ -812,105 +947,66 @@ def check_digests(repo: Path, doc: dict, referent: dict[str, TreeEntry],
     for index, row in enumerate(doc["rows"]):
         if row.get("disposition") not in MOVED_DISPOSITIONS:
             continue
-        path = row["source_path"]
-        if path not in referent:
-            raise CarveRefusal(
-                "carve-path-absent",
-                f"rows[{index}] records a sha256 for {path}, which "
-                f"{doc['source_repository']}@{commit[:12]} does not carry as a "
-                "file; a digest of nothing is not a digest")
-        if referent[path].mode != row["git_mode"]:
-            raise CarveRefusal(
-                "carve-digest-mismatch",
-                f"{path}: MODE DRIFT — the manifest records git_mode "
-                f"{row['git_mode']} and the tree at {commit[:12]} carries "
-                f"{referent[path].mode}")
-        content = blob_at(repo, commit, path)
-        if content is None:  # pragma: no cover - ls-tree already said blob
-            raise CarveRefusal("carve-path-absent",
-                               f"{path} could not be read as a blob at "
-                               f"{commit[:12]}")
-        actual = hashlib.sha256(content).hexdigest()
+        _verify_referent_row(repo, doc, referent, commit, index, row)
         recomputed += 1
-        if actual != row["sha256"]:
-            raise CarveRefusal(
-                "carve-digest-mismatch",
-                f"{path}: DIGEST DRIFT\n"
-                f"  recorded   {row['sha256']}\n"
-                f"  recomputed {actual}\n"
-                f"the bytes at {commit[:12]} are not the bytes this row "
-                "promises the destination")
-        total = count_lines(content)
-        for position, edit in enumerate(row.get("edits") or []):
-            for line in edit["lines"]:
-                if line > total:
-                    raise CarveRefusal(
-                        "carve-shape-invalid",
-                        f"rows[{index}].edits[{position}] ({path}) names line "
-                        f"{line}, and the blob at {commit[:12]} has {total} "
-                        "line(s); a declared edit at a line the file does not "
-                        "have cannot be checked at the destination")
 
     for index, row in enumerate(doc["rows"]):
         if row.get("disposition") not in MOVED_DISPOSITIONS:
             continue
-        path = row["source_path"]
-        retained = row.get("retained_here")
-        if phase == PHASE_POST_SHED:
-            if retained == RETAINED_SHED:
-                if path in tested:
-                    raise CarveRefusal(
-                        "carve-shed-incomplete",
-                        f"{path}: STILL PRESENT UNDER A POST-SHED MANIFEST — "
-                        f"rows[{index}] declares it `retained_here: shed`, the "
-                        f"manifest declares `phase: {PHASE_POST_SHED}`, and "
-                        f"{verified_at[:12]} still carries it. Either this "
-                        "commit is missing the deletion, or the phase was "
-                        "flipped ahead of the shed")
-                continue
-            if retained == RETAINED_RETIRED:
-                if path not in tested:
-                    continue
-            else:
-                # A `kept` moved row: the adapter rebuild rewrites these at the
-                # same path (the validator, the syntax-gate entrypoint, the
-                # manifest, the CHANGELOG, the workflows), so after the shed
-                # they are this repository's again. Presence is check 4's, as
-                # it is for every `kept` row under `post-shed`.
-                continue
-        if path not in tested:
-            raise CarveRefusal(
-                "carve-path-absent",
-                f"{path}: DELETED SINCE THE CARVE — rows[{index}] declares it "
-                f"`{row['disposition']}` at {commit[:12]}, and "
-                f"{verified_at[:12]} no longer carries it. A source the tree "
-                "has dropped is a move nobody can review at the destination: "
-                "have a new carve commit named, or — if this is the adapter "
-                f"rebuild's shed — declare `phase: {PHASE_POST_SHED}` in the "
-                "SAME commit")
-        if tested[path].mode != referent[path].mode:
-            raise CarveRefusal(
-                "carve-digest-mismatch",
-                f"{path}: MODE DRIFT SINCE THE CARVE — {row['git_mode']} at "
-                f"{commit[:12]}, {tested[path].mode} at {verified_at[:12]}")
-        if tested[path].oid == referent[path].oid:
-            continue
-        content = blob_at(repo, verified_at, path)
-        moved_to = (hashlib.sha256(content).hexdigest()
-                    if content is not None else "<unreadable>")
-        raise CarveRefusal(
-            "carve-digest-mismatch",
-            f"{path}: CHANGED SINCE THE CARVE\n"
-            f"  at carve_commit {commit[:12]}  {row['sha256']}\n"
-            f"  at {verified_at[:12]}              {moved_to}\n"
-            "the carve ships the bytes at the carve commit, so an edit made on "
-            "`main` since is an edit the destination never receives")
+        _verify_tested_row(repo, row, index, referent, tested, verified_at, phase, commit)
     return recomputed
 
 
 # --------------------------------------------------------------------------
 # check 4 — surface and completeness
 # --------------------------------------------------------------------------
+
+def _check_unique_arrivals(doc, destinations) -> None:
+    arrivals: dict[tuple[str, ...], int] = {}
+    for index, row in enumerate(doc["rows"]):
+        if row.get("disposition") not in MOVED_DISPOSITIONS:
+            continue
+        entry = destinations.get(row["destination"])
+        if entry is not None:
+            arrival: tuple[str, ...] = (entry["repository"], entry["leg"],
+                                        row["destination_path"])
+            where = f"{entry['repository']} ({entry['leg']})"
+        else:
+            arrival = (row["destination"],)
+            where = row["destination"]
+        if arrival in arrivals:
+            raise CarveRefusal(
+                "carve-file-duplicated",
+                f"rows[{arrivals[arrival]}] AND rows[{index}] both send a file "
+                f"to {where}:{row['destination_path']}; one would overwrite "
+                "the other and the manifest does not say which")
+        arrivals[arrival] = index
+
+
+def _check_kept_rows(doc, tested, verified_at) -> None:
+    # The shed removes EXACTLY the `shed` rows (tasks.md 5.5), so every
+    # `kept` row is still here, whatever its disposition and wherever it
+    # lies. Under the surface the `vanished` test above already holds one;
+    # this holds the rest, OUTSIDE it: this repository's own `not_moved`
+    # files (its pins, runbooks, front door, kept suites, `.specify/`).
+    # Their bytes may change; their paths may not go. Presence is read as
+    # above: a BLOB at the revision under test, from the one `ls-tree`, so
+    # a path that became a directory or a gitlink is absent too.
+    lost = sorted(row["source_path"] for row in doc["rows"]
+                  if row.get("retained_here") == RETAINED_KEPT
+                  and row["source_path"] not in tested)
+    if lost:
+        raise CarveRefusal(
+            "carve-path-absent",
+            f"{len(lost)} `retained_here: {RETAINED_KEPT}` row(s) outside "
+            "the carve surface name path(s) ABSENT at "
+            f"{verified_at[:12]} under `phase: {PHASE_POST_SHED}`: "
+            f"{_shown(lost)}. The shed removes exactly the "
+            f"`{RETAINED_SHED}` rows; a `{RETAINED_KEPT}` row stays in "
+            "this repository, its bytes free to change and its path "
+            "required present. Restore the file: a kept row that leaves "
+            "is a disposition this manifest does not declare")
+
 
 def check_surface(doc: dict, referent: dict[str, TreeEntry],
                   tested: dict[str, TreeEntry], verified_at: str,
@@ -940,25 +1036,7 @@ def check_surface(doc: dict, referent: dict[str, TreeEntry],
                 "tracked path has exactly one row")
         seen[path] = index
 
-    arrivals: dict[tuple[str, ...], int] = {}
-    for index, row in enumerate(doc["rows"]):
-        if row.get("disposition") not in MOVED_DISPOSITIONS:
-            continue
-        entry = destinations.get(row["destination"])
-        if entry is not None:
-            arrival: tuple[str, ...] = (entry["repository"], entry["leg"],
-                                        row["destination_path"])
-            where = f"{entry['repository']} ({entry['leg']})"
-        else:
-            arrival = (row["destination"],)
-            where = row["destination"]
-        if arrival in arrivals:
-            raise CarveRefusal(
-                "carve-file-duplicated",
-                f"rows[{arrivals[arrival]}] AND rows[{index}] both send a file "
-                f"to {where}:{row['destination_path']}; one would overwrite "
-                "the other and the manifest does not say which")
-        arrivals[arrival] = index
+    _check_unique_arrivals(doc, destinations)
 
     tree = set(referent)
     undeclared = sorted(tree - set(seen))
@@ -1003,28 +1081,7 @@ def check_surface(doc: dict, referent: dict[str, TreeEntry],
             "surface holds, and, under `post-shed`, a `kept` moved row")
 
     if phase == PHASE_POST_SHED:
-        # The shed removes EXACTLY the `shed` rows (tasks.md 5.5), so every
-        # `kept` row is still here, whatever its disposition and wherever it
-        # lies. Under the surface the `vanished` test above already holds one;
-        # this holds the rest, OUTSIDE it: this repository's own `not_moved`
-        # files (its pins, runbooks, front door, kept suites, `.specify/`).
-        # Their bytes may change; their paths may not go. Presence is read as
-        # above: a BLOB at the revision under test, from the one `ls-tree`, so
-        # a path that became a directory or a gitlink is absent too.
-        lost = sorted(row["source_path"] for row in doc["rows"]
-                      if row.get("retained_here") == RETAINED_KEPT
-                      and row["source_path"] not in tested)
-        if lost:
-            raise CarveRefusal(
-                "carve-path-absent",
-                f"{len(lost)} `retained_here: {RETAINED_KEPT}` row(s) outside "
-                "the carve surface name path(s) ABSENT at "
-                f"{verified_at[:12]} under `phase: {PHASE_POST_SHED}`: "
-                f"{_shown(lost)}. The shed removes exactly the "
-                f"`{RETAINED_SHED}` rows; a `{RETAINED_KEPT}` row stays in "
-                "this repository, its bytes free to change and its path "
-                "required present. Restore the file: a kept row that leaves "
-                "is a disposition this manifest does not declare")
+        _check_kept_rows(doc, tested, verified_at)
     return len(tree)
 
 
@@ -1032,61 +1089,145 @@ def check_surface(doc: dict, referent: dict[str, TreeEntry],
 # check 5 — closed vocabularies
 # --------------------------------------------------------------------------
 
+def _check_edit_vocabularies(where, row) -> None:
+    for position, edit in enumerate(row.get("edits") or []):
+        if edit["class"] not in EDIT_CLASSES:
+            raise CarveRefusal(
+                "carve-vocabulary-unknown",
+                f"{where}.edits[{position}] declares `class: "
+                f"{edit['class']!r}`, which is not one of "
+                f"{list(EDIT_CLASSES)!r}; an edit in no class is an "
+                "undeclared movement")
+
+
+def _check_row_vocabularies(index, row, destinations, declared_reasons, overrides) -> None:
+    where = f"rows[{index}] ({row['source_path']})"
+    if row["disposition"] not in DISPOSITIONS:
+        raise CarveRefusal(
+            "carve-vocabulary-unknown",
+            f"{where} declares `disposition: {row['disposition']!r}`; the "
+            f"list is CLOSED at {list(DISPOSITIONS)!r}")
+    if row["retained_here"] not in RETAINED:
+        raise CarveRefusal(
+            "carve-vocabulary-unknown",
+            f"{where} declares `retained_here: {row['retained_here']!r}`; "
+            f"the list is CLOSED at {list(RETAINED)!r} (design.md D7)")
+    destination = row.get("destination")
+    if destination is not None and destination not in destinations:
+        raise CarveRefusal(
+            "carve-vocabulary-unknown",
+            f"{where} declares `destination: {destination!r}`, which is "
+            f"not a key of `destinations:` ({sorted(destinations)!r})")
+    _check_edit_vocabularies(where, row)
+    reason = row.get("reason")
+    if reason is not None and reason not in declared_reasons:
+        raise CarveRefusal(
+            "carve-vocabulary-unknown",
+            f"{where} declares `reason: {reason!r}`, which the manifest's "
+            f"own `not_moved_reasons:` ({list(declared_reasons)!r}) does "
+            "not carry")
+    default = row.get("leg_default")
+    if default is not None and default["leg"] not in CLASSIFIER_LEGS:
+        raise CarveRefusal(
+            "carve-vocabulary-unknown",
+            f"{where} declares `leg_default.leg: {default['leg']!r}`; "
+            "openRepoShape's classifier answers one of "
+            f"{sorted(CLASSIFIER_LEGS)!r}")
+    override = row.get("leg_override")
+    if override is not None and override not in overrides:
+        raise CarveRefusal(
+            "carve-vocabulary-unknown",
+            f"{where} declares `leg_override: {override!r}`, which is not "
+            f"a key of `leg_overrides:` ({sorted(overrides)!r})")
+
+
 def check_vocabularies(doc: dict) -> None:
     destinations = doc["destinations"]
     declared_reasons = doc["not_moved_reasons"]
     overrides = doc["leg_overrides"]
     for index, row in enumerate(doc["rows"]):
-        where = f"rows[{index}] ({row['source_path']})"
-        if row["disposition"] not in DISPOSITIONS:
-            raise CarveRefusal(
-                "carve-vocabulary-unknown",
-                f"{where} declares `disposition: {row['disposition']!r}`; the "
-                f"list is CLOSED at {list(DISPOSITIONS)!r}")
-        if row["retained_here"] not in RETAINED:
-            raise CarveRefusal(
-                "carve-vocabulary-unknown",
-                f"{where} declares `retained_here: {row['retained_here']!r}`; "
-                f"the list is CLOSED at {list(RETAINED)!r} (design.md D7)")
-        destination = row.get("destination")
-        if destination is not None and destination not in destinations:
-            raise CarveRefusal(
-                "carve-vocabulary-unknown",
-                f"{where} declares `destination: {destination!r}`, which is "
-                f"not a key of `destinations:` ({sorted(destinations)!r})")
-        for position, edit in enumerate(row.get("edits") or []):
-            if edit["class"] not in EDIT_CLASSES:
-                raise CarveRefusal(
-                    "carve-vocabulary-unknown",
-                    f"{where}.edits[{position}] declares `class: "
-                    f"{edit['class']!r}`, which is not one of "
-                    f"{list(EDIT_CLASSES)!r}; an edit in no class is an "
-                    "undeclared movement")
-        reason = row.get("reason")
-        if reason is not None and reason not in declared_reasons:
-            raise CarveRefusal(
-                "carve-vocabulary-unknown",
-                f"{where} declares `reason: {reason!r}`, which the manifest's "
-                f"own `not_moved_reasons:` ({list(declared_reasons)!r}) does "
-                "not carry")
-        default = row.get("leg_default")
-        if default is not None and default["leg"] not in CLASSIFIER_LEGS:
-            raise CarveRefusal(
-                "carve-vocabulary-unknown",
-                f"{where} declares `leg_default.leg: {default['leg']!r}`; "
-                "openRepoShape's classifier answers one of "
-                f"{sorted(CLASSIFIER_LEGS)!r}")
-        override = row.get("leg_override")
-        if override is not None and override not in overrides:
-            raise CarveRefusal(
-                "carve-vocabulary-unknown",
-                f"{where} declares `leg_override: {override!r}`, which is not "
-                f"a key of `leg_overrides:` ({sorted(overrides)!r})")
+        _check_row_vocabularies(index, row, destinations, declared_reasons, overrides)
+
 
 
 # --------------------------------------------------------------------------
 # check 6 — consistency
 # --------------------------------------------------------------------------
+
+def _check_moved_row_arrival(row, path, where, destinations, overrides) -> None:
+    if row["destination_path"] != path:
+        raise CarveRefusal(
+            "carve-path-remapped",
+            f"{where} arrives at `{row['destination_path']}`; design.md D7 "
+            "keeps every carved path's repository-relative path inside its "
+            "leg, which is what keeps the carve a pure copy per leg")
+
+    dest_leg = destinations[row["destination"]]["leg"]
+    default = row["leg_default"]
+    default_leg = CLASSIFIER_LEGS[default["leg"]]
+    override_key = row.get("leg_override")
+    if default_leg == dest_leg:
+        if override_key is not None:
+            raise CarveRefusal(
+                "carve-override-inconsistent",
+                f"{where} names `leg_override: {override_key}` but goes to "
+                f"the `{dest_leg}` leg, which is the classifier's own "
+                f"default ({default['rule']}); nothing is overridden")
+        return
+    if override_key is None:
+        raise CarveRefusal(
+            "carve-override-inconsistent",
+            f"{where} goes to the `{dest_leg}` leg and the classifier's "
+            f"default is `{default['leg']}` under `{default['rule']}`, and "
+            "the row names no `leg_override:`. design.md D7: a departure "
+            "from the default is DECLARED, with its authority, not implied")
+    entry = overrides[override_key]
+    if entry["leg"] != dest_leg:
+        raise CarveRefusal(
+            "carve-override-inconsistent",
+            f"{where} goes to the `{dest_leg}` leg under "
+            f"`leg_override: {override_key}`, which authorizes the "
+            f"`{entry['leg']}` leg")
+    if entry["overrides_rule"] != default["rule"]:
+        raise CarveRefusal(
+            "carve-override-inconsistent",
+            f"{where} departs from `{default['rule']}`, and "
+            f"`leg_override: {override_key}` overrides "
+            f"`{entry['overrides_rule']}`")
+
+
+def _check_disposition_retention(where, path, disposition, edits, retained) -> None:
+    if disposition == "moved_with_declared_edit" and not edits:
+        raise CarveRefusal(
+            "carve-disposition-inconsistent",
+            f"{where} is `moved_with_declared_edit` with no `edits:`; that "
+            "is `moved_verbatim` mislabelled")
+    if disposition == "moved_verbatim" and edits:
+        raise CarveRefusal(
+            "carve-disposition-inconsistent",
+            f"{where} is `moved_verbatim` and declares {len(edits)} "
+            "edit(s); verbatim means the destination's bytes equal this "
+            "digest")
+    if disposition == "not_moved" and edits:
+        raise CarveRefusal(
+            "carve-disposition-inconsistent",
+            f"{where} is `not_moved` and declares {len(edits)} edit(s); a "
+            "file that arrives nowhere takes no carve edit")
+
+    if disposition == "not_moved" and retained != RETAINED_KEPT:
+        raise CarveRefusal(
+            "carve-retention-inconsistent",
+            f"{where} is `not_moved` and declares `retained_here: "
+            f"{retained}`; a file that does not travel and then left this "
+            "repository would be lost, so a `not_moved` row is `kept`")
+    if retained == RETAINED_RETIRED and not path.startswith(
+            RETIRABLE_PREFIX):
+        raise CarveRefusal(
+            "carve-retention-inconsistent",
+            f"{where} declares `retained_here: {RETAINED_RETIRED}` outside "
+            f"`{RETIRABLE_PREFIX}`; only an OpenSpec archive retires a "
+            "capability spec, and a promoted spec lives there")
+
 
 def check_consistency(doc: dict) -> None:
     destinations = doc["destinations"]
@@ -1097,78 +1238,11 @@ def check_consistency(doc: dict) -> None:
         disposition = row["disposition"]
         edits = row.get("edits") or []
         retained = row["retained_here"]
-        if disposition == "moved_with_declared_edit" and not edits:
-            raise CarveRefusal(
-                "carve-disposition-inconsistent",
-                f"{where} is `moved_with_declared_edit` with no `edits:`; that "
-                "is `moved_verbatim` mislabelled")
-        if disposition == "moved_verbatim" and edits:
-            raise CarveRefusal(
-                "carve-disposition-inconsistent",
-                f"{where} is `moved_verbatim` and declares {len(edits)} "
-                "edit(s); verbatim means the destination's bytes equal this "
-                "digest")
-        if disposition == "not_moved" and edits:
-            raise CarveRefusal(
-                "carve-disposition-inconsistent",
-                f"{where} is `not_moved` and declares {len(edits)} edit(s); a "
-                "file that arrives nowhere takes no carve edit")
-
-        if disposition == "not_moved" and retained != RETAINED_KEPT:
-            raise CarveRefusal(
-                "carve-retention-inconsistent",
-                f"{where} is `not_moved` and declares `retained_here: "
-                f"{retained}`; a file that does not travel and then left this "
-                "repository would be lost, so a `not_moved` row is `kept`")
-        if retained == RETAINED_RETIRED and not path.startswith(
-                RETIRABLE_PREFIX):
-            raise CarveRefusal(
-                "carve-retention-inconsistent",
-                f"{where} declares `retained_here: {RETAINED_RETIRED}` outside "
-                f"`{RETIRABLE_PREFIX}`; only an OpenSpec archive retires a "
-                "capability spec, and a promoted spec lives there")
+        _check_disposition_retention(where, path, disposition, edits, retained)
 
         if disposition not in MOVED_DISPOSITIONS:
             continue
-        if row["destination_path"] != path:
-            raise CarveRefusal(
-                "carve-path-remapped",
-                f"{where} arrives at `{row['destination_path']}`; design.md D7 "
-                "keeps every carved path's repository-relative path inside its "
-                "leg, which is what keeps the carve a pure copy per leg")
-
-        dest_leg = destinations[row["destination"]]["leg"]
-        default = row["leg_default"]
-        default_leg = CLASSIFIER_LEGS[default["leg"]]
-        override_key = row.get("leg_override")
-        if default_leg == dest_leg:
-            if override_key is not None:
-                raise CarveRefusal(
-                    "carve-override-inconsistent",
-                    f"{where} names `leg_override: {override_key}` but goes to "
-                    f"the `{dest_leg}` leg, which is the classifier's own "
-                    f"default ({default['rule']}); nothing is overridden")
-            continue
-        if override_key is None:
-            raise CarveRefusal(
-                "carve-override-inconsistent",
-                f"{where} goes to the `{dest_leg}` leg and the classifier's "
-                f"default is `{default['leg']}` under `{default['rule']}`, and "
-                "the row names no `leg_override:`. design.md D7: a departure "
-                "from the default is DECLARED, with its authority, not implied")
-        entry = overrides[override_key]
-        if entry["leg"] != dest_leg:
-            raise CarveRefusal(
-                "carve-override-inconsistent",
-                f"{where} goes to the `{dest_leg}` leg under "
-                f"`leg_override: {override_key}`, which authorizes the "
-                f"`{entry['leg']}` leg")
-        if entry["overrides_rule"] != default["rule"]:
-            raise CarveRefusal(
-                "carve-override-inconsistent",
-                f"{where} departs from `{default['rule']}`, and "
-                f"`leg_override: {override_key}` overrides "
-                f"`{entry['overrides_rule']}`")
+        _check_moved_row_arrival(row, path, where, destinations, overrides)
 
     paths = [row["source_path"] for row in doc["rows"]]
     ordered = sorted(paths, key=lambda p: p.encode("utf-8", "surrogateescape"))
@@ -1257,6 +1331,26 @@ def _human(summary: dict[str, Any], manifest_path: Path) -> str:
             "each in exactly one row")
 
 
+def _resolve_manifest_path(repo: Path, args: argparse.Namespace) -> Path:
+    if args.manifest:
+        manifest_arg = Path(args.manifest)
+        manifest_path = (manifest_arg if manifest_arg.is_absolute()
+                         else repo / manifest_arg).resolve()
+    else:
+        manifest_path = (repo / MANIFEST_RELPATH).resolve()
+    return manifest_path
+
+
+def _report_refusal(exc: CarveRefusal, manifest_path: Path, as_json: bool) -> int:
+    if as_json:
+        print(json.dumps({"result": "refused", "code": exc.code,
+                          "detail": exc.detail,
+                          "manifest": str(manifest_path)}))
+    else:
+        print(exc.render(manifest_path), file=sys.stderr)
+    return 2
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="validate-carve-manifest.py",
@@ -1279,12 +1373,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     repo = Path(args.repo).resolve() if args.repo else ROOT
-    if args.manifest:
-        manifest_arg = Path(args.manifest)
-        manifest_path = (manifest_arg if manifest_arg.is_absolute()
-                         else repo / manifest_arg).resolve()
-    else:
-        manifest_path = (repo / MANIFEST_RELPATH).resolve()
+    manifest_path = _resolve_manifest_path(repo, args)
 
     if args.manifest is None and not manifest_path.is_file():
         if args.json:
@@ -1304,13 +1393,7 @@ def main(argv: list[str] | None = None) -> int:
                 "written`")
         summary = validate(manifest_path, repo, args.at)
     except CarveRefusal as exc:
-        if args.json:
-            print(json.dumps({"result": "refused", "code": exc.code,
-                              "detail": exc.detail,
-                              "manifest": str(manifest_path)}))
-        else:
-            print(exc.render(manifest_path), file=sys.stderr)
-        return 2
+        return _report_refusal(exc, manifest_path, args.json)
 
     if args.json:
         print(json.dumps(summary))

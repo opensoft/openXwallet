@@ -66,6 +66,45 @@ def refuse(*findings: str) -> int:
     return 1
 
 
+def _check_entry(entry, pin: dict, commit: str, findings: list[str]) -> bool:
+    if not isinstance(entry, dict) or not entry.get("path"):
+        findings.append(f"contract_pin.yaml files entry is malformed: {entry!r}")
+        return False
+    rel = str(entry["path"])
+    recorded = str(entry.get("sha256") or "").strip()
+    target = ROOT / rel
+
+    if not recorded:
+        # A recomputed digest can never equal an empty recorded digest.
+        findings.append(
+            f"{rel}: no sha256 recorded in contract_pin.yaml; a recomputed "
+            "digest can never equal an empty one (fail-closed rule 2)")
+        return False
+    if not SHA256_RE.match(recorded):
+        findings.append(
+            f"{rel}: recorded sha256 {recorded!r} is not 64 lowercase hex")
+        return False
+    if not target.is_file():
+        findings.append(
+            f"{rel}: vendored file is MISSING; the pinned openxFactory "
+            "artifact is not present in this checkout")
+        return False
+
+    actual = hashlib.sha256(target.read_bytes()).hexdigest()
+    if actual != recorded:
+        findings.append(
+            f"{rel}: DIGEST DRIFT\n"
+            f"          recorded   {recorded}\n"
+            f"          recomputed {actual}\n"
+            f"        the vendored copy is not the openxFactory artifact "
+            f"pinned at {commit or '<no commit>'}")
+    else:
+        print(f"OK {rel} sha256={actual} verified against contract_pin.yaml "
+              f"(openxFactory@{commit[:12]}, bundle "
+              f"{pin.get('pinned_bundle', '<unrecorded>')})")
+    return True
+
+
 def main() -> int:
     if not PIN_PATH.is_file():
         print(f"ERROR {PIN_PATH.relative_to(ROOT)} not found", file=sys.stderr)
@@ -104,44 +143,7 @@ def main() -> int:
         return refuse(*findings)
 
     # ---- rule 2: recompute every digest ------------------------------------
-    checked = 0
-    for entry in entries:
-        if not isinstance(entry, dict) or not entry.get("path"):
-            findings.append(f"contract_pin.yaml files entry is malformed: {entry!r}")
-            continue
-        rel = str(entry["path"])
-        recorded = str(entry.get("sha256") or "").strip()
-        target = ROOT / rel
-
-        if not recorded:
-            # A recomputed digest can never equal an empty recorded digest.
-            findings.append(
-                f"{rel}: no sha256 recorded in contract_pin.yaml; a recomputed "
-                "digest can never equal an empty one (fail-closed rule 2)")
-            continue
-        if not SHA256_RE.match(recorded):
-            findings.append(
-                f"{rel}: recorded sha256 {recorded!r} is not 64 lowercase hex")
-            continue
-        if not target.is_file():
-            findings.append(
-                f"{rel}: vendored file is MISSING; the pinned openxFactory "
-                "artifact is not present in this checkout")
-            continue
-
-        actual = hashlib.sha256(target.read_bytes()).hexdigest()
-        checked += 1
-        if actual != recorded:
-            findings.append(
-                f"{rel}: DIGEST DRIFT\n"
-                f"          recorded   {recorded}\n"
-                f"          recomputed {actual}\n"
-                f"        the vendored copy is not the openxFactory artifact "
-                f"pinned at {commit or '<no commit>'}")
-        else:
-            print(f"OK {rel} sha256={actual} verified against contract_pin.yaml "
-                  f"(openxFactory@{commit[:12]}, bundle "
-                  f"{pin.get('pinned_bundle', '<unrecorded>')})")
+    checked = sum(_check_entry(entry, pin, commit, findings) for entry in entries)
 
     if findings:
         return refuse(*findings)
