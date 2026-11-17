@@ -144,21 +144,25 @@ class LifecycleStore:
         require(highwater == last_time, ERROR)
         return events, previous, highwater
 
+    @staticmethod
+    def _acquire_journal_lock(lock, decision):
+        until = time.monotonic() + min(1, decision.remaining())
+        while True:
+            try:
+                fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                break
+            except BlockingIOError:
+                require(time.monotonic() < until, ERROR)
+                decision.now()
+                time.sleep(.005)
+
     def mutate(self, operation, *, decision):
         db, lock = None, None
         try:
             decision.now()
             require(_identity(self.directory, self.witness) == self.identity, ERROR)
             lock = os.open(self.directory / _JOURNAL_LOCK_NAME, os.O_RDWR | os.O_NOFOLLOW)
-            until = time.monotonic() + min(1, decision.remaining())
-            while True:
-                try:
-                    fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-                    break
-                except BlockingIOError:
-                    require(time.monotonic() < until, ERROR)
-                    decision.now()
-                    time.sleep(.005)
+            self._acquire_journal_lock(lock, decision)
             require(_identity(self.directory, self.witness) == self.identity, ERROR)
             db = sqlite3.connect((self.directory / DB).as_uri() + "?mode=rw", uri=True,
                                  timeout=min(1, decision.remaining()), isolation_level=None)

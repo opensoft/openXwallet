@@ -167,34 +167,38 @@ class PosixResources:
         require(response.status == 200 or revoked, ERROR)
         return ResourceReadback(expected.ref, actual, not revoked, revoked)
 
+    @staticmethod
+    def _stop_worker(expected, decision):
+        _, pid, _ = expected.instance_ref.split(":")
+        pid = int(pid)
+        try:
+            fd = os.pidfd_open(pid)
+        except ProcessLookupError:
+            return
+        try:
+            current, state = process_instance(pid)
+            require(current == expected.instance_ref or current is None, ERROR)
+            if current is None or state in ("Z", "X"):
+                return
+            decision.now()
+            signal.pidfd_send_signal(fd, signal.SIGKILL)
+            require(select.select([fd], [], [], min(2, decision.remaining()))[0], ERROR)
+            end = time.monotonic() + min(2, decision.remaining())
+            while process_instance(pid)[0] is not None:
+                require(time.monotonic() < end, ERROR)
+                decision.now()
+                time.sleep(.005)
+            decision.now()
+        finally:
+            os.close(fd)
+
     def cleanup(self, expected, *, decision, claim=None):
         self.current_namespace()
         require(type(expected) is RunResource and expected.retention == "run"
                 and (claim is None or expected.kind == "file" and callable(claim)), ERROR)
         decision.now()
         if expected.ref == self.worker_ref:
-            _, pid, _ = expected.instance_ref.split(":")
-            pid = int(pid)
-            try:
-                fd = os.pidfd_open(pid)
-            except ProcessLookupError:
-                return
-            try:
-                current, state = process_instance(pid)
-                require(current == expected.instance_ref or current is None, ERROR)
-                if current is None or state in ("Z", "X"):
-                    return
-                decision.now()
-                signal.pidfd_send_signal(fd, signal.SIGKILL)
-                require(select.select([fd], [], [], min(2, decision.remaining()))[0], ERROR)
-                end = time.monotonic() + min(2, decision.remaining())
-                while process_instance(pid)[0] is not None:
-                    require(time.monotonic() < end, ERROR)
-                    decision.now()
-                    time.sleep(.005)
-                decision.now()
-            finally:
-                os.close(fd)
+            self._stop_worker(expected, decision)
             return
         require(expected.ref in self.selected, ERROR)
         value = self.selected[expected.ref]
@@ -209,51 +213,76 @@ class PosixResources:
             value.retirement.retire(value.capability, decision=decision)
 
 
+def _apply_event(result, kind, value):
+    if kind in ("clock", "file-retired"):
+        return
+    if kind == "registration":
+        require(result["registration"] is None, ERROR)
+        result["registration"] = value
+    elif kind == "generation":
+        require(result["registration"] is not None and result["generation"] is None and result["final"] is None
+                and result["prestart_closed"] is None, ERROR)
+        result["generation"] = value
+    elif kind == "prestart-closed":
+        _closed(value, "registration_digest unit_digest")
+        require(result["registration"] is not None and result["closed"] and result["generation"] is None
+                and result["prestart_closed"] is None and result["final"] is None
+                and value["registration_digest"] == digest(result["registration"])
+                and value["unit_digest"] == digest(result["registration"]["unit"]), ERROR)
+        result["prestart_closed"] = value
+    elif kind == "final-plan":
+        require(result["generation"] is not None and result["final"] is None and not result["closed"], ERROR)
+        result["final"] = value
+    elif kind == "stage-release":
+        require(result["final"] is not None and not result["released"] and not result["closed"]
+                and not result["actions"], ERROR)
+        result["released"] = True
+        result["release"] = value
+    elif kind == "lease-closed":
+        require(result["registration"] is not None and not result["closed"], ERROR)
+        result["closed"] = True
+    elif kind == "action-claimed":
+        require(result["closed"] and value["key"] not in result["actions"], ERROR)
+        result["actions"][value["key"]] = value
+    else:
+        raise BindingError(ERROR)
+
+
 def _state(events):
     result = {"registration": None, "generation": None, "final": None, "released": False,
               "closed": False, "actions": {}, "release": None, "prestart_closed": None}
     for event in events:
         kind, value = event["kind"], event["data"]
-        if kind in ("clock", "file-retired"):
-            continue
-        if kind == "registration":
-            require(result["registration"] is None, ERROR)
-            result["registration"] = value
-        elif kind == "generation":
-            require(result["registration"] is not None and result["generation"] is None and result["final"] is None
-                    and result["prestart_closed"] is None, ERROR)
-            result["generation"] = value
-        elif kind == "prestart-closed":
-            _closed(value, "registration_digest unit_digest")
-            require(result["registration"] is not None and result["closed"] and result["generation"] is None
-                    and result["prestart_closed"] is None and result["final"] is None
-                    and value["registration_digest"] == digest(result["registration"])
-                    and value["unit_digest"] == digest(result["registration"]["unit"]), ERROR)
-            result["prestart_closed"] = value
-        elif kind == "final-plan":
-            require(result["generation"] is not None and result["final"] is None and not result["closed"], ERROR)
-            result["final"] = value
-        elif kind == "stage-release":
-            require(result["final"] is not None and not result["released"] and not result["closed"]
-                    and not result["actions"], ERROR)
-            result["released"] = True
-            result["release"] = value
-        elif kind == "lease-closed":
-            require(result["registration"] is not None and not result["closed"], ERROR)
-            result["closed"] = True
-        elif kind == "action-claimed":
-            require(result["closed"] and value["key"] not in result["actions"], ERROR)
-            result["actions"][value["key"]] = value
-        else:
-            raise BindingError(ERROR)
+        _apply_event(result, kind, value)
     return result
+
+
+@dataclass(frozen=True, slots=True, kw_only=True, repr=False, eq=False)
+class LifecycleStores:
+    """The primary, scheduler intake and audit journals for one lifecycle."""
+
+    primary: LifecycleStore
+    intake: LifecycleStore
+    audit: LifecycleStore
+
+
+@dataclass(frozen=True, slots=True, kw_only=True, repr=False, eq=False)
+class LifecycleActors:
+    """The actors that provide independent lifecycle evidence."""
+
+    janitor: ServiceIdentity
+    auditor: ServiceIdentity
+    scheduler: dict
 
 
 class HostedLifecycle:
     """Trusted source construction; primary operations are private capabilities."""
-    def __init__(self, *, plan, context, policy, host_store, store, intake, audit_store,
-                 resources, janitor, auditor, scheduler, host_pid_namespace,
-                 final_authority_principal, cleanup_until, cleanup_timeout=30, retained_roots=()):
+    def __init__(self, *, plan, context, policy, host_store, stores, resources,
+                 actors, host_pid_namespace, final_authority_principal, cleanup_until,
+                 cleanup_timeout=30, retained_roots=()):
+        require(type(stores) is LifecycleStores and type(actors) is LifecycleActors, ERROR)
+        store, intake, audit_store = stores.primary, stores.intake, stores.audit
+        janitor, auditor, scheduler = actors.janitor, actors.auditor, actors.scheduler
         require(type(plan) is StaticPlan and type(policy) is StagePolicy
                 and type(host_store) is StageStore and host_store.kind == "host"
                 and all(type(x) is LifecycleStore for x in (store, intake, audit_store))
@@ -390,6 +419,30 @@ class HostedLifecycle:
         decision.clip(registration["expires_at"])
         return {k: records[0][k] for k in ("scope_digest", "unit_digest", "state", "expires_at")}
 
+    def _record_prestart_closure(self, state, reg, decision):
+        # Lease closure precedes this observation. A later host start must
+        # consume its attempt then reread that closed lease before Popen.
+        require(state["closed"], ERROR)
+        def prestart(events, append):
+            current = _state(events)
+            require(current["closed"] and current["generation"] is None, ERROR)
+            if current["prestart_closed"] is None:
+                append("prestart-closed", {"registration_digest": digest(reg), "unit_digest": digest(reg["unit"])})
+        self.store.mutate(prestart, decision=decision)
+
+    @staticmethod
+    def _checked_process_instance(generation, cleanup):
+        expected = f"process:{generation['pid']}:{generation['start_time']}"
+        current, process_state = process_instance(generation["pid"])
+        if not (cleanup and (current is None or current == expected and process_state in ("Z", "X"))):
+            require(current == expected and process_state not in ("Z", "X"), ERROR)
+            try:
+                require(os.getsid(generation["pid"]) == generation["session_id"]
+                        and byte_digest((Path("/proc") / str(generation["pid"]) / "cgroup").read_bytes()) == generation["cgroup_digest"], ERROR)
+            except (FileNotFoundError, ProcessLookupError):
+                require(cleanup and process_instance(generation["pid"])[0] is None, ERROR)
+        return expected
+
     def bind_generation(self, ref, *, decision, cleanup=False):
         state = self._registration(ref, decision)
         reg = state["registration"]
@@ -403,15 +456,7 @@ class HostedLifecycle:
         require(canonical(row["unit"]) == canonical(reg["unit"]) and canonical(row["scope"]) == self.scope_raw, ERROR)
         generation = row["generation"]
         if cleanup and row["state"] == "registered" and generation is None:
-            # Lease closure precedes this observation. A later host start must
-            # consume its attempt then reread that closed lease before Popen.
-            require(state["closed"], ERROR)
-            def prestart(events, append):
-                current = _state(events)
-                require(current["closed"] and current["generation"] is None, ERROR)
-                if current["prestart_closed"] is None:
-                    append("prestart-closed", {"registration_digest": digest(reg), "unit_digest": digest(reg["unit"])})
-            self.store.mutate(prestart, decision=decision)
+            self._record_prestart_closure(state, reg, decision)
             return None
         require(row["state"] == "running" and type(generation) is dict, ERROR)
         _closed(generation, "unit_digest pid start_time session_id boot_id uid policy_digest cgroup_digest")
@@ -421,15 +466,7 @@ class HostedLifecycle:
                 and generation["session_id"] == generation["pid"]
                 and generation["policy_digest"] == self.scope["hosting_selection_digest"]
                 and valid_digest(generation["cgroup_digest"]), ERROR)
-        expected = f"process:{generation['pid']}:{generation['start_time']}"
-        current, process_state = process_instance(generation["pid"])
-        if not (cleanup and (current is None or current == expected and process_state in ("Z", "X"))):
-            require(current == expected and process_state not in ("Z", "X"), ERROR)
-            try:
-                require(os.getsid(generation["pid"]) == generation["session_id"]
-                        and byte_digest((Path("/proc") / str(generation["pid"]) / "cgroup").read_bytes()) == generation["cgroup_digest"], ERROR)
-            except (FileNotFoundError, ProcessLookupError):
-                require(cleanup and process_instance(generation["pid"])[0] is None, ERROR)
+        expected = self._checked_process_instance(generation, cleanup)
         # This is the exact generation already persisted by the authenticated
         # host, never an invented PID or a replacement process observation.
         value = {"generation": generation, "resource": asdict(RunResource(reg["worker_ref"], expected, "process", "run"))}
@@ -588,6 +625,31 @@ class HostedLifecycle:
         decision.end = min(decision.end, decision.last_mono + decision.deadline - decision.last)
         decision.now()
 
+    def _cleanup_resource(self, resource, decision):
+        actual = self.resources.observe(resource, decision=decision)
+        require(actual.instance_ref == resource.instance_ref, ERROR)
+        if not actual.present:
+            require(resource.kind != "credential" or actual.revoked, ERROR)
+            return
+        if resource.kind == "file":
+            # Claim only under the backend's exact-generation file fence.
+            self.resources.cleanup(resource, decision=decision, claim=lambda: self._claim(resource, decision))
+        else:
+            require(self._claim(resource, decision), ERROR)
+            self.resources.cleanup(resource, decision=decision)
+
+    @staticmethod
+    def _cleanup_unreleased(selected, remove):
+        failed = False
+        for resource in selected:
+            if resource.retention != "run":
+                continue
+            try:
+                remove(resource)
+            except Exception:
+                failed = True
+        require(not failed, ERROR)
+
     def cleanup(self, ref, outcome, *, decision):
         require(outcome in ("success", "failure", "cancel", "expired"), ERROR)
         state = self._registration(ref, decision)
@@ -609,17 +671,7 @@ class HostedLifecycle:
         state = self._registration(ref, decision)
         selected = self.resources_for(state)
         def remove(resource):
-            actual = self.resources.observe(resource, decision=decision)
-            require(actual.instance_ref == resource.instance_ref, ERROR)
-            if not actual.present:
-                require(resource.kind != "credential" or actual.revoked, ERROR)
-                return
-            if resource.kind == "file":
-                # Claim only under the backend's exact-generation file fence.
-                self.resources.cleanup(resource, decision=decision, claim=lambda: self._claim(resource, decision))
-            else:
-                require(self._claim(resource, decision), ERROR)
-                self.resources.cleanup(resource, decision=decision)
+            self._cleanup_resource(resource, decision)
         if state["released"]:
             plan = run_plan(state["final"]["plan"])
             peer = JanitorPeer(self.janitor.principal_ref, self.janitor.credential_ref)
@@ -634,15 +686,7 @@ class HostedLifecycle:
                 cleanup=lambda managed, *, deadline: bounded(remove, managed.resource, deadline=deadline), clock=decision.clock)
             janitor.finalize(plan.ref, peer=peer, deadline=min(decision.deadline, reg["cleanup_until"]))
         else:
-            failed = False
-            for resource in selected:
-                if resource.retention != "run":
-                    continue
-                try:
-                    remove(resource)
-                except Exception:
-                    failed = True
-            require(not failed, ERROR)
+            self._cleanup_unreleased(selected, remove)
         decision.now()
         return {"state": "cleanup-requested", "owner": "final" if state["released"] else "stage"}
 
