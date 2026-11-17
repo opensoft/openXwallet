@@ -30,6 +30,9 @@ from .private_http import Response
 from .readback import ReadBudget
 from .finalization import FinalizedPlan, FinalizationBinding
 
+_CREDENTIAL_PREFIX = 'credential:'
+
+
 
 def _closed(value, names):
     require(type(value) is dict and set(value) == set(names.split()), ERROR)
@@ -132,7 +135,7 @@ class PosixResources:
                 require(instance is not None, ERROR)
                 result.append(RunResource(ref, instance, "file", value.retention))
             else:
-                result.append(RunResource(ref, "credential:" + digest(value.capability.readback()).split(":")[1], "credential", "run"))
+                result.append(RunResource(ref, _CREDENTIAL_PREFIX + digest(value.capability.readback()).split(":")[1], "credential", "run"))
         require(len({r.instance_ref for r in result}) == len(result), ERROR)
         return tuple(result)
 
@@ -144,7 +147,7 @@ class PosixResources:
             require(expected.kind == "process" and expected.retention == "run", ERROR)
             pieces = expected.instance_ref.split(":")
             require(len(pieces) == 3 and pieces[0] == "process" and pieces[1].isdigit() and pieces[2].isdigit(), ERROR)
-            current, state = process_instance(int(pieces[1]))
+            current, _ = process_instance(int(pieces[1]))
             return ResourceReadback(expected.ref, current or expected.instance_ref,
                                     current is not None, False)
         require(expected.ref in self.selected, ERROR)
@@ -153,7 +156,7 @@ class PosixResources:
             require(expected.kind == "file" and expected.retention == value.retention, ERROR)
             current, present = self.files.observe(expected.ref, expected.instance_ref, decision=decision)
             return ResourceReadback(expected.ref, current, present, False)
-        actual = "credential:" + digest(value.capability.readback()).split(":")[1]
+        actual = _CREDENTIAL_PREFIX + digest(value.capability.readback()).split(":")[1]
         require(expected.kind == "credential" and expected.retention == "run" and actual == expected.instance_ref, ERROR)
         ReadBudget(decision).consume("private")
         response = value.retirement.request(value.retirement.observer, "GET", value.capability, decision)
@@ -170,7 +173,7 @@ class PosixResources:
                 and (claim is None or expected.kind == "file" and callable(claim)), ERROR)
         decision.now()
         if expected.ref == self.worker_ref:
-            _, pid, start = expected.instance_ref.split(":")
+            _, pid, _ = expected.instance_ref.split(":")
             pid = int(pid)
             try:
                 fd = os.pidfd_open(pid)
@@ -200,7 +203,7 @@ class PosixResources:
             self.files.retire(expected.ref, expected.instance_ref, decision=decision, claim=claim)
         else:
             require(expected.kind == "credential" and expected.instance_ref ==
-                    "credential:" + digest(value.capability.readback()).split(":")[1], ERROR)
+                    _CREDENTIAL_PREFIX + digest(value.capability.readback()).split(":")[1], ERROR)
             ReadBudget(decision).consume("private")
             ReadBudget(decision).consume("private")
             value.retirement.retire(value.capability, decision=decision)

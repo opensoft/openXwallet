@@ -132,7 +132,7 @@ class WorkerSpec:
         # Actual source/projection/argv/cwd/PID/start checks, never worker READY data.
         value=self.plan.value();c=value["configuration_template"];c["launch"].update(run_id=self.context.run_id,run_attempt=self.context.run_attempt)
         process.measure(self.projection,c,clock=decision.now,deadline=decision.deadline)
-        status=dict(line.split(":",1) for line in (Path("/proc")/str(pid)/"status").read_text().splitlines() if ":" in line)
+        status={key: value for key, _separator, value in (line.partition(":") for line in (Path("/proc")/str(pid)/"status").read_text().splitlines() if ":" in line)}
         require([int(x) for x in status["Uid"].split()]==[self.m["uid"]]*4 and status["NoNewPrivs"].strip()=="1"
                 and [int(x) for x in status["Gid"].split()]==[self.gid]*4
                 and set(map(int,status["Groups"].split()))<={self.gid} and int(status["Seccomp"].strip())==2 and all(int(status[x].strip(),16)==0 for x in ("CapInh","CapPrm","CapEff","CapAmb"))

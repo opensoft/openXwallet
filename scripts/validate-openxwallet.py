@@ -112,6 +112,12 @@ from pathlib import Path
 from types import ModuleType
 from typing import Any
 
+_S4_PROBE_AGENT = 'agent:s4-probe'
+_LEDGER_POSTER_AGENT = 'agent:ledger-poster'
+_PROBE_EXPIRY = '2027-12-31T23:59:59Z'
+_PROBE_ISSUED_AT = '2026-08-24T00:00:00Z'
+
+
 ROOT = Path(__file__).resolve().parents[1]
 ENVELOPE_SCHEMA_PATH = ROOT / "contracts" / "schemas" / "hermes-job-envelope.schema.yaml"
 CORE_PATH = ROOT / "openWallet" / "code" / "scripts" / "validate-openxwallet.py"
@@ -440,7 +446,7 @@ def _probe_boundary_guard(f: Findings, docs: dict[str, dict],
         "kind": "xfactory_wallet_grant",
         "grant_id": "grant-boundary-guard-non-review-0001",
         "audience": {"wallet_ref": "wal-agent-poster-0001",
-                     "holder_ref": "agent:ledger-poster"},
+                     "holder_ref": _LEDGER_POSTER_AGENT},
         "scope": {
             "acts": ["create_transaction", "post_transaction"],
             "authority_tier": "act",
@@ -451,8 +457,8 @@ def _probe_boundary_guard(f: Findings, docs: dict[str, dict],
                     "irreversible_external_effect"],
             },
         },
-        "expires_at": "2027-12-31T23:59:59Z",
-        "issued_at": "2026-08-24T00:00:00Z",
+        "expires_at": _PROBE_EXPIRY,
+        "issued_at": _PROBE_ISSUED_AT,
         "state": "active",
     }
     local = Findings()
@@ -502,40 +508,40 @@ def _probe_root_anchor(f: Findings, docs: dict[str, dict], ctx: Context) -> None
         "schema_version": 1, "kind": "xfactory_wallet_grant",
         "grant_id": "grant-anchor-assert-anchored-0001",
         "audience": {"wallet_ref": "wal-agent-poster-0001",
-                     "holder_ref": "agent:ledger-poster"},
+                     "holder_ref": _LEDGER_POSTER_AGENT},
         "scope": dict(review_scope),
-        "expires_at": "2027-12-31T23:59:59Z",
-        "issued_at": "2026-08-24T00:00:00Z",
+        "expires_at": _PROBE_EXPIRY,
+        "issued_at": _PROBE_ISSUED_AT,
         "issued_by": ROOT_ISSUER_OPERATOR_TOKEN, "state": "active",
     })
     _anchor_probe("self-test/anchor-drift-not-normalized", {
         "schema_version": 1, "kind": "xfactory_wallet_grant",
         "grant_id": "grant-anchor-assert-drift-0001",
         "audience": {"wallet_ref": "wal-agent-poster-0001",
-                     "holder_ref": "agent:ledger-poster"},
+                     "holder_ref": _LEDGER_POSTER_AGENT},
         "scope": dict(review_scope),
-        "expires_at": "2027-12-31T23:59:59Z",
-        "issued_at": "2026-08-24T00:00:00Z",
+        "expires_at": _PROBE_EXPIRY,
+        "issued_at": _PROBE_ISSUED_AT,
         "issued_by": " brett heap", "state": "active",
     }, expect_code="root-issuer-unanchored")
     _anchor_probe("self-test/anchor-machine-wording", {
         "schema_version": 1, "kind": "xfactory_wallet_grant",
         "grant_id": "grant-anchor-assert-machine-0001",
         "audience": {"wallet_ref": "wal-agent-poster-0001",
-                     "holder_ref": "agent:ledger-poster"},
+                     "holder_ref": _LEDGER_POSTER_AGENT},
         "scope": dict(review_scope),
-        "expires_at": "2027-12-31T23:59:59Z",
-        "issued_at": "2026-08-24T00:00:00Z",
+        "expires_at": _PROBE_EXPIRY,
+        "issued_at": _PROBE_ISSUED_AT,
         "issued_by": "sub-deadbeefdeadbeef", "state": "active",
     }, expect_code="root-issuer-unanchored", expect_sub="MACHINE")
     _anchor_probe("self-test/anchor-legacy-wording", {
         "schema_version": 1, "kind": "xfactory_wallet_grant",
         "grant_id": "grant-anchor-assert-legacy-0001",
         "audience": {"wallet_ref": "wal-agent-poster-0001",
-                     "holder_ref": "agent:ledger-poster"},
+                     "holder_ref": _LEDGER_POSTER_AGENT},
         "scope": dict(review_scope),
-        "expires_at": "2027-12-31T23:59:59Z",
-        "issued_at": "2026-08-24T00:00:00Z",
+        "expires_at": _PROBE_EXPIRY,
+        "issued_at": _PROBE_ISSUED_AT,
         "issued_by": _LEGACY_ORG_ISSUER, "state": "active",
     }, expect_code="root-issuer-unanchored", expect_sub="LEGACY")
 
@@ -550,7 +556,7 @@ def _probe_child_exemption(f: Findings, docs: dict[str, dict],
         "schema_version": 1, "kind": "xfactory_wallet_grant",
         "grant_id": "grant-anchor-assert-parent-0001",
         "audience": {"wallet_ref": "wal-agent-poster-0001",
-                     "holder_ref": "agent:ledger-poster"},
+                     "holder_ref": _LEDGER_POSTER_AGENT},
         "scope": {
             "acts": ["create_transaction", "post_transaction"],
             "authority_tier": "act",
@@ -561,8 +567,8 @@ def _probe_child_exemption(f: Findings, docs: dict[str, dict],
                     "irreversible_external_effect"],
             },
         },
-        "expires_at": "2027-12-31T23:59:59Z",
-        "issued_at": "2026-08-24T00:00:00Z",
+        "expires_at": _PROBE_EXPIRY,
+        "issued_at": _PROBE_ISSUED_AT,
         "state": "active",
     })
     child_doc = {
@@ -570,7 +576,7 @@ def _probe_child_exemption(f: Findings, docs: dict[str, dict],
         "grant_id": "grant-anchor-assert-child-0001",
         "parent_grant_ref": "grant-anchor-assert-parent-0001",
         "audience": {"wallet_ref": "wal-agent-poster-0001",
-                     "holder_ref": "agent:ledger-poster"},
+                     "holder_ref": _LEDGER_POSTER_AGENT},
         "scope": {
             "acts": ["post_transaction"], "authority_tier": "act",
             "approval_posture": {
@@ -581,7 +587,7 @@ def _probe_child_exemption(f: Findings, docs: dict[str, dict],
             },
         },
         "expires_at": "2027-06-30T23:59:59Z",
-        "issued_at": "2026-08-24T00:00:00Z",
+        "issued_at": _PROBE_ISSUED_AT,
         "issued_by": "sub-0123456789abcdef", "state": "active",
     }
     child_probe = Findings()
@@ -642,7 +648,7 @@ def self_test_register_reader(f: Findings, _docs: dict[str, dict],
     s4_wallet = {
         "schema_version": 1, "kind": "xfactory_wallet_record",
         "wallet_id": "wal-s4-probe-0001",
-        "holder": {"holder_id": "agent:s4-probe",
+        "holder": {"holder_id": _S4_PROBE_AGENT,
                    "holder_class": "agent"},
         "key_reference": {"did": "did:key:z6Mko2FefScUQg9opCriwQmjfcb3Qjnb5bN49hQsEVMo6gee",
                           "key_id": "key-s4-0001",
@@ -654,7 +660,7 @@ def self_test_register_reader(f: Findings, _docs: dict[str, dict],
         "schema_version": 1, "kind": "xfactory_wallet_grant",
         "grant_id": "grant-s4-probe-0001",
         "audience": {"wallet_ref": "wal-s4-probe-0001",
-                     "holder_ref": "agent:s4-probe"},
+                     "holder_ref": _S4_PROBE_AGENT},
         "scope": {"acts": [REVIEW_ACT_TOKEN], "authority_tier": "act",
                   "objects": ["opensoft/openxFactory"]},
         "expires_at": future, "state": "active",
@@ -662,7 +668,7 @@ def self_test_register_reader(f: Findings, _docs: dict[str, dict],
     }
     s4_row = {
         "row_id": "row-s4-0001",
-        "holder_ref": "agent:s4-probe",
+        "holder_ref": _S4_PROBE_AGENT,
         "wallet_ref": "wal-s4-probe-0001",
         "target_repo": "opensoft/openxFactory",
         "act": REVIEW_ACT_TOKEN, "authority_tier": "act",
@@ -693,7 +699,7 @@ def self_test_register_reader(f: Findings, _docs: dict[str, dict],
                "rows": register_rows}
         if top is not None:
             doc.update(top)
-            for k, v in list(top.items()):
+            for k, v in top.items():
                 if v is _ABSENT:
                     doc.pop(k, None)
         (base.joinpath(*REGISTER_DIR_PARTS, REGISTER_FILE)).write_text(
@@ -751,8 +757,8 @@ def self_test_register_reader(f: Findings, _docs: dict[str, dict],
                     {"register-row-malformed", "register-no-active-row"})
 
     # Grant without any backing row: the headline obligation.
-    empty_reg = dict({"register_version": 1,
-                      "revocation_staleness_bound": "P7D", "rows": []})
+    empty_reg = {"register_version": 1,
+                 "revocation_staleness_bound": "P7D", "rows": []}
     base = Path(tempfile.mkdtemp(prefix="s4-selftest-"))
     ra = base.joinpath(*REGISTER_DIR_PARTS, ATTESTATIONS_DIR)
     ra.mkdir(parents=True)
@@ -835,7 +841,7 @@ def self_test_register_reader(f: Findings, _docs: dict[str, dict],
     # stays green.
 
     def _seat(seat_id, public_key, fingerprint, row="row-s4-0001",
-              council="agent:s4-probe", council_id=None, key_id=None):
+              council=_S4_PROBE_AGENT, council_id=None, key_id=None):
         return {"seat_id": seat_id, "council_ref": council,
                 "council_id": council_id if council_id is not None else
                 council.split(":", 1)[-1].replace("-", "_"),
@@ -1261,7 +1267,19 @@ SEAT_COUNCIL_HOLDER_PREFIX = "agent:"
 # refusal moved from where it is cheap to fix to where it parks a convening.
 # YEARS AND MONTHS ARE ABSENT ON PURPOSE: a trust window whose width depends on
 # the calendar is not a bound anybody declared.
-STALENESS_BOUND_RE = re.compile(r"^P(\d+W|(\d+D)?(T(\d+H)?(\d+M)?(\d+S)?)?)$")
+_STALENESS_WEEK_RE = re.compile(r"^P\d+W$")
+_STALENESS_DATE_RE = re.compile(r"^P(\d+D)?$")
+_STALENESS_TIME_RE = re.compile(r"^T(\d+H)?(\d+M)?(\d+S)?$")
+
+
+def _matches_staleness_bound(value):
+    # Preserve the original trailing-newline anchor behavior only at the end;
+    # an internal newline before the T separator is never a valid date prefix.
+    date, separator, time = str.partition(value, "T")
+    if not separator:
+        return bool(_STALENESS_WEEK_RE.match(value) or _STALENESS_DATE_RE.match(value))
+    return bool(_STALENESS_DATE_RE.fullmatch(date) and _STALENESS_TIME_RE.match("T" + time))
+
 
 # 32 raw bytes of Ed25519 public key as unpadded base64url is exactly 43
 # characters. The check is CANONICAL (re-encode and compare), not just a charset
@@ -1416,7 +1434,7 @@ def _check_staleness_bound(f: Findings, reg: dict, reg_path: Path) -> None:
                 f"believed, and an undeclared window is an unbounded one")
         return
     value = reg[STALENESS_BOUND_FIELD]
-    if not isinstance(value, str) or not STALENESS_BOUND_RE.match(value):
+    if not isinstance(value, str) or not _matches_staleness_bound(value):
         f.error("register-staleness-bound-malformed",
                 f"{reg_path}: {STALENESS_BOUND_FIELD} {value!r} is not a "
                 f"weeks/days/hours/minutes/seconds ISO-8601 duration; years and "
@@ -1467,9 +1485,9 @@ def _check_seat_keys(f: Findings, reg: dict, reg_path: Path,
     gate's positive-proof step assert on the keys once they are recorded.
     """
     if SEAT_KEYS_FIELD not in reg:
-        f.note(f"intake register: no per-seat signing key is recorded; a "
-               f"runtime projection built from this register can authorize no "
-               f"seat")
+        f.note("intake register: no per-seat signing key is recorded; a "
+               "runtime projection built from this register can authorize no "
+               "seat")
         return
     entries = reg[SEAT_KEYS_FIELD]
     if not isinstance(entries, list) or not entries:

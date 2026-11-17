@@ -9,6 +9,9 @@ from .readback import ReadBudget
 from .stage_store import ERROR
 from .stage_controller import StageAdmission
 
+_JSON_TYPE = 'application/json'
+
+
 PROFILE="openxfactory-hosted-channel-internal-v1"
 
 
@@ -27,7 +30,7 @@ class Channel:
         self.current()
         if self.private:ReadBudget(decision).consume("private")
         nonce=secrets.token_hex(32);body={"profile":PROFILE,"nonce":nonce,"deadline":decision.deadline,"arguments":value}
-        headers={"Content-Type":"application/json","Accept":"application/json"}
+        headers={"Content-Type":_JSON_TYPE,"Accept":_JSON_TYPE}
         if not self.private:
             require(type(token) is str and 0<len(token)<=16377 and all(32<ord(x)<127 for x in token),ERROR)
             headers["Authorization"]="Bearer "+token
@@ -111,7 +114,7 @@ def probe_worker_denial(*,channel,scope,decision):
     channel.current();ReadBudget(decision).consume("private")
     body={"profile":PROFILE,"nonce":secrets.token_hex(32),"deadline":decision.deadline,
           "arguments":{"launch_ref":scope["launch_ref"],"scope_digest":digest(scope)}}
-    response=channel.transport.exchange("POST",channel.origin+"/stage/register",headers={"Content-Type":"application/json","Accept":"application/json"},
+    response=channel.transport.exchange("POST",channel.origin+"/stage/register",headers={"Content-Type":_JSON_TYPE,"Accept":_JSON_TYPE},
         body=canonical(body),decision=decision,before_send=lambda:ReadBudget(decision).check())
     channel.current();require(type(response) is Response and response.status==403 and document(response.body)=={"error":"hosted-stage-denied"},ERROR)
     return {"outcome":"denied","server_ref":channel.principal,"scope_digest":digest(scope)}
