@@ -104,20 +104,50 @@ def test_probe_uses_same_loaded_credential_and_exact_four_calls_without_reload(p
 
 @pytest.mark.parametrize("phase", ["resolve", "positive", "denial", "excess"])
 @pytest.mark.parametrize("mode", ["pause", "trickle"])
-def test_original_decision_bounds_each_actual_tls_rpc_and_reaps_before_return(probe, k, phase, mode):
+def test_original_decision_bounds_each_actual_tls_rpc_and_reaps_before_return(probe, k, phase, mode, monkeypatch):
+    from workload_factory_binding_runtime.hosted import probe_io
     before = _children()
     shift = [0.]
     decision = Decision(clock=lambda: k.c.h.now, monotonic=lambda: time.monotonic() + shift[0])
-    # Simulate time already consumed in the SAME original Decision, no renewed authority.
-    shift[0] = 9.4
+    original_limits = decision.deadline, decision.end
+    exchange = probe_io.exchange
+    ports = [
+        (probe["probe"].worker, "resolve", "resolve", probe["worker"]),
+        (probe["probe"].positive, "sign", "positive", probe["gate"]),
+        (probe["probe"].worker, "deny", "denial", probe["worker"]),
+        (probe["probe"].excess, "sign", "excess", probe["worker"]),
+    ]
+    entered, armed_at = [], []
+    def arm_selected_port(client, kind, **kwargs):
+        assert kwargs["decision"] is decision
+        assert (decision.deadline, decision.end) == original_limits
+        assert len(entered) < len(ports)
+        selected_client, selected_kind, actual_phase, _ = ports[len(entered)]
+        assert client is selected_client and kind == selected_kind
+        entered.append(actual_phase)
+        if actual_phase == phase:
+            assert not armed_at
+            remaining = decision.remaining()
+            assert remaining > .6
+            armed_at.append(time.monotonic())
+            # Spend time on the same original clock at the selected real RPC.
+            # Earlier TLS calls retain their actual cost; neither limit is renewed.
+            shift[0] += remaining - .6
+        try:
+            return exchange(client, kind, **kwargs)
+        finally:
+            assert (decision.deadline, decision.end) == original_limits
+    monkeypatch.setattr(probe_io, "exchange", arm_selected_port)
     probe.update(fault=phase, mode=mode)
-    started = time.monotonic()
     with pytest.raises(BindingError, match="^qualification-failed$"):
         probe["probe"].check(b"accepted preimage", probe["binding"], now=k.c.h.now, decision=decision)
-    assert time.monotonic() - started < 1.5  # socket/trickle would otherwise exceed remaining .6s
-    phases = [v[0] for v in probe["calls"]]
-    assert phases == ["resolve", "positive", "denial", "excess"][:phases.index(phase) + 1]
-    assert decision._hosted_reads["counts"]["private"] == len(phases)
+    assert len(armed_at) == 1
+    assert time.monotonic() - armed_at[0] < 1.5  # actual pause/trickle exceeds the original .6s remainder
+    assert (decision.deadline, decision.end) == original_limits
+    expected = [(label, credential) for _, _, label, credential in ports]
+    phases = ["resolve", "positive", "denial", "excess"]
+    assert probe["calls"] == expected[:phases.index(phase) + 1]
+    assert decision._hosted_reads["counts"]["private"] == len(probe["calls"])
     assert _children() == before
 
 
