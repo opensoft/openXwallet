@@ -1,0 +1,130 @@
+"""Record complete source runs and preserve actual active parent coverage."""
+import hashlib
+import json
+import os
+import shutil
+from pathlib import Path
+import sys
+
+ROOT = Path(__file__).resolve().parents[1]
+MODE = os.environ.get("WALLET_SOURCE_MEASUREMENT")
+# Nested pytest probes inherit the current-test marker. They must not publish
+# a subset in place of the top-level full-suite receipt.
+ACTIVE = bool(MODE) and "PYTEST_CURRENT_TEST" not in os.environ
+NODES = []
+REPORTS = {}
+DESELECTED = []
+COLLECTED = []
+ISOLATED_CASE = ("tests/runtime_binding/test_hosted_lifecycle.py::"
+                 "test_large_final_manifest_cleans_and_audits_above_aggregate_document_limit"
+                 "[large-manifest]")
+START_CORE = None
+
+
+def active_core():
+    import coverage
+
+    current = coverage.Coverage.current()
+    return dict(current.sys_info()).get("core") if current else None
+
+
+def pytest_sessionstart():
+    global START_CORE
+    if ACTIVE:
+        if MODE not in ("runtime", "coverage", "isolated"):
+            raise RuntimeError("unknown full-source execution role")
+        START_CORE = active_core()
+        expected = (3, 14) if MODE == "isolated" else (3, 12)
+        if sys.version_info[:2] != expected:
+            raise RuntimeError("source execution interpreter differs")
+        core = {"runtime": None, "coverage": "CTracer", "isolated": "SysMonitor"}[MODE]
+        if START_CORE != core:
+            raise RuntimeError("source measurement core differs")
+
+
+
+def pytest_collection_modifyitems(config, items):
+    if not ACTIVE:
+        return
+    if (config.getoption("keyword") or config.getoption("markexpr")
+            or config.getoption("deselect")):
+        raise RuntimeError("measurement partitions cannot have extra selection")
+    COLLECTED.extend(sorted(item.nodeid for item in items))
+    if MODE != "runtime":
+        if ISOLATED_CASE not in COLLECTED:
+            raise RuntimeError("fixed isolated measurement case missing")
+        selected, removed = [], []
+        for item in items:
+            isolated = item.nodeid == ISOLATED_CASE
+            (selected if isolated == (MODE == "isolated") else removed).append(item)
+        config.hook.pytest_deselected(items=removed)
+        items[:] = selected
+
+def pytest_collection_finish(session):
+    if ACTIVE:
+        if session.config.args != ["tests/"]:
+            raise RuntimeError("full-source execution must select tests/")
+        NODES.extend(sorted(item.nodeid for item in session.items))
+
+
+def pytest_deselected(items):
+    if ACTIVE and items:
+        DESELECTED.extend(sorted(item.nodeid for item in items))
+
+
+def pytest_runtest_logreport(report):
+    if ACTIVE:
+        context = getattr(report, "context", None)
+        identity = None if context is None else json.loads(json.dumps({
+            "message": context.msg, "parameters": dict(context.kwargs),
+        }, sort_keys=True, allow_nan=False))
+        REPORTS.setdefault(report.nodeid, []).append({
+            "phase": report.when, "outcome": report.outcome,
+            "subtest": context is not None, "context": identity,
+            "xfail": hasattr(report, "wasxfail"),
+        })
+
+
+def pytest_sessionfinish(exitstatus):
+    parent_shard = None
+    if os.environ.get("COVERAGE_PROCESS_START"):
+        import coverage
+
+        current = coverage.Coverage.current()
+        if current is None:
+            raise RuntimeError("coverage requested but no collector is active")
+        # Nested Coverage API tests disable startup autosaving. This public
+        # call retains the real parent execution without changing its hits.
+        current.save()
+        if ACTIVE:
+            shard = Path(current.get_data().data_filename())
+            if (shard.parent != ROOT / ".coverage-reports" or shard.is_symlink()
+                    or not shard.is_file() or not current.get_data().has_arcs()):
+                raise RuntimeError("parent branch measurement missing or linked")
+            # Preserve genuine post-assertion bytes. Coverage may save again at
+            # process exit; retain both that original and this immutable snapshot.
+            saved = shard.parent / (".coverage.parent." + str(os.getpid()))
+            with shard.open("rb") as source, saved.open("xb") as destination:
+                shutil.copyfileobj(source, destination)
+            parent_shard = {"name": saved.name,
+                            "sha256": hashlib.sha256(saved.read_bytes()).hexdigest()}
+    if ACTIVE:
+        import coverage
+
+        end_core = active_core()
+        if end_core != START_CORE:
+            raise RuntimeError("source measurement core changed")
+        result = {
+            "role": MODE, "python": list(sys.version_info[:3]),
+            "parent_shard": parent_shard,
+            "coverage_version": coverage.__version__, "core": START_CORE,
+            "collection": COLLECTED, "collection_sha256": hashlib.sha256(
+                json.dumps(COLLECTED, separators=(",", ":")).encode()).hexdigest(),
+            "nodes": NODES, "nodeids_sha256": hashlib.sha256(
+                json.dumps(NODES, separators=(",", ":")).encode()).hexdigest(),
+            "reports": REPORTS, "deselected": sorted(DESELECTED),
+            "exitstatus": int(exitstatus),
+        }
+        with (ROOT / ".coverage-reports/source-suite.json").open("x") as stream:
+            json.dump(result, stream, indent=2)
+            stream.write("\n")

@@ -1,3 +1,64 @@
+## Prepared storage-error follow-up e0e0b9a31ec8
+
+The candidate source is openXfactory PR #1333 at e0e0b9a31ec8f4d5ec2d611d373ce0a918abb5de; main admission remains pending. This extends the authenticated supplied-artifact repair with a structured refusal for staging write or sync failures. The provider suite passes all 193 cases, including disk-full and quota regressions before npm is invoked. The verifier body SHA-256 is 6498736d58ae5b5c08835375f680082622882e5ed815dd84ab32ef3e47d00bf0. The other three provider bodies, CLI version, dependency lock and committed tarball are unchanged. Earlier records below remain historical evidence.
+
+# Wallet #73 supplied-artifact correction (2026-11-16)
+
+Status: prepared; provider #1333 main admission pending.
+
+Provider candidate: opensoft/openXfactory@2bb3d5fa08c9922dcfd746bb269705d5457ec20a.
+Hosted review of openWallet-spec #12 found that a cold npm cache could cause
+the earlier implementation to fetch the CLI again after authenticating its
+vendored tarball. The correction stages the exact authenticated byte snapshot
+inside the controlled private generation and seeds npm's content-addressed
+cache before unchanged locked installation. The same 80-package lock, mandatory
+SHA-512, corroborating checksum, operator/profile controls and script suppression
+remain in force. No active generation or historical artifact is replaced.
+
+All 191 provider pin tests pass, including real npm installation with an empty
+private cache and networking disabled. Consumer production CLI and CI
+qualification follow below as they complete. The original committed tarball is
+unchanged; the dependency-only network residual remains the existing contract.
+
+| File | Provider body SHA-256 | Complete consumer SHA-256 |
+| --- | --- | --- |
+| scripts/validate-openspec-cli-pin.py | 98bb953aef0fb990b301cd62bfda995b46a5e797346ca88cc180cc457cdd5aca | abdb1e460a8430a5ba5e3b15055b4eca6ed1de719d51cc1ddded88651a35be75 |
+| scripts/install-pinned-openspec-cli.py | 082d036c18e40e2794e495633680f62a71795115b250ecd38428e451419fb083 | 518fc06d7f052ec29e25780c9028c8bdbbd4259d66562c75ab7db61937823e09 |
+| contracts/openspec-cli-pin.yaml | 1bab358ce6d5275fcad6fd1af3a4320aebe42d25c158aa0364d680fd4d8fa482 | d7181832f4f2c930e8a348a7ad4d771f35733d21bc5144aabea7ed208ad4e9b4 |
+| contracts/openspec-cli-pin.1.12.0.package-lock.json | 696dce86e5e5699007129310d9de532795ce48467218fba03b729d38c829e2ca | 696dce86e5e5699007129310d9de532795ce48467218fba03b729d38c829e2ca |
+
+Python copies carry exactly three declared comments after the provider shebang;
+YAML carries those three comments before its provider body; JSON is verbatim.
+Consumer checks also reject executable or malformed replacement headers.
+Earlier records retain their original measurements and are historical evidence.
+
+# Wallet #73 checksum and trust-boundary maintenance (2026-11-16)
+
+Status: provider admitted; consumer main acceptance pending.
+
+Provider main 4dd7c73daa3fd6dbbd25f39c1d5ff72ca8d7d1c2 merged the reviewed
+371809285508ad4eb53d415103ecddaec5588938 head on 2026-11-16. Ancestry and
+unchanged verifier/installer/pin/lock bytes were verified before consumption.
+
+Provider: opensoft/openXfactory@371809285508ad4eb53d415103ecddaec5588938.
+The existing mandatory SHA-512 authentication and 80-package verified closure
+remain in force. npm's SHA-1 corroborating checksum is explicitly nonsecurity
+for FIPS compatibility. This also brings the neutral spec leg onto the already
+qualified credential/profile, artifact, cache and argument boundaries rather
+than patching its older copy. The committed CLI tarball and adapted gate remain
+unchanged. No runtime authority, exclusions, thresholds or billing changes.
+
+| File | Provider body SHA-256 | Complete consumer SHA-256 |
+| --- | --- | --- |
+| scripts/validate-openspec-cli-pin.py | 42f966ceb3c2ce9f11e4587f90a956a1afc52b1ca75adc1b5ac17ccc09514e29 | 2e188db58136328263c5ee725f167a624255802428d946a1c0a5f4f66d39cc1d |
+| scripts/install-pinned-openspec-cli.py | 082d036c18e40e2794e495633680f62a71795115b250ecd38428e451419fb083 | a2d94ac4b9cf911206761ec28e75b69622c7d6798166ab315d12f79157a22a48 |
+| contracts/openspec-cli-pin.yaml | 1bab358ce6d5275fcad6fd1af3a4320aebe42d25c158aa0364d680fd4d8fa482 | ea2efc1c81a9158acbab801b38c23862ac2e0168337e68388319ff40319725bb |
+| contracts/openspec-cli-pin.1.12.0.package-lock.json | 696dce86e5e5699007129310d9de532795ce48467218fba03b729d38c829e2ca | 696dce86e5e5699007129310d9de532795ce48467218fba03b729d38c829e2ca |
+
+Python bodies exclude the three comments after the shebang. YAML excludes
+its three leading comments; JSON is verbatim. The following earlier records
+retain their original measurements and are historical evidence.
+
 # Final P1 argument-boundary consumption (2026-11-16)
 Status: draft
 

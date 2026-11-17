@@ -13,3 +13,8 @@ Thumbs.db
 *.swp
 .idea/
 .vscode/
+
+# Source-analysis receipts are run artifacts, never credentials or source.
+.coverage-reports/
+.scannerwork/
+pytest-report.xml

@@ -1,0 +1,1327 @@
+{
+  "observedAt": "2026-11-16T14:49:02.491301+00:00",
+  "project": "opensoft_openXwallet",
+  "originalIssues": [
+    {
+      "key": "AaEiKj5as2OjFVrUKSXc",
+      "rule": "githubactions:S8541",
+      "component": "opensoft_openXwallet:openWallet/code/.github/workflows/pytest-suite.yml",
+      "line": 33,
+      "creationDate": "2026-10-09T19:35:14+0000",
+      "status": "OPEN"
+    },
+    {
+      "key": "AaEiKj5as2OjFVrUKSXd",
+      "rule": "githubactions:S8544",
+      "component": "opensoft_openXwallet:openWallet/code/.github/workflows/pytest-suite.yml",
+      "line": 33,
+      "creationDate": "2026-10-09T19:35:14+0000",
+      "status": "OPEN"
+    },
+    {
+      "key": "AaEiKj5Ms2OjFVrUKSXa",
+      "rule": "githubactions:S8541",
+      "component": "opensoft_openXwallet:openWallet/code/.github/workflows/wallet-validation.yml",
+      "line": 42,
+      "creationDate": "2026-10-09T19:35:14+0000",
+      "status": "OPEN"
+    },
+    {
+      "key": "AaEiKj5Ms2OjFVrUKSXb",
+      "rule": "githubactions:S8544",
+      "component": "opensoft_openXwallet:openWallet/code/.github/workflows/wallet-validation.yml",
+      "line": 42,
+      "creationDate": "2026-10-09T19:35:14+0000",
+      "status": "OPEN"
+    },
+    {
+      "key": "AaEiKj6hs2OjFVrUKSXw",
+      "rule": "pythonsecurity:S8707",
+      "component": "opensoft_openXwallet:openWallet/scripts/repo_shape.py",
+      "line": 626,
+      "creationDate": "2026-10-09T19:35:14+0000",
+      "status": "OPEN"
+    },
+    {
+      "key": "AaEiKj51s2OjFVrUKSXp",
+      "rule": "python:S4790",
+      "component": "opensoft_openXwallet:openWallet/spec/scripts/validate-openspec-cli-pin.py",
+      "line": 694,
+      "creationDate": "2026-10-09T19:35:14+0000",
+      "status": "OPEN"
+    },
+    {
+      "key": "AaB8u7Hi5rVuGc89yn5B",
+      "rule": "python:S4790",
+      "component": "opensoft_openXwallet:scripts/validate-openspec-cli-pin.py",
+      "line": 1044,
+      "creationDate": "2026-09-07T13:59:53+0000",
+      "status": "OPEN"
+    },
+    {
+      "key": "AaBJSB2k2Sq2goC8eU36",
+      "rule": "secrets:S9131",
+      "component": "opensoft_openXwallet:openWallet/code/contracts/openxwallet/examples/negative/wallet-carries-jwk-private-exponent.yaml",
+      "line": 27,
+      "creationDate": "2026-08-08T02:34:13+0000",
+      "status": "OPEN"
+    }
+  ],
+  "gateDefinition": {
+    "id": 9,
+    "name": "Sonar way",
+    "conditions": [
+      {
+        "id": 35,
+        "metric": "new_security_rating",
+        "op": "GT",
+        "error": "1"
+      },
+      {
+        "id": 36,
+        "metric": "new_reliability_rating",
+        "op": "GT",
+        "error": "1"
+      },
+      {
+        "id": 37,
+        "metric": "new_maintainability_rating",
+        "op": "GT",
+        "error": "1"
+      },
+      {
+        "id": 38,
+        "metric": "new_coverage",
+        "op": "LT",
+        "error": "80"
+      },
+      {
+        "id": 39,
+        "metric": "new_duplicated_lines_density",
+        "op": "GT",
+        "error": "3"
+      },
+      {
+        "id": 76287,
+        "metric": "new_security_hotspots_reviewed",
+        "op": "LT",
+        "error": "100"
+      }
+    ],
+    "isBuiltIn": true,
+    "actions": {
+      "rename": false,
+      "setAsDefault": false,
+      "copy": true,
+      "associateProjects": false,
+      "delete": false,
+      "manageConditions": false
+    },
+    "isCleanAsYouCode": true,
+    "isAiCodeAssuredCompliant": false
+  },
+  "qualityProfiles": {
+    "profiles": [
+      {
+        "key": "AZzOAxufZYeV1IAhzv0r",
+        "name": "Sonar way comprehensive",
+        "language": "abap",
+        "languageName": "ABAP",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 66,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-07-29T13:38:50+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0s",
+        "name": "Sonar way comprehensive",
+        "language": "ansible",
+        "languageName": "Ansible",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 16,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-06-18T16:58:04+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0n",
+        "name": "Sonar way comprehensive",
+        "language": "apex",
+        "languageName": "Apex",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 96,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-10-29T15:54:29+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZz3XeW9jNeBwqrjtVW9",
+        "name": "Sonar way comprehensive",
+        "language": "azurepipelines",
+        "languageName": "Azure Pipelines",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 36,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-10-29T15:55:09+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0Z",
+        "name": "Sonar way comprehensive",
+        "language": "azureresourcemanager",
+        "languageName": "Azure Resource Manager",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 37,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-06-18T17:43:49+0000",
+        "lastUsed": "2026-08-22T10:50:52+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0V",
+        "name": "Sonar way comprehensive",
+        "language": "c",
+        "languageName": "C",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 212,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-09-09T12:44:55+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0K",
+        "name": "Sonar way comprehensive",
+        "language": "cloudformation",
+        "languageName": "CloudFormation",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 26,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-06-18T17:28:36+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0X",
+        "name": "Sonar way comprehensive",
+        "language": "cobol",
+        "languageName": "COBOL",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 74,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-08-21T13:58:43+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxugZYeV1IAhzv03",
+        "name": "Sonar way comprehensive",
+        "language": "cpp",
+        "languageName": "C++",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 466,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-09-09T12:44:36+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxugZYeV1IAhzv06",
+        "name": "Sonar way comprehensive",
+        "language": "cs",
+        "languageName": "C#",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 382,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-11-11T11:08:28+0000",
+        "lastUsed": "2026-09-15T22:36:49+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0L",
+        "name": "Sonar way comprehensive",
+        "language": "css",
+        "languageName": "CSS",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 50,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-11-16T11:11:22+0000",
+        "lastUsed": "2026-10-26T12:27:17+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxugZYeV1IAhzv02",
+        "name": "Sonar way comprehensive",
+        "language": "dart",
+        "languageName": "Dart",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 118,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-06-18T12:30:08+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZ_SVtzx9vtgtJM14tgG",
+        "name": "Sonar way comprehensive",
+        "language": "dataweave",
+        "languageName": "DataWeave",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 22,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-08-05T14:32:11+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0k",
+        "name": "Sonar way comprehensive",
+        "language": "docker",
+        "languageName": "Docker",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 61,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-10-29T15:56:29+0000",
+        "lastUsed": "2026-11-16T02:21:12+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0P",
+        "name": "Sonar way comprehensive",
+        "language": "flex",
+        "languageName": "Flex",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 47,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-07-06T08:40:43+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0i",
+        "name": "Sonar way comprehensive",
+        "language": "githubactions",
+        "languageName": "GitHub Actions",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 45,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-10-29T15:58:05+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0U",
+        "name": "Sonar way comprehensive",
+        "language": "go",
+        "languageName": "Go",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 82,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-10-05T15:30:38+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZ5pCq0BltFaynLGBKFo",
+        "name": "Sonar way comprehensive",
+        "language": "gosu",
+        "languageName": "Gosu",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 38,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-06-09T16:48:24+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxugZYeV1IAhzv04",
+        "name": "Sonar way comprehensive",
+        "language": "groovy",
+        "languageName": "Groovy",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 80,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-10-26T16:31:19+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0Y",
+        "name": "Sonar way comprehensive",
+        "language": "ipynb",
+        "languageName": "IPython Notebooks",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 438,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-11-10T14:45:22+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxugZYeV1IAhzv01",
+        "name": "Sonar way comprehensive",
+        "language": "java",
+        "languageName": "Java",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 670,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-10-22T16:39:30+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0c",
+        "name": "Sonar way comprehensive",
+        "language": "jcl",
+        "languageName": "JCL",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 11,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2025-03-10T14:01:04+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxugZYeV1IAhzv0z",
+        "name": "Sonar way comprehensive",
+        "language": "js",
+        "languageName": "JavaScript",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 481,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-10-14T16:46:14+0000",
+        "lastUsed": "2026-11-16T02:21:33+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0h",
+        "name": "Sonar way comprehensive",
+        "language": "json",
+        "languageName": "JSON",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 2,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-03-16T15:55:26+0000",
+        "lastUsed": "2026-09-07T00:21:21+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0Q",
+        "name": "Sonar way comprehensive",
+        "language": "jsp",
+        "languageName": "JSP",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 0,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2019-01-31T08:12:02+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0T",
+        "name": "Sonar way comprehensive",
+        "language": "kotlin",
+        "languageName": "Kotlin",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 157,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-06-25T10:23:39+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxugZYeV1IAhzv00",
+        "name": "Sonar way comprehensive",
+        "language": "kubernetes",
+        "languageName": "Kubernetes",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 23,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-06-18T16:49:22+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0W",
+        "name": "Sonar way comprehensive",
+        "language": "objc",
+        "languageName": "Objective-C",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 211,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-08-12T12:37:53+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0l",
+        "name": "Sonar way comprehensive",
+        "language": "php",
+        "languageName": "PHP",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 195,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-08-03T18:24:01+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0p",
+        "name": "Sonar way comprehensive",
+        "language": "pli",
+        "languageName": "PL/I",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 17,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2024-12-18T15:13:01+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0S",
+        "name": "Sonar way comprehensive",
+        "language": "plsql",
+        "languageName": "PL/SQL",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 132,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-07-07T14:41:56+0000",
+        "lastUsed": "2026-11-16T02:21:33+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZ89KRYCInNrSx-_eGr2",
+        "name": "Sonar way comprehensive",
+        "language": "postgres",
+        "languageName": "PostgreSQL",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 11,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-07-07T15:18:42+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZ3ZRoggFVODNh3tP5z5",
+        "name": "Sonar way comprehensive",
+        "language": "powershell",
+        "languageName": "PowerShell",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 32,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-05-27T10:17:24+0000",
+        "lastUsed": "2026-11-15T16:21:23+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxugZYeV1IAhzv0y",
+        "name": "Sonar way comprehensive",
+        "language": "py",
+        "languageName": "Python",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 492,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-11-10T14:42:54+0000",
+        "lastUsed": "2026-11-16T14:46:42+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AaBipXaaUmcwpIittQQd",
+        "name": "Sonar way comprehensive",
+        "language": "r",
+        "languageName": "R",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 76,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-09-11T12:49:20+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0m",
+        "name": "Sonar way comprehensive",
+        "language": "rpg",
+        "languageName": "RPG",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 33,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-06-16T07:53:11+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0e",
+        "name": "Sonar way comprehensive",
+        "language": "ruby",
+        "languageName": "Ruby",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 66,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-09-02T15:02:27+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0q",
+        "name": "Sonar way comprehensive",
+        "language": "rust",
+        "languageName": "Rust",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 152,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-09-11T07:46:15+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0f",
+        "name": "Sonar way comprehensive",
+        "language": "scala",
+        "languageName": "Scala",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 30,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-10-26T16:31:37+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxugZYeV1IAhzv0w",
+        "name": "Sonar way comprehensive",
+        "language": "secrets",
+        "languageName": "Secrets",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 357,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-11-04T16:14:21+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0O",
+        "name": "Sonar way comprehensive",
+        "language": "shell",
+        "languageName": "Shell",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 23,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-10-29T15:55:45+0000",
+        "lastUsed": "2026-11-16T14:31:58+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxugZYeV1IAhzv0x",
+        "name": "Sonar way comprehensive",
+        "language": "swift",
+        "languageName": "Swift",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 65,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-07-29T11:42:24+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0M",
+        "name": "Sonar way comprehensive",
+        "language": "terraform",
+        "languageName": "Terraform",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 51,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-07-01T09:09:37+0000",
+        "lastUsed": "2026-07-21T04:37:24+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0R",
+        "name": "Sonar way comprehensive",
+        "language": "text",
+        "languageName": "Text",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 11,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-05-04T15:20:50+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxugZYeV1IAhzv0u",
+        "name": "Sonar way comprehensive",
+        "language": "ts",
+        "languageName": "TypeScript",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 496,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-10-14T16:47:23+0000",
+        "lastUsed": "2026-10-26T12:27:17+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0b",
+        "name": "Sonar way comprehensive",
+        "language": "tsql",
+        "languageName": "T-SQL",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 59,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-07-17T12:38:43+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0j",
+        "name": "Sonar way comprehensive",
+        "language": "vb",
+        "languageName": "Vb",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 28,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-07-06T10:44:22+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0t",
+        "name": "Sonar way comprehensive",
+        "language": "vbnet",
+        "languageName": "VB.NET",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 180,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-07-23T15:08:27+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxugZYeV1IAhzv0v",
+        "name": "Sonar way comprehensive",
+        "language": "web",
+        "languageName": "HTML",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 61,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-10-20T07:01:38+0000",
+        "lastUsed": "2026-11-16T02:21:33+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0a",
+        "name": "Sonar way comprehensive",
+        "language": "xml",
+        "languageName": "XML",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 39,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-09-02T15:02:12+0000",
+        "lastUsed": "2026-10-26T12:27:17+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      },
+      {
+        "key": "AZzOAxufZYeV1IAhzv0g",
+        "name": "Sonar way comprehensive",
+        "language": "yaml",
+        "languageName": "YAML",
+        "isInherited": false,
+        "isDefault": true,
+        "activeRuleCount": 2,
+        "activeDeprecatedRuleCount": 0,
+        "rulesUpdatedAt": "2026-03-16T16:16:03+0000",
+        "lastUsed": "2026-11-16T14:31:58+0000",
+        "organization": "opensoft",
+        "isBuiltIn": true,
+        "actions": {
+          "edit": false,
+          "setAsDefault": false,
+          "copy": true,
+          "associateProjects": false,
+          "delete": false,
+          "grantPermissions": false
+        },
+        "requiredEntitlements": []
+      }
+    ],
+    "actions": {
+      "create": true
+    }
+  },
+  "baseline": {
+    "key": "d434a8d1-6d41-4cfe-9413-e1868fc1c18d",
+    "date": "2026-08-27T11:16:42+0000",
+    "revision": "63f5a1adac89f017e70bab9a4ffe7cf02d6e6705",
+    "rationale": "Oldest retained main analysis; verified Git ancestor of current main. Retains every subsequent change and all historical analyses; no recency baseline for green.",
+    "verifiedAncestorOf": "d832709a1119c17014287cd15ff8661bfd758cc4"
+  },
+  "retainedAnalyses": [
+    {
+      "key": "5355fe64-552a-44e0-8212-a3d429a984c2",
+      "date": "2026-11-16T14:31:58+0000",
+      "revision": "d832709a1119c17014287cd15ff8661bfd758cc4"
+    },
+    {
+      "key": "b410f2bc-4bb8-433f-9d58-c4c0a69fea8e",
+      "date": "2026-11-16T02:28:10+0000",
+      "revision": "fce58c192e93be9678cfd94fee81f9dacd41e5aa"
+    },
+    {
+      "key": "26cd6971-b303-4aaf-8070-ca081ad159d1",
+      "date": "2026-11-15T01:38:39+0000",
+      "revision": "02d902a4b19d9855780aad5996964686e7452929"
+    },
+    {
+      "key": "41aeff49-ffd2-450d-a96a-6e2050230638",
+      "date": "2026-11-14T12:13:16+0000",
+      "revision": "425606899116c4e7fe5d3c6fe3382c058081336b"
+    },
+    {
+      "key": "19cafad8-33cc-4aa9-8e6a-6d32f80bba28",
+      "date": "2026-11-13T00:39:04+0000",
+      "revision": "b86b92512a17019c9fd1b5ac171f116949bffe4e"
+    },
+    {
+      "key": "e164edc4-4ca7-455a-b521-c7101cbb5fbd",
+      "date": "2026-11-12T18:22:37+0000",
+      "revision": "7817b66f91ba15920737ec794cba900579258fd3"
+    },
+    {
+      "key": "2afc8bf0-8b39-4922-a486-889afcb82a33",
+      "date": "2026-11-11T23:52:17+0000",
+      "revision": "336055fde62e45b49c5ff45cee36e1152ca695f1"
+    },
+    {
+      "key": "eba10348-185f-4896-80cf-15c84699d3de",
+      "date": "2026-10-08T17:17:40+0000",
+      "revision": "bf2dd4db88edbb873d067425b16dacd3784fbaf5"
+    },
+    {
+      "key": "03ae3f82-b4cb-447a-a61e-3ec2b3e731a3",
+      "date": "2026-09-02T16:36:49+0000",
+      "revision": "b7b0fbb3e6d614f60a24737c247e45dada9408aa"
+    },
+    {
+      "key": "d434a8d1-6d41-4cfe-9413-e1868fc1c18d",
+      "date": "2026-08-27T11:16:42+0000",
+      "revision": "63f5a1adac89f017e70bab9a4ffe7cf02d6e6705"
+    }
+  ],
+  "analysisExecutorBefore": "automatic; no coverage report or evaluated new-code gate"
+}
