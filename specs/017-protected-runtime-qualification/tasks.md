@@ -155,7 +155,7 @@ Current source-accepted private39 realization: [as-built record](hosting-evidenc
 
 ### Commissioned isolated staging-journal correction
 
-- [ ] T012VJ [O] Correct optional staging journal observation without weakening retained-store identity or refusal rules; preserve all accepted behavior and qualify the new source in isolation — files: `scripts/workload_factory_binding_runtime/hosted/stage_store.py`, `tests/runtime_binding/test_hosted_stage_store.py`, `tests/runtime_binding/matrix_contract.py`, `specs/017-protected-runtime-qualification/sqlite-journal-plan.md`, `specs/017-protected-runtime-qualification/tasks.md`, `specs/017-protected-runtime-qualification/plan.md`, `specs/017-protected-runtime-qualification/evidence.md`, `AGENTS.md` — verify: `python3 -m pytest tests/runtime_binding/test_hosted_stage_store.py tests/runtime_binding/test_hosted_launch.py tests/runtime_binding/test_conformance.py -q`, followed by the existing ordered full/native gates and independent cleanup audit. See sqlite-journal-plan.md; no publication, new source ratification or operational grant.
+- [x] T012VJ [O] Correct optional staging journal observation without weakening retained-store identity or refusal rules; preserve all accepted behavior and qualify the new source in isolation — files: `scripts/workload_factory_binding_runtime/hosted/stage_store.py`, `tests/runtime_binding/test_hosted_stage_store.py`, `tests/runtime_binding/matrix_contract.py`, `specs/017-protected-runtime-qualification/sqlite-journal-plan.md`, `specs/017-protected-runtime-qualification/tasks.md`, `specs/017-protected-runtime-qualification/plan.md`, `specs/017-protected-runtime-qualification/evidence.md`, `AGENTS.md` — verify: `python3 -m pytest tests/runtime_binding/test_hosted_stage_store.py tests/runtime_binding/test_hosted_launch.py tests/runtime_binding/test_conformance.py -q`, followed by the existing ordered full/native gates and independent cleanup audit. See sqlite-journal-plan.md; no publication, new source ratification or operational grant.
 
 ### Operational owner gates — not granted
 
@@ -169,7 +169,7 @@ T001 -> T002/T003 -> T004/T005 -> T006/T007/T008 -> T009/T010/T011 -> T012 ->
 T012B -> T012C/T012D -> T012E -> T012F -> T012G -> T012H/T012I ->
 T012J -> T012K -> T012L -> T012M -> T012N -> T012O/T012P/T012Q ->
 T012R -> T012S -> T012T01 -> T012T02/T012T03 -> T012T04 -> T012T05/T012T06 ->
-T012U -> T012V -> T013 -> T014 -> T015. US1 is the smallest useful slice. No parallel-agent
+T012U -> T012V -> T012VJ -> T013 -> T014 -> T015. US1 is the smallest useful slice. No parallel-agent
 implementation is required. Factory governance and consumer handoff duplicate
 no implementation list. Future paths are proposed; reconcile them against
 reviewed code during commissioned implementation without widening scope.

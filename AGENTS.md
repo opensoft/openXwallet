@@ -633,3 +633,17 @@ Follow feature017 sqlite-journal-plan.md. Old runtime61 results and failed or
 superseded native attempts stay historical; fresh exact-source full/native and
 cleanup are required. No pins/workflows/budgets/defaults or operational authority
 change; setup/dispatch unauthorized, feedback deferred, blocked writes unreplayed.
+
+## Qualified isolated SQLite staging-journal candidate
+
+Integrated runtime c32ac5147fd504426483681a11dc8b60f4aac0fc on accepted main #92 passes
+2,859 full cases plus 11 subtests, all 2,437 mandatory native cases and seven
+ordered local gates with zero failures/errors/skips. All 387 frozen input hashes
+match. Prior identities/fingerprints/anchors and neutral/owner refs remain.
+Independent audits verify ten preservation cases and owned roots/containers
+absent. Feature017 sqlite-journal-plan.md records exact red/green qualification
+and historical failed/diagnostic/superseded attempts without promoting them.
+T012VJ is complete in isolation. Fix publication, hosted CI, local expert review
+and owner source acceptance remain later gates. T001/T013-T015/setup/dispatch
+remain ungranted; feedback deferred, blocked writes unreplayed. This later
+five-document reconciliation preserves all other qualified runtime inputs.

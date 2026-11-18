@@ -85,3 +85,73 @@ strict checks and network isolation remain enforced. Existing T012VJ is still
 the sole correction task and stays unchecked until these checks pass. No new
 profile, source acceptance, publication, setup/dispatch or live grant is inferred.
 Feedback deferred; blocked writes unreplayed.
+
+## Isolated correction result
+
+Frozen integrated runtime `c32ac5147fd504426483681a11dc8b60f4aac0fc` (tree `aea5589f55910b9b9e978b18ffb4e2db80a0c946`), based on accepted
+main `22bc7bdf6298c043377528c0c289ca26e51cbb07`, passes all seven ordered local gates, 2,859 full cases plus
+11 subtests and all 2,437 mandatory native cases, with zero failures/errors/skips.
+Full execution took 1762.350s and native execution 1301.731s.
+All 387 tracked input hashes matched before and after qualification. The later
+five-document reconciliation preserves every other input; its head is distinct
+from the runtime head. All previous 2,811 full and 2,389 native identities/order,
+module fingerprints and case anchors remain; 48 measured new cases extend H03
+to 145 nodes. All 221 integrated targeted controls pass.
+Three deterministic real SQLite journal-retirement controls fail on the old
+runtime at construction/reservation/read and pass on the correction. An earlier
+unchanged-value update created no journal and is retained as an invalid control.
+
+Both qualifying containers use loopback-only networking and read-only source.
+Processes have no supplementary groups/capabilities and cannot regain them.
+Full execution has no active trace/profiler/coverage collector. Native bootstrap
+independently verifies its clean environment and privilege boundary. Independent
+post-namespace audits verify 27329
+generation observations, 854 lifecycle journals,
+262 helper receipts and ten actual
+preservation cases, with no attributable live process or initial qualifying
+teardown failure. The three current qualification fixture roots, audit-control
+root and three named containers are absent. Historical failed/diagnostic and
+superseded namespaces/roots are separately audited and absent. Reports remain
+outside the repository; credentials/raw provider payloads are not published.
+
+The owner source-ratified #91 at cf2c0eee65fc55c1606be4c19f4b61eda2185fab.
+It landed normally as bd1b0d8b6ec249f7ed37932a552e5674d046a912 with accepted tree
+7c6c4a709c8dd4f4676b8a3dabaa2d666d529a9a. Its [post-merge run](https://github.com/opensoft/openXwallet/actions/runs/44294729187)
+passes all five jobs, 2,811 full cases plus 11 subtests and 2,389 native cases.
+The [public post-merge receipt](https://github.com/opensoft/openXwallet/pull/91#issuecomment-6978259963) verifies all six original
+Sonar conditions and the original manual baseline. Incoming accepted main #92
+was integrated before this fresh qualification, without changing the SQLite
+correction/tests/matrix bytes. Its independent [post-merge run](https://github.com/opensoft/openXwallet/actions/runs/44307509886)
+also passes all five jobs, the same baseline full/native corpus and all six
+original Sonar conditions (86.3% new coverage; A ratings; no new duplication;
+100% reviewed new hotspots). These hosted runs cover their merged sources,
+not the new local correction. No job cap or quality gate was relaxed.
+
+Earlier runtime 61e06e3244937fae8806b1e29cdfdd24aaac9df9 remains historical.
+Its 221 focused controls and full seven-gate run pass. Its first native attempt
+had two protected-stage transport setup refusals before target cleanup-window
+or cancellation assertions, then was interrupted for diagnosis: 1,546 completed
+passes, two failures and an additional pytest teardown KeyError; incomplete and
+nonqualifying. Two focused native-equivalent diagnostics pass unchanged, with
+8.25s/8.50s protected-stage responses, but do not prove the original transport
+cause. The unchanged full-native retry was stopped as superseded by accepted
+main #92 (exit137), not promoted to a passing or independent failing matrix.
+The fresh integrated run above supplies complete native evidence and does not
+establish that every historical transport issue is fixed.
+
+The original external cleanup reader blocked on an intentional FIFO negative
+fixture. It was interrupted without a passing audit. The corrected read-only
+reader checks known unsafe sidecars before SQLite access, refuses unexpected
+special sidecars and explicitly closes connections. Guard controls pass;
+complete audits were repeated. No product code or test oracle changed for this
+reader repair. All original failure/diagnostic records remain separate.
+
+T012VJ is complete only in isolation. Publication, hosted CI of this fix, local
+expert review and owner source acceptance remain later gates. The original
+provider exception remains unproven; this source race is reproduced/corrected
+under a controlled real SQLite schedule. Main identity and every observed unsafe
+sidecar still refuse; no arbitrary later filesystem atomicity is claimed. No
+schema/transaction, neutral pin, workflow, budget, deadline or default activation
+changes. T001/T013/T014/T015 remain unchecked. Setup/dispatch unauthorized,
+feedback deferred, blocked writes unreplayed. No live provider qualification,
+token mint, protected-machine acceptance or operational grant is inferred.
