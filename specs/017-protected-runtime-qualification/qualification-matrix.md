@@ -9,7 +9,7 @@ The [operator source runbook](operator-source-runbook.md) supplies the source,
 isolation, final-verdict and independent teardown procedure. This table maps
 actual existing controls; it does not turn source/fixture results into a live
 protected report. Counts are measured anchored nodes and overlap across groups.
-Current measured collection is 2,801 full parent cases and 2,389 mandatory native nodes;
+Current measured collection is 2,811 full parent cases and 2,389 mandatory native nodes;
 all 64 conformance self-tests, prior 2,781 full / 2,369 native identities and
 earlier anchors remain. New source controls cover the probe total Decision,
 cancellation ownership and byte-compatible canonical-journal replay. Execution and cleanup receipts are tracked on [PR #78](https://github.com/opensoft/openXwallet/pull/78).
