@@ -123,7 +123,8 @@ def test_original_decision_bounds_each_actual_tls_rpc_and_reaps_before_return(pr
         assert (decision.deadline, decision.end) == original_limits
         assert len(entered) < len(ports)
         selected_client, selected_kind, actual_phase, _ = ports[len(entered)]
-        assert client is selected_client and kind == selected_kind
+        assert client is selected_client
+        assert kind == selected_kind
         entered.append(actual_phase)
         if actual_phase == phase:
             assert not armed_at
@@ -143,7 +144,8 @@ def test_original_decision_bounds_each_actual_tls_rpc_and_reaps_before_return(pr
         probe["probe"].check(b"accepted preimage", probe["binding"], now=k.c.h.now, decision=decision)
     assert len(armed_at) == 1
     assert time.monotonic() - armed_at[0] < 1.5  # actual pause/trickle exceeds the original .6s remainder
-    assert (decision.deadline, decision.end) == original_limits
+    current_limits = decision.deadline, decision.end
+    assert current_limits == original_limits
     expected = [(label, credential) for _, _, label, credential in ports]
     phases = ["resolve", "positive", "denial", "excess"]
     assert probe["calls"] == expected[:phases.index(phase) + 1]

@@ -5,6 +5,7 @@ Private observation slots are filled only at existing successful checks. Operati
 origin additionally requires an independently selected operator signature over the
 exact observed run/phase/generation/issuance, not a Python type or live/body flag.
 """
+from contextlib import ExitStack
 from dataclasses import asdict, dataclass
 from threading import Lock
 from types import MappingProxyType
@@ -291,6 +292,172 @@ class RegisteredCleanupClient:
             digest(asdict(identity)), digest(attempt))
 
 
+class _QualificationAttempt:
+    """Facts accumulated by one operation and its independent cleanup observation."""
+
+    def __init__(self, bindings, inputs, verify_proof):
+        self.bindings = bindings
+        self.inputs = inputs
+        self.verify_proof = verify_proof
+        self.life = bindings.workflow.lifecycle
+        self.selected = bindings.selected
+        self.trace = ProofTrace()
+        self.started = bindings.decision.last
+        require(integer(self.started), "qualification-failed")
+        self.observations = []
+        self.proof = {"status": "not-performed"}
+        self.phase = None
+        self.issuance = digest({"status": "not-performed"})
+        self.outcome, self.floor = "failure", self.started
+        self.failure = self.cancelled = None
+        self.origin_scope = self.origin_digest = None
+
+    def _record(self, name, value):
+        self.observations.append(CaseObservation(name, self.bindings.decision.now(), digest(value), "passed"))
+
+    def _proof_values(self, accepted):
+        b, trace = self.bindings, self.trace
+        require(trace.selected.config_digest == self.selected.config_digest and trace.reservation == "reserved"
+                and type(trace.access) is CustodyAccess and type(trace.workload) is WorkloadEvidence,
+                "qualification-failed")
+        verified = self.verify_proof(accepted["proof"], expected_digest=trace.challenge.digest,
+                                    binding=trace.registry, now=b.decision.now())
+        require(verified.subject_ref == trace.registry.subject_ref, "qualification-failed")
+        self.issuance = digest(asdict(trace.access))
+        # Replay the exact accepted inputs while the original lease is active.
+        replay = ProofTrace()
+        try:
+            b.bridge.sign_observed(*self.inputs, trace=replay)
+        except BindingError:
+            require(replay.reservation == "replay-refused", "qualification-failed")
+        else:
+            raise BindingError("qualification-failed")
+        return {"accepted_proof_digest": digest(accepted["proof"]),
+            "verification_digest": digest({"subject_ref": verified.subject_ref,
+                "challenge_digest": trace.challenge.digest, "binding_digest": _binding_digest(trace.registry)}),
+            "replay_refusal_digest": digest({"proof_digest": digest(accepted["proof"]), "refusal": replay.reservation})}
+
+    def _observe_proof(self, values):
+        b, trace = self.bindings, self.trace
+        if b.barriers is not None:
+            require(type(b.barriers) is BarrierInputs, "qualification-failed")
+            for kind in ("audience", "environment"):
+                values[kind + "_barrier_digest"] = _barrier(getattr(b.barriers, kind + "_token"),
+                    kind, b.bridge, b.decision.now(), self.selected, self.inputs)
+        if b.worker_probe is not None:
+            require(type(b.worker_probe) is WorkerProbe and type(trace.preimage) is bytes,
+                    "qualification-failed")
+            denial = b.worker_probe.check(trace.preimage, trace.registry,
+                now=b.decision.now(), decision=b.decision)
+            if denial is not None:
+                values["worker_denial_digest"] = denial
+                self._record("G03", {"worker_denial_digest": denial})
+        if set(values) == set(PROOF_FIELDS):
+            self.proof = {"status": "verified", **values}
+            self._record("H10", values)
+
+    def _observe_origin(self):
+        b = self.bindings
+        require(type(b.origin) is OriginTrust and callable(b.origin.load), "protected-report-refused")
+        phase_value = digest({"admission": asdict(self.phase), "finalization": asdict(b.finalized.binding),
+            "readback_digest": self.selected.readback_digest,
+            "workload_digest": digest(dict(self.trace.workload.claims))})
+        expected = {"config_digest": self.selected.config_digest,
+            "case_digest": digest(self.selected.selection["case_ref"]),
+            "run_id": b.context.run_id, "run_attempt": b.context.run_attempt,
+            "phase_provenance_digest": phase_value,
+            "generation_digest": b.finalized.binding.generation_digest,
+            "issuance_digest": self.issuance, "plan_digest": self.life.plan.digest}
+        ReadBudget(b.decision).consume("private")
+        before = b.decision.now()
+        raw = b.origin.load(self.life.plan.ref, deadline=b.decision.deadline)
+        now = b.decision.now()
+        self.origin_scope, self.origin_digest, expiry = _origin(raw, trust=b.origin,
+            principal=b.workflow.runtime_trust.readback_principal, expected=expected, now=now)
+        require(before <= decode_object(raw)["payload"]["observed_at"], "protected-report-refused")
+        b.decision.clip(expiry)
+
+    def operation(self):
+        b, selected = self.bindings, self.selected
+        try:
+            require(selected.config_digest == b.finalized.binding.config_digest == b.context.config_digest
+                    and self.life.plan.scope.config_digest == selected.config_digest, "qualification-failed")
+            self.phase = admit_finalized(b.finalized, b.context, bindings=b.workflow)
+            b.decision.clip(self.phase.valid_until)
+            require(self.phase.config_digest == selected.config_digest, "qualification-failed")
+            accepted = b.bridge.sign_observed(*self.inputs, trace=self.trace)
+            self._observe_proof(self._proof_values(accepted))
+            if b.origin is not None:
+                self._observe_origin()
+            self.floor = b.decision.now()
+            self.outcome = "success"
+            return accepted
+        except BaseException as error:
+            self.floor = max(self.floor, b.decision.last)
+            self._record_outcome(error)
+            self.proof = {"status": "failed"}
+            raise
+
+    def _record_lifecycle_failure(self, _kind, error, _traceback):
+        if error is None:
+            return False
+        self.failure = error
+        self._record_outcome(error)
+        return True
+
+    def _record_outcome(self, error):
+        if isinstance(error, Exception):
+            self.outcome = "failure"
+        else:
+            self.outcome, self.cancelled = "cancel", error
+
+    def run_lifecycle(self):
+        # Keep the outcome available for independent post-cleanup observation.
+        # The caller propagates the saved cancellation after building the result.
+        with ExitStack() as lifecycle:
+            lifecycle.push(self._record_lifecycle_failure)
+            self.life.run(self.operation)
+
+    def _record_privacy_failure(self, now, error):
+        if error is None:
+            return False
+        self.observations.append(CaseObservation("H12", now, digest({"privacy": "refused"}), "failed"))
+        if self.failure is None:
+            self.failure = error
+        if not isinstance(error, Exception):
+            self.outcome = "cancel"
+            if self.cancelled is None:
+                self.cancelled = error
+        elif self.outcome != "cancel":
+            self.outcome = "failure"
+        return True
+
+    def report(self):
+        b, selected, trace = self.bindings, self.selected, self.trace
+        cleanup = self.life.cleanup_verification
+        # Use the independent historical clock for post-cleanup facts.
+        now = self.life.cleanup_clock()
+        require(integer(now) and now >= self.floor, "qualification-failed")
+        if cleanup is not None:
+            require(now >= cleanup.checked_at, "qualification-failed")
+            self.observations.append(CaseObservation("H11", now, digest(asdict(cleanup)), "passed"))
+            self.observations.append(CaseObservation("L01", cleanup.observed_at, digest(asdict(cleanup)), "passed"))
+        # Observe the pre-report projection without hashing the report into itself.
+        from .privacy import observe_privacy
+        with ExitStack() as privacy_observation:
+            privacy_observation.push(lambda _kind, error, _tb: self._record_privacy_failure(now, error))
+            privacy = observe_privacy({"config_digest": selected.config_digest, "proof": self.proof,
+                "cleanup_digest": None if cleanup is None else digest(asdict(cleanup))})
+            self.observations.append(CaseObservation("H12", now, privacy, "passed"))
+        operational = self.origin_scope == "protected-machine" and self.origin_digest is not None
+        phase_digest = digest({"admission": None if self.phase is None else asdict(self.phase),
+            "finalization": asdict(b.finalized.binding), "readback_digest": selected.readback_digest,
+            "workload_digest": None if trace.workload is None else digest(dict(trace.workload.claims))})
+        return QualificationResult(selected, self.life.plan, cleanup, self.started, self.floor, self.outcome,
+            self.origin_digest or phase_digest, b.finalized.binding.generation_digest, self.issuance,
+            tuple(self.observations), MappingProxyType(self.proof), _RESULT_SEAL, _RESULT_SEAL if operational else None)
+
+
 class Qualifier:
     """One operation inside the supplied lifecycle; no hidden budget or retry."""
     def __init__(self, bindings, *, challenge_id, request, token, observation):
@@ -313,144 +480,20 @@ class Qualifier:
         with self._lock:
             require(not self._used, "qualification-failed")
             self._used = True
-        b, trace = self.bindings, ProofTrace()
-        life, selected = b.workflow.lifecycle, b.selected
-        started = b.decision.last
-        require(integer(started), "qualification-failed")
-        observations, proof, phase = [], {"status": "not-performed"}, None
-        issuance = digest({"status": "not-performed"})
-        outcome, floor, cancelled = "failure", started, None
-        origin_scope, origin_digest = None, None
-        def record(name, value, status="passed"):
-            observations.append(CaseObservation(name, b.decision.now(), digest(value), status))
-        def operation():
-            nonlocal phase, issuance, proof, outcome, floor, cancelled, origin_scope, origin_digest
-            try:
-                require(selected.config_digest == b.finalized.binding.config_digest == b.context.config_digest
-                        and life.plan.scope.config_digest == selected.config_digest, "qualification-failed")
-                phase = admit_finalized(b.finalized, b.context, bindings=b.workflow)
-                b.decision.clip(phase.valid_until)
-                require(phase.config_digest == selected.config_digest, "qualification-failed")
-                accepted = b.bridge.sign_observed(*self.inputs, trace=trace)
-                require(trace.selected.config_digest == selected.config_digest and trace.reservation == "reserved"
-                        and type(trace.access) is CustodyAccess and type(trace.workload) is WorkloadEvidence,
-                        "qualification-failed")
-                verified = verify_proof(accepted["proof"], expected_digest=trace.challenge.digest,
-                                        binding=trace.registry, now=b.decision.now())
-                require(verified.subject_ref == trace.registry.subject_ref, "qualification-failed")
-                issuance = digest(asdict(trace.access))
-                # Exact accepted inputs are replayed while their original lease is
-                # active. Capture the underlying atomic reservation's exact refusal.
-                replay = ProofTrace()
-                try:
-                    b.bridge.sign_observed(*self.inputs, trace=replay)
-                except BindingError:
-                    require(replay.reservation == "replay-refused", "qualification-failed")
-                else:
-                    raise BindingError("qualification-failed")
-                values = {"accepted_proof_digest": digest(accepted["proof"]),
-                    "verification_digest": digest({"subject_ref": verified.subject_ref,
-                        "challenge_digest": trace.challenge.digest, "binding_digest": _binding_digest(trace.registry)}),
-                    "replay_refusal_digest": digest({"proof_digest": digest(accepted["proof"]), "refusal": replay.reservation})}
-                if b.barriers is not None:
-                    require(type(b.barriers) is BarrierInputs, "qualification-failed")
-                    for kind in ("audience", "environment"):
-                        values[kind + "_barrier_digest"] = _barrier(getattr(b.barriers, kind + "_token"),
-                            kind, b.bridge, b.decision.now(), selected, self.inputs)
-                if b.worker_probe is not None:
-                    require(type(b.worker_probe) is WorkerProbe and type(trace.preimage) is bytes,
-                            "qualification-failed")
-                    denial = b.worker_probe.check(trace.preimage, trace.registry,
-                        now=b.decision.now(), decision=b.decision)
-                    if denial is not None:
-                        values["worker_denial_digest"] = denial
-                        record("G03", {"worker_denial_digest": denial})
-                if set(values) == set(PROOF_FIELDS):
-                    proof = {"status": "verified", **values}
-                    record("H10", values)
-                if b.origin is not None:
-                    require(type(b.origin) is OriginTrust and callable(b.origin.load), "protected-report-refused")
-                    phase_value = digest({"admission": asdict(phase), "finalization": asdict(b.finalized.binding),
-                        "readback_digest": selected.readback_digest,
-                        "workload_digest": digest(dict(trace.workload.claims))})
-                    expected = {"config_digest": selected.config_digest,
-                        "case_digest": digest(selected.selection["case_ref"]),
-                        "run_id": b.context.run_id, "run_attempt": b.context.run_attempt,
-                        "phase_provenance_digest": phase_value,
-                        "generation_digest": b.finalized.binding.generation_digest,
-                        "issuance_digest": issuance, "plan_digest": life.plan.digest}
-                    ReadBudget(b.decision).consume("private")
-                    before = b.decision.now()
-                    raw = b.origin.load(life.plan.ref, deadline=b.decision.deadline)
-                    now = b.decision.now()
-                    origin_scope, origin_digest, expiry = _origin(raw, trust=b.origin,
-                        principal=b.workflow.runtime_trust.readback_principal, expected=expected, now=now)
-                    require(before <= decode_object(raw)["payload"]["observed_at"], "protected-report-refused")
-                    b.decision.clip(expiry)
-                floor = b.decision.now()
-                outcome = "success"
-                return accepted
-            except BaseException as error:
-                floor = max(floor, b.decision.last)
-                outcome = "failure" if isinstance(error, Exception) else "cancel"
-                if outcome == "cancel":
-                    cancelled = error
-                proof = {"status": "failed"}
-                raise
-        failure = None
+        attempt = _QualificationAttempt(self.bindings, self.inputs, verify_proof)
+        attempt.run_lifecycle()
         try:
-            life.run(operation)
-        except BaseException as error:
-            failure = error
-            outcome = "failure" if isinstance(error, Exception) else "cancel"
-            if not isinstance(error, Exception):
-                cancelled = error
-        try:
-            cleanup = life.cleanup_verification
-            # Read an independent historical clock only; do not renew the original
-            # Decision to encode post-cleanup privacy facts.
-            now = life.cleanup_clock()
-            require(integer(now) and now >= floor, "qualification-failed")
-            if cleanup is not None:
-                require(now >= cleanup.checked_at, "qualification-failed")
-                observations.append(CaseObservation("H11", now, digest(asdict(cleanup)), "passed"))
-                observations.append(CaseObservation("L01", cleanup.observed_at, digest(asdict(cleanup)), "passed"))
-            # Observe the actual pre-report projection and independent canary controls;
-            # never hash final report bytes into their own embedded observation.
-            from .privacy import observe_privacy
-            try:
-                privacy = observe_privacy({"config_digest": selected.config_digest, "proof": proof,
-                    "cleanup_digest": None if cleanup is None else digest(asdict(cleanup))})
-                observations.append(CaseObservation("H12", now, privacy, "passed"))
-            except BaseException as error:
-                observations.append(CaseObservation("H12", now, digest({"privacy": "refused"}), "failed"))
-                failure = error if failure is None else failure
-                if not isinstance(error, Exception):
-                    outcome, cancelled = "cancel", cancelled if cancelled is not None else error
-                elif outcome != "cancel":
-                    outcome = "failure"
-            # Origin is established by the selected operator's actual signature over
-            # these exact observations. A genuine issuer token or transport class by
-            # itself cannot upgrade an isolated fixture/control-plane observation.
-            operational = origin_scope == "protected-machine" and origin_digest is not None
-            phase_digest = digest({"admission": None if phase is None else asdict(phase),
-                "finalization": asdict(b.finalized.binding), "readback_digest": selected.readback_digest,
-                "workload_digest": None if trace.workload is None else digest(dict(trace.workload.claims))})
-            self.result = QualificationResult(selected, life.plan, cleanup, started, floor, outcome,
-                origin_digest or phase_digest, b.finalized.binding.generation_digest, issuance, tuple(observations),
-                MappingProxyType(proof), _RESULT_SEAL, _RESULT_SEAL if operational else None)
+            self.result = attempt.report()
         except BaseException:
-            # A secondary observation/report error cannot turn an already captured
-            # cancellation into ordinary failure. Unavailable facts produce no result.
-            if cancelled is not None:
-                raise cancelled
+            # A secondary report error cannot replace a saved cancellation.
+            if attempt.cancelled is not None:
+                raise attempt.cancelled
             raise
-        if cancelled is not None:
-            raise cancelled
-        if failure is not None:
+        if attempt.cancelled is not None:
+            raise attempt.cancelled
+        if attempt.failure is not None:
             raise BindingError("qualification-failed") from None
         return self.result
-
 
     def reconcile_cleanup(self):
         """Fresh same-reference independent readback only, never cleanup resend."""
