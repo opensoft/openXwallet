@@ -18,7 +18,7 @@ SCRIPT_DIR="$(CDPATH="" cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 _find_project_root() {
     local dir="$1"
-    while test "$dir" != "/"; do
+    while [[ "$dir" != "/" ]]; do
         if [[ -d "$dir/.specify" ]] || [[ -d "$dir/.git" ]]; then
             echo "$dir"
             return 0
@@ -72,7 +72,7 @@ if [[ -f "$_config_file" ]]; then
             # Check default key
             if echo "$_line" | grep -Eq "^[[:space:]]+default:[[:space:]]"; then
                 _val=$(echo "$_line" | sed 's/^[^:]*:[[:space:]]*//' | tr -d '[:space:]' | tr '[:upper:]' '[:lower:]')
-                test "$_val" = "true" && _default_enabled=true
+                [[ "$_val" == "true" && -z "${_val#"true"}" ]] && _default_enabled=true
             fi
 
             # Detect our event subsection
@@ -90,8 +90,8 @@ if [[ -f "$_config_file" ]]; then
                 fi
                 if echo "$_line" | grep -Eq '[[:space:]]+enabled:'; then
                     _val=$(echo "$_line" | sed 's/^[^:]*:[[:space:]]*//' | tr -d '[:space:]' | tr '[:upper:]' '[:lower:]')
-                    test "$_val" = "true" && _enabled=true
-                    test "$_val" = "false" && _enabled=false
+                    [[ "$_val" == "true" && -z "${_val#"true"}" ]] && _enabled=true
+                    [[ "$_val" == "false" && -z "${_val#"false"}" ]] && _enabled=false
                 fi
                 if echo "$_line" | grep -Eq '[[:space:]]+message:'; then
                     _commit_msg=$(echo "$_line" | sed 's/^[^:]*:[[:space:]]*//' | sed 's/^["'\'']//' | sed 's/["'\'']*$//')
@@ -103,7 +103,7 @@ if [[ -f "$_config_file" ]]; then
     # If event-specific key not found, use default
     # Only use default if the event wasn't explicitly set to false
     # Check if event section existed at all
-    if test "$_enabled" = "false" && test "$_default_enabled" = "true" \
+    if [[ "$_enabled" = "false" ]] && [[ "$_default_enabled" = "true" ]] \
         && ! grep -q "^[[:space:]]*${EVENT_NAME}:" "$_config_file" 2>/dev/null; then
         _enabled=true
     fi
@@ -112,7 +112,7 @@ else
     exit 0
 fi
 
-if test "$_enabled" != "true"; then
+if [[ "$_enabled" != "true" ]]; then
     exit 0
 fi
 

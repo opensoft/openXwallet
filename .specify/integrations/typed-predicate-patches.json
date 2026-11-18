@@ -1,0 +1,49 @@
+{
+  "schema": "typed-predicate-local-patch-v1",
+  "recipeProvider": {
+    "repository": "opensoft/openBenches",
+    "commit": "79b8d3ab319459b3ce34175a7ceb39b3847504ff",
+    "tree": "4310a22fc1b0dae3b1e9edd5f465c218df0c8ebb",
+    "pullRequest": 331
+  },
+  "consumerBase": "394c7d409511824854285135ae5e73b2678e9cf1",
+  "preservedIntegrationVersion": true,
+  "scope": "Typed predicates in installed variants using the published canonical recipe. Installed hook versions remain intact.",
+  "files": [
+    {
+      "path": ".specify/extensions/git/scripts/bash/auto-commit.sh",
+      "beforeSha256": "1a44f5f383a7c8f679cca125f62a3b5573edfaa58ab8ea507d91bd2cafc635ac",
+      "afterSha256": "e7b57c7202bfb844fff0ae585ff371bec6f482324885c8c65dcb76cdbfd0679e"
+    },
+    {
+      "path": ".specify/extensions/git/scripts/bash/create-new-feature-branch.sh",
+      "beforeSha256": "32b3d0a98d68d72bc99d903f2af35686d00a1141420579deb1dc121509298726",
+      "afterSha256": "a903cb73194e802bbef8a0c3459021ddaa1fee1ec6aee86f84dac6be763d0be3"
+    },
+    {
+      "path": ".specify/extensions/git/scripts/bash/create-new-feature.sh",
+      "beforeSha256": "233c449919d5f1171d4f7732a3d382e9c6a2b8bc5cbb162e92d3c7a528623f28",
+      "afterSha256": "8e98be993499413e6b68dec0ea2ec7746912c989ce7e105e800f1528868f49d5"
+    },
+    {
+      "path": ".specify/extensions/git/scripts/bash/get-last-worktree.sh",
+      "beforeSha256": "d61ba009a252581c650a919f523ed55baf0841d4c522bd4f6ca3b51ee05a2759",
+      "afterSha256": "4aea79f40287370153c61664903fbd93e324d0173c2e1f07a841c083acd725e0"
+    },
+    {
+      "path": ".specify/extensions/git/scripts/bash/initialize-repo.sh",
+      "beforeSha256": "5a55c227e5934381714eaa4468a252b463b857f80f28130c339c39874a23a9bd",
+      "afterSha256": "49b9ca6314c080cd3aae1b179b246ad52dc71ec3c233a6813efa6691d98cd9d7"
+    },
+    {
+      "path": ".specify/scripts/bash/common.sh",
+      "beforeSha256": "ff96e91345109cf5c2695a9329fb26c0cd2dfd30a29ea61c01eb4b45068bbe26",
+      "afterSha256": "fd5e9199dd005f84994f10f86a61de2a3dbcb8ad38deed90ef28dfdc9b6a0734"
+    },
+    {
+      "path": ".specify/scripts/bash/create-new-feature.sh",
+      "beforeSha256": "85ecf2d778a97c9905e35c6da78b3d6eb3aaf45164b609c84d450970c490d654",
+      "afterSha256": "ed89650afee1d640c06bd6d3efa7286163c137f306b2c14571f2804a4be494b3"
+    }
+  ]
+}

@@ -11,7 +11,7 @@ SCRIPT_DIR="$(CDPATH="" cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Find project root
 _find_project_root() {
     local dir="$1"
-    while test "$dir" != "/"; do
+    while [[ "$dir" != "/" ]]; do
         if [[ -d "$dir/.specify" ]] || [[ -d "$dir/.git" ]]; then
             echo "$dir"
             return 0

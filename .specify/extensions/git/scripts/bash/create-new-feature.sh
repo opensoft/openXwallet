@@ -16,7 +16,7 @@ BRANCH_NUMBER=""
 USE_TIMESTAMP=false
 ARGS=()
 i=1
-while test $i -le $#; do
+while [[ $i -le $# ]]; do
     arg="${!i}"
     case "$arg" in
         --json)
@@ -29,7 +29,7 @@ while test $i -le $#; do
             ALLOW_EXISTING=true
             ;;
         --short-name)
-            if test $((i + 1)) -gt $#; then
+            if [[ $((i + 1)) -gt $# ]]; then
                 echo 'Error: --short-name requires a value' >&2
                 exit 1
             fi
@@ -42,7 +42,7 @@ while test $i -le $#; do
             SHORT_NAME="$next_arg"
             ;;
         --number)
-            if test $((i + 1)) -gt $#; then
+            if [[ $((i + 1)) -gt $# ]]; then
                 echo 'Error: --number requires a value' >&2
                 exit 1
             fi
@@ -117,7 +117,7 @@ get_highest_from_specs() {
             if echo "$dirname" | grep -Eq '^[0-9]{3,}-' && ! echo "$dirname" | grep -Eq '^[0-9]{8}-[0-9]{6}-'; then
                 number=$(echo "$dirname" | grep -Eo '^[0-9]+')
                 number=$((10#$number))
-                if test "$number" -gt "$highest"; then
+                if [[ "$number" -gt "$highest" ]]; then
                     highest=$number
                 fi
             fi
@@ -140,7 +140,7 @@ _extract_highest_number() {
         if echo "$name" | grep -Eq '^[0-9]{3,}-' && ! echo "$name" | grep -Eq '^[0-9]{8}-[0-9]{6}-'; then
             number=$(echo "$name" | grep -Eo '^[0-9]+' || echo "0")
             number=$((10#$number))
-            if test "$number" -gt "$highest"; then
+            if [[ "$number" -gt "$highest" ]]; then
                 highest=$number
             fi
         fi
@@ -155,7 +155,7 @@ get_highest_from_remote_refs() {
     for remote in $(git remote 2>/dev/null); do
         local remote_highest
         remote_highest=$(GIT_TERMINAL_PROMPT=0 git ls-remote --heads "$remote" 2>/dev/null | sed 's|.*refs/heads/||' | _extract_highest_number)
-        if test "$remote_highest" -gt "$highest"; then
+        if [[ "$remote_highest" -gt "$highest" ]]; then
             highest=$remote_highest
         fi
     done
@@ -168,10 +168,10 @@ check_existing_branches() {
     local specs_dir="$1"
     local skip_fetch="${2:-false}"
 
-    if test "$skip_fetch" = true; then
+    if [[ "$skip_fetch" == "true" && -z "${skip_fetch#"true"}" ]]; then
         local highest_remote=$(get_highest_from_remote_refs)
         local highest_branch=$(get_highest_from_branches)
-        if test "$highest_remote" -gt "$highest_branch"; then
+        if [[ "$highest_remote" -gt "$highest_branch" ]]; then
             highest_branch=$highest_remote
         fi
     else
@@ -182,7 +182,7 @@ check_existing_branches() {
     local highest_spec=$(get_highest_from_specs "$specs_dir")
 
     local max_num=$highest_branch
-    if test "$highest_spec" -gt "$max_num"; then
+    if [[ "$highest_spec" -gt "$max_num" ]]; then
         max_num=$highest_spec
     fi
 
@@ -208,7 +208,7 @@ SCRIPT_DIR="$(CDPATH="" cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Find project root by walking up from the script location
 _find_project_root() {
     local dir="$1"
-    while test "$dir" != "/"; do
+    while [[ "$dir" != "/" ]]; do
         if [[ -d "$dir/.specify" ]] || [[ -d "$dir/.git" ]]; then
             echo "$dir"
             return 0
@@ -232,7 +232,7 @@ elif [[ -f "$SCRIPT_DIR/git-common.sh" ]]; then
     _common_loaded=true
 fi
 
-if test "$_common_loaded" != "true"; then
+if [[ "$_common_loaded" != "true" ]]; then
     echo "Error: Could not locate common.sh or git-common.sh. Please ensure the Specify core scripts are installed." >&2
     exit 1
 fi
@@ -346,6 +346,7 @@ resolve_base_ref() {
 find_worktree_for_branch() {
     local target_branch="$1"
     local current_worktree=""
+    local listed_branch
 
     while IFS= read -r line; do
         case "$line" in
@@ -353,7 +354,8 @@ find_worktree_for_branch() {
                 current_worktree="${line#worktree }"
                 ;;
             branch\ refs/heads/*)
-                if test "${line#branch refs/heads/}" = "$target_branch"; then
+                listed_branch="${line#branch refs/heads/}"
+                if [[ "$listed_branch" == "$target_branch" && -z "${listed_branch#"$target_branch"}" ]]; then
                     printf '%s\n' "$current_worktree"
                     return 0
                 fi
@@ -414,7 +416,7 @@ BASE_BRANCH=$(get_config_value "base_branch" "main" "SPECKIT_GIT_BASE_BRANCH")
 WORKTREE_ROOT_RAW=$(get_config_value "worktree_root" "$DEFAULT_WORKTREE_ROOT" "SPECKIT_GIT_WORKTREE_ROOT")
 WORKTREE_ROOT=$(resolve_path_from_repo_root "$WORKTREE_ROOT_RAW")
 
-if test "$CHECKOUT_MODE" != "branch" && test "$CHECKOUT_MODE" != "$SPECKIT_WORKTREE_MODE"; then
+if [[ "$CHECKOUT_MODE" != "branch" || -n "${CHECKOUT_MODE#"branch"}" ]] && [[ "$CHECKOUT_MODE" != "$SPECKIT_WORKTREE_MODE" || -n "${CHECKOUT_MODE#"$SPECKIT_WORKTREE_MODE"}" ]]; then
     echo "Error: checkout_mode must be 'branch' or 'worktree' (got '$CHECKOUT_MODE')" >&2
     exit 1
 fi
@@ -431,7 +433,7 @@ generate_branch_name() {
     for word in $clean_name; do
         [[ -z "$word" ]] && continue
         if ! echo "$word" | grep -qiE "$stop_words"; then
-            if test ${#word} -ge 3; then
+            if [[ ${#word} -ge 3 ]]; then
                 meaningful_words+=("$word")
             elif echo "$description" | grep -qw -- "${word^^}"; then
                 meaningful_words+=("$word")
@@ -439,14 +441,14 @@ generate_branch_name() {
         fi
     done
 
-    if test ${#meaningful_words[@]} -gt 0; then
+    if [[ ${#meaningful_words[@]} -gt 0 ]]; then
         local max_words=3
-        if test ${#meaningful_words[@]} -eq 4; then max_words=4; fi
+        if [[ ${#meaningful_words[@]} -eq 4 ]]; then max_words=4; fi
 
         local result=""
         local count=0
         for word in "${meaningful_words[@]}"; do
-            if test $count -ge $max_words; then break; fi
+            if [[ $count -ge $max_words ]]; then break; fi
             if [[ -n "$result" ]]; then result="$result-"; fi
             result="$result$word"
             count=$((count + 1))
@@ -482,23 +484,23 @@ else
     fi
 
     # Warn if --number and --timestamp are both specified
-    if test "$USE_TIMESTAMP" = true && [[ -n "$BRANCH_NUMBER" ]]; then
+    if [[ "$USE_TIMESTAMP" = "true" ]] && [[ -n "$BRANCH_NUMBER" ]]; then
         >&2 echo "[specify] Warning: --number is ignored when --timestamp is used"
         BRANCH_NUMBER=""
     fi
 
     # Determine branch prefix
-    if test "$USE_TIMESTAMP" = true; then
+    if [[ "$USE_TIMESTAMP" = "true" ]]; then
         FEATURE_NUM=$(date +%Y%m%d-%H%M%S)
         BRANCH_NAME="${FEATURE_NUM}-${BRANCH_SUFFIX}"
     else
         if [[ -z "$BRANCH_NUMBER" ]]; then
-            if test "$DRY_RUN" = true && test "$HAS_GIT" = true; then
+            if [[ "$DRY_RUN" = "true" ]] && [[ "$HAS_GIT" = "true" ]]; then
                 BRANCH_NUMBER=$(check_existing_branches "$SPECS_DIR" true)
-            elif test "$DRY_RUN" = true; then
+            elif [[ "$DRY_RUN" = "true" ]]; then
                 HIGHEST=$(get_highest_from_specs "$SPECS_DIR")
                 BRANCH_NUMBER=$((HIGHEST + 1))
-            elif test "$HAS_GIT" = true; then
+            elif [[ "$HAS_GIT" = "true" ]]; then
                 BRANCH_NUMBER=$(check_existing_branches "$SPECS_DIR")
             else
                 HIGHEST=$(get_highest_from_specs "$SPECS_DIR")
@@ -518,10 +520,10 @@ _byte_length() {
     printf '%s' "$byte_length_input" | LC_ALL=C wc -c | tr -d ' '
 }
 BRANCH_BYTE_LEN=$(_byte_length "$BRANCH_NAME")
-if [[ -n "${GIT_BRANCH_NAME:-}" ]] && test "$BRANCH_BYTE_LEN" -gt $MAX_BRANCH_LENGTH; then
+if [[ -n "${GIT_BRANCH_NAME:-}" ]] && [[ "$BRANCH_BYTE_LEN" -gt $MAX_BRANCH_LENGTH ]]; then
     >&2 echo "Error: GIT_BRANCH_NAME must be 244 bytes or fewer in UTF-8. Provided value is ${BRANCH_BYTE_LEN} bytes."
     exit 1
-elif test "$BRANCH_BYTE_LEN" -gt $MAX_BRANCH_LENGTH; then
+elif [[ "$BRANCH_BYTE_LEN" -gt $MAX_BRANCH_LENGTH ]]; then
     PREFIX_LENGTH=$(( ${#FEATURE_NUM} + 1 ))
     MAX_SUFFIX_LENGTH=$((MAX_BRANCH_LENGTH - PREFIX_LENGTH))
 
@@ -537,18 +539,18 @@ elif test "$BRANCH_BYTE_LEN" -gt $MAX_BRANCH_LENGTH; then
 fi
 
 WORKTREE_PATH=""
-if test "$CHECKOUT_MODE" = "$SPECKIT_WORKTREE_MODE"; then
+if [[ "$CHECKOUT_MODE" == "$SPECKIT_WORKTREE_MODE" && -z "${CHECKOUT_MODE#"$SPECKIT_WORKTREE_MODE"}" ]]; then
     WORKTREE_PATH="$WORKTREE_ROOT/$BRANCH_NAME"
 fi
 
-if test "$DRY_RUN" != true; then
-    if test "$HAS_GIT" = true; then
-        if test "$CHECKOUT_MODE" = "$SPECKIT_WORKTREE_MODE"; then
+if [[ "$DRY_RUN" != "true" ]]; then
+    if [[ "$HAS_GIT" = "true" ]]; then
+        if [[ "$CHECKOUT_MODE" == "$SPECKIT_WORKTREE_MODE" && -z "${CHECKOUT_MODE#"$SPECKIT_WORKTREE_MODE"}" ]]; then
             existing_worktree=$(find_worktree_for_branch "$BRANCH_NAME" || true)
             if [[ -n "$existing_worktree" ]]; then
-                if test "$ALLOW_EXISTING" = true; then
+                if [[ "$ALLOW_EXISTING" = "true" ]]; then
                     WORKTREE_PATH="$existing_worktree"
-                elif test "$USE_TIMESTAMP" = true; then
+                elif [[ "$USE_TIMESTAMP" = "true" ]]; then
                     >&2 echo "Error: Branch '$BRANCH_NAME' already exists in worktree '$existing_worktree'. Rerun to get a new timestamp or use a different --short-name."
                     exit 1
                 else
@@ -556,7 +558,7 @@ if test "$DRY_RUN" != true; then
                     exit 1
                 fi
             elif git branch --list "$BRANCH_NAME" | grep -q .; then
-                if test "$ALLOW_EXISTING" = true; then
+                if [[ "$ALLOW_EXISTING" = "true" ]]; then
                     if [[ -e "$WORKTREE_PATH" ]]; then
                         >&2 echo "Error: Worktree path '$WORKTREE_PATH' already exists. Please remove it or configure a different worktree_root."
                         exit 1
@@ -567,7 +569,7 @@ if test "$DRY_RUN" != true; then
                         >&2 printf '%s\n' "$worktree_error"
                         exit 1
                     fi
-                elif test "$USE_TIMESTAMP" = true; then
+                elif [[ "$USE_TIMESTAMP" = "true" ]]; then
                     >&2 echo "Error: Branch '$BRANCH_NAME' already exists. Rerun to get a new timestamp or use a different --short-name."
                     exit 1
                 else
@@ -595,8 +597,8 @@ if test "$DRY_RUN" != true; then
             if ! branch_create_error=$(git checkout -q -b "$BRANCH_NAME" 2>&1); then
                 current_branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || true)"
                 if git branch --list "$BRANCH_NAME" | grep -q .; then
-                    if test "$ALLOW_EXISTING" = true; then
-                        if test "$current_branch" = "$BRANCH_NAME"; then
+                    if [[ "$ALLOW_EXISTING" = "true" ]]; then
+                        if [[ "$current_branch" == "$BRANCH_NAME" && -z "${current_branch#"$BRANCH_NAME"}" ]]; then
                             :
                         elif ! switch_branch_error=$(git checkout -q "$BRANCH_NAME" 2>&1); then
                             >&2 echo "Error: Failed to switch to existing branch '$BRANCH_NAME'. Please resolve any local changes or conflicts and try again."
@@ -605,7 +607,7 @@ if test "$DRY_RUN" != true; then
                             fi
                             exit 1
                         fi
-                    elif test "$USE_TIMESTAMP" = true; then
+                    elif [[ "$USE_TIMESTAMP" = "true" ]]; then
                         >&2 echo "Error: Branch '$BRANCH_NAME' already exists. Rerun to get a new timestamp or use a different --short-name."
                         exit 1
                     else
@@ -628,7 +630,7 @@ if test "$DRY_RUN" != true; then
     fi
 
     printf '# To persist: export SPECIFY_FEATURE=%q\n' "$BRANCH_NAME" >&2
-    if test "$CHECKOUT_MODE" = "$SPECKIT_WORKTREE_MODE" && [[ -n "$WORKTREE_PATH" ]]; then
+    if [[ "$CHECKOUT_MODE" == "$SPECKIT_WORKTREE_MODE" && -z "${CHECKOUT_MODE#"$SPECKIT_WORKTREE_MODE"}" ]] && [[ -n "$WORKTREE_PATH" ]]; then
         write_last_worktree_state "$BRANCH_NAME" "$WORKTREE_PATH" "$BASE_BRANCH"
         printf '# Feature worktree: %q\n' "$WORKTREE_PATH" >&2
     fi
@@ -661,8 +663,8 @@ if $JSON_MODE; then
             _je_base="$BASE_BRANCH"
             _je_worktree="$WORKTREE_PATH"
         fi
-        if test "$DRY_RUN" = true; then
-            if test "$CHECKOUT_MODE" = "$SPECKIT_WORKTREE_MODE"; then
+        if [[ "$DRY_RUN" = "true" ]]; then
+            if [[ "$CHECKOUT_MODE" == "$SPECKIT_WORKTREE_MODE" && -z "${CHECKOUT_MODE#"$SPECKIT_WORKTREE_MODE"}" ]]; then
                 printf '{"BRANCH_NAME":"%s","FEATURE_NUM":"%s","CHECKOUT_MODE":"%s","HAS_GIT":%s,"BASE_BRANCH":"%s","WORKTREE_PATH":"%s","DRY_RUN":true}\n' \
                     "$_je_branch" "$_je_num" "$_je_mode" "$HAS_GIT" "$_je_base" "$_je_worktree"
             else
@@ -670,7 +672,7 @@ if $JSON_MODE; then
                     "$_je_branch" "$_je_num" "$_je_mode" "$HAS_GIT"
             fi
         else
-            if test "$CHECKOUT_MODE" = "$SPECKIT_WORKTREE_MODE"; then
+            if [[ "$CHECKOUT_MODE" == "$SPECKIT_WORKTREE_MODE" && -z "${CHECKOUT_MODE#"$SPECKIT_WORKTREE_MODE"}" ]]; then
                 printf '{"BRANCH_NAME":"%s","FEATURE_NUM":"%s","CHECKOUT_MODE":"%s","HAS_GIT":%s,"BASE_BRANCH":"%s","WORKTREE_PATH":"%s"}\n' \
                     "$_je_branch" "$_je_num" "$_je_mode" "$HAS_GIT" "$_je_base" "$_je_worktree"
             else
@@ -684,11 +686,11 @@ else
     echo "FEATURE_NUM: $FEATURE_NUM"
     echo "CHECKOUT_MODE: $CHECKOUT_MODE"
     echo "HAS_GIT: $HAS_GIT"
-    if test "$CHECKOUT_MODE" = "$SPECKIT_WORKTREE_MODE"; then
+    if [[ "$CHECKOUT_MODE" == "$SPECKIT_WORKTREE_MODE" && -z "${CHECKOUT_MODE#"$SPECKIT_WORKTREE_MODE"}" ]]; then
         echo "BASE_BRANCH: $BASE_BRANCH"
         echo "WORKTREE_PATH: $WORKTREE_PATH"
     fi
-    if test "$DRY_RUN" != true; then
+    if [[ "$DRY_RUN" != "true" ]]; then
         printf '# To persist in your shell: export SPECIFY_FEATURE=%q\n' "$BRANCH_NAME"
     fi
 fi

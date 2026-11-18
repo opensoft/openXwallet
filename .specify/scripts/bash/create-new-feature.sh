@@ -10,7 +10,7 @@ BRANCH_NUMBER=""
 USE_TIMESTAMP=false
 ARGS=()
 i=1
-while test $i -le $#; do
+while [[ $i -le $# ]]; do
     arg="${!i}"
     case "$arg" in
         --json)
@@ -23,7 +23,7 @@ while test $i -le $#; do
             ALLOW_EXISTING=true
             ;;
         --short-name)
-            if test $((i + 1)) -gt $#; then
+            if [[ $((i + 1)) -gt $# ]]; then
                 echo 'Error: --short-name requires a value' >&2
                 exit 1
             fi
@@ -37,7 +37,7 @@ while test $i -le $#; do
             SHORT_NAME="$next_arg"
             ;;
         --number)
-            if test $((i + 1)) -gt $#; then
+            if [[ $((i + 1)) -gt $# ]]; then
                 echo 'Error: --number requires a value' >&2
                 exit 1
             fi
@@ -103,7 +103,7 @@ get_highest_from_specs() {
             if echo "$dirname" | grep -Eq '^[0-9]{3,}-' && ! echo "$dirname" | grep -Eq '^[0-9]{8}-[0-9]{6}-'; then
                 number=$(echo "$dirname" | grep -Eo '^[0-9]+')
                 number=$((10#$number))
-                if test "$number" -gt "$highest"; then
+                if [[ "$number" -gt "$highest" ]]; then
                     highest=$number
                 fi
             fi
@@ -128,7 +128,7 @@ REPO_ROOT=$(get_repo_root) || exit 1
 cd "$REPO_ROOT"
 
 SPECS_DIR="$REPO_ROOT/specs"
-if test "$DRY_RUN" != true; then
+if [[ "$DRY_RUN" != "true" ]]; then
     mkdir -p "$SPECS_DIR"
 fi
 
@@ -150,7 +150,7 @@ generate_branch_name() {
         
         # Keep words that are NOT stop words AND (length >= 3 OR are potential acronyms)
         if ! echo "$word" | grep -qiE "$stop_words"; then
-            if test ${#word} -ge 3; then
+            if [[ ${#word} -ge 3 ]]; then
                 meaningful_words+=("$word")
             # Keep short words that appear as an uppercase acronym in the original.
             # Uppercase via tr and match with grep -w (both portable) rather than
@@ -162,14 +162,14 @@ generate_branch_name() {
     done
     
     # If we have meaningful words, use first 3-4 of them
-    if test ${#meaningful_words[@]} -gt 0; then
+    if [[ ${#meaningful_words[@]} -gt 0 ]]; then
         local max_words=3
-        if test ${#meaningful_words[@]} -eq 4; then max_words=4; fi
+        if [[ ${#meaningful_words[@]} -eq 4 ]]; then max_words=4; fi
         
         local result=""
         local count=0
         for word in "${meaningful_words[@]}"; do
-            if test $count -ge $max_words; then break; fi
+            if [[ $count -ge $max_words ]]; then break; fi
             if [[ -n "$result" ]]; then result="$result-"; fi
             result="$result$word"
             count=$((count + 1))
@@ -192,13 +192,13 @@ else
 fi
 
 # Warn if --number and --timestamp are both specified
-if test "$USE_TIMESTAMP" = true && [[ -n "$BRANCH_NUMBER" ]]; then
+if [[ "$USE_TIMESTAMP" = "true" ]] && [[ -n "$BRANCH_NUMBER" ]]; then
     >&2 echo "[specify] Warning: --number is ignored when --timestamp is used"
     BRANCH_NUMBER=""
 fi
 
 # Determine branch prefix
-if test "$USE_TIMESTAMP" = true; then
+if [[ "$USE_TIMESTAMP" = "true" ]]; then
     FEATURE_NUM=$(date +%Y%m%d-%H%M%S)
     BRANCH_NAME="${FEATURE_NUM}-${BRANCH_SUFFIX}"
 else
@@ -216,7 +216,7 @@ fi
 # GitHub enforces a 244-byte limit on branch names
 # Validate and truncate if necessary
 MAX_BRANCH_LENGTH=244
-if test ${#BRANCH_NAME} -gt $MAX_BRANCH_LENGTH; then
+if [[ ${#BRANCH_NAME} -gt $MAX_BRANCH_LENGTH ]]; then
     # Calculate how much we need to trim from suffix
     # Account for prefix length: timestamp (15) + hyphen (1) = 16, or sequential (3) + hyphen (1) = 4
     PREFIX_LENGTH=$(( ${#FEATURE_NUM} + 1 ))
@@ -238,9 +238,9 @@ fi
 FEATURE_DIR="$SPECS_DIR/$BRANCH_NAME"
 SPEC_FILE="$FEATURE_DIR/spec.md"
 
-if test "$DRY_RUN" != true; then
-    if [[ -d "$FEATURE_DIR" ]] && test "$ALLOW_EXISTING" != true; then
-        if test "$USE_TIMESTAMP" = true; then
+if [[ "$DRY_RUN" != "true" ]]; then
+    if [[ -d "$FEATURE_DIR" ]] && [[ "$ALLOW_EXISTING" != "true" ]]; then
+        if [[ "$USE_TIMESTAMP" = "true" ]]; then
             >&2 echo "Error: Feature directory '$FEATURE_DIR' already exists. Rerun to get a new timestamp or use a different --short-name."
         else
             >&2 echo "Error: Feature directory '$FEATURE_DIR' already exists. Please use a different feature name or specify a different number with --number."
@@ -270,7 +270,7 @@ fi
 
 if $JSON_MODE; then
     if command -v jq >/dev/null 2>&1; then
-        if test "$DRY_RUN" = true; then
+        if [[ "$DRY_RUN" = "true" ]]; then
             jq -cn \
                 --arg branch_name "$BRANCH_NAME" \
                 --arg spec_file "$SPEC_FILE" \
@@ -284,7 +284,7 @@ if $JSON_MODE; then
                 '{BRANCH_NAME:$branch_name,SPEC_FILE:$spec_file,FEATURE_NUM:$feature_num}'
         fi
     else
-        if test "$DRY_RUN" = true; then
+        if [[ "$DRY_RUN" = "true" ]]; then
             printf '{"BRANCH_NAME":"%s","SPEC_FILE":"%s","FEATURE_NUM":"%s","DRY_RUN":true}\n' "$(json_escape "$BRANCH_NAME")" "$(json_escape "$SPEC_FILE")" "$(json_escape "$FEATURE_NUM")"
         else
             printf '{"BRANCH_NAME":"%s","SPEC_FILE":"%s","FEATURE_NUM":"%s"}\n' "$(json_escape "$BRANCH_NAME")" "$(json_escape "$SPEC_FILE")" "$(json_escape "$FEATURE_NUM")"
@@ -294,7 +294,7 @@ else
     echo "BRANCH_NAME: $BRANCH_NAME"
     echo "SPEC_FILE: $SPEC_FILE"
     echo "FEATURE_NUM: $FEATURE_NUM"
-    if test "$DRY_RUN" != true; then
+    if [[ "$DRY_RUN" != "true" ]]; then
         printf '# To persist in your shell: export SPECIFY_FEATURE=%q\n' "$BRANCH_NAME"
         printf '#                           export SPECIFY_FEATURE_DIRECTORY=%q\n' "$FEATURE_DIR"
     fi
