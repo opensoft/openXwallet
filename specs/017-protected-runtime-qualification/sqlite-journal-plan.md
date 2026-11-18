@@ -155,3 +155,18 @@ schema/transaction, neutral pin, workflow, budget, deadline or default activatio
 changes. T001/T013/T014/T015 remain unchecked. Setup/dispatch unauthorized,
 feedback deferred, blocked writes unreplayed. No live provider qualification,
 token mint, protected-machine acceptance or operational grant is inferred.
+
+## SQLite correction publication and accepted main #93
+
+Brett commissions the SQLite journal correction PR, hosted CI, local Codex expert
+review, finding resolution and presentation for source ratification. This supplies
+no merge, source acceptance or operational grant. Integrate accepted main #93
+`dbbbafab8cb5ab093360b5e12044a7a35b156cc5`, which consumes neutral root
+`8be8a2a6af125058ffe956cafbf1e62858d82dd9` for the reviewed decimal worktree
+selector repair. Neutral code/spec and explicit qualification owner stay unchanged.
+The SQLite runtime, new test module and matrix bytes remain identical to the
+completed c32ac514 qualification. Earlier exact-source receipts remain historical;
+fresh integrated full/native qualification, cleanup, hosted CI and nine local
+Codex expert roles are required for this publication head and recorded on its PR.
+Feature017 T012VJ remains the sole correction task; T001/T013-T015 stay unchecked.
+Setup/dispatch unauthorized, feedback deferred, blocked writes unreplayed.
