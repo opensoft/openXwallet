@@ -1,7 +1,7 @@
 # T013 Operational Selection Packet
 
-Status: GitHub bootstrap source accepted in #65; T012M handoff complete; T013 selections pending; setup/dispatch NOT GRANTED
-Updated: 2026-11-14
+Status: T012V source candidate; exact-head validation receipt tracked on PR #78; CI, owner acceptance and T013 selections remain separate gates; setup/dispatch NOT GRANTED
+Updated: 2026-11-17
 Governance: `opensoft/openXfactory`, `prepare-protected-runtime-qualification`
 Bootstrap amendment: `fix-protected-runtime-dispatch-bootstrap`
 Implementation list: [feature 017 tasks](tasks.md); T013 remains an owner act
@@ -9,15 +9,23 @@ Decision draft: [scoped authorization](scoped-authorization.md)
 Accepted bootstrap and hosting gates: [bootstrap record](workflow-bootstrap.md)
 
 
-The subsequent planning commission uses the recommended T013 values as the
-[hosting/issuance design basis](hosting-issuance-selections.md). The new factory
-source proposal and [Speckit plan](hosting-issuance-plan.md) include an explicit
-static-v2/finalization prerequisite discovered in research; callbacks alone do not
-resolve unknown actual run/process digests. These are draft source proposals, not
-new operational selections, appointments or grants. T012N-V require source acceptance
-and commissioning first; T013 and all four operational stages remain ungranted.
+The accepted factory hosting/issuance, protected-report and qualification-only
+private39 source decisions govern the [design basis](hosting-issuance-selections.md)
+and [Speckit plan](hosting-issuance-plan.md). Subsequent commissioning implemented
+T012O-U only in isolation and commissioned T012V publication/CI/local review.
+[PR #78](https://github.com/opensoft/openXwallet/pull/78) is the resulting source
+candidate. This checkpoint records focused correction evidence; complete exact-head
+full/native/review/cleanup and hosted CI results belong to its qualification receipt
+after execution. Earlier named qualification checkpoints remain historical; owner
+source ratification stays separate. These facts select no
+operational target, administrator, credential, endpoint or key. T013 and all four
+operational stages remain ungranted.
 
-## Current source acceptance and next decision
+## Current candidate and next decision
+
+Executable candidate `bf87eaefc74e876431d7a7c0e09b8802cb126e77` consumes accepted main #89 typed predicates and coherent root/code/spec pins, preserving the eight contract digests, package/lock and original runtime budgets. Collection 2811/2389 and nineteen recipe/ten pin/two real lifecycle controls pass. Fresh full/native/cleanup/CI/Sonar and owner ratification remain required by the [current source checkpoint](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint); no operational `accepted_commit` is selected.
+
+## Historical #65 source acceptance and T012M handoff
 
 Brett source-ratified [adapter #65](https://github.com/opensoft/openXwallet/pull/65#issuecomment-6881983735) at `ab34ff4ec4fe27d56c8fd09c99614785c23e760f` and directed landing when green, then T012M completion and T013 refresh. It merged normally as `366533bed77293b096b0a7dbda61399ff5dbafe5` on 2026-11-14 at 18:09:45 UTC. The merged tree `669a1b431f17d360fcf827a749a756e863ec9ed8` equals the ratified tree. Factory design #1314 is accepted at merge `3432baf6d929112be283d3daa1a4330a4130ab64` (tree `040d1de2563c5b826ebd93e1c14f6bc9d24688c8`); adapter #64 is its accepted preparation baseline. Earlier #1311/#60 and #1312/#61/#62 remain historical provenance.
 
@@ -50,17 +58,22 @@ was returned during this refresh. These are source/fixture results. GitHub Codex
 review was explicitly requested and quota-refused; the nine-role local review
 remains the review evidence, not a completed connector review.
 
-The adapter's neutral pin remains assembly
-`b0af7c2ce53d63786a08a20aa3602a6f90345606`, code
-`72313daab1f229c049cb90998931564c1904dbbc`. Separately selected portable
-registry/custody integration code remains
-`bb0e9dae89a771b05f6c235d0a77237288b95c85`; it does not replace that pin.
+At that historical checkpoint the neutral assembly/code pins were
+`b0af7c2ce53d63786a08a20aa3602a6f90345606` /
+`72313daab1f229c049cb90998931564c1904dbbc`. The current candidate inherits
+accepted main #80 assembly `819de67265bcc189936a5f3b50753a470af6d7e3`, code
+`fb132776c119a153255c1bc6f423734911c98093` and spec
+`0fe3151ccc2f3ffe7f72cca35106df46c180b5b7`. Shared OpenSpec tooling explicitly
+authenticates this spec leg; complete-source analysis also reads it. Product/
+runtime validation remains code-only. Separately selected portable
+registry/custody qualification code remains
+`bb0e9dae89a771b05f6c235d0a77237288b95c85`; it does not replace a neutral pin.
 No source acceptance here selects a deployment, image, service, credential or
 runtime configuration. Final sources must include later accepted hosting clients.
 
 ## Accepted workflow content and dispatch interface
 
-Current source-only baseline: adapter merge `366533bed77293b096b0a7dbda61399ff5dbafe5`. Hashes below are recomputed from immutable Git blobs; no workflow invocation is selected:
+Historical #65 source-only baseline: adapter merge `366533bed77293b096b0a7dbda61399ff5dbafe5`. Hashes below are recomputed from immutable Git blobs; no workflow invocation is selected:
 
 | Relative path | Content SHA-256 |
 | --- | --- |

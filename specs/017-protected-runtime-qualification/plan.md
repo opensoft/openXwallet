@@ -2,7 +2,7 @@
 
 **Branch**: `017-protected-runtime-qualification` | **Date**: 2026-11-12
 **Spec**: [spec.md](spec.md)
-**State**: T012R source accepted through #1326/#71; T012S preparation only; implementation and operations unauthorized
+**State**: T012V accepted-main #89 source candidate; current matrix summary 2811/native 2389 is corrected. Fresh complete final-head review/qualification/cleanup/CI/Sonar and owner ratification remain required; operational authority ungranted.
 
 Bootstrap amendment `fix-protected-runtime-dispatch-bootstrap` was source
 accepted and landed in factory #1311 / adapter #60. The static dispatch selection
@@ -305,3 +305,104 @@ internal interfaces remain the governing basis; no neutral/public contract chang
 The only implementation list is tasks.md, T012S/T012S01-T012S07, all unchecked.
 Preparation is complete; isolated implementation and all operations need separate
 commissioning. No new T012S execution result is claimed.
+
+T012V is commissioned for source publication, exact-head hosted CI and local Codex
+review. The bounded corrective source and measured adapter-owned source-CI cap
+are recorded in hosting-conformance-implementation.md. Its149 new measured controls
+retain all2,215 prior native nodes and2,523 prior full nodes; accepted main adds89
+analysis/coverage controls. Current collection is2,761 full and2,364 native.
+Full/native execution, exact-head review/CI and independent audit are still gates.
+Owner source acceptance and all operational decisions remain separate/ungranted.
+
+### T012V bounded canonical journal replay correction
+
+The source review commission covers a pure adapter optimization after the
+64-resource cleanup control exposed narrow headroom: measured cleanup8.6896s
+and1.891s remaining before credential retirement within the unchanged10s
+Decision. The failed complete run reached credential retirement after30durable
+file retirements; its exact underlying refusal is not inferred from that timing.
+
+Preserve document(raw,limit), strict parsing/error mapping, every complete
+history/chain/witness/schema/identity check, clock observation, event/document
+limit, transaction, fence and fsync. Reuse the canonical bytes already produced
+by strict parsing for stored-body equality and exact event hashing. A fixed
+closed event header orders data first per RFC8785. Introduce no observation
+cache or skipped validation. Exact bytes/digests must match canonical(event)
+and old journals must reopen/append with the same schema and witness format.
+
+This is governed adapter-only T012V corrective implementation, assessed by
+contract, integrity and performance reviewers. It changes no factory grammar,
+neutral API, capacity or authority and requires no factory contract amendment.
+Owner ratification remains a later exact-head source gate. Add measured static
+controls, rerun the unchanged64-resource case with timing and then all required
+complete/native/hosted gates. Setup/dispatch remain unauthorized.
+
+### Historical T012V source handoff before main #79
+
+See [frozen qualification](hosting-conformance-implementation.md#t012v-frozen-source-qualification-and-current-handoff). The final reconciliation changes documents only after 2,761 full tests plus 11 subtests and all 2,364 mandatory native nodes pass. T013 selection and all scoped operational authority remain ungranted; hosted CI and owner acceptance are separate exact-head PR gates.
+
+### Historical accepted-main #79 qualification handoff
+
+The [historical main #79 source record](hosting-conformance-implementation.md#t012v-main-79-integrated-source-qualification)
+records 2,781 full tests plus 11 subtests, all 2,369 mandatory native cases,
+unchanged prior identities and independent preservation/cleanup. Accepted main
+shared tooling/pins/nullable guards remain intact. Old receipts are historical;
+fresh final-head hosted CI/Sonar and owner ratification remain separate.
+
+### Historical accepted-main #80 qualification handoff
+
+The [historical main #80 source record](hosting-conformance-implementation.md#t012v-main-80-integrated-source-qualification)
+records 2,781 full tests plus 11 subtests and all 2,369 mandatory native cases,
+preserved identities and independent preservation/cleanup. Accepted incoming
+pins/tooling/tests retain exact baseline bytes. Bounded clarity changes retain
+assertion predicates, branch precedence and cancellation/resource boundaries.
+Fresh final-head hosted CI/Sonar and owner source ratification remain separate.
+
+### Selected-port deadline source checkpoint
+
+The [historical selected-port correction record](hosting-conformance-implementation.md#t012v-selected-port-deadline-correction)
+records the actual 22-case traced/untraced and five-mutant evidence, retained
+ordered corpus and unchanged limits. Complete validation results and owner
+source acceptance remain distinct PR #78 gates; no setup/dispatch is granted.
+
+
+Current T012V continuation integrates accepted main #85/#86 under the bounded
+plan in hosting-conformance-implementation.md. The 064103a5 receipt remains
+historical; fresh final-head qualification and owner source ratification remain
+required. No T001/T013-T015/setup/dispatch grant is inferred.
+
+### Historical accepted-main #85/#86 source checkpoint
+
+The [current integration record](hosting-conformance-implementation.md#t012v-main-85-86-source-checkpoint) names candidate `1728117f3dbe0ebb3fbeb408613e3d04c69067fc`,
+preserved source limits and actual 135-control/collection evidence. Complete fresh
+qualification and owner source ratification remain separate gates on PR #78.
+
+Current T012V continuation now integrates accepted main #87; its lifecycle/
+validator construction and compatibility plan is in hosting-conformance-implementation.md.
+The 2c534c2 source-gate result and intentionally interrupted native attempt are
+historical. Fresh final-head qualification, CI and owner source ratification
+remain required; no operational grant is inferred.
+
+### Historical main #87 source checkpoint
+
+The [current source record](hosting-conformance-implementation.md#t012v-main-87-source-checkpoint) names code candidate `cf21b62b20237d8644aff8a5ae45074c011bbc1c`,
+actual 2811/2389 collection and 12 focused compatibility controls. Complete exact-head
+qualification and owner acceptance remain PR #78 gates, not operational permission.
+
+Current T012V continuation now consumes accepted main #88 provider pins under
+the bounded plan in hosting-conformance-implementation.md. Earlier source and
+partial attempt receipts are historical. Fresh final-head source qualification
+and owner ratification remain required, with every operational stage ungranted.
+
+### Historical main #88 source checkpoint
+
+The [current source record](hosting-conformance-implementation.md#t012v-main-88-source-checkpoint) binds candidate `e92a7728810b51d5537a39b0c12d998f1818baf8` to
+exact neutral/provider/qualification-source identities, actual 2811/2389 collection
+and 12 focused controls. Complete exact-head qualification and owner ratification
+remain distinct PR #78 gates.
+
+### Current main #89 source checkpoint
+
+The [current source record](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint) binds candidate `bf87eaefc74e876431d7a7c0e09b8802cb126e77` and
+its actual pin/recipe/collection/compatibility checks. Full/native/cleanup/CI/Sonar
+and owner source acceptance remain separate final-head gates.

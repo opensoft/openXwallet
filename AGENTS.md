@@ -356,3 +356,237 @@ against the actual copied consumer files. Both main admission and exact source
 bytes are required. This is additional source-only conformance; it grants no
 runtime, credential, broker, dispatch or operational authority. No test assertion
 may be deselected or waived to produce coverage.
+
+## T012T isolated implementation commission
+
+Brett source-ratified factory #1332 aa1896ded7ef with wallet #76 56471096ff98
+and commissioned ordered landing followed by T012T in isolation. Factory merged
+as 7ad00a2c03a4 (clean integration with concurrent #1331; accepted packet and index
+additions preserved); wallet merged normally as 43166dd6ebc3 with its accepted tree.
+Only T012T01-T012T06 are commissioned. Internal runtime/custody observation seams
+record existing checks without extra reads or changed worker inputs. Preserve
+neutral APIs/pins, v1 evidence, phase clocks/budgets and operational default refusal.
+T012U-V/T001/T013-T015 and every operational setup/dispatch/live acceptance gate
+remain separate. Feedback stays deferred; neither historical blocked write is replayed.
+
+
+## Source-accepted qualification budget continuation
+
+Brett source-ratified factory #1334 at 7518c058ef3defb7408475cfed65807d7609d626,
+then directed landing when green and continuation of T012T in isolation. It merged
+as 89974846b847e1c31761792677155cc9779d400d; the accepted packet survives the
+clean merge with concurrent #1327. The qualification-only private39 entry must
+precede all reads on one original Decision. Preserve all other allocations,
+original clocks, earliest expiries, neutral APIs/pins and default refusal. T012T
+completion still requires actual hosted source positives, boundaries and cleanup;
+component counts alone do not qualify it. T012U/V and operational setup/dispatch
+remain unauthorized; feedback deferred and historical blocked writes unreplayed.
+
+The T012T audit-only client binds the original registered plan/context and existing
+observer TLS client without active config/RunLifecycle construction or a writer.
+Only cleanup routing accepts it; qualification refuses. The shared existing pure
+cleanup validator/parser retain old operation semantics. The fresh-process source
+control passes after lease expiry and refuses wrong scope/worker/window use.
+This is still an isolated candidate pending full/native verification and later
+source publication; no T012U/V or operational commission is inferred.
+
+## Completed T012T isolated qualification
+
+Frozen runtime b7049e8ef20f985db26e5b7a966012161737ac7e passes2,511 full tests plus
+nine subtests and all2,203 mandatory native nodes. All186 hosted-evidence cases
+pass in both; prior identities/fingerprints/anchors survive, H10=75/H11=143/H12=142.
+Actual positives verify owning proof and cleanup at38 reads (39 with fixture
+origin), with no operational origin inferred. Independent native boundary and
+external21,872-generation/ten-positive preservation audit pass; both final fixture
+roots and native container are absent. See hosting-evidence-budget-realization.md
+for source hashes, historical failure limits, timings and later CI-budget handoff.
+Task/evidence reconciliation is documentation-only after those tests. Only T012T
+is complete; candidate publication, T012U/V and all operational gates remain
+separate and unauthorized. Keep setup/dispatch unauthorized, feedback deferred,
+and neither historical blocked write replayed.
+
+## T012U isolated conformance and runbook commission
+
+Brett now commissions only T012U implementation/testing under the existing factory
+hosting/issuance/report decisions. Use hosting-conformance-plan.md and the sole
+tasks.md T012U entry. Preserve all2,203 baseline native nodes/anchors, neutral
+APIs/pins, clocks/budgets, workflows/inputs and refusing runtime defaults. Correct
+the source test runner's premature success verdict and add real pytest controls;
+reconcile operator source coverage/commands and audit fixture cleanup. T012U stays
+unchecked until frozen full/native and external teardown verification complete.
+T012V publication/hosted CI and T001/T013-T015 operations remain separate. Keep
+setup/dispatch unauthorized, feedback deferred and blocked writes unreplayed.
+
+## Completed T012U isolated conformance and operator source runbook
+
+Brett's T012U commission is complete at tested source
+`6e2f0bfc626ab05b5b0384bc3a97d2816cfd696a`:2,523 full tests plus nine subtests,
+all2,215 mandatory native nodes,64 conformance self-tests and186 hosted-evidence
+cases pass with zero failures/errors/skips. Final success follows owning-source
+postflight. Prior identities/anchors survive, R01=47 and all H01-H12 remain.
+Operator source commands and their six Git-status shell controls pass. Independent
+native boundary and21,879-generation/ten-positive preservation audit pass; final
+owned fixture roots and native container are absent. See
+`specs/017-protected-runtime-qualification/hosting-conformance-implementation.md`
+for exact hashes, retained failed diagnostics,
+scoped diagnostic helper retirement, timings and unchanged45-minute hosted-CI gate.
+Final reconciliation changes documents only. Candidate remains local/unpublished;
+T012V and T001/T013-T015 stay separate. Keep setup/dispatch unauthorized, feedback
+deferred and both historical blocked writes unreplayed.
+
+### T012V source publication commission
+
+Brett commissioned candidate PR #78, hosted ordinary source CI, local Codex
+review and governed budget-blocker fixes. Feature017 remains the sole task list.
+The bounded corrections and delegated source-CI timing rationale are recorded in
+`hosting-conformance-implementation.md`. Owner source ratification and all
+T001/T013-T015 operational decisions remain open; setup/dispatch unauthorized,
+feedback deferred and neither historical denied write may be replayed.
+
+### Historical T012V main #77 publication candidate
+
+Executable source `05101d15ad407264a96818c8527229f1f0273ac0` passes 2,761 full tests plus 11
+subtests and all 2,364 mandatory native nodes, with every prior identity retained.
+All nine local expert roles clear the source. Independent final audit verifies
+24,537 generation observations and ten preservation cases; final fixture
+roots and native container are absent. The final source handoff is documentation
+only; exact-head hosted CI and owner ratification remain PR #78 gates. See
+feature017 hosting-conformance-implementation.md and operator-source-runbook.md.
+Main #77 analysis/coverage controls remain required. No operational selection or
+grant follows; setup/dispatch unauthorized, feedback deferred, blocked writes
+unreplayed.
+
+### Historical T012V accepted-main #79 integration plan
+
+Main #79 advanced after candidate3ceb qualification. Integrate its accepted
+shared-tool/pin/runtime fixes under the existing T012V task and the bounded
+plan in feature017 hosting-conformance-implementation.md. Old051/3ceb receipts
+remain historical; the new integration needs fresh collection/review/full/native/
+cleanup and hosted qualification before owner ratification. Preserve both matrix
+corpora and every accepted incoming baseline. Exact neutral pins now050bede root,
+ed567ed code and0fe3151 spec; shared OpenSpec tooling authenticates the spec leg,
+while runtime product validation stays code-only. Explicit qualification ownerbb0
+is separate. No setup/dispatch, feedback or blocked-write replay is authorized.
+
+### Historical T012V main #79 qualified source candidate
+
+Frozen executable `223e2c825494041b9104c475a8a294483f6fcaf2` passes 2,781 full tests plus
+11 subtests and all 2,369 mandatory native nodes; all 366 input hashes and prior
+identities remain. Nine integration expert roles clear it. Independent final
+audit checks 25,005 generation observations and ten preservation cases;
+final fixture roots/native container are absent. Shared OpenSpec tooling uses
+authenticated pinned spec source; product/runtime validation stays code-only.
+Feature017 hosting-conformance-implementation.md records exact source/pins and
+limits. Final doc-only reconciliation retains qualified executable bytes; fresh
+final-head hosted CI/Sonar and owner ratification remain PR #78 gates. No
+setup/dispatch, feedback or blocked-write replay is authorized.
+
+### Historical T012V main #80 and advisory clarity plan
+
+Accepted main #80 advances pins/tooling/tests after the completed main #79
+qualification. Existing T012V and feature017 hosting-conformance-implementation.md
+govern the bounded assertion/preparation/branch/media-type cleanup. Preserve
+all oracles, case identities, wire profiles, budgets, broad cancellation/privacy
+boundaries and lexical resource ownership. Fresh review/full/native/cleanup and
+hosted qualification are required; earlier receipts remain historical. No
+setup/dispatch, feedback or blocked-write replay is authorized.
+
+### Historical T012V main #80 qualified source candidate
+
+Frozen executable `f9b9bd5a798dd251f404a8e1ed1660c9378af23e` passes 2,781 full tests plus
+11 subtests and all 2,369 mandatory native nodes; all 366 frozen inputs and prior
+identities remain. Nine exact-head source roles clear the main #80 integration
+and bounded clarity changes. Independent final audit checks 25,018 generation
+observations and ten preservation cases; final fixture roots/container are absent.
+Neutral root/code/spec are 819de672/fb132776/0fe3151c; separate qualification owner
+remains bb0e9dae. Feature017 hosting-conformance-implementation.md records immutable
+identities and actual evidence. Final documentation retains qualified executable
+bytes; fresh final-head hosted CI/Sonar and owner source ratification remain
+PR #78 gates. T001/T013-T015/setup/dispatch remain ungranted; feedback deferred
+and neither blocked write replayed.
+
+### Historical T012V exact-refusal clarification plan
+
+The existing T012V commission covers the two Sonar S3403 reliability findings
+through a private shared exact-refusal predicate and 20 independent adversarial
+controls. The governing bounded plan is recorded in feature017
+hosting-conformance-implementation.md. Preserve original predicate/evaluation
+order, lazy reservation absence, catch scopes, all source/case identities and
+clock/read/wire/authority limits. Earlier 1146747 full/native passes are historical;
+fresh source/full/native/cleanup/CI/Sonar and owner acceptance remain gates.
+T001/T013-T015/setup/dispatch ungranted; feedback deferred, blocked writes unreplayed.
+
+### Historical qualified T012V selected-port deadline correction
+
+Code candidate `bf0839732d764c2848a4981179e999a44f769d53` incorporates the test-only selected-port correction
+and accepted main #84. Original runtime 10s/private39, loaded credentials/four
+real RPCs, fixed errors, source pins and protected defaults remain. Complete 22
+probe cases pass untraced and under pinned CTracer; five deliberate mutants fail
+the intended identity/deadline/server-prefix/arming assertions. The complete
+ordered 2801/2389 corpus and static fingerprints remain. Current exact-head
+source/document review, full/native/cleanup and hosted CI/Sonar receipts are
+maintained on PR #78; no success is predeclared. See feature017
+hosting-conformance-implementation.md. T012V/owner acceptance and
+T001/T013-T015/setup/dispatch remain ungranted; feedback deferred and blocked
+writes unreplayed.
+
+### Historical T012V accepted-main #85/#86 integration
+
+Accepted main `a6a327a36046e130c95b2e654f3b4b5135d9d5de` advanced during the
+completed 064103a5 qualification. Its receipt remains historical exact-source
+evidence. Integrate accepted runtime/shell clarity and stage-teardown failure
+aggregation with T012V private39 and exact probe/claim guarantees, following
+feature017 hosting-conformance-implementation.md. Fresh review/collection/full/
+native/cleanup/hosted CI and Sonar at the new frozen head are required. No
+source acceptance or operational authority is inferred; setup/dispatch remain
+unauthorized, feedback deferred and blocked writes unreplayed.
+
+The current code candidate is `1728117f3dbe0ebb3fbeb408613e3d04c69067fc`; exact ordered 2801/2389
+collection and all 135 focused readback controls pass. Preserve the 371 non-document
+inputs through final source-checkpoint review. Full/native/cleanup/CI/Sonar remain
+fresh final-head requirements tracked on PR #78, not success claims here.
+
+### Historical T012V accepted-main #87 integration
+
+Accepted main 001c8321884259b35f17adc3d6cd9f623ad1a947 refactors lifecycle and
+validation responsibilities. Both typed LifecycleStores/LifecycleActors constructor
+callers are already adapted upstream; qualifier uses the resulting lifecycle and
+its preserved methods. Merge cleanly and retain original wire/pin/clock/private39,
+cancellation, privacy and resource-ownership guarantees. Follow feature017
+hosting-conformance-implementation.md; fresh review/full/native/cleanup/CI and
+Sonar remain required before owner source ratification. Setup/dispatch stay
+unauthorized, feedback deferred and blocked writes unreplayed.
+
+The current code candidate is `cf21b62b20237d8644aff8a5ae45074c011bbc1c`; collection 2811/2389 preserves
+all prior IDs/order, adding ten accepted pin controls outside the native matrix.
+Ten pin and two actual qualification/lifecycle compatibility controls pass. Preserve
+373 non-document inputs through final ten-document checkpoint review. Fresh
+complete full/native/cleanup/CI/Sonar and owner ratification remain PR #78 gates.
+
+### Historical T012V accepted-main #88 provider integration
+
+Accepted main 6cc8c4e40644692dfdf47cda520ae5076eec6f6a refreshes the coherent
+neutral root/code/spec and admitted OpenSpec/shape provider records. Source
+identities are 3618980408eaaccaa31ec41da32f77cf86fb99f9/6fb72ed4c820d927775ccb698c5cfbd8adff71d7/878293fb3ed84073dd7e285f56f4fee62413297e. Eight contract
+digests and CLI package/lock addresses remain unchanged; qualification owning
+code stays separately selected at bb0e9dae. Consume the accepted pins without
+forking upstream sources; ordinary product validation remains code-only and
+shared tooling explicitly authenticates its spec leg. Fresh review/collection/
+full/native/cleanup/CI and Sonar remain required; setup/dispatch unauthorized,
+feedback deferred and blocked writes unreplayed.
+
+Current code candidate `e92a7728810b51d5537a39b0c12d998f1818baf8` retains 383 regular inputs before final
+ten-document checkpoint review; 373 other inputs must remain byte-identical.
+Collection 2811/2389 retains IDs/order/fingerprints, and ten pin/two real lifecycle
+controls pass. Fresh complete qualification/cleanup/CI/Sonar and owner ratification
+remain PR #78 gates. No source acceptance or operational grant is inferred.
+
+### Current T012V accepted-main #89 source
+
+Code candidate `bf87eaefc74e876431d7a7c0e09b8802cb126e77` consumes the published typed predicates and
+wallet root 38f9d0cb, with code 6fb72ed4/spec 878293fb and explicit owner bb0e9dae
+unchanged. Nineteen recipe file hashes/Bash syntax and ten pin/two actual lifecycle
+controls pass; collection 2811/2389 retains all prior IDs/order/native fingerprints.
+Freeze 384 inputs, with 374 non-document bytes preserved through final checkpoints.
+Fresh review/full/native/cleanup/CI/Sonar and owner ratification remain gates.
+Setup/dispatch unauthorized, feedback deferred and blocked writes unreplayed.

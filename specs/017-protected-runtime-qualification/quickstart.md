@@ -1,6 +1,10 @@
 # Offline Qualification and Operator Runbook
 
-Status: T002–T012L source accepted; T012M handoff complete; T013 preparation refreshed; no operational authorization supplied
+Status: T012V source candidate; exact-head validation receipt tracked on PR #78; final-head hosted CI and owner acceptance separate; operations ungranted
+
+Current source procedure: [operator source conformance runbook](operator-source-runbook.md),
+[H01-H12 coverage](qualification-matrix.md) and [T012U working plan](hosting-conformance-plan.md).
+Earlier sections below retain their named historical source checkpoints.
 
 ## Issuer-Only Library Boundary
 
@@ -321,10 +325,11 @@ worker/admin separation, source-update policy, final accepted source SHA, runtim
 services/state/lifecycle and explicit staged owner authority. Live qualify/cleanup
 clients and protected-machine receipt promotion require separately reviewed source.
 Do not bypass the default refusal or use fixture keys, stores, IDs or grants as
-operational inputs. Both protected workflows still have zero runs.
+operational inputs. At that source checkpoint, both protected workflows had zero runs; this
+runbook makes no fresh live workflow-run claim.
 
 
-## Hosting/issuance proposal is not activation
+## Historical hosting/issuance preparation checkpoint
 
 [The proposed source plan](hosting-issuance-plan.md) and [selection basis](hosting-issuance-selections.md)
 are draft planning artifacts. The existing static-v1 and full preflight path do
@@ -373,7 +378,7 @@ These are isolated source results only. T012T-V, publication/review/source accep
 actual services, setup, dispatch, total-control-host-loss watchdogs and cloud
 conditional retirement remain separate gates. Feedback remains deferred.
 
-## T012T preparation after source-accepted lifecycle
+## Historical T012T preparation after source-accepted lifecycle
 
 PR #75 is source accepted and landed as `d832709a1119c17014287cd15ff8661bfd758cc4`;
 its exact-merge ordinary source CI passes the full suite and all2,017 native cases.
@@ -388,3 +393,24 @@ service, mint credentials, run protected dispatch or publish a live report now.
 Document preparation uses `python3 scripts/validate-openspec-cli-pin.py --all` in
 its default pinned form plus relative-link/scope checks. It creates no new runtime
 case count or live qualification. T012U/V/T001/T013-T015 remain separate.
+
+Current T012V source follows the [main #85/#86 checkpoint](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint);
+its fresh final-head qualification/cleanup/CI and owner source ratification remain
+PR #78 gates. Earlier receipts are historical. This source record selects no
+operational accepted_commit and grants no setup or protected dispatch.
+
+Current T012V source follows the [main #87 checkpoint](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint). Its full 2811/
+native 2389 collection retains all prior identities/order; the native fingerprints
+remain exact. Fresh complete qualification/cleanup/CI/Sonar and actual owner source
+acceptance remain separate from ungranted T001/T013-T015/setup/dispatch.
+
+Current T012V dependency source follows the [main #88 checkpoint](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint).
+It preserves the full 2811/native 2389 corpus and separates new neutral/provider
+pins from the explicitly selected owning fixture source. Complete fresh
+qualification/cleanup/CI/Sonar and actual owner ratification remain required;
+T001/T013-T015/setup/dispatch and live/human/domain acceptance stay ungranted.
+
+Current T012V source follows the [main #89 checkpoint](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint). It consumes
+reviewed installed predicates and exact root/code/spec/owning-source identities;
+collection 2811/2389 remains. Complete fresh qualification/review/cleanup/CI/Sonar
+and actual owner ratification remain separate from ungranted operational stages.

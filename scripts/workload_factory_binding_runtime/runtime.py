@@ -46,7 +46,8 @@ class StateBinding:
 
 
 class _Use:
-    def __init__(self, bridge):
+    def __init__(self, bridge, trace=None):
+        self.trace = trace
         self.bridge, self.selection = bridge, None
         self.valid_until, self._last = None, None
         self.check()
@@ -97,6 +98,8 @@ class _Use:
                 "runtime-channel-mismatch")
         self.valid_until = min(self.valid_until, context.expires_at)
         self.clock()
+        if self.trace is not None:
+            self.trace.selected = current
 
     def check_dependencies(self):
         for role, method in _METHODS.items():
@@ -145,7 +148,12 @@ class _Use:
             if method == "read":
                 return service.target.read(*args, deadline=self.valid_until, **kwargs)
             if role == "custody" and type(service.target) is ConfinedCustody:
-                signature, deadline = service.target.sign_for_use(*args, deadline=self.valid_until, **kwargs)
+                if self.trace is None:
+                    signature, deadline = service.target.sign_for_use(*args, deadline=self.valid_until, **kwargs)
+                else:
+                    signature, deadline, access = service.target.sign_for_use_observed(
+                        *args, deadline=self.valid_until, **kwargs)
+                    self.trace.access = access
                 self.limit(deadline)
                 return signature
             return getattr(service.target, method)(*args, **kwargs)
@@ -164,6 +172,9 @@ class _Verifier:
         evidence = self.verifier.verify(token, expected, now=max(now, self.use.clock()))
         self.use.limit(evidence.valid_until)
         self.use.check()
+        if self.use.trace is not None:
+            self.use.trace.workload = evidence
+            self.use.trace.issuer_source = self.use.bridge.issuer_source
         return WorkloadEvidence(evidence.claims, min(evidence.valid_until, self.use.valid_until))
 
 
@@ -174,6 +185,8 @@ class _Registry:
     def resolve(self, subject_ref, *, now):
         binding = self.use.service_call("registry", self.use.bridge.services["registry"], "resolve", subject_ref, now=now)
         self.use.limit(getattr(binding, "expires_at", None))
+        if self.use.trace is not None:
+            self.use.trace.registry = binding
         return binding
 
 
@@ -182,7 +195,10 @@ class _Signer:
         self.use = use
 
     def sign(self, message):
-        return self.use.service_call("custody", self.use.bridge.services["custody"], "sign", message)
+        value = self.use.service_call("custody", self.use.bridge.services["custody"], "sign", message)
+        if self.use.trace is not None:
+            self.use.trace.preimage = message
+        return value
 
 
 class _Ledger:
@@ -192,11 +208,18 @@ class _Ledger:
     def reserve(self, **kwargs):
         def invoke():
             ledger = self.use.bridge.state.ledger
-            if type(ledger) is InitializedLedger:
-                self.use.accept_state(ledger.reserve_for_use(deadline=self.use.valid_until,
-                                                            checked_at=self.use._last, **kwargs))
-                return None
-            return ledger.reserve(**kwargs)
+            try:
+                if type(ledger) is InitializedLedger:
+                    self.use.accept_state(ledger.reserve_for_use(deadline=self.use.valid_until,
+                                                                checked_at=self.use._last, **kwargs))
+                else:
+                    ledger.reserve(**kwargs)
+            except BindingError as error:
+                if (self.use.trace is not None and error.args == ("replay-refused",)):
+                    self.use.trace.reservation = "replay-refused"
+                raise
+            if self.use.trace is not None:
+                self.use.trace.reservation = "reserved"
         return self.use.guarded(invoke)
 
 
@@ -238,8 +261,18 @@ class RuntimeBridge:
         self.lifecycle = lifecycle
 
     def sign(self, challenge_id, request, token, observation):
+        return self._sign(challenge_id, request, token, observation, None)
+
+    def sign_observed(self, challenge_id, request, token, observation, *, trace):
+        """Trusted qualifier only; observation never replaces a verification."""
+        from .hosted.qualification import ProofTrace
+        require(type(trace) is ProofTrace and not trace.used, "invalid-runtime-embedding")
+        trace.used = True
+        return self._sign(challenge_id, request, token, observation, trace)
+
+    def _sign(self, challenge_id, request, token, observation, trace):
         request, observation = _worker_inputs(challenge_id, request, token, observation)
-        use = _Use(self)
+        use = _Use(self, trace)
         use.check_dependencies()
         # An unverified worker deadline may only shorten this use. The unchanged
         # gate still verifies the entire signed observation before reservation.
@@ -253,8 +286,13 @@ class RuntimeBridge:
                                  request=request)
         def create_proof(*args, **kwargs):
             return use.guarded(self.create_proof, *args, **kwargs)
+        def load_challenge(identifier):
+            value = loaders.load_challenge(identifier)
+            if trace is not None:
+                trace.challenge = value
+            return value
         gate = ProofGate(load_policy=loaders.load_policy, workload_verifier=verifier, registry=_Registry(use),
-                         load_challenge=loaders.load_challenge, ledger=_Ledger(use), signer=_Signer(use),
+                         load_challenge=load_challenge, ledger=_Ledger(use), signer=_Signer(use),
                          create_proof=create_proof, clock=use.clock)
         result = gate.sign(challenge_id, request, token, observation)
         use.check()

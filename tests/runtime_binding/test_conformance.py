@@ -224,3 +224,95 @@ def test_real_pytest_reports_cannot_hide_nonconformance(tmp_path, mutation):
         assert "runtime-conformance: PASS" in result.stdout
     else:
         assert "runtime-conformance: PASS" not in result.stdout
+
+
+@pytest.mark.parametrize("mutation", ["none", "source-setup", "source-call", "source-teardown",
+                                      "source-missing", "post-error", "post-interrupt", "post-exit-zero",
+                                      "pytest-failure", "pytest-skip", "incomplete", "pre-error"])
+def test_final_owner_check_precedes_source_success_and_never_leaks_failure(tmp_path, mutation):
+    # Exercise the real entrypoint/pytest/final-verdict sequence in a tiny corpus.
+    # Only native preflight and the selected-owner reader are test doubles here;
+    # the mandatory native run separately exercises both real boundaries.
+    root = tmp_path / "matrix"
+    root.mkdir(mode=0o700)
+    (root / "home").mkdir(mode=0o700)
+    (root / "tmp").mkdir(mode=0o700)
+    owner = tmp_path / "selected-owner"
+    owner.mkdir()
+    marker = owner / "source"
+    marker.write_bytes(b"accepted-source")
+    source = "from pathlib import Path\nimport pytest\n\ndef test_one(request):\n    assert True\n"
+    change = "Path(" + repr(str(marker)) + ").write_bytes(b'changed-source')"
+    if mutation == "source-setup":
+        source += "\n@pytest.fixture(autouse=True)\ndef source_change():\n    " + change + "\n"
+    elif mutation == "source-call":
+        source = source.replace("assert True", change)
+    elif mutation == "source-teardown":
+        source = source.replace("assert True", "request.addfinalizer(lambda: " + change + ")")
+    elif mutation == "source-missing":
+        source = source.replace("assert True", "Path(" + repr(str(marker)) + ").unlink()")
+    elif mutation == "pytest-failure":
+        source = source.replace("assert True", "assert False")
+    elif mutation == "pytest-skip":
+        source = source.replace("assert True", "pytest.skip('deliberate-gate-control')")
+    (tmp_path / "test_sample.py").write_text(source)
+    repo = Path(__file__).resolve().parents[2]
+    canary = "PRIVATE-SOURCE-ERROR-CANARY"
+    program = f"""
+import os, sys, subprocess
+from pathlib import Path
+sys.path.insert(0, {str(repo / 'tests')!r})
+from runtime_binding import conformance as gate
+original_plugin = gate.ConformancePlugin
+class SmallPlugin(original_plugin):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.audit = gate.MatrixAudit({{'test_sample.py': 1}}, {{'I01': ('test_sample.py::test_one',)}},
+                                      digests={{'test_sample.py': gate.node_digest(['test_sample.py::test_one'])}})
+gate.ConformancePlugin = SmallPlugin
+gate.ROOT = Path({str(tmp_path)!r})
+gate.ROOTS = ('test_sample.py',)
+gate.assert_isolated = lambda: None
+original_run = subprocess.run
+def native_probe_only(command, *args, **kwargs):
+    if command[:4] == [sys.executable, '-I', '-B', '-c']:
+        assert command[4].endswith('from runtime_binding.isolation import assert_isolated;assert_isolated()')
+        return subprocess.CompletedProcess(command, 0)
+    return original_run(command, *args, **kwargs)
+subprocess.run = native_probe_only
+checks = []
+def current_owner(path):
+    assert Path(path) == Path({str(owner)!r})
+    phase = 'before' if not checks else 'after'
+    checks.append(phase)
+    print('source-check:' + phase, flush=True)
+    if ({mutation!r} == 'pre-error' or len(checks) == 2 and {mutation!r} in ('post-error', 'post-interrupt', 'post-exit-zero')):
+        kind = {{'post-interrupt': KeyboardInterrupt, 'post-exit-zero': SystemExit}}.get({mutation!r}, RuntimeError)
+        raise kind(0 if {mutation!r} == 'post-exit-zero' else {canary!r})
+    if (Path(path) / 'source').read_bytes() != b'accepted-source':
+        raise RuntimeError({canary!r})
+gate.selected_owner = current_owner
+os.environ['HOME'] = {str(root / 'home')!r}
+os.environ['TMPDIR'] = {str(root / 'tmp')!r}
+os.environ['GIT_CONFIG_GLOBAL'] = {str(root / 'home/gitconfig')!r}
+sys.argv = ['conformance.py', '--owner-code', {str(owner)!r}, '--temp-root', {str(root)!r}]
+if {mutation!r} == 'incomplete':
+    import pytest
+    pytest.main = lambda *args, **kwargs: 0
+raise SystemExit(gate.main())
+"""
+    result = subprocess.run([sys.executable, "-I", "-B", "-c", program], cwd=tmp_path,
+                            env=dict(os.environ, PYTEST_DISABLE_PLUGIN_AUTOLOAD="1"),
+                            capture_output=True, text=True, timeout=20)
+    output = result.stdout + result.stderr
+    assert canary not in output, output
+    assert (result.returncode == 0) == (mutation == "none"), output
+    if mutation == "none":
+        assert result.stdout.count("runtime-conformance: PASS") == 1, output
+        assert result.stdout.index("source-check:after") < result.stdout.index("runtime-conformance: PASS"), output
+    else:
+        assert "runtime-conformance: PASS" not in output, output
+    if mutation == "pre-error":
+        assert not (root / "matrix.xml").exists()
+    elif mutation != "incomplete":
+        assert (root / "matrix.xml").is_file()

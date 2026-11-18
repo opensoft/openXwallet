@@ -12,7 +12,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from workload_factory_binding.evidence import BindingError
 from workload_factory_binding_runtime.evidence import safe_error
 from workload_factory_binding_runtime.bootstrap import DispatchContext, bootstrap, validate_dispatch_context
-from workload_factory_binding_runtime.workflow import operational_bindings, GithubWorkflowBindings, admit_github, HostedWorkflowBindings, admit_hosted
+from workload_factory_binding_runtime.workflow import operational_bindings, GithubWorkflowBindings, admit_github, HostedWorkflowBindings, admit_hosted, QualificationWorkflowBindings, qualify_hosted
 
 
 def context_from_environment(environment, source_commit):
@@ -22,10 +22,23 @@ def context_from_environment(environment, source_commit):
     return DispatchContext(*(environment.get(name, "") for name in names), source_commit)
 
 
+class _PrivateParser(argparse.ArgumentParser):
+    def error(self, _message):
+        # argparse's default error echoes arbitrary invalid arguments before the
+        # runtime boundary. Keep invalid input on the same fixed-code contract.
+        raise BindingError("workflow-input-unavailable") from None
+
+
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = _PrivateParser(description=__doc__)
     parser.add_argument("--phase", choices=("preflight", "protected-admission", "qualify", "cleanup"), required=True)
-    args = parser.parse_args()
+    try:
+        args = parser.parse_args()
+    except BaseException as error:
+        if type(error) is SystemExit and type(error.code) is int and error.code == 0:
+            return 0  # argparse help completed; no context or binding was read.
+        print(safe_error(error), file=sys.stderr)
+        return 2 if isinstance(error, Exception) else 130
     try:
         source = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, check=True, capture_output=True,
                                 text=True, timeout=10).stdout.strip()
@@ -34,6 +47,11 @@ def main():
         # Intentionally blocks before any environment output or OIDC operation.
         # Production binding selection needs a later reviewed source integration.
         bindings = operational_bindings()
+        if type(bindings) is QualificationWorkflowBindings:
+            report = qualify_hosted(context, bindings=bindings, phase=args.phase)
+            if args.phase == "qualify":
+                sys.stdout.buffer.write(report + b"\n")
+            return 0
         if args.phase not in ("preflight", "protected-admission"):
             # T012 prepares admission/job wiring. Live execution and independent
             # cleanup adapters remain gated; never substitute the offline suite.
@@ -50,9 +68,9 @@ def main():
         with output.open("a", encoding="utf-8") as stream:
             stream.write("ready=true\nenvironment=" + admitted.environment + "\n")
         return 0
-    except Exception as error:
+    except BaseException as error:
         print(safe_error(error), file=sys.stderr)
-        return 2
+        return 2 if isinstance(error, Exception) else 130
 
 
 if __name__ == "__main__":

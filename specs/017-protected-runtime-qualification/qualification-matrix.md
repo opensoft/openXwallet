@@ -1,6 +1,48 @@
 # Required Qualification Matrix
 
-Status: isolated T002–T011 source cases landed; T012 workflow preparation candidate; deployed cases pending
+Status: T012V source candidate; exact-head validation receipt tracked on PR #78; final-head CI, owner acceptance and deployed cases remain separate gates
+
+
+## Current H01-H12 source coverage (T012V)
+
+The [operator source runbook](operator-source-runbook.md) supplies the source,
+isolation, final-verdict and independent teardown procedure. This table maps
+actual existing controls; it does not turn source/fixture results into a live
+protected report. Counts are measured anchored nodes and overlap across groups.
+Current measured collection is 2,811 full parent cases and 2,389 mandatory native nodes;
+all 64 conformance self-tests, prior 2,781 full / 2,369 native identities and
+earlier anchors remain. New source controls cover the probe total Decision,
+cancellation ownership and byte-compatible canonical-journal replay. Execution and cleanup receipts are tracked on [PR #78](https://github.com/opensoft/openXwallet/pull/78).
+The [current source checkpoint](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint)
+records the correction and required qualification protocol.
+
+| Group / anchored nodes | Actual source positive | Independent refusal/mutation | Remaining live gate |
+| --- | --- | --- | --- |
+| H01 /25 | [Static plan before any run/process](../../tests/runtime_binding/test_hosted_finalization.py): `test_static_plan_commits_before_any_run_or_process` | Exactly four late fields absent; no other omission; v2 through v1 refuses | Accepted deployed source/image/plan selection |
+| H02 /27 | Same module: signed plan-only preflight has no effectful ports | Each current fact, wrong purpose, missing protection and hold drift refuse before output | Real complete provider fields/subjects |
+| H03 /97 | [Launch](../../tests/runtime_binding/test_hosted_launch.py): protected grant plus durable acknowledgement precedes one actual sandboxed start | Lost responses, concurrent starts, missing store/ack, manager death and substituted generation refuse or remain consumed | Actual host/unit/boot/admin and worker boundary |
+| H04 /44 | [Finalization](../../tests/runtime_binding/test_hosted_finalization.py): real generation plus independently recomputed complete bytes | Static/policy/config/run/PID/source/boot mutation and arbitrary caller digest refuse | Actual approved host/source/guest and final authority |
+| H05 /29 | [Lifecycle](../../tests/runtime_binding/test_hosted_lifecycle.py): immutable same-generation stage/final takeover without cleanup gap | Interrupt promotion, dead scheduler, changed source/scope, expired clock and concurrent release retain an owner | Independently administered registered scheduler/janitor/audit |
+| H06 /53 | [Issuance](../../tests/runtime_binding/test_hosted_issuance.py): actual local RSA App JWT and scoped authenticated role delivery | Returned install/repo/permission/expiry drift, late issuance, lost response and actual retirement refusal controls | Actual App/Key Vault/enrollment and effective retirement |
+| H07 /54 | [Credentials](../../tests/runtime_binding/test_hosted_credentials.py), enrollment, launch/lifecycle: allowed controller succeeds and valid worker requests are denied by real process/TLS/kernel controls | Exposed capability, writable/inherited credentials, excess policy or outage must fail denial qualification | Deployed UID/network/IMDS/key-file and administrator exclusion |
+| H08 /87 | [Readback](../../tests/runtime_binding/test_hosted_readback.py): authenticated current sources/protection/control and separately measured guest/state facts | Change one observed fact with candidate fixed; missing fields, wildcard/tag/default or candidate echo refuse | Actual selected authenticated provider/guest fact sources |
+| H09 /40 | [Readback flow](../../tests/runtime_binding/test_hosted_readback_flow.py): complete protected correlation/current source/protection/hold under one original Decision | Late fact mutation, expiry/regression, deadline or shared-budget reset refuse | Real bounded clients and coordinated-source policy; no atomic main guarantee |
+| H10 /105 | [Evidence](../../tests/runtime_binding/test_hosted_evidence.py): complete connected owning proof/replay on one original Decision at38 reads (39 with fixture origin) | Valid-signed audience/environment-only mutations, actual worker denial/excess permission and original/private12 refusal guard | Real protected issuer/custody/source/deployment qualification |
+| H11 /284 | [Lifecycle](../../tests/runtime_binding/test_hosted_lifecycle.py) and evidence: independent cleanup after success/failure/cancel/actual runner death; fresh observer-only process after lease expiry | Lost mutation result, wrong generation/attempt, missing store, stale audit and uncertain cleanup never upgrade; no destructive replay | Actual independent expiry/revocation/absence, external control-host-loss watchdog and infrastructure retirement |
+| H12 /142 | [Evidence](../../tests/runtime_binding/test_hosted_evidence.py): actual pre-report privacy controls and closed safe projection | Missing/stale/wrong case/source/run/cleanup, raw canaries, CLI parse/cancel errors and fixture-origin promotion refuse | Approved actual protected origin and T014 run; human/domain/consumer gates separate |
+
+All historical I/G/S/L/R/B anchors remain mandatory. R01 additionally anchors all
+12 final-verdict controls: real tiny pytest runs mutate selected-source state at
+setup/call/teardown, remove it, fail/skip execution or trigger safe postflight
+error/cancellation/zero-exit handling. The successful control requires exactly one
+final PASS after postflight. A nominal zero exit without complete phase reports
+fails. Native boundary and the exact selected owner are separately exercised by
+the real mandatory entrypoint; tiny harness doubles cannot qualify either boundary.
+
+T012U changes no proof/report runtime API, source/fixture scope, workflow, budget,
+neutral pin or dependency. Protected P01/deployed G02/G03/L01 and all operational
+acts remain separate; the following original matrix and preparation records are
+retained as historical context.
 
 | Cases | Required observation | Requirements |
 | --- | --- | --- |
@@ -81,3 +123,37 @@ and one owning proof/replay with independent cleanup on all four outcomes.
 Provider observations/tokens are synthetic and dispatch uses deterministic doubles.
 The existing closed R01 receipt vocabulary is unchanged; these additional internal
 anchors do not extend protected-machine receipt scope or clear live P01/G02/G03.
+
+## T012U completed source result
+
+At `6e2f0bfc626ab05b5b0384bc3a97d2816cfd696a`, full2,523 plus nine subtests and
+mandatory-native2,215 pass with zero failures/errors/skips. All64 conformance
+self-tests and every prior node/anchor remain; unaffected module fingerprints are
+unchanged. R01=47 and H01-H12
+counts above match actual native output. The final PASS follows exact-owning-source
+postflight; all setup/call/teardown phases pass. Independent native boundary and
+21,879-generation/ten-positive final preservation audit pass; exact owned roots
+are removed. [As-built evidence](hosting-conformance-implementation.md) retains
+failed diagnostics and limits. No protected P01, live receipt or source publication
+is inferred. T012V and T001/T013-T015 remain separate.
+
+Current T012V source follows the [main #85/#86 checkpoint](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint);
+its fresh final-head qualification/cleanup/CI and owner source ratification remain
+PR #78 gates. Earlier receipts are historical. This source record selects no
+operational accepted_commit and grants no setup or protected dispatch.
+
+Current T012V source follows the [main #87 checkpoint](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint). Its full 2811/
+native 2389 collection retains all prior identities/order; the native fingerprints
+remain exact. Fresh complete qualification/cleanup/CI/Sonar and actual owner source
+acceptance remain separate from ungranted T001/T013-T015/setup/dispatch.
+
+Current T012V dependency source follows the [main #88 checkpoint](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint).
+It preserves the full 2811/native 2389 corpus and separates new neutral/provider
+pins from the explicitly selected owning fixture source. Complete fresh
+qualification/cleanup/CI/Sonar and actual owner ratification remain required;
+T001/T013-T015/setup/dispatch and live/human/domain acceptance stay ungranted.
+
+Current T012V source follows the [main #89 checkpoint](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint). It consumes
+reviewed installed predicates and exact root/code/spec/owning-source identities;
+collection 2811/2389 remains. Complete fresh qualification/review/cleanup/CI/Sonar
+and actual owner ratification remain separate from ungranted operational stages.

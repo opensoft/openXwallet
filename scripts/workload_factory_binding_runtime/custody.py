@@ -160,6 +160,7 @@ class _Use:
                 "custody-access-expired")
         self.deadline = min(self.deadline, access.expires_at)
         self.clock()
+        self.access = access
 
 
 class ConfinedCustody:
@@ -204,7 +205,12 @@ class ConfinedCustody:
         require(integer(deadline), "custody-access-expired")
         return self._sign(message, deadline)
 
-    def _sign(self, message, deadline):
+    def sign_for_use_observed(self, message, *, deadline):
+        """Trusted qualifier observation of the same checked use; no extra I/O."""
+        require(integer(deadline), "custody-access-expired")
+        return self._sign(message, deadline, observed=True)
+
+    def _sign(self, message, deadline, *, observed=False):
         require(type(message) is bytes and 0 < len(message) <= 8192, "invalid-custody-message")
         use = _Use(self, deadline)
         try:
@@ -213,4 +219,5 @@ class ConfinedCustody:
             raise BindingError("custody-service-unavailable") from None
         use.check()
         require(type(signature) is bytes and len(signature) == 64, "invalid-custody-signature")
-        return signature, use.deadline
+        return ((signature, use.deadline, use.access) if observed
+                else (signature, use.deadline))

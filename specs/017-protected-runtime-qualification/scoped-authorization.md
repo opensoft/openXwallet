@@ -1,7 +1,7 @@
 # T013 Scoped Authorization Draft
 
-Status: T012M reconciled after #65 source landing; every operational stage NOT GRANTED
-Updated: 2026-11-14
+Status: T012V source candidate; exact-head validation receipt tracked in PR #78; final-head CI/acceptance pending; every operational stage NOT GRANTED
+Updated: 2026-11-17
 Selections: [operational inputs](operational-inputs.md)
 Accepted bootstrap source: [bootstrap record](workflow-bootstrap.md)
 
@@ -15,8 +15,12 @@ The subsequent planning commission uses the recommended T013 values as the
 source proposal and [Speckit plan](hosting-issuance-plan.md) include an explicit
 static-v2/finalization prerequisite discovered in research; callbacks alone do not
 resolve unknown actual run/process digests. These are draft source proposals, not
-new operational selections, appointments or grants. T012N-V require source acceptance
-and commissioning first; T013 and all four operational stages remain ungranted.
+new operational selections, appointments or grants. Subsequent accepted factory
+profiles and isolated T012O-U implementation are reconciled by the current
+[T012V source candidate](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint)
+on PR #78. Its final-head hosted CI and owner ratification remain separate.
+Neither local qualification nor later source acceptance selects hosting, keys,
+endpoints or operational principals. T013 and all four stages remain ungranted.
 
 ## Decision record to complete
 
@@ -129,3 +133,24 @@ owners, distinct dispatcher/reviewer, actual bootstrap/controller hosting, issua
 and resource/budget/window limits. They can commission the required source
 integrations without authorizing setup or dispatch. Source bootstrap acceptance
 is complete; live hosting/authentication and operational decisions remain open.
+
+Current T012V source follows the [main #85/#86 checkpoint](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint);
+its fresh final-head qualification/cleanup/CI and owner source ratification remain
+PR #78 gates. Earlier receipts are historical. This source record selects no
+operational accepted_commit and grants no setup or protected dispatch.
+
+Current T012V source follows the [main #87 checkpoint](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint). Its full 2811/
+native 2389 collection retains all prior identities/order; the native fingerprints
+remain exact. Fresh complete qualification/cleanup/CI/Sonar and actual owner source
+acceptance remain separate from ungranted T001/T013-T015/setup/dispatch.
+
+Current T012V dependency source follows the [main #88 checkpoint](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint).
+It preserves the full 2811/native 2389 corpus and separates new neutral/provider
+pins from the explicitly selected owning fixture source. Complete fresh
+qualification/cleanup/CI/Sonar and actual owner ratification remain required;
+T001/T013-T015/setup/dispatch and live/human/domain acceptance stay ungranted.
+
+Current T012V source follows the [main #89 checkpoint](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint). It consumes
+reviewed installed predicates and exact root/code/spec/owning-source identities;
+collection 2811/2389 remains. Complete fresh qualification/review/cleanup/CI/Sonar
+and actual owner ratification remain separate from ungranted operational stages.

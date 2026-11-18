@@ -2757,3 +2757,230 @@ changes. All proposed implementation and operational owner boxes remain unchecke
 Factory ledger generation still requires the real new factory PR number; the
 ledger remains unchanged and this publication prerequisite is recorded explicitly.
 No new candidate PR, hosted CI or expert-review claim is made by this local commit.
+
+## T012T owner acceptance, ordered landing and partial isolated candidate
+
+The owner ratified #1332 aa1896ded7ef with #76 56471096ff98 for source acceptance,
+and commissioned only isolated T012T after ordered landing. See
+[as-built source and exact hosted budget blocker](hosting-evidence-implementation.md).
+Both accepted heads landed in order with the accepted packet preserved. Component
+and source-refusal controls pass, but the real hosted positive reaches private12
+and refuses its next lease read. No full T012T or operational acceptance is claimed.
+The separate factory amendment remains draft/unratified; no new budget is applied.
+
+## T012T accepted-budget continuation and completed isolated candidate
+
+Brett source-ratified factory #1334 at7518c058ef3defb7408475cfed65807d7609d626
+and commissioned green landing plus continued isolated T012T. Merge
+89974846b847e1c31761792677155cc9779d400d cleanly integrates concurrent main;
+all exact-merge factory CI workflow kinds pass. The accepted private39 source
+entry applies only before any read on one original qualification Decision.
+All other allocations, clocks, expiries and operational refusal remain unchanged.
+
+See the [completed as-built qualification record](hosting-evidence-budget-realization.md).
+Runtime b7049e8ef20f985db26e5b7a966012161737ac7e passes2,511 full tests plus nine
+subtests and all2,203 mandatory native cases. All186 hosted-evidence cases pass in
+both; H10=75/H11=143/H12=142, with prior identities/fingerprints/anchors preserved.
+Actual complete hosted positives verify owning proof and independent cleanup
+within38 reads (39 with fixture origin). Fresh-process audit, cancellation with
+lost cleanup reply and CLI/privacy controls pass. Ordered pins/YAML/plain/strict/
+pinned OpenSpec gates pass;335 regular-file hashes and the neutral gitlink match.
+
+The independently observed native boundary has network none, only loopback,
+read-only source/rootfs, UID1000, no groups/capabilities and NoNewPrivs=1.
+External cleanup audit verifies21,872 generations,748 journals,234 helper receipts
+and all ten positive preservation cases, with no live attribution or initial
+teardown failures. Both final exact owned fixture roots and the native container
+are absent; receipts remain outside them. Earlier failed/interrupted runs remain
+diagnostic; the unexplained unchanged large-manifest refusal and successful
+unchanged reproduction/full/native runs are recorded without a fabricated cause.
+
+Only documentation is reconciled after the frozen runtime tests. No hosted runtime
+CI/source acceptance or operational qualification is inferred. T012U/V and
+T001/T013-T015 remain separate; setup/dispatch unauthorized, feedback deferred,
+and historical blocked writes unreplayed.
+
+## T012U isolated conformance and operator source runbook completed
+
+Brett commissioned only T012U after T012T. Tested source
+`6e2f0bfc626ab05b5b0384bc3a97d2816cfd696a` passes2,523 full parent cases plus nine
+subtests and all2,215 mandatory native cases with zero failures/errors/skips.
+All64 conformance self-tests and186 hosted-evidence cases pass in both; every old
+node identity/anchor remains and unaffected module fingerprints are unchanged, R01=47 and all H01-H12 counts preserved.
+The conformance CLI now emits its final success only after exact owning-source
+postflight. The [operator runbook](operator-source-runbook.md) and
+[coverage map](qualification-matrix.md) describe actual source facts and separate
+live gates. Six shell controls verify source/owner Git-status failures stop the
+recipe; no runtime/workflow/pin/dependency input changes.
+
+All338 frozen regular-file hashes and neutral gitlink match after execution;
+independent native boundary and21,879-generation/ten-positive preservation audit
+pass. Both final fixture roots and native container are absent; receipts remain.
+[As-built evidence](hosting-conformance-implementation.md) records the earlier
+unexplained staging refusal, passing unchanged focused reproduction, interrupt-
+induced diagnostic failure and scoped helper retirement, then fresh passing
+full/native results without source/limit/assertion changes. No failed/interrupted
+run is promoted to qualification. The later completion commit changes documents
+only and retains the tested Python/workflow/pin/dependency bytes.
+
+Only isolated T012U is complete. T012V review/hosted CI/publication/source acceptance
+and T001/T013-T015 operations remain separate. Setup/dispatch unauthorized, feedback
+deferred, historical blocked writes unreplayed. Local combined wall time is
+approximately67.6 minutes; the existing45-minute source job is unchanged and
+actual hosted timing remains a T012V gate.
+
+## 2026-11-17 T012V publication qualification and T013 refresh
+
+
+The publication candidate's executable source is `05101d15ad407264a96818c8527229f1f0273ac0`.
+All seven ordered repository gates pass, including pins, YAML, plain/strict
+validator, the complete full suite and default content-addressed OpenSpec strict
+validation. Full execution passes **2,761 parent tests plus 11 subtests**, zero
+failures/errors/skips, in 1802.872 seconds outer wall time. Mandatory
+native execution passes **2,364 nodes**, zero failures/errors/skips, in
+1619.765 seconds outer wall time; final conformance success follows
+owning-source postflight. All prior 2,523 full and 2,215 native identities remain.
+There are 198 hosted-evidence, 22 total-deadline probe and 115 canonical-journal
+controls; all 64 conformance self-tests remain. Current anchors H10/H11/H12 are
+85/282/142 and R01 is 47; overlapping groups are not independent test counts.
+
+All 365 frozen regular tracked inputs match after both runs. The neutral
+assembly/code/spec pins are respectively `58cfa716c66e5b7f594db19b2d16f2bbc6fe7d9b`,
+`b7c8ca1e0f9bb58674a12ffef89bf5dfc92cc58c` and
+`e0f7467f52f75103e10cb6824ad88de460ec9d39`. The spec checkout is solely the
+accepted main #77 source-analysis exception. Explicit qualification owning code
+remains `bb0e9dae89a771b05f6c235d0a77237288b95c85`; it does not replace a neutral pin.
+
+Independent native observation confirms the selected immutable image, Docker
+network none, only loopback, read-only source/rootfs, UID1000/GID65534, empty groups,
+NoNewPrivs1 and zero effective/permitted/ambient/bounding capabilities. External
+final audit checks **24,537 generation observations**, 842 journals,
+258 helper receipts and all ten positive preservation cases.
+These are observations, not unique process counts. There is no attributable live
+process or initial qualified teardown failure. Exact retained/shared file
+identities remain, run files are absent, credential attempts are retired, file
+pins released and independent cleanup audit retained. Both final owned fixture
+roots and native container are absent. Earlier diagnostics and focused-control
+roots are separately audited and removed; safe reports remain outside fixtures.
+
+Nine-role local Codex expert review plus the master clears this implementation,
+including deadline/cancellation/FD ownership, actual child tracing, real outage
+injection and canonical replay compatibility. Retained focused tracing covers
+145/152 helper statements and 39/42 branches with zero exclusions; actual child
+resolve/sign/denial execution is retained. GitHub connector review is not claimed
+or requested under the owner's local-only instruction.
+
+Earlier interrupted/failed runs remain diagnostic. In particular, the staging
+setup refusal and later 64-resource credential-retirement refusal have no proven
+root cause. The pure byte-compatible replay correction reduces observed repeated
+encoding cost; passing fresh full/native tests do not establish a general timing
+guarantee. No consumed mutation is replayed, and runtime clocks/private39/other
+phase caps and neutral APIs remain unchanged.
+
+Final reconciliation is documentation only; executable/test/pin/workflow inputs
+retain the qualified bytes above. Exact final PR-head hosted CI, actual coverage
+job timing, Sonar and local-review reconciliation are tracked on
+[PR #78](https://github.com/opensoft/openXwallet/pull/78); this record does not
+predeclare their results. Only the sequential source-CI wall cap is 90 minutes;
+separate traced coverage jobs remain at 45 minutes without threshold/exclusion
+changes. Owner exact-head source ratification and landing remain separate.
+T001/T013-T015, real provider/host/protected-origin qualification, external
+control-host-loss watchdog, infrastructure retirement and human/domain/consumer
+acceptance remain open. Setup and protected dispatch remain unauthorized;
+feedback deferred and neither historical blocked write replayed.
+
+## 2026-11-17 accepted-main #79 integration qualification
+
+Frozen source `223e2c825494041b9104c475a8a294483f6fcaf2` passes 2,781 full tests plus 11 subtests and
+all 2,369 mandatory native cases without failures/errors/skips. All 366 input
+hashes and earlier case identities remain; nine integration reviewers clear it.
+Independent final audit checks 25,005 generation observations and ten
+preservation cases, with final fixture roots/native container absent. See the
+[historical main #79 source record](hosting-conformance-implementation.md#t012v-main-79-integrated-source-qualification).
+Old3ceb CI receipts remain historical; new final-head hosted CI/Sonar belongs on
+PR #78 before ratification. No operational selection or grant is supplied.
+
+## 2026-11-17 accepted-main #80 and advisory clarity qualification
+
+Frozen executable `f9b9bd5a798dd251f404a8e1ed1660c9378af23e` passes 2,781 full tests plus 11
+subtests and all 2,369 mandatory native cases without failures/errors/skips.
+All 366 input hashes, prior case identities and static expectations remain.
+Nine exact-head source roles clear the incoming accepted pins and bounded clarity
+changes. Independent final audit checks 25,018 generation observations and
+ten positive preservation cases; final fixture roots/native container are absent.
+See the [historical main #80 source qualification](hosting-conformance-implementation.md#t012v-main-80-integrated-source-qualification).
+Earlier #79/3ceb receipts stay historical. New final-head hosted CI/Sonar and
+actual owner ratification remain PR #78 gates; no operational grant follows.
+
+## 2026-11-17 T012V exact-refusal clarification evidence
+
+Published 1146747 passes hosted run 44082058742 full 2,781 tests plus 11 subtests
+and all 2,369 mandatory native cases, zero failures/errors/skips; runtime job 3734s.
+Main coverage passes its complete partition in 1535s, plus the fixed complementary
+case separately. The subsequent PR-specific Sonar scan fails reliability on two
+S3403 exact-class checks, with the other five original conditions passing
+(94.0% coverage, 0.0% duplication, 100% hotspots reviewed). These successful runtime
+receipts remain historical and do not qualify the corrected source.
+
+A whole-file local analyzer reproduces both reports at the first class-identity
+comparison. An identical self-contained guard has no report; the original
+successful signed counterfactuals also contradict an always-false comparison.
+The exact analyzer inference cause remains unproven. A shared private predicate
+with the four original ordered checks clears both findings in whole-file analysis.
+
+Twenty independent refusal-port controls first pass against the original guard.
+The extraction then passes 88 focused controls: 20 new adversarial cases, four
+existing signed-barrier controls and 64 conformance self-tests. Actual modified
+product analysis has only its prior three maintenance advisories; actual modified
+test analysis has zero issues. AST comparison proves original predicate/order,
+lazy reservation check and every other barrier statement unchanged.
+
+Measured collection is 2,801 full cases and 2,389 native cases; all previous
+2,781/2,369 IDs and their relative order remain. The only updated static module
+expectation is hosted-evidence 218; H10 measures 105, other anchors unchanged.
+Fresh complete full/native, independent cleanup and final-head hosted CI/Sonar
+remain mandatory before owner source acceptance. No rule/status/gate waiver,
+runtime/read/wire change, setup or protected dispatch is supplied. Feedback
+remains deferred; neither historical blocked write is replayed.
+
+## 2026-11-17 selected-port correction checkpoint
+
+Code candidate `bf0839732d764c2848a4981179e999a44f769d53` retains all runtime limits and source pins.
+The complete 22-case probe module passes normally and under pinned CTracer; five
+disposable mutants fail their intended oracle. Complete current-head full/native,
+cleanup, hosted CI/Sonar and review results are recorded after execution in
+[PR #78](https://github.com/opensoft/openXwallet/pull/78). See the
+[current source record](hosting-conformance-implementation.md#t012v-selected-port-deadline-correction).
+This checkpoint supplies no source ratification or operational grant.
+
+## Historical main #85/#86 integration checkpoint
+
+Code candidate `1728117f3dbe0ebb3fbeb408613e3d04c69067fc` preserves the complete ordered 2,801/2,389
+corpus and passes all 135 readback controls. The [current source record](hosting-conformance-implementation.md#t012v-main-85-86-source-checkpoint)
+separates the prior completed 064103a5 receipt from required fresh final-head
+review/full/native/cleanup/hosted CI and Sonar. No source ratification or
+operational grant is supplied.
+
+## Historical main #87 source checkpoint
+
+Code candidate `cf21b62b20237d8644aff8a5ae45074c011bbc1c` preserves every prior identity/order, adds ten
+contract-pin controls, and retains all 2,389 native identities/fingerprints. Ten pin
+controls and both actual connected positive/refusal-cleanup controls pass. The
+[current source record](hosting-conformance-implementation.md#t012v-main-87-source-checkpoint) requires fresh complete final-head review,
+full/native/cleanup/hosted CI and Sonar; older receipts remain historical.
+
+## Historical main #88 dependency checkpoint
+
+Code candidate `e92a7728810b51d5537a39b0c12d998f1818baf8` consumes the coherent accepted neutral/OpenSpec/
+shape provider pins. Collection 2811/2389 and all prior identities/order remain;
+ten pin/two real lifecycle compatibility controls pass. The [current source
+record](hosting-conformance-implementation.md#t012v-main-88-source-checkpoint) requires fresh complete final-head review/full/native/cleanup/
+CI/Sonar and actual owner acceptance. Prior receipts remain historical.
+
+## Current main #89 source checkpoint
+
+Candidate `bf87eaefc74e876431d7a7c0e09b8802cb126e77` consumes the published typed predicates/root repin.
+Use the [current source record](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint) and PR #78's actual final-head receipt.
+Collection 2811/2389, nineteen recipe hash/syntax checks and ten pin/two real
+lifecycle controls pass; complete qualification/review/cleanup/CI/Sonar and owner
+ratification remain required. This grants no setup, dispatch or live acceptance.

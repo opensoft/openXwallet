@@ -1,10 +1,13 @@
 # T012T qualification and protected-report source plan
 
-Status: draft
+Status: accepted preparation; isolated T012T implementation complete
 Kind: implementation-plan
-Scope: preparation only; source realization is not commissioned
+Scope: accepted preparation and private39 source decision; locally qualified isolated candidate; later publication and operations remain separate
 Factory decision: opensoft/openXfactory openspec/changes/add-protected-runtime-report
 Sole executable list: tasks.md, proposed T012T01-T012T06
+
+Current commission/status: [accepted-budget source realization](hosting-evidence-budget-realization.md). The earlier [partial blocker](hosting-evidence-implementation.md) remains historical.
+Historical preparation text below records its earlier source checkpoint; it is not a claim of current implementation permission or completion.
 
 ## Accepted baseline and authority
 

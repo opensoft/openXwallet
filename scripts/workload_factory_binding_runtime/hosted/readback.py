@@ -18,9 +18,9 @@ LIMITS={"protection":3,"source":4,"control":2,"arm":24,"key":3,"private":12}
 JSON_TYPE="application/json"
 
 
-def _ledger(decision, *, finalization=False, staging=False):
+def _ledger(decision, *, finalization=False, staging=False, qualification=False):
     return {"counts": dict.fromkeys(LIMITS, 0), "members": {decision: 0},
-            "finalization": finalization, "staging": staging, "stage_observations": 0, "protection_observations": 0}
+            "finalization": finalization, "staging": staging, "qualification": qualification, "stage_observations": 0, "protection_observations": 0}
 
 
 def start_finalization(decision):
@@ -41,6 +41,19 @@ def start_staging(decision):
     ReadBudget(decision).check()
 
 
+def start_qualification(decision):
+    """Source-accepted trusted entry before lifecycle construction or first I/O.
+
+    One original Decision owns private39. It cannot upgrade an existing ledger,
+    consume a different phase's authority, join a member or renew either clock.
+    """
+    require(type(decision) is Decision and not hasattr(decision, "_hosted_reads")
+            and decision.api_requests == 0, ERROR)
+    decision.now()
+    decision._hosted_reads = _ledger(decision, qualification=True)
+    ReadBudget(decision).check()
+
+
 class ReadBudget:
     def __init__(self, decision):
         require(type(decision) is Decision, ERROR)
@@ -52,7 +65,7 @@ class ReadBudget:
 
     def check(self):
         members = self.state["members"]
-        require(self.decision in members and 1 <= len(members) <= (1 if self.state["staging"] else 2), ERROR)
+        require(self.decision in members and 1 <= len(members) <= (1 if self.state["staging"] or self.state["qualification"] else 2), ERROR)
         correlation_limit = 8 if self.state["staging"] else 4
         for member, highwater in tuple(members.items()):
             member.now()
@@ -80,7 +93,7 @@ class ReadBudget:
     def join(self, independent):
         """Keep an independent clock/observer, sharing consumed enclosing authority."""
         self.check()
-        require(not self.state["staging"], ERROR)
+        require(not self.state["staging"] and not self.state["qualification"], ERROR)
         require(type(independent) is Decision and not hasattr(independent, "_hosted_reads")
                 and independent.api_requests == 0 and len(self.state["members"]) == 1, ERROR)
         remaining = min(member.remaining() for member in self.state["members"])
@@ -116,6 +129,8 @@ class ReadBudget:
             limit = {"protection": 6, "source": 8, "control": 4, "private": 16}.get(group, LIMITS[group])
         elif group == "protection" and self.state["finalization"]:
             limit = 18
+        elif group == "private" and self.state["qualification"]:
+            limit = 39
         else:
             limit = LIMITS[group]
         require(self.state["counts"][group] < limit, ERROR)

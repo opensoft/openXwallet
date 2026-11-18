@@ -61,8 +61,11 @@ class MatrixAudit:
 
 
 class ConformancePlugin:
-    def __init__(self):
+    def __init__(self, *, defer_verdict=False):
         self.audit = MatrixAudit()
+        # The CLI verifies its selected owner after pytest, then emits one final
+        # verdict. Tiny plugin-only mutation controls retain their phase verdict.
+        self.defer_verdict = defer_verdict
 
     def pytest_collection_finish(self, session):
         self.audit.collected(item.nodeid for item in session.items)
@@ -87,7 +90,8 @@ class ConformancePlugin:
     def pytest_terminal_summary(self, terminalreporter):
         for case, count in sorted(self.audit.case_counts.items()):
             terminalreporter.write_line(f"runtime-conformance {case}: {count} anchored nodes")
-        terminalreporter.write_line("runtime-conformance: " + ("PASS" if not self.audit.violations else "FAIL"))
+        if not self.defer_verdict:
+            terminalreporter.write_line("runtime-conformance: " + ("PASS" if not self.audit.violations else "FAIL"))
 
 
 def selected_owner(path):
@@ -122,16 +126,21 @@ def main():
         print("runtime-conformance-preflight-failed", file=sys.stderr)
         return 2
     import pytest
-    plugin = ConformancePlugin()
+    plugin = ConformancePlugin(defer_verdict=True)
     result = pytest.main([*ROOTS, "-q", "-rs", "-c", os.devnull, "--rootdir=" + str(ROOT),
                           "-o", "addopts=", "-p", "no:cacheprovider",
                           "--basetemp=" + str(temporary / "pytest"), "--junitxml=" + str(root / "matrix.xml")],
                          plugins=[plugin])
     try:
         selected_owner(args.owner_code)
-    except Exception:
-        return 2
-    return int(result) if result else (0 if plugin.audit.complete() else 1)
+    except BaseException as error:
+        print("runtime-conformance-owning-source-invalid", file=sys.stderr)
+        print("runtime-conformance: FAIL")
+        return 130 if isinstance(error, KeyboardInterrupt) else 2
+    complete = plugin.audit.complete()
+    passed = result == 0 and complete
+    print("runtime-conformance: " + ("PASS" if passed else "FAIL"))
+    return int(result) if result else (0 if passed else 1)
 
 
 if __name__ == "__main__":
