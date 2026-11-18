@@ -45,38 +45,160 @@ def _perform(client, kind, *, binding, message, now):
         connection.close()
 
 
+class _RetirementErrors:
+    """Defer errors until all owned resources have been retired."""
+
+    def __init__(self, cancelled=None, *, prefer_cancellation=False):
+        self.first = None
+        self.cancelled = cancelled
+        self.prefer_cancellation = prefer_cancellation
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, _kind, error, _traceback):
+        if error is None:
+            return False
+        if self.prefer_cancellation and self.cancelled is None and not isinstance(error, Exception):
+            self.cancelled = error
+        if self.first is None:
+            self.first = error
+        return True
+
+    def raise_first(self):
+        if self.first is not None:
+            raise self.first
+
+
 def _reap(pid):
     # Kill before a blocking reap, even after success. No probe I/O may remain
     # active when the caller starts lifecycle cleanup. Repeated cancellation
     # cannot leave this owned child behind.
-    interrupted = None
+    errors = _RetirementErrors()
     while True:
-        try:
-            if os.waitpid(pid, os.WNOHANG)[0] == 0:
-                try:
-                    os.kill(pid, signal.SIGKILL)
-                except ProcessLookupError:
-                    pass
-                os.waitpid(pid, 0)
+        with errors:
+            try:
+                if os.waitpid(pid, os.WNOHANG)[0] == 0:
+                    try:
+                        os.kill(pid, signal.SIGKILL)
+                    except ProcessLookupError:
+                        pass
+                    os.waitpid(pid, 0)
+            except ChildProcessError:
+                pass
             break
-        except ChildProcessError:
-            break
-        except BaseException as error:
-            interrupted = error if interrupted is None else interrupted
-    if interrupted is not None:
-        raise interrupted
+    errors.raise_first()
 
 
 def _close(pipe):
     """FileIO owns its descriptor across interrupted close; never close a reused fd."""
-    interrupted = None
+    errors = _RetirementErrors()
     while not pipe.closed:
-        try:
+        with errors:
             pipe.close()
-        except BaseException as error:
-            interrupted = error if interrupted is None else interrupted
-    if interrupted is not None:
-        raise interrupted
+    errors.raise_first()
+
+
+class _SignalDeferral:
+    def __init__(self):
+        self.handlers = {}
+        self.pending = {}
+
+    def defer(self, signum, frame):
+        self.pending.setdefault(signum, frame)
+
+    def install(self):
+        for signum in signal.valid_signals():
+            handler = signal.getsignal(signum)
+            if callable(handler):
+                self.handlers[signum] = handler
+                signal.signal(signum, self.defer)
+
+    def restore(self):
+        remaining = dict(self.handlers)
+        errors = _RetirementErrors()
+        while remaining:
+            with errors:
+                for signum, handler in tuple(remaining.items()):
+                    signal.signal(signum, handler)
+                    remaining.pop(signum)
+        errors.raise_first()
+
+    def replay(self):
+        for signum, frame in tuple(self.pending.items()):
+            self.pending.pop(signum, None)
+            self.handlers[signum](signum, frame)
+
+
+def _probe_child(reader, writer, signals, libc, parent, perform):
+    completed = False
+    try:
+        _close(reader)
+        require(libc.prctl(1, signal.SIGKILL, 0, 0, 0) == 0 and os.getppid() == parent, ERROR)
+        signals.restore()
+        signals.replay()
+        payload = perform()
+        os.write(writer.fileno(), b"\x01" + payload)
+        completed = True
+    finally:
+        # This child has one terminal path, including when a signal interrupts
+        # the operation or the parent has already retired the pipe.
+        try:
+            if not completed:
+                os.write(writer.fileno(), b"\x00")
+        except OSError:
+            pass
+        finally:
+            os._exit(0)
+
+
+def _read_reply(reader, signals, decision, kind):
+    raw = bytearray()
+    with selectors.DefaultSelector() as selector:
+        selector.register(reader, selectors.EVENT_READ)
+        while True:
+            signals.replay()
+            ready = selector.select(min(.1, decision.remaining()))
+            signals.replay()
+            if not ready:
+                continue
+            part = os.read(reader.fileno(), 66 - len(raw))
+            if not part:
+                break
+            raw.extend(part)
+            require(len(raw) <= 65, ERROR)
+    # EOF includes source-only tracing flush. It never renews the Decision.
+    signals.replay()
+    decision.now()
+    require(raw == b"\x01" if kind != "sign" else len(raw) == 65 and raw[:1] == b"\x01", ERROR)
+    return bytes(raw[1:])
+
+
+def _retire_exchange(raw_fds, reader, writer, pid, signals, cancelled):
+    errors = _RetirementErrors(cancelled, prefer_cancellation=True)
+    # Callable handlers stay deferred between cleanup actions, even while a
+    # prior cancellation is waiting to propagate.
+    try:
+        if raw_fds is not None:
+            for pipe, fd in ((reader, raw_fds[0]), (writer, raw_fds[1])):
+                with errors:
+                    if pipe is None:
+                        os.close(fd)
+                    else:
+                        _close(pipe)
+        if pid not in (None, 0):
+            with errors:
+                _reap(pid)
+    finally:
+        try:
+            with errors:
+                signals.restore()
+        finally:
+            if errors.cancelled is not None:
+                raise errors.cancelled
+            signals.replay()
+            if errors.first is not None:
+                raise BindingError(ERROR) from None
 
 
 def exchange(client, kind, *, binding, message, now, decision):
@@ -88,106 +210,28 @@ def exchange(client, kind, *, binding, message, now, decision):
     libc = ctypes.CDLL(None, use_errno=True)
     parent = os.getpid()
     raw_fds, reader, writer, pid, cancelled = None, None, None, None, None
-    handlers, pending = {}, {}
-    def defer(signum, frame):
-        pending.setdefault(signum, frame)
-    def restore():
-        remaining = dict(handlers)
-        interrupted = None
-        while remaining:
-            try:
-                for signum, handler in tuple(remaining.items()):
-                    signal.signal(signum, handler)
-                    remaining.pop(signum)
-            except BaseException as error:
-                interrupted = error if interrupted is None else interrupted
-        if interrupted is not None:
-            raise interrupted
-    def replay():
-        for signum, frame in tuple(pending.items()):
-            pending.pop(signum, None)
-            handlers[signum](signum, frame)
-    def child():
-        try:
-            _close(reader)
-            require(libc.prctl(1, signal.SIGKILL, 0, 0, 0) == 0 and os.getppid() == parent, ERROR)
-            restore()
-            replay()
-            payload = _perform(client, kind, binding=binding, message=message, now=now)
-            os.write(writer.fileno(), b"\x01" + payload)
-        except BaseException:
-            try:
-                os.write(writer.fileno(), b"\x00")
-            except OSError:
-                pass
-        finally:
-            os._exit(0)
+    signals = _SignalDeferral()
+
+    def perform():
+        return _perform(client, kind, binding=binding, message=message, now=now)
+
     try:
-        # Python handlers can run on main after a signal reaches another thread.
-        # Defer them throughout owned I/O/retirement, sampling at most every
-        # 100ms during waits. At most one frame per signal is retained. Restore
-        # only after resources are gone. FileIO retains ownership through close.
-        for signum in signal.valid_signals():
-            handler = signal.getsignal(signum)
-            if callable(handler):
-                handlers[signum] = handler
-                signal.signal(signum, defer)
+        # A signal delivered to another thread can still run its Python
+        # handler on main. Defer it while installing and owning resources.
+        signals.install()
         raw_fds = os.pipe2(os.O_CLOEXEC)
         reader = os.fdopen(raw_fds[0], "rb", buffering=0)
         writer = os.fdopen(raw_fds[1], "wb", buffering=0)
         pid = os.fork()
         if pid == 0:
-            child()
-        replay()
+            _probe_child(reader, writer, signals, libc, parent, perform)
+        signals.replay()
         _close(writer)
-        raw = bytearray()
-        with selectors.DefaultSelector() as selector:
-            selector.register(reader, selectors.EVENT_READ)
-            while True:
-                replay()
-                ready = selector.select(min(.1, decision.remaining()))
-                replay()
-                if not ready:
-                    continue
-                part = os.read(reader.fileno(), 66 - len(raw))
-                if not part:
-                    break
-                raw.extend(part)
-                require(len(raw) <= 65, ERROR)
-        # EOF includes source-only tracing flush. It never renews the Decision.
-        replay()
-        decision.now()
-        require(raw == b"\x01" if kind != "sign" else len(raw) == 65 and raw[:1] == b"\x01", ERROR)
-        return bytes(raw[1:])
+        return _read_reply(reader, signals, decision, kind)
     except BaseException as error:
         if not isinstance(error, Exception):
             cancelled = error
             raise
         raise BindingError(ERROR) from None
     finally:
-        cleanup_error = None
-        def finish(action):
-            nonlocal cancelled, cleanup_error
-            try:
-                action()
-            except BaseException as error:
-                if cancelled is None and not isinstance(error, Exception):
-                    cancelled = error
-                cleanup_error = error if cleanup_error is None else cleanup_error
-        # Callable signal handlers remain deferred between cleanup actions too.
-        # No asynchronous user cancellation can jump past owned child retirement.
-        try:
-            if raw_fds is not None:
-                for pipe, fd in ((reader, raw_fds[0]), (writer, raw_fds[1])):
-                    finish(lambda pipe=pipe, fd=fd: _close(pipe) if pipe is not None else os.close(fd))
-            if pid not in (None, 0):
-                finish(lambda: _reap(pid))
-        finally:
-            try:
-                finish(restore)
-            finally:
-                if cancelled is not None:
-                    raise cancelled
-                replay()
-                if cleanup_error is not None:
-                    raise BindingError(ERROR) from None
+        _retire_exchange(raw_fds, reader, writer, pid, signals, cancelled)
