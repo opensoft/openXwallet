@@ -17,17 +17,25 @@ EDGES={"reserved":{"registered","indeterminate","refused"},"registered":{"start-
        "start-consumed":{"running","indeterminate","refused"},"running":{"stopped","indeterminate"}}
 
 
-def store_identity(directory):
-    path=Path(directory).absolute();require(path.resolve()==path,ERROR)
+def _main_identity(path):
     a,b=path.lstat(),(path/DB).lstat()
     require(stat.S_ISDIR(a.st_mode) and stat.S_ISREG(b.st_mode) and b.st_nlink==1
             and all(x.st_uid==os.geteuid() and not x.st_mode&0o077 for x in (a,b)),ERROR)
-    for suffix in ("-journal","-wal","-shm"):
-        p=path/(DB+suffix)
-        if p.exists() or p.is_symlink():
-            x=p.lstat();require(suffix=="-journal" and stat.S_ISREG(x.st_mode) and x.st_nlink==1
-                               and x.st_uid==os.geteuid() and not x.st_mode&0o077,ERROR)
     return a.st_dev,a.st_ino,b.st_dev,b.st_ino
+
+
+def store_identity(directory):
+    path=Path(directory).absolute();require(path.resolve()==path,ERROR)
+    identity=_main_identity(path)
+    for suffix in ("-journal","-wal","-shm"):
+        try:
+            x=(path/(DB+suffix)).lstat()
+        except FileNotFoundError:
+            continue  # A concurrent SQLite DELETE-mode commit can retire its journal.
+        require(suffix=="-journal" and stat.S_ISREG(x.st_mode) and x.st_nlink==1
+                and x.st_uid==os.geteuid() and not x.st_mode&0o077,ERROR)
+    require(_main_identity(path)==identity,ERROR)
+    return identity
 
 
 class StageStore:
