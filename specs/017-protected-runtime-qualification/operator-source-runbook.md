@@ -348,7 +348,7 @@ passes ten pin plus two actual lifecycle compatibility controls. Full 2811/nativ
 complete qualification, independent cleanup, CI/Sonar and owner acceptance remain
 required. This source runbook grants no setup or protected dispatch.
 
-## Current main #88 dependency source checkpoint
+## Historical main #88 dependency source checkpoint
 
 Use the [current source record](hosting-conformance-implementation.md#t012v-main-88-source-checkpoint) and PR #78's actual final-head receipt.
 Candidate `e92a7728810b51d5537a39b0c12d998f1818baf8` consumes neutral root 36189804/code 6fb72ed4/spec 878293fb;
@@ -356,3 +356,11 @@ explicit qualification owner bb0e9dae remains separate. All 2811/2389 identities
 are retained, and ten pin/two real lifecycle controls pass. Fresh complete source
 qualification/cleanup/CI and owner acceptance remain required; no setup/dispatch
 permission follows.
+
+## Current main #89 source checkpoint
+
+Candidate `bf87eaefc74e876431d7a7c0e09b8802cb126e77` consumes the published typed predicates/root repin.
+Use the [current source record](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint) and PR #78's actual final-head receipt.
+Collection 2811/2389, nineteen recipe hash/syntax checks and ten pin/two real
+lifecycle controls pass; complete qualification/review/cleanup/CI/Sonar and owner
+ratification remain required. This grants no setup, dispatch or live acceptance.

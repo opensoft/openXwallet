@@ -394,18 +394,23 @@ Document preparation uses `python3 scripts/validate-openspec-cli-pin.py --all` i
 its default pinned form plus relative-link/scope checks. It creates no new runtime
 case count or live qualification. T012U/V/T001/T013-T015 remain separate.
 
-Current T012V source follows the [main #85/#86 checkpoint](hosting-conformance-implementation.md#t012v-main-88-source-checkpoint);
+Current T012V source follows the [main #85/#86 checkpoint](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint);
 its fresh final-head qualification/cleanup/CI and owner source ratification remain
 PR #78 gates. Earlier receipts are historical. This source record selects no
 operational accepted_commit and grants no setup or protected dispatch.
 
-Current T012V source follows the [main #87 checkpoint](hosting-conformance-implementation.md#t012v-main-88-source-checkpoint). Its full 2811/
+Current T012V source follows the [main #87 checkpoint](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint). Its full 2811/
 native 2389 collection retains all prior identities/order; the native fingerprints
 remain exact. Fresh complete qualification/cleanup/CI/Sonar and actual owner source
 acceptance remain separate from ungranted T001/T013-T015/setup/dispatch.
 
-Current T012V dependency source follows the [main #88 checkpoint](hosting-conformance-implementation.md#t012v-main-88-source-checkpoint).
+Current T012V dependency source follows the [main #88 checkpoint](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint).
 It preserves the full 2811/native 2389 corpus and separates new neutral/provider
 pins from the explicitly selected owning fixture source. Complete fresh
 qualification/cleanup/CI/Sonar and actual owner ratification remain required;
 T001/T013-T015/setup/dispatch and live/human/domain acceptance stay ungranted.
+
+Current T012V source follows the [main #89 checkpoint](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint). It consumes
+reviewed installed predicates and exact root/code/spec/owning-source identities;
+collection 2811/2389 remains. Complete fresh qualification/review/cleanup/CI/Sonar
+and actual owner ratification remain separate from ungranted operational stages.

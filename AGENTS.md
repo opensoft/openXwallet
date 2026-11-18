@@ -563,7 +563,7 @@ Ten pin and two actual qualification/lifecycle compatibility controls pass. Pres
 373 non-document inputs through final ten-document checkpoint review. Fresh
 complete full/native/cleanup/CI/Sonar and owner ratification remain PR #78 gates.
 
-### Current T012V accepted-main #88 provider integration
+### Historical T012V accepted-main #88 provider integration
 
 Accepted main 6cc8c4e40644692dfdf47cda520ae5076eec6f6a refreshes the coherent
 neutral root/code/spec and admitted OpenSpec/shape provider records. Source
@@ -580,3 +580,13 @@ ten-document checkpoint review; 373 other inputs must remain byte-identical.
 Collection 2811/2389 retains IDs/order/fingerprints, and ten pin/two real lifecycle
 controls pass. Fresh complete qualification/cleanup/CI/Sonar and owner ratification
 remain PR #78 gates. No source acceptance or operational grant is inferred.
+
+### Current T012V accepted-main #89 source
+
+Code candidate `bf87eaefc74e876431d7a7c0e09b8802cb126e77` consumes the published typed predicates and
+wallet root 38f9d0cb, with code 6fb72ed4/spec 878293fb and explicit owner bb0e9dae
+unchanged. Nineteen recipe file hashes/Bash syntax and ten pin/two actual lifecycle
+controls pass; collection 2811/2389 retains all prior IDs/order/native fingerprints.
+Freeze 384 inputs, with 374 non-document bytes preserved through final checkpoints.
+Fresh review/full/native/cleanup/CI/Sonar and owner ratification remain gates.
+Setup/dispatch unauthorized, feedback deferred and blocked writes unreplayed.

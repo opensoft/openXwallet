@@ -911,3 +911,38 @@ staging16/finalization12 and GitHub26/28/13 remain; ordinary source CI retains
 ownership, cancellation/privacy and original-registration cleanup stay unchanged.
 T012V stays unchecked; T001/T013-T015/setup/dispatch/live/human/domain acceptance
 stay ungranted. Feedback deferred; neither blocked write replayed.
+
+
+## T012V main 89 source checkpoint
+
+Current code candidate `bf87eaefc74e876431d7a7c0e09b8802cb126e77` integrates accepted main
+`b1ebe8c591d222cee0f795bece9aa21295a1b78e`. It consumes the published typed
+predicate recipe and wallet root `38f9d0cb6481b970384ac1227ae4d89152b173a9`; code
+`6fb72ed4c820d927775ccb698c5cfbd8adff71d7` and spec `878293fb3ed84073dd7e285f56f4fee62413297e`
+remain the already admitted versions. Nineteen adapter/neutral installed files
+match their recorded after-hashes and pass Bash syntax. Published patch provenance
+preserves installed hook versions and literal/raw-integer comparison semantics.
+No shared installed file is manually rewritten. Qualification owner remains
+`bb0e9dae89a771b05f6c235d0a77237288b95c85`, matching CI; the eight contract
+digests, CLI package/lock and 214/2231 provider node identities remain unchanged.
+
+Actual collection remains 2,811 full parents/2,389 native cases, with all previous
+IDs/order and native fingerprints retained. Ten pin and two actual connected
+qualification-positive/original-private-cap-refusal cleanup controls pass. The
+current matrix summary is corrected to 2,811; no test or case was changed by that
+QA correction. These focused receipts do not replace complete qualification.
+
+Final checkpoint reconciliation may change only the ten Markdown inputs; all
+374 other regular inputs must retain this code candidate's bytes. Actual final
+source review, ordered full gates, mandatory native, ten-case preservation/cleanup
+and exact-head hosted CI/original evaluated Sonar belong on PR #78 after execution.
+No complete current-head success or owner acceptance is predeclared. Earlier
+complete and intentionally retired attempts remain historical, not results for
+this exact dependency and installed-tooling combination.
+
+One original Decision, runtime 10s/private39, staging16/finalization12 and
+GitHub26/28/13 remain. Ordinary sequential source CI retains 90 minutes, traced
+jobs 45 minutes; no waiver, suppression, threshold or coverage exclusion changes.
+T012V stays unchecked pending actual owner source ratification. T001/T013-T015,
+setup/dispatch, live OIDC/provider minting and deployed/human/domain acceptance
+stay ungranted. Feedback deferred; neither blocked write replayed.

@@ -2,7 +2,7 @@
 
 **Branch**: `017-protected-runtime-qualification` | **Date**: 2026-11-12
 **Spec**: [spec.md](spec.md)
-**State**: T012V accepted-main #88 dependency candidate; fresh final-head review/full/native/cleanup/hosted CI/Sonar and owner source ratification remain required. Prior receipts are historical; operational authority remains ungranted.
+**State**: T012V accepted-main #89 source candidate; current matrix summary 2811/native 2389 is corrected. Fresh complete final-head review/qualification/cleanup/CI/Sonar and owner ratification remain required; operational authority ungranted.
 
 Bootstrap amendment `fix-protected-runtime-dispatch-bootstrap` was source
 accepted and landed in factory #1311 / adapter #60. The static dispatch selection
@@ -394,9 +394,15 @@ the bounded plan in hosting-conformance-implementation.md. Earlier source and
 partial attempt receipts are historical. Fresh final-head source qualification
 and owner ratification remain required, with every operational stage ungranted.
 
-### Current main #88 source checkpoint
+### Historical main #88 source checkpoint
 
 The [current source record](hosting-conformance-implementation.md#t012v-main-88-source-checkpoint) binds candidate `e92a7728810b51d5537a39b0c12d998f1818baf8` to
 exact neutral/provider/qualification-source identities, actual 2811/2389 collection
 and 12 focused controls. Complete exact-head qualification and owner ratification
 remain distinct PR #78 gates.
+
+### Current main #89 source checkpoint
+
+The [current source record](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint) binds candidate `bf87eaefc74e876431d7a7c0e09b8802cb126e77` and
+its actual pin/recipe/collection/compatibility checks. Full/native/cleanup/CI/Sonar
+and owner source acceptance remain separate final-head gates.

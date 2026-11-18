@@ -2969,10 +2969,18 @@ controls and both actual connected positive/refusal-cleanup controls pass. The
 [current source record](hosting-conformance-implementation.md#t012v-main-87-source-checkpoint) requires fresh complete final-head review,
 full/native/cleanup/hosted CI and Sonar; older receipts remain historical.
 
-## Current main #88 dependency checkpoint
+## Historical main #88 dependency checkpoint
 
 Code candidate `e92a7728810b51d5537a39b0c12d998f1818baf8` consumes the coherent accepted neutral/OpenSpec/
 shape provider pins. Collection 2811/2389 and all prior identities/order remain;
 ten pin/two real lifecycle compatibility controls pass. The [current source
 record](hosting-conformance-implementation.md#t012v-main-88-source-checkpoint) requires fresh complete final-head review/full/native/cleanup/
 CI/Sonar and actual owner acceptance. Prior receipts remain historical.
+
+## Current main #89 source checkpoint
+
+Candidate `bf87eaefc74e876431d7a7c0e09b8802cb126e77` consumes the published typed predicates/root repin.
+Use the [current source record](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint) and PR #78's actual final-head receipt.
+Collection 2811/2389, nineteen recipe hash/syntax checks and ten pin/two real
+lifecycle controls pass; complete qualification/review/cleanup/CI/Sonar and owner
+ratification remain required. This grants no setup, dispatch or live acceptance.
