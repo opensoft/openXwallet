@@ -1,6 +1,6 @@
 # Wallet Sonar backlog acceptance
 
-Status: in progress under [issue #82](https://github.com/opensoft/openXwallet/issues/82), separately from completed #73.
+Status: verified on published main for [issue #82](https://github.com/opensoft/openXwallet/issues/82), separately from completed #73.
 
 The [frozen 1,505-key inventory](backlog-before.jsonl) comes from main 835f92c5890ec03eac1e72f3c34c5b95f0504093 and analysis d040c7d6-3dbb-4fc4-a182-68d0c7daef58. Its SHA-256 is 4e231282a251efc8c2203fdf38e3815a0f7c641713de9e8ec113af5f557c4bbe.
 
@@ -45,3 +45,34 @@ is removed or changed by this correction. Final-head review, renewed CI and
 published-main acceptance remain required; the earlier reviews apply to 4ad4277.
 
 Focused measurement through the unchanged coverage configuration passes both existing option cases and records both changed refusal lines (38 and 39) as executed. All 2,434 ordered test IDs and every native contract/runner/workload-lock byte still match the accepted baseline; all six static gates pass. This focused evidence is not a substitute for renewed hosted qualification or final-head independent review.
+
+
+## Published main acceptance
+
+The complete wallet assembly passed all five jobs on published main `b1ebe8c591d222cee0f795bece9aa21295a1b78e`.
+The run passed 2,444 Python tests and 11 subtests, 2,022 native cases, both
+214-case OpenSpec suites and all 2,231 openRepoShape tests. The mandatory
+native and provider suites reported zero skips. Both coverage partitions
+passed.
+Sonar analysis `41d6df97-f3af-4a2c-aba4-91de756d6705` evaluated all six gate conditions.
+New-code coverage was 84.0% and duplication was
+0.0%. The August baseline, assigned
+profiles, scanner settings and gate thresholds were verified against the
+retained receipts. [Hosted qualification](https://github.com/opensoft/openXwallet/actions/runs/44212046856) · [Sonar dashboard](https://sonarcloud.io/dashboard?id=opensoft_openXwallet&branch=main)
+
+The scan closed 1,500 of the 1,505 frozen keys as FIXED. The other 5
+remain visible with reviewed source evidence in the [disposition ledger](backlog-triage.json).
+The 26 repairs verified for issue #73 all remain closed and fixed.
+
+For the 612 additional shell findings captured during the
+batches, 602 closed as FIXED. The scan still reports
+10 reviewed strict decimal boundaries. The receipt records each of
+these with its exact source and rationale. The installed copies follow the
+published shared source. [Canonical recipe](https://github.com/opensoft/openBenches/pull/331) ·
+[Installed wallet root](https://github.com/opensoft/openWallet/pull/20)
+
+The [final verification receipt](backlog-after.json) binds the gate, batch counts,
+historical analysis availability and the inventory and ledger hashes. The
+original inventory and earlier diagnostics remain in place. All nine analyses
+that were live at the start of this task remained available. The issue #73
+evidence retains the earlier archived analysis.

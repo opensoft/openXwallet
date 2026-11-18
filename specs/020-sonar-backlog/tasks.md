@@ -1,18 +1,20 @@
 # Tasks
 
 - [x] T001 [DIFFICULT] Freeze all 1,505 original keys, accepted main and preservation baseline. files: docs/quality/backlog-before.jsonl, specs/020-sonar-backlog/spec.md; verify: unique-key count 1505 and exact baseline revision/analysis against the retained API capture.
-- [ ] T002 [DIFFICULT] Complete per-key owner/actionability/priority classification and planned batch assignment. files: docs/quality/backlog-acceptance.md, docs/quality/backlog-triage.json; verify: disjoint exhaustive disposition coverage of all frozen keys with evidence for each non-actionable decision.
-- [ ] T003 [DIFFICULT] Repair adapter refusal/control-flow and test precision without changing predicates or case identities. files: scripts/workload_factory_binding_runtime/hosted/_launch_exec.py, tests/runtime_binding; verify: python3 -m pytest tests/runtime_binding/test_hosted_launch.py -q and frozen full/native collection equivalence in the required test environment.
-- [ ] T004 [DIFFICULT] Qualify shared shape owner fixes and standard consumer updates. files: owning openRepoShape feature and declared shape-pin copies; verify: owning provider suite, update-shape check and unchanged consumer pin/manifest gates.
-- [ ] T005 [DIFFICULT] Qualify shared OpenSpec provider fixes and authenticated neutral/adapter consumers. files: owning provider feature, openWallet/spec/scripts and coherent pins; verify: all existing provider conformance selections in both contexts plus actual CLI corpus with zero omitted assertions.
-- [ ] T006 [DIFFICULT] Qualify neutral implementation repairs and coherent published legs/root. files: owning neutral feature worktrees and adapter neutral pin; verify: each leg's existing gates, root pin/manifest gates and retained contract artifact digests.
-- [ ] T007 [DIFFICULT] Repair supported shell/template cohorts at owners and actual consumer copies. files: declared .specify Bash/template cohorts and linked provider feature; verify: existing canonical provider suites, syntax checks, predicate/status/quoting compatibility evidence and actual consumer conformance.
-- [ ] T008 [DIFFICULT] Complete remaining adapter clarity repairs and reviewed integration. files: remaining triaged adapter paths and coherent dependency records; verify: unchanged full/native/coverage/provider/shape pipelines and no newly introduced unresolved findings.
-- [ ] T009 [DIFFICULT] Verify every actionable original key, all 26 previous repairs and unchanged six-condition gate on published main. files: docs/quality/backlog-acceptance.md and final evidence receipt; verify: exact-main Sonar/GitHub readback, exhaustive key accounting and preservation comparison.
-- [ ] T010 [SIMPLE] Reconcile source-qualified evidence and close issue #82 after the required checks. files: README.md, docs/quality/backlog-acceptance.md, specs/020-sonar-backlog; verify: documentation links, immutable hashes, complete disposition accounting and actual final-main acceptance.
+- [x] T002 [DIFFICULT] Complete per-key owner/actionability/priority classification and planned batch assignment. files: docs/quality/backlog-acceptance.md, docs/quality/backlog-triage.json; verify: disjoint exhaustive disposition coverage of all frozen keys with evidence for each non-actionable decision.
+- [x] T003 [DIFFICULT] Repair adapter refusal/control-flow and test precision without changing predicates or case identities. files: scripts/workload_factory_binding_runtime/hosted/_launch_exec.py, tests/runtime_binding; verify: python3 -m pytest tests/runtime_binding/test_hosted_launch.py -q and frozen full/native collection equivalence in the required test environment.
+- [x] T004 [DIFFICULT] Qualify shared shape owner fixes and standard consumer updates. files: owning openRepoShape feature and declared shape-pin copies; verify: owning provider suite, update-shape check and unchanged consumer pin/manifest gates.
+- [x] T005 [DIFFICULT] Qualify shared OpenSpec provider fixes and authenticated neutral/adapter consumers. files: owning provider feature, openWallet/spec/scripts and coherent pins; verify: all existing provider conformance selections in both contexts plus actual CLI corpus with zero omitted assertions.
+- [x] T006 [DIFFICULT] Qualify neutral implementation repairs and coherent published legs/root. files: owning neutral feature worktrees and adapter neutral pin; verify: each leg's existing gates, root pin/manifest gates and retained contract artifact digests.
+- [x] T007 [DIFFICULT] Repair supported shell/template cohorts at owners and actual consumer copies. files: declared .specify Bash/template cohorts and linked provider feature; verify: existing canonical provider suites, syntax checks, predicate/status/quoting compatibility evidence and actual consumer conformance.
+- [x] T008 [DIFFICULT] Complete remaining adapter clarity repairs and reviewed integration. files: remaining triaged adapter paths and coherent dependency records; verify: unchanged full/native/coverage/provider/shape pipelines and no newly introduced unresolved findings.
+- [x] T009 [DIFFICULT] Verify every actionable original key, all 26 previous repairs and unchanged six-condition gate on published main. files: docs/quality/backlog-acceptance.md and final evidence receipt; verify: exact-main Sonar/GitHub readback, exhaustive key accounting and preservation comparison.
+- [x] T010 [SIMPLE] Reconcile source-qualified evidence and close issue #82 after the required checks. files: README.md, docs/quality/backlog-acceptance.md, specs/020-sonar-backlog; verify: documentation links, immutable hashes, complete disposition accounting and actual final-main acceptance.
 
-- [ ] [O] Qualify bounded installed-shell repairs and coherent neutral-provider pins; verify original keys on published main.
+- [x] [O] Qualify bounded installed-shell repairs and coherent neutral-provider pins; verify original keys on published main.
 
-- [ ] [O] Qualify the34 source-style repairs and six named observation assertions; retain clock/cap/native inventories and verify live finding keys.
+- [x] [O] Qualify the34 source-style repairs and six named observation assertions; retain clock/cap/native inventories and verify live finding keys.
 
-- [ ] [O] Qualify the guard and lifecycle refactors with the existing native, source coverage and Sonar checks.
+- [x] [O] Qualify the guard and lifecycle refactors with the existing native, source coverage and Sonar checks.
+
+The [published main receipt](../../docs/quality/backlog-after.json) records the final evidence for these tasks.
