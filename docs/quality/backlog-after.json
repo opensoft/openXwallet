@@ -1,0 +1,232 @@
+{
+  "publishedMain": "b1ebe8c591d222cee0f795bece9aa21295a1b78e",
+  "workflow": "https://github.com/opensoft/openXwallet/actions/runs/44212046856",
+  "analysis": "41d6df97-f3af-4a2c-aba4-91de756d6705",
+  "qualityGate": {
+    "status": "OK",
+    "conditions": [
+      {
+        "status": "OK",
+        "metricKey": "new_reliability_rating",
+        "comparator": "GT",
+        "periodIndex": 1,
+        "errorThreshold": "1",
+        "actualValue": "1"
+      },
+      {
+        "status": "OK",
+        "metricKey": "new_security_rating",
+        "comparator": "GT",
+        "periodIndex": 1,
+        "errorThreshold": "1",
+        "actualValue": "1"
+      },
+      {
+        "status": "OK",
+        "metricKey": "new_maintainability_rating",
+        "comparator": "GT",
+        "periodIndex": 1,
+        "errorThreshold": "1",
+        "actualValue": "1"
+      },
+      {
+        "status": "OK",
+        "metricKey": "new_coverage",
+        "comparator": "LT",
+        "periodIndex": 1,
+        "errorThreshold": "80",
+        "actualValue": "84.0"
+      },
+      {
+        "status": "OK",
+        "metricKey": "new_duplicated_lines_density",
+        "comparator": "GT",
+        "periodIndex": 1,
+        "errorThreshold": "3",
+        "actualValue": "0.0"
+      },
+      {
+        "status": "OK",
+        "metricKey": "new_security_hotspots_reviewed",
+        "comparator": "LT",
+        "periodIndex": 1,
+        "errorThreshold": "100",
+        "actualValue": "100.0"
+      }
+    ],
+    "periods": [
+      {
+        "index": 1,
+        "mode": "manual_baseline",
+        "date": "2026-08-27T07:16:42-04:00"
+      }
+    ],
+    "ignoredConditions": false
+  },
+  "frozenInventorySha256": "4e231282a251efc8c2203fdf38e3815a0f7c641713de9e8ec113af5f557c4bbe",
+  "triageLedgerSha256": "d37eb31d16c682ea122f56636d4944dc2d9bfff8b600e71ef137354c26a0e70b",
+  "selectedBaseline": "d434a8d1-6d41-4cfe-9413-e1868fc1c18d",
+  "originalKeyDispositions": {
+    "naturallyFixed": 1500,
+    "sourceRangeNonActionable": 5
+  },
+  "batches": {
+    "adapter-refusal-and-assertions": {
+      "naturallyFixed": 154
+    },
+    "installed-shell-details": {
+      "naturallyFixed": 105,
+      "sourceRangeNonActionable": 5
+    },
+    "installed-shell-predicates": {
+      "naturallyFixed": 1101
+    },
+    "neutral-code": {
+      "naturallyFixed": 37
+    },
+    "runtime-complexity": {
+      "naturallyFixed": 26
+    },
+    "runtime-style": {
+      "naturallyFixed": 40
+    },
+    "shape-provider": {
+      "naturallyFixed": 16
+    },
+    "shared-cli": {
+      "naturallyFixed": 21
+    }
+  },
+  "priorRepairedKeysStillFixed": 26,
+  "additionalShellKeys": {
+    "revision": "b1ebe8c591d222cee0f795bece9aa21295a1b78e",
+    "naturallyFixed": 602,
+    "strictBoundaryKeysStillOpen": 10,
+    "analysis": "41d6df97-f3af-4a2c-aba4-91de756d6705",
+    "capturedKeys": 612
+  },
+  "additionalReviewedBoundaries": [
+    {
+      "key": "AaHsJeyB8nodp6sOR-E4",
+      "status": "OPEN",
+      "rule": "shell:S7688",
+      "path": "openWallet/.specify/extensions/git/scripts/bash/get-last-worktree.sh",
+      "line": 158,
+      "column": 11,
+      "command": "test \"$mtime\" -gt \"${REGISTERED_WORKTREE_MTIMES[$index]}\"",
+      "decision": "Retain strict signed-integer parsing and its error behavior at the stat output boundary."
+    },
+    {
+      "key": "AaHsJeyN8nodp6sOR-FX",
+      "status": "OPEN",
+      "rule": "shell:S7688",
+      "path": "openWallet/.specify/extensions/git/scripts/bash/git-common.sh",
+      "line": 223,
+      "column": 11,
+      "command": "test \"$mtime\" -gt \"${SHAPE_FEATURE_MTIMES[$index]}\"",
+      "decision": "Retain strict signed-integer parsing and its error behavior at the stat output boundary."
+    },
+    {
+      "key": "AaHsJeyb8nodp6sOR-GJ",
+      "status": "OPEN",
+      "rule": "shell:S7688",
+      "path": "openWallet/.specify/extensions/git/scripts/bash/resume.sh",
+      "line": 260,
+      "column": 4,
+      "command": "test \"$depth\" -gt 0",
+      "decision": "The saved decimal token can contain leading zeroes and exceed the signed integer range."
+    },
+    {
+      "key": "AaHsJeyb8nodp6sOR-GL",
+      "status": "OPEN",
+      "rule": "shell:S7688",
+      "path": "openWallet/.specify/extensions/git/scripts/bash/resume.sh",
+      "line": 265,
+      "column": 10,
+      "command": "test \"$step\" -lt \"$depth\"",
+      "decision": "The saved decimal token can contain leading zeroes and exceed the signed integer range."
+    },
+    {
+      "key": "AaHsJeyb8nodp6sOR-Gs",
+      "status": "OPEN",
+      "rule": "shell:S7688",
+      "path": "openWallet/.specify/extensions/git/scripts/bash/resume.sh",
+      "line": 732,
+      "column": 11,
+      "command": "test \"$depth\" -gt 0",
+      "decision": "The saved decimal token can contain leading zeroes and exceed the signed integer range."
+    },
+    {
+      "key": "AaHsJeyb8nodp6sOR-Gu",
+      "status": "OPEN",
+      "rule": "shell:S7688",
+      "path": "openWallet/.specify/extensions/git/scripts/bash/resume.sh",
+      "line": 739,
+      "column": 22,
+      "command": "test \"$step\" -lt \"$depth\"",
+      "decision": "The saved decimal token can contain leading zeroes and exceed the signed integer range."
+    },
+    {
+      "key": "AaHsJeyb8nodp6sOR-Gw",
+      "status": "OPEN",
+      "rule": "shell:S7688",
+      "path": "openWallet/.specify/extensions/git/scripts/bash/resume.sh",
+      "line": 752,
+      "column": 20,
+      "command": "test \"$depth\" -eq 1",
+      "decision": "The saved decimal token can contain leading zeroes and exceed the signed integer range."
+    },
+    {
+      "key": "AaHsJexm8nodp6sOR-DG",
+      "status": "OPEN",
+      "rule": "shell:S7688",
+      "path": "openWallet/.specify/shell/select-worktree.sh",
+      "line": 143,
+      "column": 11,
+      "command": "test \"$mtime\" -gt \"${REGISTERED_WORKTREE_MTIMES[$index]}\"",
+      "decision": "Retain strict signed-integer parsing and its error behavior at the stat output boundary."
+    },
+    {
+      "key": "AaHsJexm8nodp6sOR-Df",
+      "status": "OPEN",
+      "rule": "shell:S7688",
+      "path": "openWallet/.specify/shell/select-worktree.sh",
+      "line": 473,
+      "column": 41,
+      "command": "test \"$selection\" -ge 1",
+      "decision": "Digits entered by the user must retain the existing decimal bounds check and signed-range behavior."
+    },
+    {
+      "key": "AaHsJexm8nodp6sOR-Dg",
+      "status": "OPEN",
+      "rule": "shell:S7688",
+      "path": "openWallet/.specify/shell/select-worktree.sh",
+      "line": 473,
+      "column": 68,
+      "command": "test \"$selection\" -le \"${#PATHS[@]}\"",
+      "decision": "Digits entered by the user must retain the existing decimal bounds check and signed-range behavior."
+    }
+  ],
+  "openBenchesTypedPredicates": {
+    "main": "79b8d3ab319459b3ce34175a7ceb39b3847504ff",
+    "candidate": "4810ce67f11a9cc117eff3e9564b5c942c8e82cc",
+    "tree": "4310a22fc1b0dae3b1e9edd5f465c218df0c8ebb"
+  },
+  "openWalletTypedPredicates": {
+    "main": "38f9d0cb6481b970384ac1227ae4d89152b173a9",
+    "candidate": "087453c4bc80fc3a0d2d5cd986ba08f12a846eeb",
+    "tree": "a097968d0972ba5f848ac7155a52d8557733bb93"
+  },
+  "previouslyLiveHistoricalAnalysesRetained": 9,
+  "originalCheckoutsMatching": 7,
+  "benchSessionNamesAbsent": 1,
+  "hostedTestResults": {
+    "pythonTestsPassed": 2444,
+    "pythonSubtestsPassed": 11,
+    "nativeCasesPassed": 2022,
+    "openSpecAdapterCasesPassed": 214,
+    "openSpecSpecCasesPassed": 214,
+    "openRepoShapeCasesPassed": 2231,
+    "mandatoryConformanceSkips": 0
+  }
+}
