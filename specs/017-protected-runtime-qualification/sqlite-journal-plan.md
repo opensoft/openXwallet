@@ -185,3 +185,24 @@ commission. Earlier exact-source qualification and review remain historical;
 fresh exact-source full/native, cleanup, local Codex follow-up and hosted CI/
 analysis readback are required. T001/T013-T015/setup/dispatch stay ungranted;
 feedback deferred, blocked writes unreplayed.
+
+## Source acceptance and current T013 handoff
+
+Brett Heap source-ratified [openXwallet #94](https://github.com/opensoft/openXwallet/pull/94#issuecomment-6991564275) at `b1430cedbf555afbfbe0a6de8a41e9208cfc145a`
+and directed landing when green, independent post-merge verification, then this
+T013 refresh. It merged normally as `255035a41761a88293e565573a319dc112a48522` on `2026-11-18T21:03:25Z`,
+with tree `f40947b61c1a9a8a073b1ffe40fc9f042c20daad` exactly equal to the ratified tree.
+The [source qualification](https://github.com/opensoft/openXwallet/pull/94#issuecomment-6989959898) and [independent main receipt](https://github.com/opensoft/openXwallet/pull/94#issuecomment-6993081869)
+remain separate. T012V/T012VJ are accepted source; T001/T013/T014/T015 remain
+unchecked. No operational `accepted_commit`, deployment, principal,
+credential, appointment or grant is selected by this source act or its later
+documentation descendant.
+
+Current complete source qualification, four S9073 dispositions, retained failure/diagnostic provenance and independent merged-main CI are in the [acceptance record](evidence.md#2026-11-18-94-source-acceptance-and-t013-refresh). The earlier isolated/publication headings retain their exact historical head and scope. T012VJ source acceptance is complete; actual deployment/state/watchdog and operational authority remain T013 gates.
+
+Ordinary source-CI reruns supply no protected-operation authority. The accepted
+operational broker still permits only its separately approved first run attempt;
+no retry/reset, grant, dispatch selection or source-update policy is inherited
+from source verification. Default operational_bindings() still refuses
+workflow-operational-host-unselected before outputs/OIDC. Setup, one dispatch,
+actual-run authority and cleanup/readback remain separately NOT GRANTED.

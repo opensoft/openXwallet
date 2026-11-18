@@ -1,7 +1,7 @@
 # T013 Operational Selection Packet
 
-Status: T012V source accepted and landed; T013 operational selections remain unaccepted; setup/dispatch NOT GRANTED
-Updated: 2026-11-17
+Status: T012V/T012VJ source accepted through #94; T013 operational selections unaccepted; setup/dispatch NOT GRANTED
+Updated: 2026-11-18
 Governance: `opensoft/openXfactory`, `prepare-protected-runtime-qualification`
 Bootstrap amendment: `fix-protected-runtime-dispatch-bootstrap`
 Implementation list: [feature 017 tasks](tasks.md); T013 remains an owner act
@@ -9,11 +9,17 @@ Decision draft: [scoped authorization](scoped-authorization.md)
 Accepted bootstrap and hosting gates: [bootstrap record](workflow-bootstrap.md)
 
 
-The factory-governed hosted source through T012V is accepted in [#78](https://github.com/opensoft/openXwallet/pull/78#issuecomment-6967743320)
-at `92545e32b4e5f950209cc7312a1a6309055b299d`, landed normally as `2997c8a238f6de6f74488fed933371d7f97d3ca5`. The
-[source/landing record](evidence.md#2026-11-17-78-source-acceptance-and-t013-refresh) retains exact-head qualification, local review,
-independent cleanup and the separate main-CI run. Source acceptance supplies no
-operational target, administrator, credential, endpoint, key or grant.
+Brett Heap source-ratified [openXwallet #94](https://github.com/opensoft/openXwallet/pull/94#issuecomment-6991564275) at `b1430cedbf555afbfbe0a6de8a41e9208cfc145a`
+and directed landing when green, independent post-merge verification, then this
+T013 refresh. It merged normally as `255035a41761a88293e565573a319dc112a48522` on `2026-11-18T21:03:25Z`,
+with tree `f40947b61c1a9a8a073b1ffe40fc9f042c20daad` exactly equal to the ratified tree.
+The [source qualification](https://github.com/opensoft/openXwallet/pull/94#issuecomment-6989959898) and [independent main receipt](https://github.com/opensoft/openXwallet/pull/94#issuecomment-6993081869)
+remain separate. T012V/T012VJ are accepted source; T001/T013/T014/T015 remain
+unchecked. No operational `accepted_commit`, deployment, principal,
+credential, appointment or grant is selected by this source act or its later
+documentation descendant.
+
+Earlier #78 baseline is retained in the historical source/landing evidence.
 
 ## Accepted source and next decision
 
@@ -33,7 +39,7 @@ approved configuration or a current pricing quote. The [T013 owner packet](t013-
 and [scoped authority](scoped-authorization.md) state the exact missing decisions.
 Concrete deployment/activation integration still needs review if required; accepted
 fixture adapters do not select it. No operational `accepted_commit` is chosen,
-including the #78 merge or this documentation descendant. T001/T013/T014/T015 and
+including the #94 merge or this documentation descendant. T001/T013/T014/T015 and
 all four operational stages remain ungranted.
 
 ## Historical #65 source acceptance and T012M handoff
@@ -121,9 +127,32 @@ environment outputs/OIDC. Accepted qualification/cleanup and origin-bound eviden
 isolated until actual authenticated deployment, independent controls and any
 necessary activation source are separately selected/reviewed.
 
+## Current accepted source content
+
+These immutable content hashes are recomputed at accepted merge `255035a41761a88293e565573a319dc112a48522`;
+they identify source, not an approved execution selection. A documentation
+descendant changes a possible workflow SHA and cannot be substituted silently.
+
+| Repository-relative path | SHA-256 |
+| --- | --- |
+| `.github/workflows/protected-runtime-qualification.yml` | `03951b10405b3d81b394db1a1915586f3e475b8337351d140e00d51340916bf8` |
+| `.github/workflows/protected-runtime-qualification-run.yml` | `1c75e0f777a60f6bc21205c2164c302d507ad08d8e89e6fb66c0b221fbfb252a` |
+| `scripts/prepare-protected-runtime.py` | `a6e397cebe4d5a678c6c93707834051f1e2a9778db13a0a119c64314508f391e` |
+| `scripts/workload_factory_binding_runtime/hosted/stage_store.py` | `ea7d4c58a4565833e871196671714b28810d4ae1145dbd80f2c0ba59d4248669` |
+| `scripts/workload_factory_binding_runtime/workflow.py` | `d8af22008ab5cdfbd0b6a5001a02133160e083f4c0ec3aa9bfbe2f169757386b` |
+| `tests/runtime_binding/test_hosted_stage_store.py` | `0bf92417a9ace03155887d725f2f09263d8e019b3228f5646540508b770ba3a3` |
+| `tests/runtime_binding/matrix_contract.py` | `3ad42365f144d21d98de0a135c5c2f1609133deed08a8af73109f669b195a591` |
+
+Current neutral root/code/spec are 8be8a2a6af125058ffe956cafbf1e62858d82dd9,
+6fb72ed4c820d927775ccb698c5cfbd8adff71d7 and
+878293fb3ed84073dd7e285f56f4fee62413297e; separate qualification owner remains
+bb0e9dae89a771b05f6c235d0a77237288b95c85. No source pointer appoints a live
+service, administrator or credential. Source-CI permission and its ordinary
+reruns select no operational main-update policy or first-attempt grant.
+
 ## Fresh repository and protection readback
 
-Read-only GitHub API inspection at `2026-11-18T03:07:59.743684+00:00` established the following. These
+Read-only GitHub API inspection at `2026-11-18T22:09:57.469950+00:00` established the following. These
 observations must be reacquired for an eventual operational decision/use:
 
 | Fact | Observed value | Operational meaning |
@@ -161,7 +190,7 @@ implicit deployment choice.
 | Category | Accepted constraint / prepared proposal | Missing operator selection or acceptance |
 | --- | --- | --- |
 | Purpose | Machine possession prerequisite for codeXfactory feature 058 T002 | Exact case identifier and accountable owner; consumer acceptance separate |
-| Final source set | Accepted factory/bootstrap/hosted source through #78 | Select all eight operational source roles/paths/digests, deployed image/launch measurements, exact final workflow SHA and concrete deployment/activation integration; source acceptance is not an executing selection |
+| Final source set | Accepted factory/bootstrap/hosted source through #94, with #78 as the hosted baseline | Select all eight operational source roles/paths/digests, deployed image/launch measurements, exact final workflow SHA and concrete deployment/activation integration; source acceptance is not an executing selection |
 | Environment | Proposed new `wallet-mfa-pilot-qa` in the exact qualification repository | Approved name and create scope; actual assigned ID and effective protection after authorized setup |
 | Reviewer/dispatcher | 1–6 distinct User/Team reviewer IDs; self-review prevented; admin bypass disabled; exact `refs/heads/main` restriction | Distinct eligible reviewer and dispatcher, membership/permission readback; Brett cannot approve his own initiated run |
 | Bootstrap/controller | Accepted source includes purpose/phase OIDC, first-attempt journal and bounded authenticated clients, staging and measured finalization | Select actual endpoint/CA/principals, credential issuance, transport/worker exclusion, live claims/API evidence and deployed store initialization/retention/readback; fixture source is not a deployment selection |

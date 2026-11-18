@@ -1,7 +1,86 @@
 # Preparation and Issuer Slice Evidence
 
-Status: T012V source accepted and landed; operational qualification not performed
+Status: T012V and T012VJ source accepted and landed; T013 operational selections/qualification unapproved
 Scope: source/isolated fixtures only, with historical preparation and earlier slice evidence
+
+
+## 2026-11-18 #94 source acceptance and T013 refresh
+
+Brett Heap source-ratified [openXwallet #94](https://github.com/opensoft/openXwallet/pull/94#issuecomment-6991564275) at `b1430cedbf555afbfbe0a6de8a41e9208cfc145a`
+and directed landing when green, independent post-merge verification, then this
+T013 refresh. It merged normally as `255035a41761a88293e565573a319dc112a48522` on `2026-11-18T21:03:25Z`,
+with tree `f40947b61c1a9a8a073b1ffe40fc9f042c20daad` exactly equal to the ratified tree.
+The [source qualification](https://github.com/opensoft/openXwallet/pull/94#issuecomment-6989959898) and [independent main receipt](https://github.com/opensoft/openXwallet/pull/94#issuecomment-6993081869)
+remain separate. T012V/T012VJ are accepted source; T001/T013/T014/T015 remain
+unchecked. No operational `accepted_commit`, deployment, principal,
+credential, appointment or grant is selected by this source act or its later
+documentation descendant.
+
+The accepted correction takes one lstat snapshot per optional staging sidecar,
+accepts only FileNotFoundError as absence and rechecks the main private
+directory/database identity. Every observed unsafe sidecar still refuses.
+Forty-eight new cases preserve every earlier full/native identity, fingerprint
+and anchor, including the eight-thread exactly-one-winner control. Four S9073
+composite assertions were split without changing conditions or evaluation order.
+Their original issue keys are CLOSED/FIXED in PR analysis
+0c4bc102-da56-43fa-b864-4c1455c53c63; there are no active PR findings.
+
+At the ratified head, all seven local gates, 2,859 full cases plus 11 subtests
+and all 2,437 mandatory native cases pass with zero failures/errors/skips.
+All 387 frozen input hashes match. Nine independent local Codex roles plus
+master clear the corrected source; no GitHub connector review is claimed.
+Independent qualifying audits verify 24,957 generation observations, 854
+lifecycle journals, 262 helper receipts and ten preservation cases, with no
+attributable live process or initial qualifying teardown failure. All twenty
+owned current/historical fixture/control roots and thirteen named containers
+are independently absent.
+
+PR run 44371132966 attempt 1 remains failed: 2,857 passes, two protected-stage
+setup refusals and eleven passing subtests; native/Sonar did not run. Two exact,
+uninstrumented diagnostic cases pass unchanged in 25.037s and their separately
+audited fixture is removed. A single unchanged failed-job rerun supplies fresh
+full/native and Sonar execution; the three successful attempt 1 conformance/
+coverage executions are explicitly reused with identical head/timestamps/log
+bytes under cloned attempt 2 metadata. That passing qualification does not prove
+the suppressed transport cause or general filesystem/timing guarantees.
+
+[Actual merged-main CI](https://github.com/opensoft/openXwallet/actions/runs/44397463807) separately passes all five jobs at
+`255035a41761a88293e565573a319dc112a48522`, attempt 1. Artifacts and direct analysis-ID readback verify
+2,859 full cases plus 11 subtests and all 2,437 native cases, zero failures/errors/
+skips, actual merged tree and all six original conditions. Main analysis is
+`47b61660-59b8-444b-b102-42cbbeb1a4dd`; metrics are {"new_coverage": "86.3", "new_duplicated_lines_density": "0.0", "new_maintainability_rating": "1", "new_reliability_rating": "1", "new_security_hotspots_reviewed": "100.0", "new_security_rating": "1"}.
+The original August 27 manual baseline and all thresholds remain. No PR result,
+reused job or earlier failed/diagnostic result is relabeled as this main run.
+
+Current neutral root/code/spec are `8be8a2a6af125058ffe956cafbf1e62858d82dd9`,
+`6fb72ed4c820d927775ccb698c5cfbd8adff71d7` and
+`878293fb3ed84073dd7e285f56f4fee62413297e`.
+The separately selected qualification owner remains
+`bb0e9dae89a771b05f6c235d0a77237288b95c85`. The current selector root was
+accepted upstream through #93; code/spec, contracts and explicit owner are not
+replaced by it.
+
+Read-only GitHub refresh at `2026-11-18T22:09:57.469950+00:00` confirms repository 1347887821 / owner 638385,
+only ineligible copilot 20677426348, both protected workflow counters zero,
+read-only workflow defaults and unchanged default/immutable-ID OIDC prefix.
+No workload token or actual complete subject is obtained. The refresh selects
+no final source set, operational accepted_commit, target, administrator, image,
+service, state initialization, external watchdog, budget/window or grant.
+Historical provider/pricing research remains dated and unaccepted.
+
+Ordinary source-CI reruns supply no protected-operation authority. The accepted
+operational broker still permits only its separately approved first run attempt;
+no retry/reset, grant, dispatch selection or source-update policy is inherited
+from source verification. Default operational_bindings() still refuses
+workflow-operational-host-unselected before outputs/OIDC. Setup, one dispatch,
+actual-run authority and cleanup/readback remain separately NOT GRANTED.
+
+This reconciliation changes only twelve Markdown files. Accepted executable,
+test, workflow, dependency, contract, coverage and pin bytes remain unchanged;
+main CI qualifies the merged source, while the later documentation candidate's
+validation is separately recorded. This refresh itself remains local/unpublished;
+its source acceptance/publication and all actual operational acts are separate.
+Feedback deferred; neither blocked write replayed.
 
 ## 2026-11-17 #78 source acceptance and T013 refresh
 

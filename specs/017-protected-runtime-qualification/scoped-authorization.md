@@ -1,16 +1,19 @@
 # T013 Scoped Authorization Draft
 
-Status: T012V source accepted and landed; every operational stage NOT GRANTED
-Updated: 2026-11-17
+Status: T012V/T012VJ source accepted through #94; every operational stage NOT GRANTED
+Updated: 2026-11-18
 Selections: [operational inputs](operational-inputs.md)
 Accepted bootstrap source: [bootstrap record](workflow-bootstrap.md)
 
-Brett source-ratified [#78](https://github.com/opensoft/openXwallet/pull/78#issuecomment-6967743320) at `92545e32b4e5f950209cc7312a1a6309055b299d` and directed landing when green,
-then this refresh. Normal merge `2997c8a238f6de6f74488fed933371d7f97d3ca5` and its source/review/qualification/
-cleanup evidence are recorded in the [accepted-source handoff](evidence.md#2026-11-17-78-source-acceptance-and-t013-refresh).
-T012V is complete for source acceptance; T001/T013/T014/T015 remain unchecked.
-Neither the accepted merge nor this documentation descendant is an operational
-`accepted_commit`, appointed principal, deployment choice or grant.
+Brett Heap source-ratified [openXwallet #94](https://github.com/opensoft/openXwallet/pull/94#issuecomment-6991564275) at `b1430cedbf555afbfbe0a6de8a41e9208cfc145a`
+and directed landing when green, independent post-merge verification, then this
+T013 refresh. It merged normally as `255035a41761a88293e565573a319dc112a48522` on `2026-11-18T21:03:25Z`,
+with tree `f40947b61c1a9a8a073b1ffe40fc9f042c20daad` exactly equal to the ratified tree.
+The [source qualification](https://github.com/opensoft/openXwallet/pull/94#issuecomment-6989959898) and [independent main receipt](https://github.com/opensoft/openXwallet/pull/94#issuecomment-6993081869)
+remain separate. T012V/T012VJ are accepted source; T001/T013/T014/T015 remain
+unchecked. No operational `accepted_commit`, deployment, principal,
+credential, appointment or grant is selected by this source act or its later
+documentation descendant.
 
 The hosted source is implemented and accepted in isolation: static-v2 plans,
 phase-limited admission, bounded authenticated clients, staging, measured final
@@ -38,7 +41,7 @@ create decision. Unselected scope blocks the corresponding decision.
 | Decision | Prepared bound | Required owner/operator selection |
 | --- | --- | --- |
 | Purpose/case | First codeXfactory pilot; machine possession qualification | Exact case ID and accountable owner |
-| Final source | Accepted factory/adapter/hosted source through #78 | Eight operational source roles/commits/paths/digests, deployed image/launch measurements and concrete authenticated composition/activation acceptance; exact executing workflow SHA remains unselected |
+| Final source | Accepted factory/adapter/hosted source through #94 | Eight operational source roles/commits/paths/digests, deployed image/launch measurements and concrete authenticated composition/activation acceptance; exact executing workflow SHA remains unselected |
 | Target | Dedicated disposable nonproduction Linux deployment | Exact provider/account or tenant/subscription, existing parent IDs, host/cluster, region and namespace/resource-group scope |
 | Administrators | Worker cannot administer supervisor, custody, bootstrap/operation grants, readback or cleanup | Named independent principals, control-plane owners, credential/trust refs and effective access evidence |
 | Environment | Proposed new `wallet-mfa-pilot-qa` in repo ID `1347887821` | Before setup: approved name and create scope, 1–6 reviewer IDs, distinct dispatcher, prevent self-review, no admin bypass, exact `refs/heads/main` deployment restriction; after setup: actual ID and complete effective protection readback |
@@ -143,11 +146,18 @@ operational decisions remain open.
 
 ## Current readback and source-only boundary
 
-Read-only GitHub refresh at `2026-11-18T03:07:59.743684+00:00` confirms only ineligible `copilot`,
+Read-only GitHub refresh at `2026-11-18T22:09:57.469950+00:00` confirms only ineligible `copilot`,
 no protected workflow runs, read-only token defaults and unchanged default/
 immutable-ID subject settings. See [operational inputs](operational-inputs.md).
-The [#78 source decision](evidence.md#2026-11-17-78-source-acceptance-and-t013-refresh) completes source acceptance and this handoff,
+The [#94 source decision](evidence.md#2026-11-18-94-source-acceptance-and-t013-refresh) completes the staging-journal source handoff,
 not T013 or an approved executing `accepted_commit`. Source-CI permission to keep
 integrating incoming changes is not acceptance of an operational main-update
 policy. Earlier qualification checkpoints remain historical. All four stages
 remain NOT GRANTED; feedback deferred and blocked writes unreplayed.
+
+Ordinary source-CI reruns supply no protected-operation authority. The accepted
+operational broker still permits only its separately approved first run attempt;
+no retry/reset, grant, dispatch selection or source-update policy is inherited
+from source verification. Default operational_bindings() still refuses
+workflow-operational-host-unselected before outputs/OIDC. Setup, one dispatch,
+actual-run authority and cleanup/readback remain separately NOT GRANTED.

@@ -1,18 +1,20 @@
 # T013 owner decision packet
 
-Status: T012V source accepted and landed; preparation only; every operational stage NOT GRANTED
-Updated: 2026-11-17
+Status: T012V/T012VJ source accepted through #94; preparation only; every operational stage NOT GRANTED
+Updated: 2026-11-18
 Governance: factory `prepare-protected-runtime-qualification`; adapter feature 017
 
 ## Accepted source and its limits
 
-Brett source-ratified [openXwallet #78](https://github.com/opensoft/openXwallet/pull/78#issuecomment-6967743320) at `92545e32b4e5f950209cc7312a1a6309055b299d` and directed landing
-when green, then this refresh. It merged normally as `2997c8a238f6de6f74488fed933371d7f97d3ca5` with tree
-`a36a7d66955aa841a3b9aa1e61ecd1a1efad04a9`. The [source/landing record](evidence.md#2026-11-17-78-source-acceptance-and-t013-refresh) preserves the original
-ratified tree, the separately reviewed #90 documentation integration, exact-head
-qualification/review/cleanup and the independent merge-triggered CI link.
-T012V is complete for source acceptance and handoff; T001/T013/T014/T015 remain
-unchecked. No operational `accepted_commit` is selected.
+Brett Heap source-ratified [openXwallet #94](https://github.com/opensoft/openXwallet/pull/94#issuecomment-6991564275) at `b1430cedbf555afbfbe0a6de8a41e9208cfc145a`
+and directed landing when green, independent post-merge verification, then this
+T013 refresh. It merged normally as `255035a41761a88293e565573a319dc112a48522` on `2026-11-18T21:03:25Z`,
+with tree `f40947b61c1a9a8a073b1ffe40fc9f042c20daad` exactly equal to the ratified tree.
+The [source qualification](https://github.com/opensoft/openXwallet/pull/94#issuecomment-6989959898) and [independent main receipt](https://github.com/opensoft/openXwallet/pull/94#issuecomment-6993081869)
+remain separate. T012V/T012VJ are accepted source; T001/T013/T014/T015 remain
+unchecked. No operational `accepted_commit`, deployment, principal,
+credential, appointment or grant is selected by this source act or its later
+documentation descendant.
 
 The accepted source now includes static-v2 plans, phase-limited bootstrap and
 protected admission, bounded authenticated provider/guest/issuer clients,
@@ -61,7 +63,7 @@ before an operational decision. No secret belongs in this packet.
 
 | Gate | Required result | Authority supplied now |
 | --- | --- | --- |
-| P1: source acceptance | Accepted factory decisions and #78 source/head/merge, qualification, review and cleanup | COMPLETE in isolated source scope; no live use |
+| P1: source acceptance | Accepted factory decisions and #78/#94 source/head/merge, qualification, review and cleanup | COMPLETE in isolated source scope; no live use |
 | P2: actual operational selection | Owner accepts exact non-secret target, administrators, roles, resource/time limits and source-update policy | NOT GRANTED; planning recommendations remain proposed |
 | P3: selected deployed integration | Review/accept concrete authenticated hosting/issuance/readback/state/watchdog composition and any required activation source; preserve unconditional default refusal | UNSELECTED; accepted algorithms and fixtures are reused, not relabeled deployed |
 | P4: bounded setup | Exact existing parent IDs/new names, actions, actors, UTC window/expiry, ceilings and rollback scope | SETUP ONLY decision still required; no dispatch or signing use |
@@ -87,7 +89,7 @@ prepare separate decisions; supplying them does not authorize setup or dispatch.
 Assigned environment/resource IDs, initialization receipts and issued effective
 scopes are later setup readbacks and must never be invented now.
 
-Read-only GitHub refresh at `2026-11-18T03:07:59.743684+00:00` still finds only `copilot`
+Read-only GitHub refresh at `2026-11-18T22:09:57.469950+00:00` still finds only `copilot`
 (ID `20677426348`), no protection rules and admin bypass enabled; preserve it.
 Both protected workflows have zero runs. Token defaults remain read-only with PR
 approval disabled; OIDC settings remain default/immutable-ID with prefix
@@ -96,3 +98,10 @@ provider configuration/write endpoint changed or tested. This packet emits no
 executable configuration, grant or setup/dispatch command. All four stages in
 [scoped authorization](scoped-authorization.md) remain NOT GRANTED. Feedback stays
 deferred; neither blocked write was replayed.
+
+Ordinary source-CI reruns supply no protected-operation authority. The accepted
+operational broker still permits only its separately approved first run attempt;
+no retry/reset, grant, dispatch selection or source-update policy is inherited
+from source verification. Default operational_bindings() still refuses
+workflow-operational-host-unselected before outputs/OIDC. Setup, one dispatch,
+actual-run authority and cleanup/readback remain separately NOT GRANTED.
