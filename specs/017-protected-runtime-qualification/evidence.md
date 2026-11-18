@@ -1,7 +1,89 @@
 # Preparation and Issuer Slice Evidence
 
-Status: isolated T012S source candidate qualified; operational qualification not performed
+Status: T012V source accepted and landed; operational qualification not performed
 Scope: source/isolated fixtures only, with historical preparation and earlier slice evidence
+
+## 2026-11-17 #78 source acceptance and T013 refresh
+
+Brett Heap explicitly ratified [openXwallet #78](https://github.com/opensoft/openXwallet/pull/78#issuecomment-6967743320) at
+`92545e32b4e5f950209cc7312a1a6309055b299d` for **source acceptance only**, directed landing when green and
+commissioned this T013 documentation refresh. The normal merge (no administrator
+override) is `2997c8a238f6de6f74488fed933371d7f97d3ca5`, published at `2026-11-18T03:03:53Z`.
+Its tree is `a36a7d66955aa841a3b9aa1e61ecd1a1efad04a9`, with parents accepted main #90
+`b40242f80b8f9565d47977c3a81bb27ba0510635` and the ratified head. The ratified
+candidate tree was `ded3517b057bc9fbb5bf525d1366819a9ad38590`; its clean merge
+adds only the five independently reviewed historical backlog document/report
+paths from #90. No runtime, test, workflow, dependency, pin or feature-017 byte
+changed in that integration. This is a specific source decision, not an
+operational `accepted_commit`, deployment selection or grant.
+
+The [qualification receipt](https://github.com/opensoft/openXwallet/pull/78#issuecomment-6967527443) and [ratified-head hosted run](https://github.com/opensoft/openXwallet/actions/runs/44218269415)
+retain the actual evidence: all seven local ordered gates; 2,811 full tests plus
+11 subtests; all 2,389 mandatory native cases; zero failures/errors/skips; both
+coverage partitions and the exact provider corpora (214 OpenSpec assertions in
+both contexts and 2,231 shape assertions). Hosted full/native took 54m55s inside
+source 90 minutes; CTracer coverage took 38m05s inside 45 minutes. All six
+original Sonar conditions pass with A ratings, 94.0% new-code coverage, 0.0%
+duplication and zero unreviewed hotspots. Analysis is
+`f6935556-1429-45c5-8a13-0c5e172f9a4c`. Fourteen open maintainability advisories
+were independently reviewed, not waived or suppressed. Nine local Codex source
+roles plus master and the final document reviews cleared the source; no GitHub
+connector review is claimed.
+
+Local complete qualification executed `3071699deb382ef70520ec7162c0d7d26d3c959b`.
+The ratified descendant changes one Markdown count; all 374 non-document inputs
+and dependency gitlinks match. Fresh hosted CI verified the exact ratified tree.
+Independent audit verified 25,010 generation observations, 854 journals, 262 helper
+receipts and all ten preservation cases, with no attributable live process or
+initial qualified teardown failure. All seven fixture/temporary roots and both
+qualification containers were removed; reports remain outside those fixtures.
+
+[Merge-triggered source CI](https://github.com/opensoft/openXwallet/actions/runs/44227734176) is tracked separately at the exact merge
+`2997c8a238f6de6f74488fed933371d7f97d3ca5`. This record does not relabel the PR run as main CI or assert a
+merged-main verdict: the run and this refresh's final qualification receipt
+supply that independent readback. Documentation-only reconciliation likewise
+selects no future executing workflow SHA.
+
+Accepted neutral root/code/spec remain `38f9d0cb6481b970384ac1227ae4d89152b173a9`,
+`6fb72ed4c820d927775ccb698c5cfbd8adff71d7` and
+`878293fb3ed84073dd7e285f56f4fee62413297e`. The separately selected owning
+registry/custody qualification source remains
+`bb0e9dae89a771b05f6c235d0a77237288b95c85`; it is not a neutral pin or a deployed
+service. The eight contract artifact digests and authenticated CLI package/lock
+are unchanged.
+
+The hosted pilot source is now accepted through T012V: static-v2 planning,
+phase-limited admission, authenticated bounded clients, actual staging and
+canonical measured finalization, independent registration/lifecycle cleanup and
+origin-bound evidence are implemented and qualified **in isolation**. The legacy
+static-v1/full-runtime-v1 readers remain separate. The hosted static profile is
+`openxfactory-dispatch-selection-internal-v2`, with derivation
+`openxfactory-hosted-canonical-finalization-v2`; static-v1 is not a substitute for
+its measured finalization. `workflow.operational_bindings()` still unconditionally
+refuses with `workflow-operational-host-unselected` before token access or outputs.
+A selected, authenticated deployed composition and any necessary separately
+reviewed activation source are still required; no environment flag or fixture can
+activate operation.
+
+Read-only GitHub refresh at `2026-11-18T03:07:59.743684+00:00` confirms repository ID `1347887821`,
+owner ID `638385`, only environment `copilot` (ID `20677426348`, no protection
+rules, admin bypass enabled), and zero runs for protected caller `417795073`
+and reusable `417795071`. Default token permissions are read-only and PR approval
+is disabled. OIDC settings remain default/immutable-ID with prefix
+`repo:opensoft@638385/openXwallet@1347887821`. These settings are not observed
+workload claims; no token was minted, provider configuration changed or write
+endpoint tested.
+
+T012V records the actual owner source act and completed handoff. T001 and
+T013/T014/T015 remain unchecked. The [T013 decision packet](t013-decision-record.md),
+[selection packet](operational-inputs.md) and [scoped authority](scoped-authorization.md)
+retain unselected actual targets, administrators, credentials, endpoints,
+measurements, state/watchdog references, budget/window and all four operational
+stages. Source-integration permission to keep accepting incoming main changes is
+not selection of an operational main-update policy. Setup/dispatch are
+**NOT GRANTED**, feedback remains deferred and neither blocked write was replayed.
+
+## Historical preparation and earlier slice evidence
 
 At preparation baseline #49, the new runtime feature had no implementation or live qualification result.
 Baseline adapter merge is `336055fde62e45b49c5ff45cee36e1152ca695f1`, acceptance

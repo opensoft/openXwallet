@@ -2,7 +2,7 @@
 
 **Branch**: `017-protected-runtime-qualification` | **Date**: 2026-11-12
 **Spec**: [spec.md](spec.md)
-**State**: T012V accepted-main #89 source candidate; current matrix summary 2811/native 2389 is corrected. Fresh complete final-head review/qualification/cleanup/CI/Sonar and owner ratification remain required; operational authority ungranted.
+**State**: T012V source accepted at #78 `92545e32b4e5f950209cc7312a1a6309055b299d`, landed as `2997c8a238f6de6f74488fed933371d7f97d3ca5`. [T013 refresh](evidence.md#2026-11-17-78-source-acceptance-and-t013-refresh) records the owner act and handoff. T001/T013-T015 and all operational setup/dispatch authority remain ungranted.
 
 Bootstrap amendment `fix-protected-runtime-dispatch-bootstrap` was source
 accepted and landed in factory #1311 / adapter #60. The static dispatch selection

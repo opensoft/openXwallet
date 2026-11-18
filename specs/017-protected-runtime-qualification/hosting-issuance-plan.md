@@ -1,11 +1,17 @@
 # Implementation Plan Extension: Protected Hosting and Issuance
 
-Status: draft
+Status: historical preparation plan; source accepted through T012V, operational gates open
 Kind: plan
 **Branch**: `017-hosting-issuance-plan` | **Date**: 2026-11-14
 **Spec**: [feature specification](spec.md); [canonical plan](plan.md)
 **Factory owner**: `opensoft/openXfactory`, `openspec/changes/add-protected-runtime-hosting-issuance/` (draft)
 **Implementation owner**: existing feature 017 [tasks](tasks.md), proposed T012N-V; no duplicate executable list
+
+Current source status: subsequent accepted factory decisions and isolated
+T012O-V realization are reconciled by [#78 source acceptance](evidence.md#2026-11-17-78-source-acceptance-and-t013-refresh). The
+original planning text below records its historical commission, not a current
+claim that v2 or its isolated implementation remains unaccepted. Actual deployed
+selection/activation, setup/dispatch and T013-T015 remain separate and ungranted.
 
 ## Summary
 
