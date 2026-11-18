@@ -57,3 +57,31 @@ preservation independently, and remove only owned temporary roots/containers.
 Keep earlier failures/diagnostics separate from final exact-source evidence.
 Actual post-merge CI for #91 is independently observed; no operational evidence
 or protected-machine qualification is inferred from any source result.
+
+## Accepted main #92 integration
+
+Main #92 at `22bc7bdf6298c043377528c0c289ca26e51cbb07` landed during isolated
+qualification. It refactors existing CLI/qualification/probe exception and
+resource retirement paths and clarifies existing deadline assertions. Its exact
+head `6e3b6e043e8f4ede3c2958cf6bd918a8f345b133` has hosted checks and local expert
+review evidence. It changes no pins, workflows, source corpus or clock/read limits.
+Consume that accepted baseline under the owner's instruction to integrate
+incoming changes as needed. The staging-store correction, 48 new regressions and
+matrix bytes remain identical to local runtime `61e06e3244937fae8806b1e29cdfdd24aaac9df9`.
+
+The prior 221 focused passes, 2,859 full cases plus 11 subtests and seven ordered
+gates remain historical exact-source evidence. Its first native attempt had two
+protected-stage setup refusals before target cleanup/cancellation assertions and
+was interrupted for diagnosis, adding a pytest teardown KeyError; it is incomplete
+and nonqualifying. Safe source/fixture metadata and XML are retained. Two focused
+native-equivalent cases pass without source, assertion or budget changes, with
+8.25s/8.50s protected-stage responses; the original transport cause is unproven.
+The unchanged full-native retry was stopped as superseded by accepted #92, not
+promoted to a result. All those namespaces and fixtures were audited/removed.
+
+Fresh integrated collection, full/native qualification and cleanup are required.
+Use explicit offline npm cache mode for pinned CLI bootstrap; content addresses,
+strict checks and network isolation remain enforced. Existing T012VJ is still
+the sole correction task and stays unchecked until these checks pass. No new
+profile, source acceptance, publication, setup/dispatch or live grant is inferred.
+Feedback deferred; blocked writes unreplayed.

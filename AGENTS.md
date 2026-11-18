@@ -622,3 +622,14 @@ security checks, schema/pins, deadlines, budgets and default refusal. Fresh
 exact-source full/native qualification and owned-fixture cleanup are required.
 No publication, fix ratification, setup/dispatch or live provider authority is
 inferred; feedback deferred and blocked writes unreplayed.
+
+## Accepted main #92 compatibility integration
+
+Integrate accepted #92 main `22bc7bdf6298c043377528c0c289ca26e51cbb07` into
+the isolated T012VJ candidate per the owner's incoming-change instruction.
+Qualification/probe/CLI retirement and exception boundaries are inherited from
+that accepted main; the SQLite correction/tests/matrix remain byte-identical.
+Follow feature017 sqlite-journal-plan.md. Old runtime61 results and failed or
+superseded native attempts stay historical; fresh exact-source full/native and
+cleanup are required. No pins/workflows/budgets/defaults or operational authority
+change; setup/dispatch unauthorized, feedback deferred, blocked writes unreplayed.
