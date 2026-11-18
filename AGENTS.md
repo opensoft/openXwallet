@@ -530,7 +530,7 @@ hosting-conformance-implementation.md. T012V/owner acceptance and
 T001/T013-T015/setup/dispatch remain ungranted; feedback deferred and blocked
 writes unreplayed.
 
-### Current T012V accepted-main #85/#86 integration
+### Historical T012V accepted-main #85/#86 integration
 
 Accepted main `a6a327a36046e130c95b2e654f3b4b5135d9d5de` advanced during the
 completed 064103a5 qualification. Its receipt remains historical exact-source
@@ -545,3 +545,14 @@ The current code candidate is `1728117f3dbe0ebb3fbeb408613e3d04c69067fc`; exact 
 collection and all 135 focused readback controls pass. Preserve the 371 non-document
 inputs through final source-checkpoint review. Full/native/cleanup/CI/Sonar remain
 fresh final-head requirements tracked on PR #78, not success claims here.
+
+### Current T012V accepted-main #87 integration
+
+Accepted main 001c8321884259b35f17adc3d6cd9f623ad1a947 refactors lifecycle and
+validation responsibilities. Both typed LifecycleStores/LifecycleActors constructor
+callers are already adapted upstream; qualifier uses the resulting lifecycle and
+its preserved methods. Merge cleanly and retain original wire/pin/clock/private39,
+cancellation, privacy and resource-ownership guarantees. Follow feature017
+hosting-conformance-implementation.md; fresh review/full/native/cleanup/CI and
+Sonar remain required before owner source ratification. Setup/dispatch stay
+unauthorized, feedback deferred and blocked writes unreplayed.

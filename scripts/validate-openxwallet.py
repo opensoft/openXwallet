@@ -624,399 +624,9 @@ def _require_s2_named_probes(f: Findings, negatives: list[Path]) -> None:
                     f"unpinned probe can be mutated into testing nothing")
 
 
-def self_test_register_reader(f: Findings, _docs: dict[str, dict],
-                              ctx: Context) -> None:
-    """The SELF_TEST_TAIL_HOOKS entry, after the corpus note: where the S4 block
-    always ran. `_docs` is the hook contract's; the reader needs no schema."""
-    # S4 register-reader assertions. Same discipline as the S2 anchor block:
-    # the live register proves the happy path, and these synthetic probes pin
-    # every refusal code the reader can emit so no edit or deleted fixture
-    # silences an invariant while the self-test stays green. The register is
-    # kindless BY RULING (D11), so file fixtures cannot be corpus negatives -
-    # these synthesized trees ARE the negative coverage.
-    import tempfile
-    now = datetime(2026, 9, 1, tzinfo=timezone.utc)
-    future = "2026-11-23T12:00:00Z"
-    past = "2026-08-01T12:00:00Z"
-
-    def _s4_ctx(*docs):
-        c = Context(ctx.registry, ctx.vocabulary)
-        for d in docs:
-            c.index(d)
-        return c
-
-    s4_wallet = {
-        "schema_version": 1, "kind": "xfactory_wallet_record",
-        "wallet_id": "wal-s4-probe-0001",
-        "holder": {"holder_id": _S4_PROBE_AGENT,
-                   "holder_class": "agent"},
-        "key_reference": {"did": "did:key:z6Mko2FefScUQg9opCriwQmjfcb3Qjnb5bN49hQsEVMo6gee",
-                          "key_id": "key-s4-0001",
-                          "signature_algorithm": "ed25519"},
-        "custody": {"model": "holder_readable", "registry_version": 1},
-        "state": "active",
-    }
-    s4_grant = {
-        "schema_version": 1, "kind": "xfactory_wallet_grant",
-        "grant_id": "grant-s4-probe-0001",
-        "audience": {"wallet_ref": "wal-s4-probe-0001",
-                     "holder_ref": _S4_PROBE_AGENT},
-        "scope": {"acts": [REVIEW_ACT_TOKEN], "authority_tier": "act",
-                  "objects": ["opensoft/openxFactory"]},
-        "expires_at": future, "state": "active",
-        "issued_by": ROOT_ISSUER_OPERATOR_TOKEN,
-    }
-    s4_row = {
-        "row_id": "row-s4-0001",
-        "holder_ref": _S4_PROBE_AGENT,
-        "wallet_ref": "wal-s4-probe-0001",
-        "target_repo": "opensoft/openxFactory",
-        "act": REVIEW_ACT_TOKEN, "authority_tier": "act",
-        "grant_ref": "grant-s4-probe-0001", "expires_at": future,
-        "state": "active",
-    }
-    s4_attest = {
-        "attestation_id": "attest-custody-wal-s4-probe-0001",
-        "subject_wallet_ref": "wal-s4-probe-0001",
-        "custody_model_attested": "holder_readable",
-        "verified_by": {"name": "Brett Heap", "role": "responsible operator",
-                        "standing": "Human Escalation Contract"},
-        "verified_at": "2026-08-24T12:00:00Z",
-        "verified_against": {"method": "operator-minted ed25519 keypair",
-                             "isolation_claimed": False},
-    }
-
-    def _s4_tree(register_rows, with_attest=True, grant=None, wallet=None,
-                 top=None, also=(), also_attest=()):
-        base = Path(tempfile.mkdtemp(prefix="s4-selftest-"))
-        ra = base.joinpath(*REGISTER_DIR_PARTS, ATTESTATIONS_DIR)
-        ra.mkdir(parents=True)
-        # wallet-v1.2: the staleness bound is REQUIRED, so every probe tree
-        # declares one. `top` overrides or extends the top level, which is how
-        # the top-level probes below inject an unknown key or a bad bound
-        # WITHOUT any probe having to hand-build a tree.
-        doc = {"register_version": 1, "revocation_staleness_bound": "P7D",
-               "rows": register_rows}
-        if top is not None:
-            doc.update(top)
-            for k, v in top.items():
-                if v is _ABSENT:
-                    doc.pop(k, None)
-        (base.joinpath(*REGISTER_DIR_PARTS, REGISTER_FILE)).write_text(
-            yaml.safe_dump(doc), encoding="utf-8")
-        if with_attest:
-            (ra / "custody-attest-wal-s4-probe-0001.yaml").write_text(
-                yaml.safe_dump(s4_attest), encoding="utf-8")
-        # wallet-v1.5: `also` indexes the SECOND commissioned body's records and
-        # `also_attest` writes its custody attestation, so a multi-body probe
-        # needs no hand-built tree either.
-        for extra_attest in also_attest:
-            (ra / f"custody-attest-{extra_attest['subject_wallet_ref']}.yaml"
-             ).write_text(yaml.safe_dump(extra_attest), encoding="utf-8")
-        return base, _s4_ctx(grant or s4_grant, wallet or s4_wallet, *also)
-
-    def _register_probe(label, base, c, expect_codes):
-        probe = Findings()
-        check_register(probe, base, c, now=now)
-        got = {e.split("]")[0].replace("ERROR [", "") for e in probe.errors}
-        expected = set(expect_codes)
-        missing = expected - got
-        extra = got - expected
-        if missing or extra:
-            f.error("register-assertion-failed",
-                    f"{label}: expected {sorted(expect_codes)}, got "
-                    f"{sorted(got)}")
-
-    # Positive: a fully resolving row is CLEAN.
-    base, c = _s4_tree([s4_row])
-    _register_probe("self-test/register-clean", base, c, set())
-
-    # Computed expiry: past expires_at refuses as expired AND flags the stale
-    # stored state AND leaves the grant without a backing active row.
-    stale_row = dict(s4_row, expires_at=past)
-    stale_grant = dict(s4_grant, expires_at=past)
-    base, c = _s4_tree([stale_row], grant=stale_grant)
-    _register_probe("self-test/register-computed-expiry", base, c,
-                    {"register-row-expired", "grant-state-stale",
-                     "register-no-active-row"})
-
-    wrong_binding = dict(
-        s4_grant,
-        audience={"wallet_ref": "wal-s4-probe-0001",
-                  "holder_ref": "agent:other-holder"},
-        scope={"acts": [REVIEW_ACT_TOKEN], "authority_tier": "act",
-               "objects": ["opensoft/other-repo"]},
-    )
-    base, c = _s4_tree([s4_row], grant=wrong_binding)
-    _register_probe("self-test/register-grant-binding", base, c,
-                    {"register-grant-mismatch"})
-
-    naive_row = dict(s4_row, expires_at="2026-11-23T12:00:00")
-    base, c = _s4_tree([naive_row])
-    _register_probe("self-test/register-naive-timestamp", base, c,
-                    {"register-row-malformed", "register-no-active-row"})
-
-    # Grant without any backing row: the headline obligation.
-    empty_reg = {"register_version": 1,
-                 "revocation_staleness_bound": "P7D", "rows": []}
-    base = Path(tempfile.mkdtemp(prefix="s4-selftest-"))
-    ra = base.joinpath(*REGISTER_DIR_PARTS, ATTESTATIONS_DIR)
-    ra.mkdir(parents=True)
-    (base.joinpath(*REGISTER_DIR_PARTS, REGISTER_FILE)).write_text(
-        yaml.safe_dump(empty_reg), encoding="utf-8")
-    _register_probe("self-test/register-no-active-row", base,
-                    _s4_ctx(s4_grant, s4_wallet),
-                    {"register-row-malformed", "register-no-active-row"})
-
-    # wallet-v1.4: A REVOKED REVIEW-CLASS GRANT OWES NO ROW. This is the
-    # RE-ISSUANCE shape and nothing else: the predecessor was revoked, the
-    # successor issued against it, and the one permitted row repointed. Before
-    # wallet-v1.4 the closing loop read only `scope.acts` and demanded a
-    # backing active row for the revoked predecessor too -- a row the row-count
-    # cap of the day forbade (retired at wallet-v1.5) -- so no consumer could
-    # represent a re-issuance at all. Three probes, because the fix has three halves: the shape is
-    # CLEAN, the guard still fires on an ACTIVE grant with no row (the probe
-    # above), and a row pointing AT a revoked grant is still refused.
-    s4_revoked = dict(
-        s4_grant, grant_id="grant-s4-probe-0000", state="revoked",
-        revocation={"revoked_at": "2026-08-30T12:00:00Z",
-                    "reason": "superseded by grant-s4-probe-0001 for drift; "
-                              "the register act's shape"})
-    base, c = _s4_tree([s4_row])
-    c.index(s4_revoked)
-    _register_probe("self-test/register-revoked-grant-exempt", base, c, set())
-
-    # PROTECTION PRESERVED, the row->grant direction: a row that still points
-    # at the revoked grant is refused. The exemption is only ever about a
-    # revoked grant NO row names.
-    base, c = _s4_tree([dict(s4_row, grant_ref="grant-s4-probe-0000")],
-                       grant=s4_revoked)
-    _register_probe("self-test/register-revoked-grant-still-mismatches",
-                    base, c, {"register-grant-mismatch"})
-
-    # The SAME exemption on the absent-register branch, which states the same
-    # obligation for a tree that never cold-started: revoked-only is clean.
-    probe = Findings()
-    check_register(probe, Path(tempfile.mkdtemp(prefix="s4-selftest-")),
-                   _s4_ctx(s4_revoked, s4_wallet), now=now)
-    if probe.errors:
-        f.error("register-assertion-failed",
-                f"self-test/register-revoked-grant-absent-register: an absent "
-                f"register with only REVOKED review-class grants must be "
-                f"clean; got {probe.errors}")
-
-    # act tier without a parseable attestation refuses loudly.
-    base, c = _s4_tree([s4_row], with_attest=False)
-    _register_probe("self-test/register-tier-act-unattested", base, c,
-                    {"register-tier-act-unattested"})
-
-    # THE ROW-COUNT PROBE IS RETIRED HERE (wallet-v1.5, design D4). It asserted
-    # `register-minimal-shape-exceeded` on a second authority row; that refusal
-    # is retired by name, and a probe expecting a refusal the reader can never
-    # emit is a test of nothing. What replaces it is the multi-body block at the
-    # end of this function -- a positive probe for two resolving bodies and a
-    # negative for a second row that does NOT resolve, which is the invariant
-    # the count was standing in for.
-
-    # Unknown field on a row: strict, because this reader IS the shape.
-    fat_row = dict(s4_row, extra_field="nope")
-    base, c = _s4_tree([fat_row])
-    _register_probe("self-test/register-row-malformed", base, c,
-                    {"register-row-malformed"})
-
-    # Absent register with no review grants: legitimate consumer posture.
-    probe = Findings()
-    check_register(probe, Path(tempfile.mkdtemp(prefix="s4-selftest-")),
-                   Context(ctx.registry, ctx.vocabulary), now=now)
-    if probe.errors:
-        f.error("register-assertion-failed",
-                f"absent register with no review grants must be clean; "
-                f"got {probe.errors}")
-
-    # ---------------- wallet-v1.2: the top level and the seat keys ----------
-    #
-    # add-per-seat-register-entries. Same discipline as the S4 block above: one
-    # probe per refusal the reader can emit, plus a POSITIVE probe over the four
-    # REAL public halves, so no edit silences an invariant while the self-test
-    # stays green.
-
-    def _seat(seat_id, public_key, fingerprint, row="row-s4-0001",
-              council=_S4_PROBE_AGENT, council_id=None, key_id=None):
-        return {"seat_id": seat_id, "council_ref": council,
-                "council_id": council_id if council_id is not None else
-                council.split(":", 1)[-1].replace("-", "_"),
-                "key_id": key_id or f"key-seat-{seat_id}-0001",
-                "public_key": public_key, "key_fingerprint": fingerprint,
-                "authorizing_row": row}
-
-    real_seats = [_seat(s, k, fp) for s, k, fp in
-                  SEAT_KEY_MINT_RECORD_2026_08_28]
-
-    # The fingerprints in the mint record RECOMPUTE from the keys beside them.
-    # Asserted here rather than trusted: this is the one property the reader
-    # enforces that touches key material, and a stale constant would make every
-    # negative below pass for the wrong reason.
-    for seat_id, public_key, fingerprint in SEAT_KEY_MINT_RECORD_2026_08_28:
-        raw = _decode_public_key(public_key)
-        if raw is None or _fingerprint_of(raw) != fingerprint:
-            f.error("register-assertion-failed",
-                    f"self-test/seat-mint-record: the recorded public half for "
-                    f"seat {seat_id!r} does not recompute to its recorded "
-                    f"fingerprint; the 2026-08-28 mint record and this constant "
-                    f"disagree")
-
-    # THE LIVE PAIR, pinned as an assertion rather than left in a comment:
-    # openxFactory's register spells the holder `agent:merge-readiness-council`
-    # and hermes-install's projection spells the council
-    # `merge_readiness_council`. If the reader's normalization ever stops
-    # relating those two, the operator's projection step silently becomes a
-    # TRANSLATION again and `review_authority.seat_unregistered` replaces the
-    # refusal this arc is clearing.
-    if "agent:merge-readiness-council" != (
-            SEAT_COUNCIL_HOLDER_PREFIX
-            + "merge_readiness_council".replace("_", "-")):  # pragma: no cover
-        f.error("register-assertion-failed",
-                "self-test/seat-council-live-pair: the reader no longer relates "
-                "the register's holder spelling to the runtime's council id")
-
-    # POSITIVE: one authority row, four per-seat keys, all resolving. This is
-    # the shape openxFactory's register takes, and it is CLEAN.
-    base, c = _s4_tree([s4_row], top={SEAT_KEYS_FIELD: real_seats})
-    _register_probe("self-test/seat-keys-clean", base, c, set())
-    probe = Findings()
-    check_register(probe, base, c, now=now)
-    if not any("4 of 4 per-seat signing key(s) adjudicated and resolved"
-               in n for n in probe.notes):
-        f.error("register-assertion-failed",
-                f"self-test/seat-keys-clean: the reader must NOTE how many seat "
-                f"keys it resolved - a green check that proves nothing was read "
-                f"is the vacuous pass this surface exists to close; got "
-                f"{probe.notes}")
-
-    # The absence NOTE (design D10): accepted, and VISIBLE.
-    base, c = _s4_tree([s4_row])
-    probe = Findings()
-    check_register(probe, base, c, now=now)
-    if probe.errors or not any(
-            "no per-seat signing key is recorded" in n for n in probe.notes):
-        f.error("register-assertion-failed",
-                f"self-test/seat-keys-absent: an absent surface is accepted "
-                f"with a note naming what is not recorded; got "
-                f"{probe.errors} / {probe.notes}")
-
-    # An unread top-level declaration is refused. THIS is the class: the
-    # staleness bound sat in the live register unadjudicated because the reader
-    # ignored what it did not read.
-    base, c = _s4_tree([s4_row], top={"an_unread_declaration": "P1D"})
-    _register_probe("self-test/register-top-level-unknown", base, c,
-                    {"register-top-level-unknown"})
-
-    base, c = _s4_tree([s4_row], top={STALENESS_BOUND_FIELD: _ABSENT})
-    _register_probe("self-test/register-staleness-bound-missing", base, c,
-                    {"register-staleness-bound-missing"})
-
-    for bad in ("P1Y", "P1M", "7 days", "P", "PT", "P0D", "PT0S"):
-        base, c = _s4_tree([s4_row], top={STALENESS_BOUND_FIELD: bad})
-        _register_probe(f"self-test/register-staleness-bound-malformed[{bad}]",
-                        base, c, {"register-staleness-bound-malformed"})
-
-    for good in ("P7D", "P1D", "P1W", "PT12H", "P1DT6H30M"):
-        base, c = _s4_tree([s4_row], top={STALENESS_BOUND_FIELD: good})
-        _register_probe(f"self-test/register-staleness-bound-ok[{good}]",
-                        base, c, set())
-
-    # Malformed surfaces and entries.
-    for shape in ([], "P7D", {}):
-        base, c = _s4_tree([s4_row], top={SEAT_KEYS_FIELD: shape})
-        _register_probe(f"self-test/seat-keys-malformed[{type(shape).__name__}]",
-                        base, c, {"register-seat-keys-malformed"})
-
-    fat = dict(real_seats[0], minted_at="2026-08-28T00:00:00Z")
-    base, c = _s4_tree([s4_row], top={SEAT_KEYS_FIELD: [fat]})
-    _register_probe("self-test/seat-entry-unknown-field", base, c,
-                    {"register-seat-keys-malformed"})
-
-    thin = {k: v for k, v in real_seats[0].items() if k != "key_id"}
-    base, c = _s4_tree([s4_row], top={SEAT_KEYS_FIELD: [thin]})
-    _register_probe("self-test/seat-entry-missing-field", base, c,
-                    {"register-seat-keys-malformed"})
-
-    # A 64-hex value is the encoding of a PRIVATE seed. Refused BY SHAPE inside
-    # the required check (design R2) - the most plausible catastrophic paste.
-    seed_shaped = dict(real_seats[0], public_key="a" * 64)
-    base, c = _s4_tree([s4_row], top={SEAT_KEYS_FIELD: [seed_shaped]})
-    _register_probe("self-test/seat-key-private-seed-shaped", base, c,
-                    {"register-seat-key-malformed"})
-
-    # Non-canonical base64url: 43 legal characters whose final sextet carries
-    # trailing bits, so it decodes to a DIFFERENT key than it spells.
-    noncanon = real_seats[0]["public_key"][:-1] + "P"
-    if _decode_public_key(noncanon) is not None:  # pragma: no cover
-        f.error("register-assertion-failed",
-                "self-test/seat-key-noncanonical: the probe value is canonical; "
-                "the non-canonical refusal is untested")
-    base, c = _s4_tree([s4_row],
-                       top={SEAT_KEYS_FIELD: [dict(real_seats[0],
-                                                   public_key=noncanon)]})
-    _register_probe("self-test/seat-key-noncanonical", base, c,
-                    {"register-seat-key-malformed"})
-
-    base, c = _s4_tree([s4_row], top={SEAT_KEYS_FIELD: [
-        dict(real_seats[0], key_fingerprint="sha256:NOTHEX")]})
-    _register_probe("self-test/seat-fingerprint-malformed", base, c,
-                    {"register-seat-fingerprint-malformed"})
-
-    # The fingerprint of ANOTHER real seat: legal shape, wrong key. The refusal
-    # that makes the register a single source a projection can be derived from.
-    base, c = _s4_tree([s4_row], top={SEAT_KEYS_FIELD: [
-        dict(real_seats[0],
-             key_fingerprint=SEAT_KEY_MINT_RECORD_2026_08_28[1][2])]})
-    _register_probe("self-test/seat-fingerprint-mismatch", base, c,
-                    {"register-seat-fingerprint-mismatch"})
-
-    for field in ("seat_id", "key_id", "key_fingerprint"):
-        clash = dict(real_seats[1])
-        clash[field] = real_seats[0][field]
-        # Copying seat 0's FINGERPRINT onto seat 1 also makes that entry
-        # disagree with its own key, and both facts are reported: "no two
-        # refusals share a reason" cuts the other way too - one entry can be
-        # wrong in two ways and be told about both.
-        expected = {"register-seat-duplicate"}
-        if field == "key_fingerprint":
-            expected.add("register-seat-fingerprint-mismatch")
-        base, c = _s4_tree([s4_row],
-                           top={SEAT_KEYS_FIELD: [real_seats[0], clash]})
-        _register_probe(f"self-test/seat-duplicate[{field}]", base, c, expected)
-
-    base, c = _s4_tree([s4_row], top={SEAT_KEYS_FIELD: [
-        dict(real_seats[0], authorizing_row="row-nobody-0001")]})
-    _register_probe("self-test/seat-row-unresolved", base, c,
-                    {"register-seat-row-unresolved"})
-
-    # An EXPIRED row is not an authority for a seat, whatever its stored state
-    # says (N8) - and the row's own expiry findings stand beside it.
-    base, c = _s4_tree([dict(s4_row, expires_at=past)],
-                       grant=dict(s4_grant, expires_at=past),
-                       top={SEAT_KEYS_FIELD: [real_seats[0]]})
-    _register_probe("self-test/seat-row-expired", base, c,
-                    {"register-seat-row-unresolved", "register-row-expired",
-                     "grant-state-stale", "register-no-active-row"})
-
-    # D8: an entry attached to a body this register does not commission. Both
-    # spellings move together, so this probe isolates the ROW ATTACHMENT.
-    base, c = _s4_tree([s4_row], top={SEAT_KEYS_FIELD: [
-        _seat(*SEAT_KEY_MINT_RECORD_2026_08_28[0],
-              council="agent:some-other-council")]})
-    _register_probe("self-test/seat-council-mismatch", base, c,
-                    {"register-seat-council-mismatch"})
-
-    # ...and this one isolates the TWO SPELLINGS naming different bodies, which
-    # is the defect that would make the operator's projection step a translation.
-    base, c = _s4_tree([s4_row], top={SEAT_KEYS_FIELD: [
-        dict(real_seats[0], council_id="some_other_council")]})
-    _register_probe("self-test/seat-council-spelling", base, c,
-                    {"register-seat-council-spelling"})
-
+def _probe_second_commissioned_body(f, _s4_tree, _register_probe, _seat,
+                                    s4_wallet, s4_grant, s4_row, s4_attest,
+                                    real_seats, now):
     # --------- wallet-v1.5: the SECOND commissioned body, and the pair -------
     #
     # widen-register-reader-for-a-second-council, design D4. NOTHING COUNTS ROWS
@@ -1151,6 +761,427 @@ def self_test_register_reader(f: Findings, _docs: dict[str, dict],
                            top={SEAT_KEYS_FIELD: [real_seats[0], clash]})
         _register_probe(f"self-test/seat-duplicate-across-councils[{field}]",
                         base, c, expected)
+
+
+def _probe_malformed_seat_entries(f, _s4_tree, _register_probe, _seat, s4_row,
+                                  s4_grant, real_seats, past):
+    # Malformed surfaces and entries.
+    for shape in ([], "P7D", {}):
+        base, c = _s4_tree([s4_row], top={SEAT_KEYS_FIELD: shape})
+        _register_probe(f"self-test/seat-keys-malformed[{type(shape).__name__}]",
+                        base, c, {"register-seat-keys-malformed"})
+
+    fat = dict(real_seats[0], minted_at="2026-08-28T00:00:00Z")
+    base, c = _s4_tree([s4_row], top={SEAT_KEYS_FIELD: [fat]})
+    _register_probe("self-test/seat-entry-unknown-field", base, c,
+                    {"register-seat-keys-malformed"})
+
+    thin = {k: v for k, v in real_seats[0].items() if k != "key_id"}
+    base, c = _s4_tree([s4_row], top={SEAT_KEYS_FIELD: [thin]})
+    _register_probe("self-test/seat-entry-missing-field", base, c,
+                    {"register-seat-keys-malformed"})
+
+    # A 64-hex value is the encoding of a PRIVATE seed. Refused BY SHAPE inside
+    # the required check (design R2) - the most plausible catastrophic paste.
+    seed_shaped = dict(real_seats[0], public_key="a" * 64)
+    base, c = _s4_tree([s4_row], top={SEAT_KEYS_FIELD: [seed_shaped]})
+    _register_probe("self-test/seat-key-private-seed-shaped", base, c,
+                    {"register-seat-key-malformed"})
+
+    # Non-canonical base64url: 43 legal characters whose final sextet carries
+    # trailing bits, so it decodes to a DIFFERENT key than it spells.
+    noncanon = real_seats[0]["public_key"][:-1] + "P"
+    if _decode_public_key(noncanon) is not None:  # pragma: no cover
+        f.error("register-assertion-failed",
+                "self-test/seat-key-noncanonical: the probe value is canonical; "
+                "the non-canonical refusal is untested")
+    base, c = _s4_tree([s4_row],
+                       top={SEAT_KEYS_FIELD: [dict(real_seats[0],
+                                                   public_key=noncanon)]})
+    _register_probe("self-test/seat-key-noncanonical", base, c,
+                    {"register-seat-key-malformed"})
+
+    base, c = _s4_tree([s4_row], top={SEAT_KEYS_FIELD: [
+        dict(real_seats[0], key_fingerprint="sha256:NOTHEX")]})
+    _register_probe("self-test/seat-fingerprint-malformed", base, c,
+                    {"register-seat-fingerprint-malformed"})
+
+    # The fingerprint of ANOTHER real seat: legal shape, wrong key. The refusal
+    # that makes the register a single source a projection can be derived from.
+    base, c = _s4_tree([s4_row], top={SEAT_KEYS_FIELD: [
+        dict(real_seats[0],
+             key_fingerprint=SEAT_KEY_MINT_RECORD_2026_08_28[1][2])]})
+    _register_probe("self-test/seat-fingerprint-mismatch", base, c,
+                    {"register-seat-fingerprint-mismatch"})
+
+    for field in ("seat_id", "key_id", "key_fingerprint"):
+        clash = dict(real_seats[1])
+        clash[field] = real_seats[0][field]
+        # Copying seat 0's FINGERPRINT onto seat 1 also makes that entry
+        # disagree with its own key, and both facts are reported: "no two
+        # refusals share a reason" cuts the other way too - one entry can be
+        # wrong in two ways and be told about both.
+        expected = {"register-seat-duplicate"}
+        if field == "key_fingerprint":
+            expected.add("register-seat-fingerprint-mismatch")
+        base, c = _s4_tree([s4_row],
+                           top={SEAT_KEYS_FIELD: [real_seats[0], clash]})
+        _register_probe(f"self-test/seat-duplicate[{field}]", base, c, expected)
+
+    base, c = _s4_tree([s4_row], top={SEAT_KEYS_FIELD: [
+        dict(real_seats[0], authorizing_row="row-nobody-0001")]})
+    _register_probe("self-test/seat-row-unresolved", base, c,
+                    {"register-seat-row-unresolved"})
+
+    # An EXPIRED row is not an authority for a seat, whatever its stored state
+    # says (N8) - and the row's own expiry findings stand beside it.
+    base, c = _s4_tree([dict(s4_row, expires_at=past)],
+                       grant=dict(s4_grant, expires_at=past),
+                       top={SEAT_KEYS_FIELD: [real_seats[0]]})
+    _register_probe("self-test/seat-row-expired", base, c,
+                    {"register-seat-row-unresolved", "register-row-expired",
+                     "grant-state-stale", "register-no-active-row"})
+
+    # D8: an entry attached to a body this register does not commission. Both
+    # spellings move together, so this probe isolates the ROW ATTACHMENT.
+    base, c = _s4_tree([s4_row], top={SEAT_KEYS_FIELD: [
+        _seat(*SEAT_KEY_MINT_RECORD_2026_08_28[0],
+              council="agent:some-other-council")]})
+    _register_probe("self-test/seat-council-mismatch", base, c,
+                    {"register-seat-council-mismatch"})
+
+    # ...and this one isolates the TWO SPELLINGS naming different bodies, which
+    # is the defect that would make the operator's projection step a translation.
+    base, c = _s4_tree([s4_row], top={SEAT_KEYS_FIELD: [
+        dict(real_seats[0], council_id="some_other_council")]})
+    _register_probe("self-test/seat-council-spelling", base, c,
+                    {"register-seat-council-spelling"})
+
+
+def _probe_seat_surface(f, _s4_tree, _register_probe, s4_row, real_seats, now):
+    # The fingerprints in the mint record RECOMPUTE from the keys beside them.
+    # Asserted here rather than trusted: this is the one property the reader
+    # enforces that touches key material, and a stale constant would make every
+    # negative below pass for the wrong reason.
+    for seat_id, public_key, fingerprint in SEAT_KEY_MINT_RECORD_2026_08_28:
+        raw = _decode_public_key(public_key)
+        if raw is None or _fingerprint_of(raw) != fingerprint:
+            f.error("register-assertion-failed",
+                    f"self-test/seat-mint-record: the recorded public half for "
+                    f"seat {seat_id!r} does not recompute to its recorded "
+                    f"fingerprint; the 2026-08-28 mint record and this constant "
+                    f"disagree")
+
+    # THE LIVE PAIR, pinned as an assertion rather than left in a comment:
+    # openxFactory's register spells the holder `agent:merge-readiness-council`
+    # and hermes-install's projection spells the council
+    # `merge_readiness_council`. If the reader's normalization ever stops
+    # relating those two, the operator's projection step silently becomes a
+    # TRANSLATION again and `review_authority.seat_unregistered` replaces the
+    # refusal this arc is clearing.
+    if "agent:merge-readiness-council" != (
+            SEAT_COUNCIL_HOLDER_PREFIX
+            + "merge_readiness_council".replace("_", "-")):  # pragma: no cover
+        f.error("register-assertion-failed",
+                "self-test/seat-council-live-pair: the reader no longer relates "
+                "the register's holder spelling to the runtime's council id")
+
+    # POSITIVE: one authority row, four per-seat keys, all resolving. This is
+    # the shape openxFactory's register takes, and it is CLEAN.
+    base, c = _s4_tree([s4_row], top={SEAT_KEYS_FIELD: real_seats})
+    _register_probe("self-test/seat-keys-clean", base, c, set())
+    probe = Findings()
+    check_register(probe, base, c, now=now)
+    if not any("4 of 4 per-seat signing key(s) adjudicated and resolved"
+               in n for n in probe.notes):
+        f.error("register-assertion-failed",
+                f"self-test/seat-keys-clean: the reader must NOTE how many seat "
+                f"keys it resolved - a green check that proves nothing was read "
+                f"is the vacuous pass this surface exists to close; got "
+                f"{probe.notes}")
+
+    # The absence NOTE (design D10): accepted, and VISIBLE.
+    base, c = _s4_tree([s4_row])
+    probe = Findings()
+    check_register(probe, base, c, now=now)
+    if probe.errors or not any(
+            "no per-seat signing key is recorded" in n for n in probe.notes):
+        f.error("register-assertion-failed",
+                f"self-test/seat-keys-absent: an absent surface is accepted "
+                f"with a note naming what is not recorded; got "
+                f"{probe.errors} / {probe.notes}")
+
+    # An unread top-level declaration is refused. THIS is the class: the
+    # staleness bound sat in the live register unadjudicated because the reader
+    # ignored what it did not read.
+    base, c = _s4_tree([s4_row], top={"an_unread_declaration": "P1D"})
+    _register_probe("self-test/register-top-level-unknown", base, c,
+                    {"register-top-level-unknown"})
+
+    base, c = _s4_tree([s4_row], top={STALENESS_BOUND_FIELD: _ABSENT})
+    _register_probe("self-test/register-staleness-bound-missing", base, c,
+                    {"register-staleness-bound-missing"})
+
+    for bad in ("P1Y", "P1M", "7 days", "P", "PT", "P0D", "PT0S"):
+        base, c = _s4_tree([s4_row], top={STALENESS_BOUND_FIELD: bad})
+        _register_probe(f"self-test/register-staleness-bound-malformed[{bad}]",
+                        base, c, {"register-staleness-bound-malformed"})
+
+    for good in ("P7D", "P1D", "P1W", "PT12H", "P1DT6H30M"):
+        base, c = _s4_tree([s4_row], top={STALENESS_BOUND_FIELD: good})
+        _register_probe(f"self-test/register-staleness-bound-ok[{good}]",
+                        base, c, set())
+
+
+def _probe_register_rows(f, _s4_tree, _s4_ctx, _register_probe, s4_row,
+                         s4_grant, s4_wallet, now, past, tempfile):
+    # Positive: a fully resolving row is CLEAN.
+    base, c = _s4_tree([s4_row])
+    _register_probe("self-test/register-clean", base, c, set())
+
+    # Computed expiry: past expires_at refuses as expired AND flags the stale
+    # stored state AND leaves the grant without a backing active row.
+    stale_row = dict(s4_row, expires_at=past)
+    stale_grant = dict(s4_grant, expires_at=past)
+    base, c = _s4_tree([stale_row], grant=stale_grant)
+    _register_probe("self-test/register-computed-expiry", base, c,
+                    {"register-row-expired", "grant-state-stale",
+                     "register-no-active-row"})
+
+    wrong_binding = dict(
+        s4_grant,
+        audience={"wallet_ref": "wal-s4-probe-0001",
+                  "holder_ref": "agent:other-holder"},
+        scope={"acts": [REVIEW_ACT_TOKEN], "authority_tier": "act",
+               "objects": ["opensoft/other-repo"]},
+    )
+    base, c = _s4_tree([s4_row], grant=wrong_binding)
+    _register_probe("self-test/register-grant-binding", base, c,
+                    {"register-grant-mismatch"})
+
+    naive_row = dict(s4_row, expires_at="2026-11-23T12:00:00")
+    base, c = _s4_tree([naive_row])
+    _register_probe("self-test/register-naive-timestamp", base, c,
+                    {"register-row-malformed", "register-no-active-row"})
+
+    # Grant without any backing row: the headline obligation.
+    empty_reg = {"register_version": 1,
+                 "revocation_staleness_bound": "P7D", "rows": []}
+    base = Path(tempfile.mkdtemp(prefix="s4-selftest-"))
+    ra = base.joinpath(*REGISTER_DIR_PARTS, ATTESTATIONS_DIR)
+    ra.mkdir(parents=True)
+    (base.joinpath(*REGISTER_DIR_PARTS, REGISTER_FILE)).write_text(
+        yaml.safe_dump(empty_reg), encoding="utf-8")
+    _register_probe("self-test/register-no-active-row", base,
+                    _s4_ctx(s4_grant, s4_wallet),
+                    {"register-row-malformed", "register-no-active-row"})
+
+    # wallet-v1.4: A REVOKED REVIEW-CLASS GRANT OWES NO ROW. This is the
+    # RE-ISSUANCE shape and nothing else: the predecessor was revoked, the
+    # successor issued against it, and the one permitted row repointed. Before
+    # wallet-v1.4 the closing loop read only `scope.acts` and demanded a
+    # backing active row for the revoked predecessor too -- a row the row-count
+    # cap of the day forbade (retired at wallet-v1.5) -- so no consumer could
+    # represent a re-issuance at all. Three probes, because the fix has three halves: the shape is
+    # CLEAN, the guard still fires on an ACTIVE grant with no row (the probe
+    # above), and a row pointing AT a revoked grant is still refused.
+    s4_revoked = dict(
+        s4_grant, grant_id="grant-s4-probe-0000", state="revoked",
+        revocation={"revoked_at": "2026-08-30T12:00:00Z",
+                    "reason": "superseded by grant-s4-probe-0001 for drift; "
+                              "the register act's shape"})
+    base, c = _s4_tree([s4_row])
+    c.index(s4_revoked)
+    _register_probe("self-test/register-revoked-grant-exempt", base, c, set())
+
+    # PROTECTION PRESERVED, the row->grant direction: a row that still points
+    # at the revoked grant is refused. The exemption is only ever about a
+    # revoked grant NO row names.
+    base, c = _s4_tree([dict(s4_row, grant_ref="grant-s4-probe-0000")],
+                       grant=s4_revoked)
+    _register_probe("self-test/register-revoked-grant-still-mismatches",
+                    base, c, {"register-grant-mismatch"})
+
+    # The SAME exemption on the absent-register branch, which states the same
+    # obligation for a tree that never cold-started: revoked-only is clean.
+    probe = Findings()
+    check_register(probe, Path(tempfile.mkdtemp(prefix="s4-selftest-")),
+                   _s4_ctx(s4_revoked, s4_wallet), now=now)
+    if probe.errors:
+        f.error("register-assertion-failed",
+                f"self-test/register-revoked-grant-absent-register: an absent "
+                f"register with only REVOKED review-class grants must be "
+                f"clean; got {probe.errors}")
+
+    # act tier without a parseable attestation refuses loudly.
+    base, c = _s4_tree([s4_row], with_attest=False)
+    _register_probe("self-test/register-tier-act-unattested", base, c,
+                    {"register-tier-act-unattested"})
+
+    # THE ROW-COUNT PROBE IS RETIRED HERE (wallet-v1.5, design D4). It asserted
+    # `register-minimal-shape-exceeded` on a second authority row; that refusal
+    # is retired by name, and a probe expecting a refusal the reader can never
+    # emit is a test of nothing. What replaces it is the multi-body block at the
+    # end of this function -- a positive probe for two resolving bodies and a
+    # negative for a second row that does NOT resolve, which is the invariant
+    # the count was standing in for.
+
+    # Unknown field on a row: strict, because this reader IS the shape.
+    fat_row = dict(s4_row, extra_field="nope")
+    base, c = _s4_tree([fat_row])
+    _register_probe("self-test/register-row-malformed", base, c,
+                    {"register-row-malformed"})
+
+    # Absent register with no review grants: legitimate consumer posture.
+    probe = Findings()
+    check_register(probe, Path(tempfile.mkdtemp(prefix="s4-selftest-")),
+                   _s4_ctx(), now=now)
+    if probe.errors:
+        f.error("register-assertion-failed",
+                f"absent register with no review grants must be clean; "
+                f"got {probe.errors}")
+
+
+def _build_register_probe_tree(tempfile, _s4_ctx, s4_grant, s4_wallet, s4_attest,
+                               register_rows, with_attest, grant, wallet, top,
+                               also, also_attest):
+    base = Path(tempfile.mkdtemp(prefix="s4-selftest-"))
+    ra = base.joinpath(*REGISTER_DIR_PARTS, ATTESTATIONS_DIR)
+    ra.mkdir(parents=True)
+    # wallet-v1.2: the staleness bound is REQUIRED, so every probe tree
+    # declares one. `top` overrides or extends the top level, which is how
+    # the top-level probes below inject an unknown key or a bad bound
+    # WITHOUT any probe having to hand-build a tree.
+    doc = {"register_version": 1, "revocation_staleness_bound": "P7D",
+           "rows": register_rows}
+    if top is not None:
+        doc.update(top)
+        for k, v in top.items():
+            if v is _ABSENT:
+                doc.pop(k, None)
+    (base.joinpath(*REGISTER_DIR_PARTS, REGISTER_FILE)).write_text(
+        yaml.safe_dump(doc), encoding="utf-8")
+    if with_attest:
+        (ra / "custody-attest-wal-s4-probe-0001.yaml").write_text(
+            yaml.safe_dump(s4_attest), encoding="utf-8")
+    # wallet-v1.5: `also` indexes the SECOND commissioned body's records and
+    # `also_attest` writes its custody attestation, so a multi-body probe
+    # needs no hand-built tree either.
+    for extra_attest in also_attest:
+        (ra / f"custody-attest-{extra_attest['subject_wallet_ref']}.yaml"
+         ).write_text(yaml.safe_dump(extra_attest), encoding="utf-8")
+    return base, _s4_ctx(grant or s4_grant, wallet or s4_wallet, *also)
+
+
+def self_test_register_reader(f: Findings, _docs: dict[str, dict],
+                              ctx: Context) -> None:
+    """The SELF_TEST_TAIL_HOOKS entry, after the corpus note: where the S4 block
+    always ran. `_docs` is the hook contract's; the reader needs no schema."""
+    # S4 register-reader assertions. Same discipline as the S2 anchor block:
+    # the live register proves the happy path, and these synthetic probes pin
+    # every refusal code the reader can emit so no edit or deleted fixture
+    # silences an invariant while the self-test stays green. The register is
+    # kindless BY RULING (D11), so file fixtures cannot be corpus negatives -
+    # these synthesized trees ARE the negative coverage.
+    import tempfile
+    now = datetime(2026, 9, 1, tzinfo=timezone.utc)
+    future = "2026-11-23T12:00:00Z"
+    past = "2026-08-01T12:00:00Z"
+
+    def _s4_ctx(*docs):
+        c = Context(ctx.registry, ctx.vocabulary)
+        for d in docs:
+            c.index(d)
+        return c
+
+    s4_wallet = {
+        "schema_version": 1, "kind": "xfactory_wallet_record",
+        "wallet_id": "wal-s4-probe-0001",
+        "holder": {"holder_id": _S4_PROBE_AGENT,
+                   "holder_class": "agent"},
+        "key_reference": {"did": "did:key:z6Mko2FefScUQg9opCriwQmjfcb3Qjnb5bN49hQsEVMo6gee",
+                          "key_id": "key-s4-0001",
+                          "signature_algorithm": "ed25519"},
+        "custody": {"model": "holder_readable", "registry_version": 1},
+        "state": "active",
+    }
+    s4_grant = {
+        "schema_version": 1, "kind": "xfactory_wallet_grant",
+        "grant_id": "grant-s4-probe-0001",
+        "audience": {"wallet_ref": "wal-s4-probe-0001",
+                     "holder_ref": _S4_PROBE_AGENT},
+        "scope": {"acts": [REVIEW_ACT_TOKEN], "authority_tier": "act",
+                  "objects": ["opensoft/openxFactory"]},
+        "expires_at": future, "state": "active",
+        "issued_by": ROOT_ISSUER_OPERATOR_TOKEN,
+    }
+    s4_row = {
+        "row_id": "row-s4-0001",
+        "holder_ref": _S4_PROBE_AGENT,
+        "wallet_ref": "wal-s4-probe-0001",
+        "target_repo": "opensoft/openxFactory",
+        "act": REVIEW_ACT_TOKEN, "authority_tier": "act",
+        "grant_ref": "grant-s4-probe-0001", "expires_at": future,
+        "state": "active",
+    }
+    s4_attest = {
+        "attestation_id": "attest-custody-wal-s4-probe-0001",
+        "subject_wallet_ref": "wal-s4-probe-0001",
+        "custody_model_attested": "holder_readable",
+        "verified_by": {"name": "Brett Heap", "role": "responsible operator",
+                        "standing": "Human Escalation Contract"},
+        "verified_at": "2026-08-24T12:00:00Z",
+        "verified_against": {"method": "operator-minted ed25519 keypair",
+                             "isolation_claimed": False},
+    }
+
+    def _s4_tree(register_rows, with_attest=True, grant=None, wallet=None,
+                 top=None, also=(), also_attest=()):
+        return _build_register_probe_tree(
+            tempfile, _s4_ctx, s4_grant, s4_wallet, s4_attest,
+            register_rows, with_attest, grant, wallet, top, also, also_attest)
+
+
+    def _register_probe(label, base, c, expect_codes):
+        probe = Findings()
+        check_register(probe, base, c, now=now)
+        got = {e.split("]")[0].replace("ERROR [", "") for e in probe.errors}
+        expected = set(expect_codes)
+        missing = expected - got
+        extra = got - expected
+        if missing or extra:
+            f.error("register-assertion-failed",
+                    f"{label}: expected {sorted(expect_codes)}, got "
+                    f"{sorted(got)}")
+
+    _probe_register_rows(f, _s4_tree, _s4_ctx, _register_probe, s4_row,
+                         s4_grant, s4_wallet, now, past, tempfile)
+
+    # ---------------- wallet-v1.2: the top level and the seat keys ----------
+    #
+    # add-per-seat-register-entries. Same discipline as the S4 block above: one
+    # probe per refusal the reader can emit, plus a POSITIVE probe over the four
+    # REAL public halves, so no edit silences an invariant while the self-test
+    # stays green.
+
+    def _seat(seat_id, public_key, fingerprint, row="row-s4-0001",
+              council=_S4_PROBE_AGENT, council_id=None, key_id=None):
+        return {"seat_id": seat_id, "council_ref": council,
+                "council_id": council_id if council_id is not None else
+                council.split(":", 1)[-1].replace("-", "_"),
+                "key_id": key_id or f"key-seat-{seat_id}-0001",
+                "public_key": public_key, "key_fingerprint": fingerprint,
+                "authorizing_row": row}
+
+    real_seats = [_seat(s, k, fp) for s, k, fp in
+                  SEAT_KEY_MINT_RECORD_2026_08_28]
+
+    _probe_seat_surface(f, _s4_tree, _register_probe, s4_row, real_seats, now)
+    _probe_malformed_seat_entries(f, _s4_tree, _register_probe, _seat, s4_row,
+                                  s4_grant, real_seats, past)
+    _probe_second_commissioned_body(f, _s4_tree, _register_probe, _seat,
+                                    s4_wallet, s4_grant, s4_row, s4_attest,
+                                    real_seats, now)
 
 
 # ------------------- register: the intake's row validator -------------------
@@ -1332,6 +1363,30 @@ def _parse_dt(value: Any) -> datetime | None:
     return parsed if parsed.utcoffset() is not None else None
 
 
+def _attestation_problems(doc, ctx):
+    problems = []
+    by = doc.get("verified_by")
+    if not isinstance(by, dict) or not all(
+            isinstance(by.get(k), str) and by.get(k)
+            for k in ("name", "role", "standing")):
+        problems.append("verified_by must name name/role/standing")
+    against = doc.get("verified_against")
+    if not isinstance(against, dict) or not isinstance(
+            against.get("method"), str) or not against.get("method"):
+        problems.append("verified_against.method missing")
+    if "isolation_claimed" not in (against or {}):
+        problems.append("verified_against.isolation_claimed missing "
+                        "(the honest posture field)")
+    model = doc.get("custody_model_attested")
+    if not isinstance(model, str) or model not in ctx.custody:
+        problems.append(f"custody_model_attested {model!r} is not a "
+                        f"closed-set member")
+    when = _parse_dt(doc.get("verified_at"))
+    if when is None:
+        problems.append("verified_at is not an RFC3339 timestamp")
+    return problems
+
+
 def _load_attestations(f: Findings, attest_dir: Path,
                        ctx: Context) -> dict[str, dict]:
     """Parse every custody-attestation row under attest_dir into
@@ -1359,26 +1414,7 @@ def _load_attestations(f: Findings, attest_dir: Path,
             f.note(f"attestation {path.name}: subject {ref!r} is not a "
                    f"wallet in this scan; skipped")
             continue
-        problems = []
-        by = doc.get("verified_by")
-        if not isinstance(by, dict) or not all(
-                isinstance(by.get(k), str) and by.get(k)
-                for k in ("name", "role", "standing")):
-            problems.append("verified_by must name name/role/standing")
-        against = doc.get("verified_against")
-        if not isinstance(against, dict) or not isinstance(
-                against.get("method"), str) or not against.get("method"):
-            problems.append("verified_against.method missing")
-        if "isolation_claimed" not in (against or {}):
-            problems.append("verified_against.isolation_claimed missing "
-                            "(the honest posture field)")
-        model = doc.get("custody_model_attested")
-        if not isinstance(model, str) or model not in ctx.custody:
-            problems.append(f"custody_model_attested {model!r} is not a "
-                            f"closed-set member")
-        when = _parse_dt(doc.get("verified_at"))
-        if when is None:
-            problems.append("verified_at is not an RFC3339 timestamp")
+        problems = _attestation_problems(doc, ctx)
         if problems:
             f.error("attestation-malformed",
                     f"{path}: " + "; ".join(problems))
@@ -1453,6 +1489,140 @@ def _check_staleness_bound(f: Findings, reg: dict, reg_path: Path) -> None:
                 f"inside it, which disables the gate rather than tightening it")
 
 
+def _usable_authority_rows(rows: list, now: datetime) -> dict[str, dict]:
+    # Rows usable as an authority for a seat: indexed by row_id, ACTIVE, and
+    # unexpired by COMPUTED time (N8 -- the stored `state` is never truth about
+    # expiry). A row this reader has already refused is not promoted to an
+    # authority here by being merely present.
+    usable: dict[str, dict] = {}
+    for row in rows:
+        if not isinstance(row, dict) or set(row) != REGISTER_ROW_FIELDS:
+            continue  # a row this reader has already refused is not an authority
+        if not isinstance(row.get("row_id"), str):
+            continue
+        expires = _parse_dt(row.get("expires_at"))
+        if row.get("state") == "active" and expires is not None and expires > now:
+            usable[row["row_id"]] = row
+
+    return usable
+
+
+def _seat_has_expected_fields(f: Findings, entry, label: str) -> bool:
+    if not isinstance(entry, dict):
+        f.error("register-seat-keys-malformed", f"{label}: not a mapping")
+        return False
+    fields = set(entry)
+    if fields != REGISTER_SEAT_FIELDS:
+        missing = sorted(REGISTER_SEAT_FIELDS - fields)
+        extra = sorted(fields - REGISTER_SEAT_FIELDS)
+        f.error("register-seat-keys-malformed",
+                f"{label}: field set mismatch (missing={missing}, "
+                f"unknown={extra}); the register has no schema so THIS "
+                f"reader is the shape, and it is strict")
+        return False
+    if not all(isinstance(entry[k], str) and entry[k]
+               for k in REGISTER_SEAT_FIELDS):
+        f.error("register-seat-keys-malformed",
+                f"{label}: every field is a non-empty string")
+        return False
+    return True
+
+
+def _check_seat_duplicates(f, entry, label, seat, seen, index):
+    # Duplicates are refused, never resolved by file order: a register
+    # naming one seat twice has two answers to "which key is this seat's
+    # root", and picking either is choosing which authority to believe.
+    council_id = entry["council_id"]
+    for field in seen:
+        scoped = field == "seat_id"
+        seen_key = (council_id, entry[field]) if scoped else entry[field]
+        first = seen[field].get(seen_key)
+        if first is not None:
+            if scoped:
+                f.error("register-seat-duplicate",
+                        f"{label} ({seat}): {field} {entry[field]!r} is "
+                        f"already recorded under council {council_id!r} at "
+                        f"{SEAT_KEYS_FIELD}[{first}]; a repeated {field} "
+                        f"within ONE council is refused rather than resolved "
+                        f"by file order, because that council then has two "
+                        f"answers to which key is that seat's root. The same "
+                        f"seat name under a DIFFERENT council is not a "
+                        f"duplicate: two bodies commonly seat one role")
+            else:
+                f.error("register-seat-duplicate",
+                        f"{label} ({seat}): {field} {entry[field]!r} is "
+                        f"already recorded at {SEAT_KEYS_FIELD}[{first}]; a "
+                        f"repeated {field} is refused rather than resolved "
+                        f"by file order, and this uniqueness is GLOBAL "
+                        f"across the file whatever the councils -- a key is "
+                        f"one key, and two bodies presenting it are two "
+                        f"claims on one identity")
+        else:
+            seen[field][seen_key] = index
+
+
+def _check_seat_public_key(f, entry, label, seat):
+    raw = _decode_public_key(entry["public_key"])
+    if raw is None:
+        f.error("register-seat-key-malformed",
+                f"{label} ({seat}): public_key is not "
+                f"{PUBLIC_KEY_B64U_LEN} characters of CANONICAL unpadded "
+                f"base64url over 32 raw bytes; note that a 64-hex value is "
+                f"the encoding of a PRIVATE seed and is refused here by "
+                f"shape")
+    if not FINGERPRINT_RE.match(entry["key_fingerprint"]):
+        f.error("register-seat-fingerprint-malformed",
+                f"{label} ({seat}): key_fingerprint "
+                f"{entry['key_fingerprint']!r} is not "
+                f"sha256:<64 lowercase hex>")
+    elif raw is not None and _fingerprint_of(raw) != entry["key_fingerprint"]:
+        f.error("register-seat-fingerprint-mismatch",
+                f"{label} ({seat}): key_fingerprint does not recompute from "
+                f"public_key; two spellings of one key's identity mean one "
+                f"of them is wrong, and choosing either is choosing which "
+                f"authority to believe")
+
+
+def _check_seat_authority(f, entry, label, seat, usable):
+    # The two spellings must denote ONE body. Checked before the row
+    # attachment so an operator who mistyped the runtime name is told that,
+    # rather than being told the entry is attached to the wrong council.
+    if entry["council_ref"] != (
+            SEAT_COUNCIL_HOLDER_PREFIX
+            + entry["council_id"].replace("_", "-")):
+        f.error("register-seat-council-spelling",
+                f"{label} ({seat}): council_ref {entry['council_ref']!r} and "
+                f"council_id {entry['council_id']!r} do not denote one body "
+                f"(expected {SEAT_COUNCIL_HOLDER_PREFIX}"
+                f"{entry['council_id'].replace('_', '-')!r}); the register "
+                f"spelling anchors the authority and the runtime spelling is "
+                f"projected verbatim, so a disagreement between them is a "
+                f"projection that can name a body this row does not "
+                f"commission")
+
+    row = usable.get(entry["authorizing_row"])
+    if row is None:
+        f.error("register-seat-row-unresolved",
+                f"{label} ({seat}): authorizing_row "
+                f"{entry['authorizing_row']!r} resolves to no ACTIVE, "
+                f"unexpired row in this register; a key descending from no "
+                f"live authority descends from nothing")
+    elif row.get("holder_ref") != entry["council_ref"]:
+        # D8: the enforceable meaning of "an unknown seat" at THIS altitude.
+        # The council's seat roster is governed in codexFactory
+        # (hermes/domain/review-councils/), a repository this validator has
+        # no read path into and must not acquire one -- so the reader cannot
+        # say "that seat does not exist". It CAN say "that entry is not
+        # attached to a body this register commissions", which is the
+        # failure the check is actually for. Resolving seat ids against the
+        # roster is a named successor.
+        f.error("register-seat-council-mismatch",
+                f"{label} ({seat}): council_ref {entry['council_ref']!r} is "
+                f"not the holder_ref {row.get('holder_ref')!r} that row "
+                f"{entry['authorizing_row']!r} commissions; this entry "
+                f"names a body the register does not seat")
+
+
 def _check_seat_keys(f: Findings, reg: dict, reg_path: Path,
                      rows: list, now: datetime) -> None:
     """The per-seat signing-key surface, READ AND ENFORCED (design D1/D2/D7/D8).
@@ -1497,19 +1667,7 @@ def _check_seat_keys(f: Findings, reg: dict, reg_path: Path,
                 f"declaration, and the absent one is said by omitting the key")
         return
 
-    # Rows usable as an authority for a seat: indexed by row_id, ACTIVE, and
-    # unexpired by COMPUTED time (N8 -- the stored `state` is never truth about
-    # expiry). A row this reader has already refused is not promoted to an
-    # authority here by being merely present.
-    usable: dict[str, dict] = {}
-    for row in rows:
-        if not isinstance(row, dict) or set(row) != REGISTER_ROW_FIELDS:
-            continue  # a row this reader has already refused is not an authority
-        if not isinstance(row.get("row_id"), str):
-            continue
-        expires = _parse_dt(row.get("expires_at"))
-        if row.get("state") == "active" and expires is not None and expires > now:
-            usable[row["row_id"]] = row
+    usable = _usable_authority_rows(rows, now)
 
     # wallet-v1.5 (widen-register-reader-for-a-second-council, design D2): the
     # `seat_id` table is keyed on the PAIR (council_id, seat_id); `key_id` and
@@ -1540,113 +1698,13 @@ def _check_seat_keys(f: Findings, reg: dict, reg_path: Path,
         # count of `len(entries)` would prove parsing and prove nothing else --
         # which is the vacuous pass that kept these keys out of the register.
         before = len(f.errors)
-        if not isinstance(entry, dict):
-            f.error("register-seat-keys-malformed", f"{label}: not a mapping")
-            continue
-        fields = set(entry)
-        if fields != REGISTER_SEAT_FIELDS:
-            missing = sorted(REGISTER_SEAT_FIELDS - fields)
-            extra = sorted(fields - REGISTER_SEAT_FIELDS)
-            f.error("register-seat-keys-malformed",
-                    f"{label}: field set mismatch (missing={missing}, "
-                    f"unknown={extra}); the register has no schema so THIS "
-                    f"reader is the shape, and it is strict")
-            continue
-        if not all(isinstance(entry[k], str) and entry[k]
-                   for k in REGISTER_SEAT_FIELDS):
-            f.error("register-seat-keys-malformed",
-                    f"{label}: every field is a non-empty string")
+        if not _seat_has_expected_fields(f, entry, label):
             continue
         seat = entry["seat_id"]
 
-        # Duplicates are refused, never resolved by file order: a register
-        # naming one seat twice has two answers to "which key is this seat's
-        # root", and picking either is choosing which authority to believe.
-        council_id = entry["council_id"]
-        for field in seen:
-            scoped = field == "seat_id"
-            seen_key = (council_id, entry[field]) if scoped else entry[field]
-            first = seen[field].get(seen_key)
-            if first is not None:
-                if scoped:
-                    f.error("register-seat-duplicate",
-                            f"{label} ({seat}): {field} {entry[field]!r} is "
-                            f"already recorded under council {council_id!r} at "
-                            f"{SEAT_KEYS_FIELD}[{first}]; a repeated {field} "
-                            f"within ONE council is refused rather than resolved "
-                            f"by file order, because that council then has two "
-                            f"answers to which key is that seat's root. The same "
-                            f"seat name under a DIFFERENT council is not a "
-                            f"duplicate: two bodies commonly seat one role")
-                else:
-                    f.error("register-seat-duplicate",
-                            f"{label} ({seat}): {field} {entry[field]!r} is "
-                            f"already recorded at {SEAT_KEYS_FIELD}[{first}]; a "
-                            f"repeated {field} is refused rather than resolved "
-                            f"by file order, and this uniqueness is GLOBAL "
-                            f"across the file whatever the councils -- a key is "
-                            f"one key, and two bodies presenting it are two "
-                            f"claims on one identity")
-            else:
-                seen[field][seen_key] = i
-
-        raw = _decode_public_key(entry["public_key"])
-        if raw is None:
-            f.error("register-seat-key-malformed",
-                    f"{label} ({seat}): public_key is not "
-                    f"{PUBLIC_KEY_B64U_LEN} characters of CANONICAL unpadded "
-                    f"base64url over 32 raw bytes; note that a 64-hex value is "
-                    f"the encoding of a PRIVATE seed and is refused here by "
-                    f"shape")
-        if not FINGERPRINT_RE.match(entry["key_fingerprint"]):
-            f.error("register-seat-fingerprint-malformed",
-                    f"{label} ({seat}): key_fingerprint "
-                    f"{entry['key_fingerprint']!r} is not "
-                    f"sha256:<64 lowercase hex>")
-        elif raw is not None and _fingerprint_of(raw) != entry["key_fingerprint"]:
-            f.error("register-seat-fingerprint-mismatch",
-                    f"{label} ({seat}): key_fingerprint does not recompute from "
-                    f"public_key; two spellings of one key's identity mean one "
-                    f"of them is wrong, and choosing either is choosing which "
-                    f"authority to believe")
-
-        # The two spellings must denote ONE body. Checked before the row
-        # attachment so an operator who mistyped the runtime name is told that,
-        # rather than being told the entry is attached to the wrong council.
-        if entry["council_ref"] != (
-                SEAT_COUNCIL_HOLDER_PREFIX
-                + entry["council_id"].replace("_", "-")):
-            f.error("register-seat-council-spelling",
-                    f"{label} ({seat}): council_ref {entry['council_ref']!r} and "
-                    f"council_id {entry['council_id']!r} do not denote one body "
-                    f"(expected {SEAT_COUNCIL_HOLDER_PREFIX}"
-                    f"{entry['council_id'].replace('_', '-')!r}); the register "
-                    f"spelling anchors the authority and the runtime spelling is "
-                    f"projected verbatim, so a disagreement between them is a "
-                    f"projection that can name a body this row does not "
-                    f"commission")
-
-        row = usable.get(entry["authorizing_row"])
-        if row is None:
-            f.error("register-seat-row-unresolved",
-                    f"{label} ({seat}): authorizing_row "
-                    f"{entry['authorizing_row']!r} resolves to no ACTIVE, "
-                    f"unexpired row in this register; a key descending from no "
-                    f"live authority descends from nothing")
-        elif row.get("holder_ref") != entry["council_ref"]:
-            # D8: the enforceable meaning of "an unknown seat" at THIS altitude.
-            # The council's seat roster is governed in codexFactory
-            # (hermes/domain/review-councils/), a repository this validator has
-            # no read path into and must not acquire one -- so the reader cannot
-            # say "that seat does not exist". It CAN say "that entry is not
-            # attached to a body this register commissions", which is the
-            # failure the check is actually for. Resolving seat ids against the
-            # roster is a named successor.
-            f.error("register-seat-council-mismatch",
-                    f"{label} ({seat}): council_ref {entry['council_ref']!r} is "
-                    f"not the holder_ref {row.get('holder_ref')!r} that row "
-                    f"{entry['authorizing_row']!r} commissions; this entry "
-                    f"names a body the register does not seat")
+        _check_seat_duplicates(f, entry, label, seat, seen, i)
+        _check_seat_public_key(f, entry, label, seat)
+        _check_seat_authority(f, entry, label, seat, usable)
         if len(f.errors) == before:
             read += 1
 
@@ -1660,6 +1718,209 @@ def _check_seat_keys(f: Findings, reg: dict, reg_path: Path,
     # carrying this note has stood behind every key it names.
     f.note(f"intake register: {read} of {len(entries)} per-seat signing key(s) "
            f"adjudicated and resolved")
+
+
+def _report_absent_register(f, reg_path, ctx):
+    # wallet-v1.4: `state == "revoked"` is exempt here for exactly the
+    # reasons spelled out at the closing loop's REVOKED IS EXEMPT block --
+    # this branch states the SAME obligation for the absent-register case,
+    # and the two must agree or a consumer's finding would depend on
+    # whether it has cold-started the register yet. A tree carrying only
+    # revoked review-class grants and no register is the shape a consumer
+    # has after revoking its way out of the arc, and it is legitimate.
+    review_holders = [
+        gid for gid, g in ctx.grants.items()
+        if isinstance(g.get("scope"), dict)
+        and REVIEW_ACT_TOKEN in _hashable_set(g["scope"].get("acts"))
+        and g.get("state") != "revoked"
+    ]
+    if review_holders:
+        f.error("register-no-active-row",
+                f"active REVIEW-class grants {sorted(review_holders)} "
+                f"exist but {reg_path} does not exist; authority claimed "
+                f"outside the ratified register confers nothing")
+    else:
+        f.note("no intake register at this tree; nothing to read")
+
+
+def _read_register(f, reg_path):
+    try:
+        reg = load_yaml(reg_path)
+    except yaml.YAMLError as exc:
+        f.error("register-unparseable", f"{reg_path}: parse failure: {exc}")
+        return
+    if not isinstance(reg, dict):
+        f.error("register-unparseable", f"{reg_path}: not a mapping")
+        return
+    if reg.get("register_version") != 1:
+        f.error("register-version-unknown",
+                f"{reg_path}: register_version {reg.get('register_version')!r} "
+                f"is not 1")
+        return
+
+    return reg
+
+
+def _check_grants_have_active_rows(f, rows, ctx, now):
+    # The headline obligation, inverted for CI: an active REVIEW-class grant
+    # whose holder carries no ACTIVE register row means a convening could
+    # admit authority the register never granted.
+    #
+    # REVOKED IS EXEMPT (wallet-v1.4). Until this release the loop filtered on
+    # the review token ALONE and never read the grant's own `state`, so it
+    # demanded a backing active row for a grant it had itself been told was
+    # revoked -- while the row-count cap this reader then carried
+    # (`REGISTER_MVP_SINGLE_ROW`, RETIRED at wallet-v1.5) forbade the second row
+    # such a demand would need. The reader could therefore not represent ANY
+    # re-issuance: revoking a review-class grant and issuing its successor is
+    # the runbook's §5.1 act, and every consumer that performed it went red on
+    # a correct tree. openxFactory's S5 register act (2026-09-02, PR #583) is
+    # the act that found it.
+    #
+    # WHY `== "revoked"` AND NOT `!= "active"`. The broader test would also
+    # exempt a grant merely STAMPED `expired`, and this reader has no inverse
+    # check for stored-expired-with-a-future `expires_at` -- N8 is that stored
+    # state is checked AGAINST computed time and never trusted, so a state the
+    # reader cannot contradict must not be allowed to switch an obligation off.
+    # `revoked` is different in kind: it is the TERMINAL fact of the ratified
+    # drift-cascade rule (a revoked grant never returns to active; authority
+    # resumes only as a NEW grant), it is the exact state §5.1 re-issuance
+    # produces, and it is backstopped -- `revocation-unrecorded` refuses a
+    # grant stamped `revoked` that carries no `revocation` block recording when
+    # and why.
+    #
+    # NEITHER VARIANT WEAKENS THE GUARD, because this loop is only the
+    # grant->row direction. The row->grant direction still runs above and
+    # appends `grant state ...` to `mismatches`, so a row pointing at a revoked
+    # grant is still refused with `register-grant-mismatch`; and
+    # `_revoked_ancestor` still refuses every exercise up a revoked chain. What
+    # is exempted here is exactly a revoked grant that NO row points at -- a
+    # historical record, which is what a superseded grant is supposed to be.
+    for gid, g in sorted(ctx.grants.items()):
+        scope = g.get("scope") if isinstance(g.get("scope"), dict) else {}
+        if REVIEW_ACT_TOKEN not in _hashable_set(scope.get("acts")):
+            continue
+        if g.get("state") == "revoked":
+            continue  # wallet-v1.4 -- see REVOKED IS EXEMPT below
+        backed = any(
+            isinstance(r, dict) and r.get("grant_ref") == gid
+            and r.get("state") == "active"
+            and (_parse_dt(r.get("expires_at")) or now) > now
+            for r in rows if isinstance(r, dict))
+        if not backed:
+            f.error("register-no-active-row",
+                    f"active REVIEW-class grant {gid!r} has no backing "
+                    f"active register row; admitting a convening for this "
+                    f"holder would confer authority the register never "
+                    f"granted")
+
+
+def _check_register_row_grant(f, row, row_id, grant, label, now):
+    g_scope = grant.get("scope") if isinstance(grant.get("scope"), dict) \
+        else {}
+    g_aud = grant.get("audience") if isinstance(
+        grant.get("audience"), dict) else {}
+    mismatches = []
+    if g_aud.get("wallet_ref") != row["wallet_ref"]:
+        mismatches.append("audience.wallet_ref")
+    if g_aud.get("holder_ref") != row["holder_ref"]:
+        mismatches.append("audience.holder_ref")
+    if REVIEW_ACT_TOKEN not in _hashable_set(g_scope.get("acts")):
+        mismatches.append("acts lacks the review token")
+    if _hashable_set(g_scope.get("objects")) != {row["target_repo"]}:
+        mismatches.append("objects differs from target_repo")
+    if g_scope.get("authority_tier") != row["authority_tier"]:
+        mismatches.append("authority_tier")
+    g_exp = _parse_dt(grant.get("expires_at"))
+    r_exp = _parse_dt(row["expires_at"])
+    if g_exp is None or r_exp is None or g_exp != r_exp:
+        mismatches.append("expires_at differs between row and grant")
+    if grant.get("state") != "active":
+        mismatches.append(f"grant state {grant.get('state')!r}")
+    if g_exp is not None and g_exp <= now and grant.get("state") == \
+            "active":
+        f.error("grant-state-stale",
+                f"{row['grant_ref']!r}: stored state 'active' but "
+                f"COMPUTED expiry {grant.get('expires_at')} has passed "
+                f"(N8: stale state is a finding, not truth)")
+    if mismatches:
+        f.error("register-grant-mismatch",
+                f"{label} ({row_id}): grant {row['grant_ref']!r} does "
+                f"not back the row: " + "; ".join(mismatches))
+
+
+def _check_register_wallet_tier(f, row, row_id, wallet, label, ctx):
+    if wallet.get("state") != "active":
+        f.error("register-wallet-inactive",
+                f"{label} ({row_id}): audience wallet "
+                f"{row['wallet_ref']!r} is state {wallet.get('state')!r}")
+
+    if row["act"] != REVIEW_ACT_TOKEN:
+        f.error("register-act-not-review",
+                f"{label} ({row_id}): act {row['act']!r} is not the "
+                f"canonical review token")
+    if row["authority_tier"] == "act_unsupervised":
+        f.error("register-tier-refused",
+                f"{label} ({row_id}): act_unsupervised is refused for "
+                f"review authority outright")
+    elif row["authority_tier"] not in ctx.tier_rank:
+        f.error("register-tier-unknown",
+                f"{label} ({row_id}): authority_tier "
+                f"{row['authority_tier']!r} is outside the closed ladder")
+
+
+def _check_register_row(f, i, row, reg_path, ctx, now, attestations, active_rows):
+    label = f"{reg_path}:rows[{i}]"
+    if not isinstance(row, dict):
+        f.error("register-row-malformed", f"{label}: not a mapping")
+        return
+    fields = set(row)
+    if fields != REGISTER_ROW_FIELDS:
+        missing = sorted(REGISTER_ROW_FIELDS - fields)
+        extra = sorted(fields - REGISTER_ROW_FIELDS)
+        f.error("register-row-malformed",
+                f"{label}: field set mismatch (missing={missing}, "
+                f"unknown={extra}); the register has no schema so THIS "
+                f"reader is the shape, and it is strict")
+        return
+    row_id = row["row_id"]
+
+    wallet = ctx.wallets.get(row["wallet_ref"])
+    if wallet is None:
+        f.error("register-wallet-unresolved",
+                f"{label} ({row_id}): wallet_ref {row['wallet_ref']!r} "
+                f"resolves to no scanned wallet record")
+        return
+    _check_register_wallet_tier(f, row, row_id, wallet, label, ctx)
+
+    expires = _parse_dt(row["expires_at"])
+    if expires is None:
+        f.error("register-row-malformed",
+                f"{label} ({row_id}): expires_at is not RFC3339")
+        return
+    if expires <= now:
+        f.error("register-row-expired",
+                f"{label} ({row_id}): COMPUTED expiry "
+                f"{row['expires_at']} has passed; the stored state "
+                f"{row['state']!r} is not truth about expiry (N8)")
+    elif row["state"] == "active":
+        active_rows.add(row_id)
+
+    grant = ctx.grants.get(row["grant_ref"])
+    if grant is None:
+        f.error("register-grant-unresolved",
+                f"{label} ({row_id}): grant_ref {row['grant_ref']!r} "
+                f"resolves to no scanned grant")
+        return
+    _check_register_row_grant(f, row, row_id, grant, label, now)
+
+    if row["authority_tier"] == "act" and row["wallet_ref"] not in \
+            attestations:
+        f.error("register-tier-act-unattested",
+                f"{label} ({row_id}): tier act requires a parseable "
+                f"custody attestation for wallet "
+                f"{row['wallet_ref']!r}; none resolved - the unattested "
+                f"cap applies and this row cannot stand at act")
 
 
 def check_register(f: Findings, base_dir: Path, ctx: Context,
@@ -1684,40 +1945,11 @@ def check_register(f: Findings, base_dir: Path, ctx: Context,
     now = now or datetime.now(timezone.utc)
     reg_path = Path(base_dir).joinpath(*REGISTER_DIR_PARTS, REGISTER_FILE)
     if not reg_path.exists():
-        # wallet-v1.4: `state == "revoked"` is exempt here for exactly the
-        # reasons spelled out at the closing loop's REVOKED IS EXEMPT block --
-        # this branch states the SAME obligation for the absent-register case,
-        # and the two must agree or a consumer's finding would depend on
-        # whether it has cold-started the register yet. A tree carrying only
-        # revoked review-class grants and no register is the shape a consumer
-        # has after revoking its way out of the arc, and it is legitimate.
-        review_holders = [
-            gid for gid, g in ctx.grants.items()
-            if isinstance(g.get("scope"), dict)
-            and REVIEW_ACT_TOKEN in _hashable_set(g["scope"].get("acts"))
-            and g.get("state") != "revoked"
-        ]
-        if review_holders:
-            f.error("register-no-active-row",
-                    f"active REVIEW-class grants {sorted(review_holders)} "
-                    f"exist but {reg_path} does not exist; authority claimed "
-                    f"outside the ratified register confers nothing")
-        else:
-            f.note("no intake register at this tree; nothing to read")
+        _report_absent_register(f, reg_path, ctx)
         return
 
-    try:
-        reg = load_yaml(reg_path)
-    except yaml.YAMLError as exc:
-        f.error("register-unparseable", f"{reg_path}: parse failure: {exc}")
-        return
-    if not isinstance(reg, dict):
-        f.error("register-unparseable", f"{reg_path}: not a mapping")
-        return
-    if reg.get("register_version") != 1:
-        f.error("register-version-unknown",
-                f"{reg_path}: register_version {reg.get('register_version')!r} "
-                f"is not 1")
+    reg = _read_register(f, reg_path)
+    if reg is None:
         return
 
     # wallet-v1.2, design D3: the top level is a CLOSED read set, checked BEFORE
@@ -1783,155 +2015,9 @@ def check_register(f: Findings, base_dir: Path, ctx: Context,
 
     active_rows: set[str] = set()
     for i, row in enumerate(rows):
-        label = f"{reg_path}:rows[{i}]"
-        if not isinstance(row, dict):
-            f.error("register-row-malformed", f"{label}: not a mapping")
-            continue
-        fields = set(row)
-        if fields != REGISTER_ROW_FIELDS:
-            missing = sorted(REGISTER_ROW_FIELDS - fields)
-            extra = sorted(fields - REGISTER_ROW_FIELDS)
-            f.error("register-row-malformed",
-                    f"{label}: field set mismatch (missing={missing}, "
-                    f"unknown={extra}); the register has no schema so THIS "
-                    f"reader is the shape, and it is strict")
-            continue
-        row_id = row["row_id"]
+        _check_register_row(f, i, row, reg_path, ctx, now, attestations, active_rows)
 
-        wallet = ctx.wallets.get(row["wallet_ref"])
-        if wallet is None:
-            f.error("register-wallet-unresolved",
-                    f"{label} ({row_id}): wallet_ref {row['wallet_ref']!r} "
-                    f"resolves to no scanned wallet record")
-            continue
-        if wallet.get("state") != "active":
-            f.error("register-wallet-inactive",
-                    f"{label} ({row_id}): audience wallet "
-                    f"{row['wallet_ref']!r} is state {wallet.get('state')!r}")
-
-        if row["act"] != REVIEW_ACT_TOKEN:
-            f.error("register-act-not-review",
-                    f"{label} ({row_id}): act {row['act']!r} is not the "
-                    f"canonical review token")
-        if row["authority_tier"] == "act_unsupervised":
-            f.error("register-tier-refused",
-                    f"{label} ({row_id}): act_unsupervised is refused for "
-                    f"review authority outright")
-        elif row["authority_tier"] not in ctx.tier_rank:
-            f.error("register-tier-unknown",
-                    f"{label} ({row_id}): authority_tier "
-                    f"{row['authority_tier']!r} is outside the closed ladder")
-
-        expires = _parse_dt(row["expires_at"])
-        if expires is None:
-            f.error("register-row-malformed",
-                    f"{label} ({row_id}): expires_at is not RFC3339")
-            continue
-        if expires <= now:
-            f.error("register-row-expired",
-                    f"{label} ({row_id}): COMPUTED expiry "
-                    f"{row['expires_at']} has passed; the stored state "
-                    f"{row['state']!r} is not truth about expiry (N8)")
-        elif row["state"] == "active":
-            active_rows.add(row_id)
-
-        grant = ctx.grants.get(row["grant_ref"])
-        if grant is None:
-            f.error("register-grant-unresolved",
-                    f"{label} ({row_id}): grant_ref {row['grant_ref']!r} "
-                    f"resolves to no scanned grant")
-            continue
-        g_scope = grant.get("scope") if isinstance(grant.get("scope"), dict) \
-            else {}
-        g_aud = grant.get("audience") if isinstance(
-            grant.get("audience"), dict) else {}
-        mismatches = []
-        if g_aud.get("wallet_ref") != row["wallet_ref"]:
-            mismatches.append("audience.wallet_ref")
-        if g_aud.get("holder_ref") != row["holder_ref"]:
-            mismatches.append("audience.holder_ref")
-        if REVIEW_ACT_TOKEN not in _hashable_set(g_scope.get("acts")):
-            mismatches.append("acts lacks the review token")
-        if _hashable_set(g_scope.get("objects")) != {row["target_repo"]}:
-            mismatches.append("objects differs from target_repo")
-        if g_scope.get("authority_tier") != row["authority_tier"]:
-            mismatches.append("authority_tier")
-        g_exp = _parse_dt(grant.get("expires_at"))
-        r_exp = _parse_dt(row["expires_at"])
-        if g_exp is None or r_exp is None or g_exp != r_exp:
-            mismatches.append("expires_at differs between row and grant")
-        if grant.get("state") != "active":
-            mismatches.append(f"grant state {grant.get('state')!r}")
-        if g_exp is not None and g_exp <= now and grant.get("state") == \
-                "active":
-            f.error("grant-state-stale",
-                    f"{row['grant_ref']!r}: stored state 'active' but "
-                    f"COMPUTED expiry {grant.get('expires_at')} has passed "
-                    f"(N8: stale state is a finding, not truth)")
-        if mismatches:
-            f.error("register-grant-mismatch",
-                    f"{label} ({row_id}): grant {row['grant_ref']!r} does "
-                    f"not back the row: " + "; ".join(mismatches))
-
-        if row["authority_tier"] == "act" and row["wallet_ref"] not in \
-                attestations:
-            f.error("register-tier-act-unattested",
-                    f"{label} ({row_id}): tier act requires a parseable "
-                    f"custody attestation for wallet "
-                    f"{row['wallet_ref']!r}; none resolved - the unattested "
-                    f"cap applies and this row cannot stand at act")
-
-    # The headline obligation, inverted for CI: an active REVIEW-class grant
-    # whose holder carries no ACTIVE register row means a convening could
-    # admit authority the register never granted.
-    #
-    # REVOKED IS EXEMPT (wallet-v1.4). Until this release the loop filtered on
-    # the review token ALONE and never read the grant's own `state`, so it
-    # demanded a backing active row for a grant it had itself been told was
-    # revoked -- while the row-count cap this reader then carried
-    # (`REGISTER_MVP_SINGLE_ROW`, RETIRED at wallet-v1.5) forbade the second row
-    # such a demand would need. The reader could therefore not represent ANY
-    # re-issuance: revoking a review-class grant and issuing its successor is
-    # the runbook's §5.1 act, and every consumer that performed it went red on
-    # a correct tree. openxFactory's S5 register act (2026-09-02, PR #583) is
-    # the act that found it.
-    #
-    # WHY `== "revoked"` AND NOT `!= "active"`. The broader test would also
-    # exempt a grant merely STAMPED `expired`, and this reader has no inverse
-    # check for stored-expired-with-a-future `expires_at` -- N8 is that stored
-    # state is checked AGAINST computed time and never trusted, so a state the
-    # reader cannot contradict must not be allowed to switch an obligation off.
-    # `revoked` is different in kind: it is the TERMINAL fact of the ratified
-    # drift-cascade rule (a revoked grant never returns to active; authority
-    # resumes only as a NEW grant), it is the exact state §5.1 re-issuance
-    # produces, and it is backstopped -- `revocation-unrecorded` refuses a
-    # grant stamped `revoked` that carries no `revocation` block recording when
-    # and why.
-    #
-    # NEITHER VARIANT WEAKENS THE GUARD, because this loop is only the
-    # grant->row direction. The row->grant direction still runs above and
-    # appends `grant state ...` to `mismatches`, so a row pointing at a revoked
-    # grant is still refused with `register-grant-mismatch`; and
-    # `_revoked_ancestor` still refuses every exercise up a revoked chain. What
-    # is exempted here is exactly a revoked grant that NO row points at -- a
-    # historical record, which is what a superseded grant is supposed to be.
-    for gid, g in sorted(ctx.grants.items()):
-        scope = g.get("scope") if isinstance(g.get("scope"), dict) else {}
-        if REVIEW_ACT_TOKEN not in _hashable_set(scope.get("acts")):
-            continue
-        if g.get("state") == "revoked":
-            continue  # wallet-v1.4 -- see REVOKED IS EXEMPT below
-        backed = any(
-            isinstance(r, dict) and r.get("grant_ref") == gid
-            and r.get("state") == "active"
-            and (_parse_dt(r.get("expires_at")) or now) > now
-            for r in rows if isinstance(r, dict))
-        if not backed:
-            f.error("register-no-active-row",
-                    f"active REVIEW-class grant {gid!r} has no backing "
-                    f"active register row; admitting a convening for this "
-                    f"holder would confer authority the register never "
-                    f"granted")
+    _check_grants_have_active_rows(f, rows, ctx, now)
 
 
 # --------------------------- composition ---------------------------

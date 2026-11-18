@@ -376,3 +376,9 @@ required. No T001/T013-T015/setup/dispatch grant is inferred.
 The [current integration record](hosting-conformance-implementation.md#t012v-main-85-86-source-checkpoint) names candidate `1728117f3dbe0ebb3fbeb408613e3d04c69067fc`,
 preserved source limits and actual 135-control/collection evidence. Complete fresh
 qualification and owner source ratification remain separate gates on PR #78.
+
+Current T012V continuation now integrates accepted main #87; its lifecycle/
+validator construction and compatibility plan is in hosting-conformance-implementation.md.
+The 2c534c2 source-gate result and intentionally interrupted native attempt are
+historical. Fresh final-head qualification, CI and owner source ratification
+remain required; no operational grant is inferred.

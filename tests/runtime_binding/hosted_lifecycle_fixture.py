@@ -18,7 +18,7 @@ from cryptography.hazmat.primitives.asymmetric import ec
 from workload_factory_binding.evidence import BindingError, canonical, digest
 from workload_factory_binding_runtime.github_bootstrap.common import Decision, document
 from workload_factory_binding_runtime.hosted.lifecycle_store import LifecycleStore
-from workload_factory_binding_runtime.hosted.lifecycle import (HostedLifecycle, PosixResources,
+from workload_factory_binding_runtime.hosted.lifecycle import (HostedLifecycle, LifecycleActors, LifecycleStores, PosixResources,
     FileResource, TokenResource, RegisteredStageReadback, process_instance, run_plan)
 from workload_factory_binding_runtime.hosted.lifecycle_service import (LifecycleServer, LifecycleClient,
     CleanupRegistration, IndependentScheduler, FinalLifecyclePorts, PRIMARY, AUDIT)
@@ -236,10 +236,13 @@ def lh(stage, provider, tmp_path, request):
             InstallationRetirer(writer=provider.routed(), observer=provider.routed())) for i, cap in enumerate(tokens)))
     request.addfinalizer(resources.close)
     life = HostedLifecycle(plan=stage.v.selected, context=stage.v.context, policy=stage.policy,
-        host_store=stage.agent.store, store=stores["primary"], intake=stores["scheduler"], audit_store=stores["audit"],
-        resources=resources, janitor=janitor, auditor=auditor, host_pid_namespace=stage.agent.pid_namespace,
-        scheduler={"principal_ref": "principal:lifecycle-scheduler", "pid": scheduler_process.pid,
-            "start_time": scheduler_start, "boot_id": stage.scope["boot_id"]},
+        host_store=stage.agent.store,
+        stores=LifecycleStores(primary=stores["primary"], intake=stores["scheduler"], audit=stores["audit"]),
+        resources=resources,
+        actors=LifecycleActors(janitor=janitor, auditor=auditor,
+            scheduler={"principal_ref": "principal:lifecycle-scheduler", "pid": scheduler_process.pid,
+                "start_time": scheduler_start, "boot_id": stage.scope["boot_id"]}),
+        host_pid_namespace=stage.agent.pid_namespace,
         final_authority_principal="principal:final-authority", cleanup_until=config["expires_at"] + 30,
         cleanup_timeout=1 if mode == "short-cleanup" else 30,
         retained_roots=(stage.controller.store.directory, stage.v.h.ledger.path.parent,

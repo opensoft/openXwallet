@@ -63,6 +63,26 @@ class _Handler(BaseHTTPRequestHandler):
         self.send_header("Content-Length",str(len(raw)));self.send_header("Connection","close");self.end_headers()
         self.wfile.write(raw);self.close_connection=True
     def send_error(self,*args,**kwargs):self._reply(400,{"error":ERROR})
+    def _read_body(self):
+        require(sum(len(k)+len(v) for k,v in self.headers.items())<=32768
+            and self.headers.get_all("Content-Type")==["application/json"] and self.headers.get("Transfer-Encoding") is None,ERROR)
+        lengths=self.headers.get_all("Content-Length");require(lengths and len(lengths)==1 and lengths[0].isascii()
+            and lengths[0].isdigit() and len(lengths[0])<=5 and 0<int(lengths[0])<=65536,ERROR)
+        raw=self.rfile.read(int(lengths[0]));require(len(raw)==int(lengths[0]),ERROR)
+        return raw
+
+    def _private_facts(self,operation,arguments,use):
+        names={"launch_ref","scope_digest"}|({"unit_digest"} if operation=="start" else set())
+        require(type(arguments) is dict and set(arguments)==names and arguments["scope_digest"]==
+                digest(self.server.service.worker.scope()),ERROR)
+        ref=arguments["launch_ref"]
+        if operation=="start":facts=self.server.service.start(ref,arguments["unit_digest"],decision=use)
+        elif operation=="register":facts=self.server.service.register(ref,decision=use)
+        else:
+            self.server.service.store.status_read(ref,decision=use)
+            facts=self.server.service.status(ref,decision=use)
+        return facts
+
     def do_POST(self):
         try:
             use=Decision(clock=self.server.clock,monotonic=self.server.monotonic)
@@ -72,11 +92,7 @@ class _Handler(BaseHTTPRequestHandler):
             if self.server.private:
                 peer=byte_digest(self.connection.getpeercert(binary_form=True))
                 denied=operation not in self.server.permissions.get(peer,frozenset())
-            require(sum(len(k)+len(v) for k,v in self.headers.items())<=32768
-                and self.headers.get_all("Content-Type")==["application/json"] and self.headers.get("Transfer-Encoding") is None,ERROR)
-            lengths=self.headers.get_all("Content-Length");require(lengths and len(lengths)==1 and lengths[0].isascii()
-                and lengths[0].isdigit() and len(lengths[0])<=5 and 0<int(lengths[0])<=65536,ERROR)
-            raw=self.rfile.read(int(lengths[0]));require(len(raw)==int(lengths[0]),ERROR)
+            raw=self._read_body()
             if denied:self._reply(403,{"error":"hosted-stage-denied"});return
             value=document(raw)
             require(type(value) is dict and set(value)=={"profile","nonce","deadline","arguments"}
@@ -84,15 +100,7 @@ class _Handler(BaseHTTPRequestHandler):
                 and all(c in "0123456789abcdef" for c in value["nonce"]),ERROR)
             use.clip(value["deadline"]);arguments=value["arguments"];before=use.now()
             if self.server.private:
-                names={"launch_ref","scope_digest"}|({"unit_digest"} if operation=="start" else set())
-                require(type(arguments) is dict and set(arguments)==names and arguments["scope_digest"]==
-                        digest(self.server.service.worker.scope()),ERROR)
-                ref=arguments["launch_ref"]
-                if operation=="start":facts=self.server.service.start(ref,arguments["unit_digest"],decision=use)
-                elif operation=="register":facts=self.server.service.register(ref,decision=use)
-                else:
-                    self.server.service.store.status_read(ref,decision=use)
-                    facts=self.server.service.status(ref,decision=use)
+                facts=self._private_facts(operation,arguments,use)
             else:
                 auth=self.headers.get_all("Authorization");require(auth and len(auth)==1 and auth[0].startswith("Bearer ") and len(auth[0])<=16384,ERROR)
                 facts=asdict(self.server.service.handle(operation,arguments,auth[0][7:],decision=use))

@@ -764,3 +764,35 @@ remain unchanged. T012V stays unchecked pending the actual owner act.
 T001/T013-T015, setup/protected dispatch, live OIDC/provider minting, deployed,
 human and domain acceptance remain ungranted. Feedback deferred; neither blocked
 write replayed.
+
+
+## T012V accepted-main #87 integration plan
+
+Accepted main 001c8321884259b35f17adc3d6cd9f623ad1a947 advances runtime/validator
+responsibility extraction and adds ten contract-pin controls. Its two existing
+HostedLifecycle call sites use trusted LifecycleStores/LifecycleActors. The
+qualifier calls preserved instance methods/static narrowing, so no third
+constructor adaptation is required. Integrate accepted changes without changing
+wire schemas, pins, original Decision clocks, private39/staging16/finalization12,
+GitHub26/28/13 or original cancellation and cleanup authority. Preserve callback,
+error/refusal and canonical journal ordering, strict type/identity checks and
+all prior test identities. Feature017 tasks.md remains the sole executable list.
+
+Prior 2c534c209aee887fb11f3ea261aeb603f0637c84 has nine-role source clearance,
+six document gates and all seven ordered source gates: 2,801 full parents plus
+11 subtests pass in 1912.886s outer. Publication stopped before any push because
+main advanced again. Its native attempt was intentionally retired at 39% and
+exit 137; it is incomplete diagnostic evidence, not a product failure or success.
+Independent audit of completed-full and interrupted-native roots records 13,516
+generation observations, 450 journals, 139 helper receipts, all five completed-full
+preservation cases and zero live/initial failures. Both roots are removed; the
+four earlier prequalification roots also have audited removal. Historical 064103a5
+remains the last complete local/native/hosted/Sonar receipt, never evidence for
+this new integration.
+
+Fresh collection, source/document review, full ordered gates, mandatory native,
+independent ten-case preservation/cleanup and exact-head hosted CI/evaluated Sonar
+are required before presentation. Record actual final-head receipts on PR #78;
+source checkpoints must not predeclare results. Source acceptance is not granted.
+T001/T013-T015/setup/dispatch stay ungranted, feedback deferred and neither
+blocked write is replayed.

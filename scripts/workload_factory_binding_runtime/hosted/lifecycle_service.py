@@ -42,6 +42,54 @@ def _resources(values):
         refs.add(value["ref"])
 
 
+def _validate_generation_facts(value, scope):
+    generation, resource = value["generation"], value["resource"]
+    _closed(generation, "unit_digest pid start_time session_id boot_id uid policy_digest cgroup_digest")
+    _closed(resource, "ref instance_ref kind retention")
+    _handle(resource["ref"])
+    require(all(type(generation[k]) is int and generation[k] > 0 for k in ("pid", "start_time", "session_id", "uid"))
+            and generation["pid"] == generation["session_id"] and generation["uid"] == scope["worker_uid"]
+            and generation["boot_id"] == scope["boot_id"] and generation["policy_digest"] == scope["hosting_selection_digest"]
+            and all(valid_digest(generation[k]) for k in ("unit_digest", "policy_digest", "cgroup_digest"))
+            and resource["kind"] == "process" and resource["retention"] == "run"
+            and resource["instance_ref"] == f"process:{generation['pid']}:{generation['start_time']}", ERROR)
+
+
+def _validate_cleanup_audit_facts(value, scope, extra, decision):
+    require(value.get("kind") in ("stage", "final"), ERROR)
+    if value["kind"] == "stage":
+        _closed(value, "kind registration_digest scope_digest resources attempt_ref observed_at expires_at")
+        require(valid_digest(value["registration_digest"]) and value["scope_digest"] == digest(scope)
+                and value["attempt_ref"] == extra["attempt_ref"] and integer(value["observed_at"])
+                and integer(value["expires_at"]) and value["observed_at"] <= decision.now() < value["expires_at"], ERROR)
+        _resources(value["resources"])
+    else:
+        _closed(value, "kind record")
+        record = value["record"]
+        _closed(record, "plan_digest scope lease_status resources observed_at valid_until attempt_ref")
+        _closed(record["scope"], "config_digest case_ref run_id run_attempt lease_ref cleanup_ref receipt_retention_ref")
+        require(valid_digest(record["plan_digest"]) and record["attempt_ref"] == extra["attempt_ref"]
+                and record["lease_status"] in ("closed", "revoked", "cancelled")
+                and all(record["scope"][k] == scope[k] for k in ("case_ref", "run_id", "run_attempt", "cleanup_ref"))
+                and integer(record["observed_at"]) and integer(record["valid_until"])
+                and record["observed_at"] <= decision.now() < record["valid_until"], ERROR)
+        _resources(record["resources"])
+
+def _validate_lease_facts(value, scope):
+    _closed(value["scope"], "config_digest case_ref run_id run_attempt lease_ref cleanup_ref receipt_retention_ref")
+    require(value["status"] in ("active", "closed", "revoked", "cancelled")
+            and all(integer(value[k]) for k in ("issued_at", "expires_at", "observed_at", "valid_until"))
+            and value["scope"]["case_ref"] == scope["case_ref"] and value["scope"]["run_id"] == scope["run_id"]
+            and value["scope"]["run_attempt"] == scope["run_attempt"]
+            and value["scope"]["cleanup_ref"] == scope["cleanup_ref"], ERROR)
+
+
+def _validate_fact_digests(value):
+    for name in ("registration_digest", "plan_digest", "generation_digest", "scope_digest", "unit_digest"):
+        if name in value:
+            require(valid_digest(value[name]), ERROR)
+
+
 def _facts(operation, value, scope, extra, principal, decision):
     fields = {
         "register": "registration_digest", "prepare": "plan_digest", "release": "state plan_digest",
@@ -53,20 +101,9 @@ def _facts(operation, value, scope, extra, principal, decision):
     }
     if operation in fields:
         _closed(value, fields[operation])
-    for name in ("registration_digest", "plan_digest", "generation_digest", "scope_digest", "unit_digest"):
-        if name in value:
-            require(valid_digest(value[name]), ERROR)
+    _validate_fact_digests(value)
     if operation == "generation":
-        generation, resource = value["generation"], value["resource"]
-        _closed(generation, "unit_digest pid start_time session_id boot_id uid policy_digest cgroup_digest")
-        _closed(resource, "ref instance_ref kind retention")
-        _handle(resource["ref"])
-        require(all(type(generation[k]) is int and generation[k] > 0 for k in ("pid", "start_time", "session_id", "uid"))
-                and generation["pid"] == generation["session_id"] and generation["uid"] == scope["worker_uid"]
-                and generation["boot_id"] == scope["boot_id"] and generation["policy_digest"] == scope["hosting_selection_digest"]
-                and all(valid_digest(generation[k]) for k in ("unit_digest", "policy_digest", "cgroup_digest"))
-                and resource["kind"] == "process" and resource["retention"] == "run"
-                and resource["instance_ref"] == f"process:{generation['pid']}:{generation['start_time']}", ERROR)
+        _validate_generation_facts(value, scope)
     if operation in ("cleanup", "status"):
         require(value["owner"] in ("stage", "final"), ERROR)
     if operation == "cleanup":
@@ -84,31 +121,10 @@ def _facts(operation, value, scope, extra, principal, decision):
         require(value["principal_ref"] == principal and integer(value["observed_at"]) and integer(value["expires_at"])
                 and value["observed_at"] <= decision.now() < value["expires_at"] <= value["observed_at"] + 60, ERROR)
     if operation == "lease":
-        _closed(value["scope"], "config_digest case_ref run_id run_attempt lease_ref cleanup_ref receipt_retention_ref")
-        require(value["status"] in ("active", "closed", "revoked", "cancelled")
-                and all(integer(value[k]) for k in ("issued_at", "expires_at", "observed_at", "valid_until"))
-                and value["scope"]["case_ref"] == scope["case_ref"] and value["scope"]["run_id"] == scope["run_id"]
-                and value["scope"]["run_attempt"] == scope["run_attempt"]
-                and value["scope"]["cleanup_ref"] == scope["cleanup_ref"], ERROR)
+        _validate_lease_facts(value, scope)
     if operation == "cleanup-audit":
-        require(value.get("kind") in ("stage", "final"), ERROR)
-        if value["kind"] == "stage":
-            _closed(value, "kind registration_digest scope_digest resources attempt_ref observed_at expires_at")
-            require(valid_digest(value["registration_digest"]) and value["scope_digest"] == digest(scope)
-                    and value["attempt_ref"] == extra["attempt_ref"] and integer(value["observed_at"])
-                    and integer(value["expires_at"]) and value["observed_at"] <= decision.now() < value["expires_at"], ERROR)
-            _resources(value["resources"])
-        else:
-            _closed(value, "kind record")
-            record = value["record"]
-            _closed(record, "plan_digest scope lease_status resources observed_at valid_until attempt_ref")
-            _closed(record["scope"], "config_digest case_ref run_id run_attempt lease_ref cleanup_ref receipt_retention_ref")
-            require(valid_digest(record["plan_digest"]) and record["attempt_ref"] == extra["attempt_ref"]
-                    and record["lease_status"] in ("closed", "revoked", "cancelled")
-                    and all(record["scope"][k] == scope[k] for k in ("case_ref", "run_id", "run_attempt", "cleanup_ref"))
-                    and integer(record["observed_at"]) and integer(record["valid_until"])
-                    and record["observed_at"] <= decision.now() < record["valid_until"], ERROR)
-            _resources(record["resources"])
+        _validate_cleanup_audit_facts(value, scope, extra, decision)
+
 
 
 class LifecycleServer(ThreadingMixIn, HTTPServer):
@@ -205,6 +221,46 @@ class _Handler(BaseHTTPRequestHandler):
     def send_error(self, *_args, **_kwargs):
         self._reply(400, {"error": ERROR})
 
+    def _read_body(self):
+        require(sum(len(k) + len(v) for k, v in self.headers.items()) <= 32768
+                and self.headers.get_all("Content-Type") == [_JSON_TYPE]
+                and self.headers.get("Transfer-Encoding") is None, ERROR)
+        lengths = self.headers.get_all("Content-Length")
+        require(lengths and len(lengths) == 1 and lengths[0].isascii() and lengths[0].isdigit()
+                and len(lengths[0]) <= 5 and 0 < int(lengths[0]) <= 65536, ERROR)
+        raw = self.rfile.read(int(lengths[0]))
+        require(len(raw) == int(lengths[0]), ERROR)
+        return raw
+
+    def _operation_facts(self, life, ref, operation, args, decision):
+        if operation == "register":
+            facts = life.register(ref, args["unit_digest"], decision=decision)
+        elif operation == "generation":
+            facts = life.bind_generation(ref, decision=decision)
+        elif operation == "prepare":
+            finalized, plan = self.server.load_final(ref, deadline=decision.deadline)
+            from .finalization import register_finalized_lifecycle
+            facts = register_finalized_lifecycle(finalized, life.context, lifecycle=life, plan=plan, decision=decision)
+        elif operation == "release":
+            facts = life.release_stage(ref, decision=decision)
+        elif operation == "cleanup":
+            facts = life.cleanup(ref, args["outcome"], decision=decision)
+        elif operation == "lease":
+            facts = asdict(life.final_lease(args["plan_ref"], decision=decision))
+        elif operation == "ack-stage":
+            facts = life.acknowledge_stage(ref, decision=decision)
+        elif operation == "ack-final":
+            facts = life.acknowledge_final(ref, decision=decision)
+        elif operation == "cleanup-audit":
+            facts = life.audit_cleanup(ref, args["attempt_ref"], decision=decision)
+        else:
+            state = life._registration(ref, decision)
+            reg = state["registration"]
+            facts = {"registration_digest": digest(reg), "owner": "final" if state["released"] else "stage",
+                "closed": state["closed"], "expires_at": run_plan(state["final"]["plan"]).expires_at if state["released"] else reg["expires_at"],
+                "cleanup_until": reg["cleanup_until"], "generation_bound": state["generation"] is not None}
+        return facts
+
     def do_POST(self):
         try:
             decision = Decision(clock=self.server.clock, monotonic=self.server.monotonic)
@@ -214,14 +270,7 @@ class _Handler(BaseHTTPRequestHandler):
             require(operation in allowed and (observation or self.path == _LIFECYCLE_PREFIX + operation), ERROR)
             peer = byte_digest(self.connection.getpeercert(binary_form=True))
             permitted = operation in self.server.permissions.get(peer, frozenset())
-            require(sum(len(k) + len(v) for k, v in self.headers.items()) <= 32768
-                    and self.headers.get_all("Content-Type") == [_JSON_TYPE]
-                    and self.headers.get("Transfer-Encoding") is None, ERROR)
-            lengths = self.headers.get_all("Content-Length")
-            require(lengths and len(lengths) == 1 and lengths[0].isascii() and lengths[0].isdigit()
-                    and len(lengths[0]) <= 5 and 0 < int(lengths[0]) <= 65536, ERROR)
-            raw = self.rfile.read(int(lengths[0]))
-            require(len(raw) == int(lengths[0]), ERROR)
+            raw = self._read_body()
             if not permitted:
                 self._reply(403, {"error": "hosted-lifecycle-denied"})
                 return
@@ -246,32 +295,7 @@ class _Handler(BaseHTTPRequestHandler):
                     and args["launch_ref"] == self.server.lifecycle.scope["launch_ref"]
                     and args["scope_digest"] == digest(self.server.lifecycle.scope), ERROR)
             life, ref = self.server.lifecycle, args["launch_ref"]
-            if operation == "register":
-                facts = life.register(ref, args["unit_digest"], decision=decision)
-            elif operation == "generation":
-                facts = life.bind_generation(ref, decision=decision)
-            elif operation == "prepare":
-                finalized, plan = self.server.load_final(ref, deadline=decision.deadline)
-                from .finalization import register_finalized_lifecycle
-                facts = register_finalized_lifecycle(finalized, life.context, lifecycle=life, plan=plan, decision=decision)
-            elif operation == "release":
-                facts = life.release_stage(ref, decision=decision)
-            elif operation == "cleanup":
-                facts = life.cleanup(ref, args["outcome"], decision=decision)
-            elif operation == "lease":
-                facts = asdict(life.final_lease(args["plan_ref"], decision=decision))
-            elif operation == "ack-stage":
-                facts = life.acknowledge_stage(ref, decision=decision)
-            elif operation == "ack-final":
-                facts = life.acknowledge_final(ref, decision=decision)
-            elif operation == "cleanup-audit":
-                facts = life.audit_cleanup(ref, args["attempt_ref"], decision=decision)
-            else:
-                state = life._registration(ref, decision)
-                reg = state["registration"]
-                facts = {"registration_digest": digest(reg), "owner": "final" if state["released"] else "stage",
-                    "closed": state["closed"], "expires_at": run_plan(state["final"]["plan"]).expires_at if state["released"] else reg["expires_at"],
-                    "cleanup_until": reg["cleanup_until"], "generation_bound": state["generation"] is not None}
+            facts = self._operation_facts(life, ref, operation, args, decision)
             decision.now()
             self._reply(200, {"profile": PROFILE, "principal_ref": self.server.principal, "nonce": value["nonce"],
                 "operation": operation, "scope_digest": digest(life.scope), "facts": facts,

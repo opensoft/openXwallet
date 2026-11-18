@@ -38,6 +38,10 @@ def github_read_path(path,query):
     if re.fullmatch(re.escape(root)+r"/actions/runs/[1-9]\d{0,15}/attempts/1/jobs",path,re.ASCII) and query in ("per_page=100&page=1","per_page=100&page=2"):return path+"?"+query
     if path==root+"/rulesets" and query=="includes_parents=true&per_page=32&page=1":return path+"?"+query
     if re.fullmatch(re.escape(root)+r"/rulesets/[1-9]\d{0,15}",path,re.ASCII) and query=="includes_parents=true":return path+"?"+query
+    return _github_environment_or_workflow_path(root,path,query)
+
+
+def _github_environment_or_workflow_path(root,path,query):
     if re.fullmatch(re.escape(root)+r"/environments/[A-Za-z0-9_-]{1,100}",path) and not query:return path
     if re.fullmatch(re.escape(root)+r"/environments/[A-Za-z0-9_-]{1,100}/deployment-branch-policies",path) and query in ("per_page=32&page=1","per_page=32&page=2"):return path+"?"+query
     if path in (root+"/contents/.github/workflows/protected-runtime-qualification.yml",root+"/contents/.github/workflows/protected-runtime-qualification-run.yml") and re.fullmatch(r"ref=[0-9a-f]{40}",query):return path+"?"+query
