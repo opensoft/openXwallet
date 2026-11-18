@@ -610,3 +610,70 @@ mint, freeze, grant, protected-machine/human/domain acceptance or blocked write
 is authorized by this refresh. Feedback deferred. Earlier candidate checkpoints
 are historical; this source-CI integration permission selects no operational
 main-update policy.
+
+## Commissioned isolated SQLite staging-journal correction
+
+Brett source-ratified #91 at cf2c0eee65fc55c1606be4c19f4b61eda2185fab; it
+merged normally as bd1b0d8b6ec249f7ed37932a552e5674d046a912 with the accepted
+tree. Only the existing feature017 implementation correction in
+`specs/017-protected-runtime-qualification/sqlite-journal-plan.md` and sole
+task T012VJ is now commissioned in isolation. Preserve all baseline case IDs,
+security checks, schema/pins, deadlines, budgets and default refusal. Fresh
+exact-source full/native qualification and owned-fixture cleanup are required.
+No publication, fix ratification, setup/dispatch or live provider authority is
+inferred; feedback deferred and blocked writes unreplayed.
+
+## Accepted main #92 compatibility integration
+
+Integrate accepted #92 main `22bc7bdf6298c043377528c0c289ca26e51cbb07` into
+the isolated T012VJ candidate per the owner's incoming-change instruction.
+Qualification/probe/CLI retirement and exception boundaries are inherited from
+that accepted main; the SQLite correction/tests/matrix remain byte-identical.
+Follow feature017 sqlite-journal-plan.md. Old runtime61 results and failed or
+superseded native attempts stay historical; fresh exact-source full/native and
+cleanup are required. No pins/workflows/budgets/defaults or operational authority
+change; setup/dispatch unauthorized, feedback deferred, blocked writes unreplayed.
+
+## Qualified isolated SQLite staging-journal candidate
+
+Integrated runtime c32ac5147fd504426483681a11dc8b60f4aac0fc on accepted main #92 passes
+2,859 full cases plus 11 subtests, all 2,437 mandatory native cases and seven
+ordered local gates with zero failures/errors/skips. All 387 frozen input hashes
+match. Prior identities/fingerprints/anchors and neutral/owner refs remain.
+Independent audits verify ten preservation cases and owned roots/containers
+absent. Feature017 sqlite-journal-plan.md records exact red/green qualification
+and historical failed/diagnostic/superseded attempts without promoting them.
+T012VJ is complete in isolation. Fix publication, hosted CI, local expert review
+and owner source acceptance remain later gates. T001/T013-T015/setup/dispatch
+remain ungranted; feedback deferred, blocked writes unreplayed. This later
+five-document reconciliation preserves all other qualified runtime inputs.
+
+## SQLite correction publication and accepted main #93
+
+Brett commissions the SQLite journal correction PR, hosted CI, local Codex expert
+review, finding resolution and presentation for source ratification. This supplies
+no merge, source acceptance or operational grant. Integrate accepted main #93
+`dbbbafab8cb5ab093360b5e12044a7a35b156cc5`, which consumes neutral root
+`8be8a2a6af125058ffe956cafbf1e62858d82dd9` for the reviewed decimal worktree
+selector repair. Neutral code/spec and explicit qualification owner stay unchanged.
+The SQLite runtime, new test module and matrix bytes remain identical to the
+completed c32ac514 qualification. Earlier exact-source receipts remain historical;
+fresh integrated full/native qualification, cleanup, hosted CI and nine local
+Codex expert roles are required for this publication head and recorded on its PR.
+Feature017 T012VJ remains the sole correction task; T001/T013-T015 stay unchecked.
+Setup/dispatch unauthorized, feedback deferred, blocked writes unreplayed.
+
+## Publication S9073 assertion correction
+
+The first #94 hosted run 44355407295 at 9f462857c5e1176ae591087bc4fdcfab961e38f7
+passes all five jobs and all six original conditions (100% new coverage), but
+direct analysis c30c54cd-0576-4b92-8c6d-c0b619a181b9 retains four S9073 findings:
+AaHv1OauqAoMpLQXSFXl, AaHv1OauqAoMpLQXSFXm, AaHv1OauqAoMpLQXSFXn and
+AaHv1OauqAoMpLQXSFXo. That head is not presented for ratification. Split those
+four composite assertions, retaining every condition, fixture, test identity,
+matrix fingerprint and runtime byte. No rule suppression or scan/gate change.
+This remains existing T012VJ publication finding resolution under the owner
+commission. Earlier exact-source qualification and review remain historical;
+fresh exact-source full/native, cleanup, local Codex follow-up and hosted CI/
+analysis readback are required. T001/T013-T015/setup/dispatch stay ungranted;
+feedback deferred, blocked writes unreplayed.
