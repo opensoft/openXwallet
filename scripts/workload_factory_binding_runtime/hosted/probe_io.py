@@ -48,9 +48,10 @@ def _perform(client, kind, *, binding, message, now):
 class _RetirementErrors:
     """Defer errors until all owned resources have been retired."""
 
-    def __init__(self, cancelled=None):
+    def __init__(self, cancelled=None, *, prefer_cancellation=False):
         self.first = None
         self.cancelled = cancelled
+        self.prefer_cancellation = prefer_cancellation
 
     def __enter__(self):
         return self
@@ -58,10 +59,10 @@ class _RetirementErrors:
     def __exit__(self, _kind, error, _traceback):
         if error is None:
             return False
+        if self.prefer_cancellation and self.cancelled is None and not isinstance(error, Exception):
+            self.cancelled = error
         if self.first is None:
             self.first = error
-        if self.cancelled is None and not isinstance(error, Exception):
-            self.cancelled = error
         return True
 
     def raise_first(self):
@@ -174,7 +175,7 @@ def _read_reply(reader, signals, decision, kind):
 
 
 def _retire_exchange(raw_fds, reader, writer, pid, signals, cancelled):
-    errors = _RetirementErrors(cancelled)
+    errors = _RetirementErrors(cancelled, prefer_cancellation=True)
     # Callable handlers stay deferred between cleanup actions, even while a
     # prior cancellation is waiting to propagate.
     try:
