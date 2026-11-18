@@ -690,7 +690,7 @@ unchecked. No operational `accepted_commit`, deployment, principal,
 credential, appointment or grant is selected by this source act or its later
 documentation descendant.
 
-The [current handoff](specs/017-protected-runtime-qualification/evidence.md#2026-11-18-94-source-acceptance-and-t013-refresh) records actual merged-main CI, current pins/workflow hashes and fresh read-only repository facts. The local documentation candidate selects no executing workflow SHA, service, credential or grant. Only source handoff preparation is commissioned. Earlier candidate labels are historical; feature017 tasks.md remains the sole list.
+The [current handoff](specs/017-protected-runtime-qualification/evidence.md#2026-11-18-94-source-acceptance-and-t013-refresh) records actual merged-main CI, current pins/workflow hashes and fresh read-only repository facts. The documentation candidate selects no executing workflow SHA, service, credential or grant. Source handoff publication, hosted CI, local Codex review and finding resolution are now commissioned; owner source ratification and all operational decisions remain separate. Earlier candidate labels are historical; feature017 tasks.md remains the sole list.
 
 Ordinary source-CI reruns supply no protected-operation authority. The accepted
 operational broker still permits only its separately approved first run attempt;

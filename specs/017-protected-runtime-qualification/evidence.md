@@ -78,8 +78,9 @@ actual-run authority and cleanup/readback remain separately NOT GRANTED.
 This reconciliation changes only twelve Markdown files. Accepted executable,
 test, workflow, dependency, contract, coverage and pin bytes remain unchanged;
 main CI qualifies the merged source, while the later documentation candidate's
-validation is separately recorded. This refresh itself remains local/unpublished;
-its source acceptance/publication and all actual operational acts are separate.
+validation is separately recorded. This documentation refresh is a source candidate. Its PR must record fresh
+hosted CI and local Codex review; owner ratification and all actual operational
+acts remain separate.
 Feedback deferred; neither blocked write replayed.
 
 ## 2026-11-17 #78 source acceptance and T013 refresh
