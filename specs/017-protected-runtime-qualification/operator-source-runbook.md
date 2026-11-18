@@ -156,7 +156,7 @@ An intermediate pytest pass count, anchor line or tiny self-test corpus verdict
 is insufficient. Final source-check exceptions/cancellation/zero-exit attempts
 emit fixed refusal and cannot leave a final PASS.
 
-Current measured candidate collection is 2,801 full parent cases (plus 11
+Current measured candidate collection is 2,811 full parent cases (plus 11
 subtests), 2,389 mandatory native nodes and 64 conformance self-tests. All prior
 2,781 full and 2,369 native identities and anchors remain. Hosted-evidence module
 has 218 cases; probe controls add 22 and canonical-journal controls 115.
