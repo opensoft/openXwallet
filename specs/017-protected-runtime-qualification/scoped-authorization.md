@@ -1,26 +1,31 @@
 # T013 Scoped Authorization Draft
 
-Status: T012V source candidate; exact-head validation receipt tracked in PR #78; final-head CI/acceptance pending; every operational stage NOT GRANTED
+Status: T012V source accepted and landed; every operational stage NOT GRANTED
 Updated: 2026-11-17
 Selections: [operational inputs](operational-inputs.md)
 Accepted bootstrap source: [bootstrap record](workflow-bootstrap.md)
 
-Brett source-ratified adapter #65 at `ab34ff4ec4fe27d56c8fd09c99614785c23e760f`, directed landing when green, and commissioned T012M/T013 documentation. It landed as `366533bed77293b096b0a7dbda61399ff5dbafe5` with equal ratified/merged tree `669a1b431f17d360fcf827a749a756e863ec9ed8`. Factory #1314's accepted source design is unchanged. The [owner/landing evidence](evidence.md#2026-11-14-65-source-acceptance-and-t012m-handoff) records the exact act and source checks.
+Brett source-ratified [#78](https://github.com/opensoft/openXwallet/pull/78#issuecomment-6967743320) at `92545e32b4e5f950209cc7312a1a6309055b299d` and directed landing when green,
+then this refresh. Normal merge `2997c8a238f6de6f74488fed933371d7f97d3ca5` and its source/review/qualification/
+cleanup evidence are recorded in the [accepted-source handoff](evidence.md#2026-11-17-78-source-acceptance-and-t013-refresh).
+T012V is complete for source acceptance; T001/T013/T014/T015 remain unchecked.
+Neither the accepted merge nor this documentation descendant is an operational
+`accepted_commit`, appointed principal, deployment choice or grant.
 
-This closes T012L source acceptance and supplies T012M's handoff, with no operational selection or grant. The [selection packet](operational-inputs.md), [T013 decisions](t013-decision-record.md) and [authentication handoff](bootstrap-authentication-plan.md) identify remaining target/administration, client issuance, actual provider evidence and source-update choices. Accepted bootstrap-only preflight OIDC is separate from protected proof identity; it is not permission to request a live token. Default bindings still refuse before token access/outputs. Hosting and qualify/cleanup/receipt integration remain unselected.
+The hosted source is implemented and accepted in isolation: static-v2 plans,
+phase-limited admission, bounded authenticated clients, staging, measured final
+bytes, one-use registration, lifecycle cleanup and origin-bound evidence. It
+preserves legacy v1/default behavior and all neutral APIs. For the proposed hosted
+pilot, independently approve `openxfactory-dispatch-selection-internal-v2` with
+`openxfactory-hosted-canonical-finalization-v2`; the preserved static-v1/full-runtime-v1
+readers are not substitutes for that measured finalization. Three input names,
+seven runtime services and eight source roles remain unchanged.
 
-
-The subsequent planning commission uses the recommended T013 values as the
-[hosting/issuance design basis](hosting-issuance-selections.md). The new factory
-source proposal and [Speckit plan](hosting-issuance-plan.md) include an explicit
-static-v2/finalization prerequisite discovered in research; callbacks alone do not
-resolve unknown actual run/process digests. These are draft source proposals, not
-new operational selections, appointments or grants. Subsequent accepted factory
-profiles and isolated T012O-U implementation are reconciled by the current
-[T012V source candidate](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint)
-on PR #78. Its final-head hosted CI and owner ratification remain separate.
-Neither local qualification nor later source acceptance selects hosting, keys,
-endpoints or operational principals. T013 and all four stages remain ungranted.
+Actual authenticated deployed composition, principals/keys/endpoints, state and
+external watchdog remain unselected. Concrete activation source requires separate
+review if needed. Default `workflow.operational_bindings()` unconditionally
+refuses before outputs/OIDC; no environment flag, fixture or edited document can
+activate it. Source acceptance and this refresh grant none of the four stages below.
 
 ## Decision record to complete
 
@@ -33,7 +38,7 @@ create decision. Unselected scope blocks the corresponding decision.
 | Decision | Prepared bound | Required owner/operator selection |
 | --- | --- | --- |
 | Purpose/case | First codeXfactory pilot; machine possession qualification | Exact case ID and accountable owner |
-| Final source | Accepted factory/adapter bootstrap baselines above | Eight source roles, immutable commits/relative paths/content digests, dependencies/composition, owning service sources and accepted hosting/qualify/cleanup/receipt integrations |
+| Final source | Accepted factory/adapter/hosted source through #78 | Eight operational source roles/commits/paths/digests, deployed image/launch measurements and concrete authenticated composition/activation acceptance; exact executing workflow SHA remains unselected |
 | Target | Dedicated disposable nonproduction Linux deployment | Exact provider/account or tenant/subscription, existing parent IDs, host/cluster, region and namespace/resource-group scope |
 | Administrators | Worker cannot administer supervisor, custody, bootstrap/operation grants, readback or cleanup | Named independent principals, control-plane owners, credential/trust refs and effective access evidence |
 | Environment | Proposed new `wallet-mfa-pilot-qa` in repo ID `1347887821` | Before setup: approved name and create scope, 1–6 reviewer IDs, distinct dispatcher, prevent self-review, no admin bypass, exact `refs/heads/main` deployment restriction; after setup: actual ID and complete effective protection readback |
@@ -69,10 +74,10 @@ the existing `copilot` environment and current provider configuration.
    that run identity. Setup grants neither workflow dispatch nor signing use.
 2. **One bootstrap dispatch — NOT GRANTED.** After authorized setup readback
    and accepted actual hosting/authentication clients, independently approve the
-   complete static selection under `openxfactory-dispatch-selection-internal-v1`
+   complete hosted static-v2 plan under `openxfactory-dispatch-selection-internal-v2`
    and one preauthorization. Use only manual inputs `accepted_commit`,
    `selection_digest`, `preauthorization_ref` at the exact accepted workflow
-   source. The accepted #65 broker source still needs selected/qualified hosting,
+   source. The accepted broker and hosted source still need selected/qualified deployment,
    retained journal, authenticated callbacks and credential issuance. It must
    first durably reserve/consume the dispatch attempt against the selected
    preauthorization under an atomic compare-and-set; only that winner may send one request. A crash before
@@ -91,9 +96,10 @@ the existing `copilot` environment and current provider configuration.
    approves the final full runtime config/grant for the
    exact selection/source/repository/case/run/attempt. Independently register and
    read back that full-config-bound run plan, active lease and cleanup generation
-   scope before admission can return readiness. Static commitment omits
-   only launch run ID/attempt; no other selection or time-window change is
-   implied. Approve only `qualify-existing-resources` and one bounded owning
+   scope before admission can return readiness. The hosted static-v2 plan commits exact configuration/policy/measurement
+   templates and closed derivation rules. Only assigned launch run ID/attempt,
+   measured composition digest and derived authority policy digest are finalized;
+   no other selection or time-window change is implied. Approve only `qualify-existing-resources` and one bounded owning
    proof, with the accepted qualification/cancellation cases expressly named.
    If more runs are needed, enumerate their separate scope and decisions. A
    rerun/changed attempt never inherits authority. Full fresh environment,
@@ -131,26 +137,17 @@ domain human approval.
 The next owner decisions are the actual nonproduction target, administrative
 owners, distinct dispatcher/reviewer, actual bootstrap/controller hosting, issuance and source-update policy
 and resource/budget/window limits. They can commission the required source
-integrations without authorizing setup or dispatch. Source bootstrap acceptance
-is complete; live hosting/authentication and operational decisions remain open.
+integrations without authorizing setup or dispatch. Bootstrap and hosted algorithm source acceptance
+is complete; actual deployed composition/activation, live hosting/authentication and
+operational decisions remain open.
 
-Current T012V source follows the [main #85/#86 checkpoint](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint);
-its fresh final-head qualification/cleanup/CI and owner source ratification remain
-PR #78 gates. Earlier receipts are historical. This source record selects no
-operational accepted_commit and grants no setup or protected dispatch.
+## Current readback and source-only boundary
 
-Current T012V source follows the [main #87 checkpoint](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint). Its full 2811/
-native 2389 collection retains all prior identities/order; the native fingerprints
-remain exact. Fresh complete qualification/cleanup/CI/Sonar and actual owner source
-acceptance remain separate from ungranted T001/T013-T015/setup/dispatch.
-
-Current T012V dependency source follows the [main #88 checkpoint](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint).
-It preserves the full 2811/native 2389 corpus and separates new neutral/provider
-pins from the explicitly selected owning fixture source. Complete fresh
-qualification/cleanup/CI/Sonar and actual owner ratification remain required;
-T001/T013-T015/setup/dispatch and live/human/domain acceptance stay ungranted.
-
-Current T012V source follows the [main #89 checkpoint](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint). It consumes
-reviewed installed predicates and exact root/code/spec/owning-source identities;
-collection 2811/2389 remains. Complete fresh qualification/review/cleanup/CI/Sonar
-and actual owner ratification remain separate from ungranted operational stages.
+Read-only GitHub refresh at `2026-11-18T03:07:59.743684+00:00` confirms only ineligible `copilot`,
+no protected workflow runs, read-only token defaults and unchanged default/
+immutable-ID subject settings. See [operational inputs](operational-inputs.md).
+The [#78 source decision](evidence.md#2026-11-17-78-source-acceptance-and-t013-refresh) completes source acceptance and this handoff,
+not T013 or an approved executing `accepted_commit`. Source-CI permission to keep
+integrating incoming changes is not acceptance of an operational main-update
+policy. Earlier qualification checkpoints remain historical. All four stages
+remain NOT GRANTED; feedback deferred and blocked writes unreplayed.

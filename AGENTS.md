@@ -590,3 +590,23 @@ controls pass; collection 2811/2389 retains all prior IDs/order/native fingerpri
 Freeze 384 inputs, with 374 non-document bytes preserved through final checkpoints.
 Fresh review/full/native/cleanup/CI/Sonar and owner ratification remain gates.
 Setup/dispatch unauthorized, feedback deferred and blocked writes unreplayed.
+
+## Current #78 source acceptance and T013 handoff
+
+Brett source-ratified #78 at `92545e32b4e5f950209cc7312a1a6309055b299d`, directed landing when green and this T013
+refresh. Normal merge `2997c8a238f6de6f74488fed933371d7f97d3ca5` has tree `a36a7d66955aa841a3b9aa1e61ecd1a1efad04a9`, carrying only the reviewed
+#90 historical backlog documentation alongside the ratified candidate. The source
+qualification receipt retains 2,811 full cases plus 11 subtests, 2,389 native cases,
+zero failures/errors/skips, independent cleanup and exact-head CI/local review;
+merged-main CI is tracked separately, never inferred from PR results. See
+`specs/017-protected-runtime-qualification/evidence.md` and the current T013 packet.
+
+T012V records the actual owner source act and documentation handoff. T001 and
+T013/T014/T015 remain unchecked. The hosted static-v2 and algorithm source is
+accepted in isolation; concrete deployed bindings, principals/state/watchdog,
+actual provider evidence and exact executing source remain unselected. Default
+operational bindings still refuse before outputs/OIDC. No setup, dispatch, token
+mint, freeze, grant, protected-machine/human/domain acceptance or blocked write
+is authorized by this refresh. Feedback deferred. Earlier candidate checkpoints
+are historical; this source-CI integration permission selects no operational
+main-update policy.

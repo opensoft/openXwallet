@@ -1,11 +1,17 @@
 # Hosting and issuance selection basis
 
-Status: draft
+Status: proposed operational values; source accepted through T012V, no operational selection
 Kind: planning
-Authority: user commissioned proposal/plan using recommended T013 selections; source ratification, appointments, setup and dispatch remain separate
+Authority: #78 source ratified; user commissioned T013 refresh; appointments, operational selections, setup and dispatch remain separate
 
 ## Accepted source and observed non-secret facts
 
+The hosted source is now accepted through [#78](evidence.md#2026-11-17-78-source-acceptance-and-t013-refresh) at `92545e32b4e5f950209cc7312a1a6309055b299d`,
+landed as `2997c8a238f6de6f74488fed933371d7f97d3ca5`. This supersedes the historical preparation status below,
+not the later owner selection/readback obligations. Default operational bindings
+still refuse; no target, principal, key, image, grant or executing SHA is selected.
+
+Historical preparation baseline:
 Adapter #66 was source-ratified at c8050f9eb1ffbcdbc7fdba66a032ca9649f25ae0 and
 merged as 5498a9b27d7a61daf8f4088ce85906cb436a2033 with equal tree
 e3664990f55b49bfb7629b864816900d6b429491. Accepted runtime source is unchanged
@@ -27,7 +33,7 @@ No credential, token, factor seed or raw provider response belongs in this packe
 | Initiating dispatcher | Proposed brettheap, User ID 1513478 | Explicit appointment and actual originating-human authentication; no App actor substitution |
 | Reviewer | Proposed scottdriscoll, User ID 1554882; alternate NikitaFlimakov, User ID 5066327 | Appointment/availability/current eligibility and independent review; nobody was contacted or assigned |
 | Environment | Proposed wallet-mfa-pilot-qa in opensoft/openXwallet (repository ID 1347887821; owner ID 638385) | Actual new environment ID and exact reviewer/self-review/admin-bypass/main-branch protections after separately authorized setup; existing copilot is preserved/ineligible |
-| Workflow | Existing caller ID 417795073 and local reusable ID 417795071; both observed with zero runs | Final accepted same-commit graph/source, current provider run/phase/review and new v2 source acceptance; three inputs unchanged |
+| Workflow | Existing caller ID 417795073 and local reusable ID 417795071; both observed with zero runs | Final accepted same-commit graph/source, current provider run/phase/review, selected deployed integration and exact executing source acceptance; three inputs unchanged |
 | Main-update policy | coordinated | Named hold/control owner, exact accepted main/window/control and independent current supporting readback; no freeze/rule/tag applied and no atomic-prevention claim |
 | Broker/reader | Separate repository-only Actions-write broker and Actions-read provider reader Apps; Contents-read only for required source reads | App/install/key/version/permission/retirement refs and effective scope; runtime gets no Contents-write/admin; root/MI limits must be qualified |
 | Issuer/credential store | Proposed dedicated pilot Key Vault/issuer and per-role private credential broker | Actual name/key/issuer/principal refs, authenticated enrollment, OS peer/IMDS denial, private transport and retirement; no existing broad credential or fixture key reused |
@@ -56,9 +62,10 @@ permission can request other audiences; current owned relying parties need revie
 
 ## Staged authority remains ungranted
 
-Source preparation uses these as design inputs only. A later owner must separately
-accept/commission the material v2 and hosting source; then accept actual T013 values
-and source readiness; then authorize scoped setup, one dispatch, actual-run use and
-exact cleanup. No executable runtime JSON, static digest, preauthorization, grant,
+These are still proposed operational inputs. Material v2 and hosted algorithm
+source are accepted through #78 in isolation. A later owner must accept actual
+T013 values and select/review the authenticated deployment composition and any
+necessary activation source; then separately authorize scoped setup, one dispatch,
+actual-run use and exact cleanup. No executable runtime JSON, static digest, preauthorization, grant,
 resource/deployment command or provider credential is produced. T001/T013/T014/T015
 remain unchecked. Feedback stays deferred; neither historical blocked write is replayed.
