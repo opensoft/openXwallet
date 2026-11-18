@@ -574,3 +574,9 @@ forking upstream sources; ordinary product validation remains code-only and
 shared tooling explicitly authenticates its spec leg. Fresh review/collection/
 full/native/cleanup/CI and Sonar remain required; setup/dispatch unauthorized,
 feedback deferred and blocked writes unreplayed.
+
+Current code candidate `e92a7728810b51d5537a39b0c12d998f1818baf8` retains 383 regular inputs before final
+ten-document checkpoint review; 373 other inputs must remain byte-identical.
+Collection 2811/2389 retains IDs/order/fingerprints, and ten pin/two real lifecycle
+controls pass. Fresh complete qualification/cleanup/CI/Sonar and owner ratification
+remain PR #78 gates. No source acceptance or operational grant is inferred.

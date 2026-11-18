@@ -340,10 +340,19 @@ final-head receipt. Code candidate `1728117f3dbe0ebb3fbeb408613e3d04c69067fc` re
 identities and passes 135 focused readback controls; complete qualification remains
 required. This runbook supplies no setup, protected dispatch or owner acceptance.
 
-## Current accepted-main #87 source checkpoint
+## Historical accepted-main #87 source checkpoint
 
 Use the [current source record](hosting-conformance-implementation.md#t012v-main-87-source-checkpoint) and PR #78's actual final-head receipt.
 Candidate `cf21b62b20237d8644aff8a5ae45074c011bbc1c` retains the native corpus, adds ten pin controls and
 passes ten pin plus two actual lifecycle compatibility controls. Full 2811/native 2389
 complete qualification, independent cleanup, CI/Sonar and owner acceptance remain
 required. This source runbook grants no setup or protected dispatch.
+
+## Current main #88 dependency source checkpoint
+
+Use the [current source record](hosting-conformance-implementation.md#t012v-main-88-source-checkpoint) and PR #78's actual final-head receipt.
+Candidate `e92a7728810b51d5537a39b0c12d998f1818baf8` consumes neutral root 36189804/code 6fb72ed4/spec 878293fb;
+explicit qualification owner bb0e9dae remains separate. All 2811/2389 identities
+are retained, and ten pin/two real lifecycle controls pass. Fresh complete source
+qualification/cleanup/CI and owner acceptance remain required; no setup/dispatch
+permission follows.

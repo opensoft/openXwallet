@@ -23,7 +23,7 @@ operational stages remain ungranted.
 
 ## Current candidate and next decision
 
-Executable candidate `cf21b62b20237d8644aff8a5ae45074c011bbc1c` integrates accepted main #87 with unchanged original limits/pins, prior identity/order retention and full 2811/native 2389 collection. Ten pin and two actual lifecycle compatibility controls pass. The [current source checkpoint](hosting-conformance-implementation.md#t012v-main-87-source-checkpoint) requires fresh complete final-head review/full/native/cleanup/CI/Sonar. No operational `accepted_commit` is selected.
+Executable candidate `e92a7728810b51d5537a39b0c12d998f1818baf8` consumes accepted main #88 neutral/provider pins with preserved original budgets/wire/pins ownership and full 2811/native 2389 collection. Ten pin/two actual lifecycle controls pass. The [current source checkpoint](hosting-conformance-implementation.md#t012v-main-88-source-checkpoint) requires fresh complete final-head review/full/native/cleanup/CI/Sonar and owner acceptance. No operational `accepted_commit` is selected.
 
 ## Historical #65 source acceptance and T012M handoff
 

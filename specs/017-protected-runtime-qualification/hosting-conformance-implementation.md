@@ -868,3 +868,46 @@ cleanup and exact-head hosted CI/evaluated Sonar before presentation. The final
 checkpoint must not predeclare success. Feature017 tasks.md remains the sole
 implementation list; T012V/owner acceptance and T001/T013-T015 stay open. No
 setup or dispatch is granted; feedback deferred and blocked writes unreplayed.
+
+
+## T012V main 88 source checkpoint
+
+Code candidate `e92a7728810b51d5537a39b0c12d998f1818baf8` consumes accepted main
+`6cc8c4e40644692dfdf47cda520ae5076eec6f6a`. Neutral root is
+`3618980408eaaccaa31ec41da32f77cf86fb99f9`, code `6fb72ed4c820d927775ccb698c5cfbd8adff71d7`,
+and spec `878293fb3ed84073dd7e285f56f4fee62413297e`; all three checkouts are clean.
+The separately selected qualification owner remains `bb0e9dae89a771b05f6c235d0a77237288b95c85`,
+matching ordinary source CI's explicit owning-source selection. This fixture
+selection grants no live custody/provider or operational authority.
+
+The eight contract digests and CLI package/lock addresses remain unchanged.
+OpenSpec and shape source/admission records move coherently with the accepted
+provider refresh; their 214/2231 case identities and no-skip requirements remain.
+Ordinary product validation stays code-only. Tooling explicitly authenticates
+its pinned spec source, without a PATH-only shortcut or shared-file fork.
+
+Actual collection remains 2,811 full parents/2,389 native cases, preserving every
+prior identity/order and exact native module fingerprints. All ten pin controls
+and both real connected qualification-positive/original-private-cap-refusal cleanup
+controls pass with the new pins. These focused receipts do not replace fresh
+complete qualification. The final ten source-checkpoint Markdown inputs may
+change; all 373 other regular inputs must retain this code candidate's bytes.
+Reviewed/executed/published identities and actual full/native/cleanup/CI/Sonar
+receipts belong on [PR #78](https://github.com/opensoft/openXwallet/pull/78) after
+execution; no complete current-head success is predeclared here.
+
+The 7a562f2 attempt's first five gates pass, but full execution was intentionally
+retired for the accepted pin update. Native/CI never started. Its partial audit
+retains 1,014 generation observations, 26 journals, eight helper receipts and zero
+live/initial failures; the runtime root and four prequalification roots are
+removed. Earlier completed/partial attempts remain historical and do not qualify
+this dependency combination.
+
+Fresh nine-role source/three-role document review, full ordered gates, mandatory
+native, ten-case preservation/cleanup and exact-head hosted CI/original evaluated
+Sonar remain required before owner source ratification. Runtime 10s/private39,
+staging16/finalization12 and GitHub26/28/13 remain; ordinary source CI retains
+90 minutes and traced jobs 45 minutes. Default refusal, wire profiles, pins' governed
+ownership, cancellation/privacy and original-registration cleanup stay unchanged.
+T012V stays unchecked; T001/T013-T015/setup/dispatch/live/human/domain acceptance
+stay ungranted. Feedback deferred; neither blocked write replayed.

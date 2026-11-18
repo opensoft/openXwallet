@@ -2,7 +2,7 @@
 
 **Branch**: `017-protected-runtime-qualification` | **Date**: 2026-11-12
 **Spec**: [spec.md](spec.md)
-**State**: T012V accepted-main #87 source candidate; fresh final-head review/full/native/cleanup/hosted CI and Sonar remain required. Prior completed and interrupted receipts remain historical; all operational authority stays separate.
+**State**: T012V accepted-main #88 dependency candidate; fresh final-head review/full/native/cleanup/hosted CI/Sonar and owner source ratification remain required. Prior receipts are historical; operational authority remains ungranted.
 
 Bootstrap amendment `fix-protected-runtime-dispatch-bootstrap` was source
 accepted and landed in factory #1311 / adapter #60. The static dispatch selection
@@ -383,7 +383,7 @@ The 2c534c2 source-gate result and intentionally interrupted native attempt are
 historical. Fresh final-head qualification, CI and owner source ratification
 remain required; no operational grant is inferred.
 
-### Current main #87 source checkpoint
+### Historical main #87 source checkpoint
 
 The [current source record](hosting-conformance-implementation.md#t012v-main-87-source-checkpoint) names code candidate `cf21b62b20237d8644aff8a5ae45074c011bbc1c`,
 actual 2811/2389 collection and 12 focused compatibility controls. Complete exact-head
@@ -393,3 +393,10 @@ Current T012V continuation now consumes accepted main #88 provider pins under
 the bounded plan in hosting-conformance-implementation.md. Earlier source and
 partial attempt receipts are historical. Fresh final-head source qualification
 and owner ratification remain required, with every operational stage ungranted.
+
+### Current main #88 source checkpoint
+
+The [current source record](hosting-conformance-implementation.md#t012v-main-88-source-checkpoint) binds candidate `e92a7728810b51d5537a39b0c12d998f1818baf8` to
+exact neutral/provider/qualification-source identities, actual 2811/2389 collection
+and 12 focused controls. Complete exact-head qualification and owner ratification
+remain distinct PR #78 gates.
