@@ -10,9 +10,9 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-PROVIDER_REVISION = "41eab21570efbd942f49b6ca728d286492adf02a"
+PROVIDER_REVISION = "7aaa749d2defc6ab7e18ffd428283c1ab8dd19c0"
 BODY_DIGESTS = {
-    "scripts/validate-openspec-cli-pin.py": "53437679d7f7a8a398d7408ff173898c645219b85aa3c324f979c39f2d980ba7",
+    "scripts/validate-openspec-cli-pin.py": "316af08da61959a75c4934e85b4ba2db781fb4f887ecce0ace918b57ef386cb7",
     "scripts/install-pinned-openspec-cli.py": "2ef0067678926da91009344b006d67aa9931a46504982329c1f0c7b7dfec1052",
     "contracts/openspec-cli-pin.yaml": "1bab358ce6d5275fcad6fd1af3a4320aebe42d25c158aa0364d680fd4d8fa482",
     "contracts/openspec-cli-pin.1.12.0.package-lock.json": "696dce86e5e5699007129310d9de532795ce48467218fba03b729d38c829e2ca"

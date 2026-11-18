@@ -388,3 +388,8 @@ remain required; no operational grant is inferred.
 The [current source record](hosting-conformance-implementation.md#t012v-main-87-source-checkpoint) names code candidate `cf21b62b20237d8644aff8a5ae45074c011bbc1c`,
 actual 2811/2389 collection and 12 focused compatibility controls. Complete exact-head
 qualification and owner acceptance remain PR #78 gates, not operational permission.
+
+Current T012V continuation now consumes accepted main #88 provider pins under
+the bounded plan in hosting-conformance-implementation.md. Earlier source and
+partial attempt receipts are historical. Fresh final-head source qualification
+and owner ratification remain required, with every operational stage ungranted.

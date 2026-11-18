@@ -837,3 +837,34 @@ source ratification. Source-only sequential CI retains 90 minutes; traced jobs
 retain 45 minutes and runtime 10s/private39 remain unchanged. T012V stays unchecked.
 T001/T013-T015, setup/dispatch, live OIDC/provider minting, deployed and human/domain
 acceptance remain ungranted. Feedback deferred; neither blocked write replayed.
+
+
+## T012V accepted-main #88 provider integration plan
+
+Accepted main 6cc8c4e40644692dfdf47cda520ae5076eec6f6a consumes neutral wallet
+root 3618980408eaaccaa31ec41da32f77cf86fb99f9, code 6fb72ed4c820d927775ccb698c5cfbd8adff71d7 and spec 878293fb3ed84073dd7e285f56f4fee62413297e. The provider
+records admit OpenSpec 7aaa749d/44e7b4bf and shape 472b3914; exact records remain
+in their governed pin/provenance files. Eight contract digests, CLI package and
+lock addresses, provider 214/2231 case identities and zero-skip requirements stay
+unchanged. Qualification owner bb0e9dae remains a separately selected immutable
+source. Do not fork or manually edit upstream standards; initialize only the
+recorded root/code plus the explicitly consumed spec leg.
+
+The 7a562f2 attempt retained all 383 source bytes, three source-role clearances,
+ten pin/two actual lifecycle controls and six document gates. Its first five
+ordered gates pass, but the full attempt was intentionally retired when the
+accepted dependency pins advanced; native/CI never started. Its partial fixture
+audit retains 1,014 generation observations, 26 journals and 8 helper receipts, with
+zero attributable live processes and 0 initial teardown records. Its one runtime root
+and four prequalification roots are removed. These are incomplete diagnostic
+receipts and qualify no new source. The last complete 064103a5 receipt remains
+historical, not a current pin/implementation result.
+
+Preserve original wire/protected defaults, one Decision, private39/staging16/
+finalization12, GitHub26/28/13, cancellation/privacy and original-registration
+cleanup. Recollect all source/native identities and review final source/doc
+bytes, then run complete ordered gates, mandatory native, ten-case independent
+cleanup and exact-head hosted CI/evaluated Sonar before presentation. The final
+checkpoint must not predeclare success. Feature017 tasks.md remains the sole
+implementation list; T012V/owner acceptance and T001/T013-T015 stay open. No
+setup or dispatch is granted; feedback deferred and blocked writes unreplayed.

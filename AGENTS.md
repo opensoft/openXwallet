@@ -546,7 +546,7 @@ collection and all 135 focused readback controls pass. Preserve the 371 non-docu
 inputs through final source-checkpoint review. Full/native/cleanup/CI/Sonar remain
 fresh final-head requirements tracked on PR #78, not success claims here.
 
-### Current T012V accepted-main #87 integration
+### Historical T012V accepted-main #87 integration
 
 Accepted main 001c8321884259b35f17adc3d6cd9f623ad1a947 refactors lifecycle and
 validation responsibilities. Both typed LifecycleStores/LifecycleActors constructor
@@ -562,3 +562,15 @@ all prior IDs/order, adding ten accepted pin controls outside the native matrix.
 Ten pin and two actual qualification/lifecycle compatibility controls pass. Preserve
 373 non-document inputs through final ten-document checkpoint review. Fresh
 complete full/native/cleanup/CI/Sonar and owner ratification remain PR #78 gates.
+
+### Current T012V accepted-main #88 provider integration
+
+Accepted main 6cc8c4e40644692dfdf47cda520ae5076eec6f6a refreshes the coherent
+neutral root/code/spec and admitted OpenSpec/shape provider records. Source
+identities are 3618980408eaaccaa31ec41da32f77cf86fb99f9/6fb72ed4c820d927775ccb698c5cfbd8adff71d7/878293fb3ed84073dd7e285f56f4fee62413297e. Eight contract
+digests and CLI package/lock addresses remain unchanged; qualification owning
+code stays separately selected at bb0e9dae. Consume the accepted pins without
+forking upstream sources; ordinary product validation remains code-only and
+shared tooling explicitly authenticates its spec leg. Fresh review/collection/
+full/native/cleanup/CI and Sonar remain required; setup/dispatch unauthorized,
+feedback deferred and blocked writes unreplayed.

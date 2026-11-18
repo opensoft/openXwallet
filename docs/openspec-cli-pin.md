@@ -1,3 +1,14 @@
+## Published provider refresh (2026-11-17)
+
+The adapter now selects the neutral wallet root at 3618980408eaaccaa31ec41da32f77cf86fb99f9.
+The initialized spec leg carries the verifier from openXfactory source
+7aaa749d2defc6ab7e18ffd428283c1ab8dd19c0, published at 44e7b4bf8443f8d97790899c74228d5b56eab54a. Its declaration and
+the adapter's measured provider records use that exact source revision.
+
+The package and dependency lock retain their original content addresses.
+The conformance selection retains all 214 provider cases in each context
+and the existing prohibition on skipped cases. Historical receipts follow.
+
 ## Provider and neutral source admission (2026-11-17)
 
 Provider #1337 is admitted at 53475872efea351bd6bd65994428ea6692b150f4.
