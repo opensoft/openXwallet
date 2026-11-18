@@ -610,3 +610,15 @@ mint, freeze, grant, protected-machine/human/domain acceptance or blocked write
 is authorized by this refresh. Feedback deferred. Earlier candidate checkpoints
 are historical; this source-CI integration permission selects no operational
 main-update policy.
+
+## Commissioned isolated SQLite staging-journal correction
+
+Brett source-ratified #91 at cf2c0eee65fc55c1606be4c19f4b61eda2185fab; it
+merged normally as bd1b0d8b6ec249f7ed37932a552e5674d046a912 with the accepted
+tree. Only the existing feature017 implementation correction in
+`specs/017-protected-runtime-qualification/sqlite-journal-plan.md` and sole
+task T012VJ is now commissioned in isolation. Preserve all baseline case IDs,
+security checks, schema/pins, deadlines, budgets and default refusal. Fresh
+exact-source full/native qualification and owned-fixture cleanup are required.
+No publication, fix ratification, setup/dispatch or live provider authority is
+inferred; feedback deferred and blocked writes unreplayed.

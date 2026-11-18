@@ -406,3 +406,12 @@ remain distinct PR #78 gates.
 The [current source record](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint) binds candidate `bf87eaefc74e876431d7a7c0e09b8802cb126e77` and
 its actual pin/recipe/collection/compatibility checks. Full/native/cleanup/CI/Sonar
 and owner source acceptance remain separate final-head gates.
+
+## Commissioned SQLite staging-journal correction
+
+Brett source-ratified #91 at `cf2c0eee65fc55c1606be4c19f4b61eda2185fab`, landed
+normally as `bd1b0d8b6ec249f7ed37932a552e5674d046a912`, then commissioned only
+the isolated [journal correction](sqlite-journal-plan.md), sole task T012VJ.
+Existing single-winner/durable private-store semantics and all security, wire,
+pin, deadline and refusal boundaries remain. T001/T013-T015 and setup/dispatch
+authority stay ungranted; no source publication or fix acceptance is inferred.
