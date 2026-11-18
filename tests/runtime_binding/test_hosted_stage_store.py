@@ -67,7 +67,8 @@ def test_valid_active_private_delete_journal_is_allowed(tmp_path):
         other.execute("UPDATE metadata SET highwater=1003")
         try:
             journal = root / (DB + "-journal")
-            assert journal.is_file() and journal.stat().st_mode & 0o777 == 0o600
+            assert journal.is_file()
+            assert journal.stat().st_mode & 0o777 == 0o600
             StageStore(root, identity=identity, kind="controller")
         finally:
             other.rollback()
@@ -171,9 +172,11 @@ def test_main_loss_replacement_or_unsafe_metadata_during_sidecar_lookup_refuses(
         StageStore(root, identity=identity, kind="controller")
     assert changed == [True]
     if change == "directory-removed":
-        assert not root.exists() and (tmp_path / "retained-state" / DB).is_file()
+        assert not root.exists()
+        assert (tmp_path / "retained-state" / DB).is_file()
     elif change == "database-removed":
-        assert not database.exists() and (tmp_path / "retained.sqlite").is_file()
+        assert not database.exists()
+        assert (tmp_path / "retained.sqlite").is_file()
 
 
 @pytest.mark.parametrize("suffix", ["-journal", "-wal", "-shm"], ids=["journal", "wal", "shm"])
@@ -193,4 +196,5 @@ def test_unsafe_observed_snapshot_still_refuses_after_sidecar_disappears(tmp_pat
     monkeypatch.setattr(Path, "lstat", disappear_after_snapshot)
     with pytest.raises(BindingError, match="^hosted-stage-refused$"):
         StageStore(root, identity=identity, kind="controller")
-    assert removed == [True] and not sidecar.exists()
+    assert removed == [True]
+    assert not sidecar.exists()

@@ -170,3 +170,18 @@ fresh integrated full/native qualification, cleanup, hosted CI and nine local
 Codex expert roles are required for this publication head and recorded on its PR.
 Feature017 T012VJ remains the sole correction task; T001/T013-T015 stay unchecked.
 Setup/dispatch unauthorized, feedback deferred, blocked writes unreplayed.
+
+## Publication S9073 assertion correction
+
+The first #94 hosted run 44355407295 at 9f462857c5e1176ae591087bc4fdcfab961e38f7
+passes all five jobs and all six original conditions (100% new coverage), but
+direct analysis c30c54cd-0576-4b92-8c6d-c0b619a181b9 retains four S9073 findings:
+AaHv1OauqAoMpLQXSFXl, AaHv1OauqAoMpLQXSFXm, AaHv1OauqAoMpLQXSFXn and
+AaHv1OauqAoMpLQXSFXo. That head is not presented for ratification. Split those
+four composite assertions, retaining every condition, fixture, test identity,
+matrix fingerprint and runtime byte. No rule suppression or scan/gate change.
+This remains existing T012VJ publication finding resolution under the owner
+commission. Earlier exact-source qualification and review remain historical;
+fresh exact-source full/native, cleanup, local Codex follow-up and hosted CI/
+analysis readback are required. T001/T013-T015/setup/dispatch stay ungranted;
+feedback deferred, blocked writes unreplayed.
