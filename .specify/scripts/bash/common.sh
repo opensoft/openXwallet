@@ -15,7 +15,7 @@ find_specify_root() {
             return 0
         fi
         # Stop if we've reached filesystem root or dirname stops changing
-        if test "$dir" = "/" || test "$dir" = "$prev_dir"; then
+        if [[ "$dir" = "/" ]] || [[ "$dir" == "$prev_dir" && -z "${dir#"$prev_dir"}" ]]; then
             break
         fi
         prev_dir="$dir"
@@ -493,11 +493,11 @@ except Exception:
     print('replace\t')
 " 2>"$py_stderr")
                             local parse_status=$?
-                            if test $parse_status -eq 0 && [[ -n "$result" ]]; then
+                            if [[ $parse_status -eq 0 ]] && [[ -n "$result" ]]; then
                                 IFS=$'\t' read -r strategy manifest_file <<< "$result"
                                 strategy=$(printf '%s' "$strategy" | tr '[:upper:]' '[:lower:]')
                             fi
-                            if test "$yaml_warned" = false && grep -q 'yaml_missing' "$py_stderr" 2>/dev/null; then
+                            if [[ "$yaml_warned" = "false" ]] && grep -q 'yaml_missing' "$py_stderr" 2>/dev/null; then
                                 echo "Warning: PyYAML not available; composition strategies may be ignored" >&2
                                 yaml_warned=true
                             fi
@@ -572,22 +572,22 @@ except Exception:
     fi
 
     local count=${#layer_paths[@]}
-    test "$count" -eq 0 && return 1
+    [[ "$count" -eq 0 ]] && return 1
 
     # Check if any layer uses a non-replace strategy
     local has_composition=false
     for s in "${layer_strategies[@]}"; do
-        test "$s" != "$_specify_template_replacement_strategy" && has_composition=true && break
+        [[ "$s" != "$_specify_template_replacement_strategy" || -n "${s#"$_specify_template_replacement_strategy"}" ]] && has_composition=true && break
     done
 
     # If the top (highest-priority) layer is replace, it wins entirely —
     # lower layers are irrelevant regardless of their strategies.
-    if test "${layer_strategies[0]}" = "$_specify_template_replacement_strategy"; then
+    if [[ "${layer_strategies[0]}" == "$_specify_template_replacement_strategy" && -z "${layer_strategies[0]#"$_specify_template_replacement_strategy"}" ]]; then
         cat "${layer_paths[0]}"
         return 0
     fi
 
-    if test "$has_composition" = false; then
+    if [[ "$has_composition" = "false" ]]; then
         cat "${layer_paths[0]}"
         return 0
     fi
@@ -597,13 +597,13 @@ except Exception:
     local base_idx=-1
     local i
     for (( i=0; i<count; i++ )); do
-        if test "${layer_strategies[$i]}" = "$_specify_template_replacement_strategy"; then
+        if [[ "${layer_strategies[$i]}" == "$_specify_template_replacement_strategy" && -z "${layer_strategies[$i]#"$_specify_template_replacement_strategy"}" ]]; then
             base_idx=$i
             break
         fi
     done
 
-    if test $base_idx -lt 0; then
+    if [[ $base_idx -lt 0 ]]; then
         return 1  # no base layer found
     fi
 
