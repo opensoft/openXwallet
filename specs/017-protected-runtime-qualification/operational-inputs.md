@@ -23,7 +23,7 @@ operational stages remain ungranted.
 
 ## Current candidate and next decision
 
-Executable candidate `1728117f3dbe0ebb3fbeb408613e3d04c69067fc` integrates accepted main #85/#86, preserves original limits/pins and ordered 2801/2389 identities, and passes all 135 focused readback controls. The [current source checkpoint](hosting-conformance-implementation.md#t012v-main-85-86-source-checkpoint) requires fresh final-head full/native/cleanup/hosted CI and review evidence on PR #78. Source acceptance remains separate; no execution `accepted_commit` is selected.
+Executable candidate `cf21b62b20237d8644aff8a5ae45074c011bbc1c` integrates accepted main #87 with unchanged original limits/pins, prior identity/order retention and full 2811/native 2389 collection. Ten pin and two actual lifecycle compatibility controls pass. The [current source checkpoint](hosting-conformance-implementation.md#t012v-main-87-source-checkpoint) requires fresh complete final-head review/full/native/cleanup/CI/Sonar. No operational `accepted_commit` is selected.
 
 ## Historical #65 source acceptance and T012M handoff
 

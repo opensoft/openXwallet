@@ -556,3 +556,9 @@ cancellation, privacy and resource-ownership guarantees. Follow feature017
 hosting-conformance-implementation.md; fresh review/full/native/cleanup/CI and
 Sonar remain required before owner source ratification. Setup/dispatch stay
 unauthorized, feedback deferred and blocked writes unreplayed.
+
+The current code candidate is `cf21b62b20237d8644aff8a5ae45074c011bbc1c`; collection 2811/2389 preserves
+all prior IDs/order, adding ten accepted pin controls outside the native matrix.
+Ten pin and two actual qualification/lifecycle compatibility controls pass. Preserve
+373 non-document inputs through final ten-document checkpoint review. Fresh
+complete full/native/cleanup/CI/Sonar and owner ratification remain PR #78 gates.

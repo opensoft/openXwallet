@@ -2953,10 +2953,18 @@ cleanup, hosted CI/Sonar and review results are recorded after execution in
 [current source record](hosting-conformance-implementation.md#t012v-selected-port-deadline-correction).
 This checkpoint supplies no source ratification or operational grant.
 
-## Current main #85/#86 integration checkpoint
+## Historical main #85/#86 integration checkpoint
 
 Code candidate `1728117f3dbe0ebb3fbeb408613e3d04c69067fc` preserves the complete ordered 2,801/2,389
 corpus and passes all 135 readback controls. The [current source record](hosting-conformance-implementation.md#t012v-main-85-86-source-checkpoint)
 separates the prior completed 064103a5 receipt from required fresh final-head
 review/full/native/cleanup/hosted CI and Sonar. No source ratification or
 operational grant is supplied.
+
+## Current main #87 source checkpoint
+
+Code candidate `cf21b62b20237d8644aff8a5ae45074c011bbc1c` preserves every prior identity/order, adds ten
+contract-pin controls, and retains all 2,389 native identities/fingerprints. Ten pin
+controls and both actual connected positive/refusal-cleanup controls pass. The
+[current source record](hosting-conformance-implementation.md#t012v-main-87-source-checkpoint) requires fresh complete final-head review,
+full/native/cleanup/hosted CI and Sonar; older receipts remain historical.

@@ -2,7 +2,7 @@
 
 **Branch**: `017-protected-runtime-qualification` | **Date**: 2026-11-12
 **Spec**: [spec.md](spec.md)
-**State**: T012V corrected source candidate; exact-head full/native/cleanup, source/document review and hosted CI/Sonar receipts are maintained on PR #78. Prior checkpoints remain historical. Original runtime/private39 and separate operational authority remain unchanged.
+**State**: T012V accepted-main #87 source candidate; fresh final-head review/full/native/cleanup/hosted CI and Sonar remain required. Prior completed and interrupted receipts remain historical; all operational authority stays separate.
 
 Bootstrap amendment `fix-protected-runtime-dispatch-bootstrap` was source
 accepted and landed in factory #1311 / adapter #60. The static dispatch selection
@@ -371,7 +371,7 @@ plan in hosting-conformance-implementation.md. The 064103a5 receipt remains
 historical; fresh final-head qualification and owner source ratification remain
 required. No T001/T013-T015/setup/dispatch grant is inferred.
 
-### Current accepted-main #85/#86 source checkpoint
+### Historical accepted-main #85/#86 source checkpoint
 
 The [current integration record](hosting-conformance-implementation.md#t012v-main-85-86-source-checkpoint) names candidate `1728117f3dbe0ebb3fbeb408613e3d04c69067fc`,
 preserved source limits and actual 135-control/collection evidence. Complete fresh
@@ -382,3 +382,9 @@ validator construction and compatibility plan is in hosting-conformance-implemen
 The 2c534c2 source-gate result and intentionally interrupted native attempt are
 historical. Fresh final-head qualification, CI and owner source ratification
 remain required; no operational grant is inferred.
+
+### Current main #87 source checkpoint
+
+The [current source record](hosting-conformance-implementation.md#t012v-main-87-source-checkpoint) names code candidate `cf21b62b20237d8644aff8a5ae45074c011bbc1c`,
+actual 2811/2389 collection and 12 focused compatibility controls. Complete exact-head
+qualification and owner acceptance remain PR #78 gates, not operational permission.

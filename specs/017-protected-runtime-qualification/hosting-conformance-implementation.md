@@ -796,3 +796,44 @@ are required before presentation. Record actual final-head receipts on PR #78;
 source checkpoints must not predeclare results. Source acceptance is not granted.
 T001/T013-T015/setup/dispatch stay ungranted, feedback deferred and neither
 blocked write is replayed.
+
+
+## T012V main 87 source checkpoint
+
+Code candidate `cf21b62b20237d8644aff8a5ae45074c011bbc1c` cleanly integrates accepted main
+`001c8321884259b35f17adc3d6cd9f623ad1a947`. Runtime/validator helpers retain
+the existing callbacks, refusals and durability; both existing lifecycle constructor
+sites use trusted LifecycleStores/LifecycleActors. The qualifier uses their
+preserved instance attributes/methods and static narrowing; there is no third
+constructor patch. Qualification private39, staging16/finalization12, GitHub26/28/13,
+original clocks, wire profiles, pins, default refusal and cleanup ownership remain.
+
+Actual collection is 2,811 full parents and 2,389 mandatory native identities.
+All prior full identities retain their order; ten accepted contract-pin controls
+are added. The native identity array and static module fingerprints match exactly.
+All ten new pin controls pass. Both actual connected qualification success and
+original-private-cap refusal/cleanup controls pass with the refactored lifecycle.
+These focused results do not replace complete fresh qualification.
+
+The final source may change only these ten checkpoint Markdown inputs; the other
+373 regular inputs must remain byte-identical to this code candidate. Actual
+reviewed/executed/published identities, full/native/cleanup and hosted CI/evaluated
+Sonar receipts belong on [PR #78](https://github.com/opensoft/openXwallet/pull/78)
+after execution. No complete current-head success is predeclared here.
+
+The prior 2c534c2 source/document review and seven ordered gates pass, including
+2,801 full parents plus 11 subtests. Its unpublished native attempt was intentionally
+retired at 39% when accepted main advanced again. Its completed-full and partial-
+native audit retains 13,516 generation observations, 450 journals, 139 helper receipts,
+five completed-full preservation cases and zero live/initial failures. Both runtime
+roots and four earlier prequalification roots are removed. The complete 064103a5
+local/native/hosted/Sonar receipt remains historical and does not qualify this
+integration.
+
+Fresh nine-role source review and three-role actual-document review, ordered full
+gates, mandatory native, ten-case independent preservation/cleanup, same-head
+hosted CI and original six-condition Sonar evidence remain required before owner
+source ratification. Source-only sequential CI retains 90 minutes; traced jobs
+retain 45 minutes and runtime 10s/private39 remain unchanged. T012V stays unchecked.
+T001/T013-T015, setup/dispatch, live OIDC/provider minting, deployed and human/domain
+acceptance remain ungranted. Feedback deferred; neither blocked write replayed.
