@@ -12,6 +12,8 @@ All 26 previously repaired keys, the selected live August baseline, profiles, th
 
 ## Batch B01: adapter refusal and test precision
 
+This section records B01 before publication.
+
 Candidate scope: 154 original keys (71 composite assertions, 82 ambiguous exception contexts and one duplicate launcher refusal return). The [per-key triage ledger](backlog-triage.json) distinguishes these candidates from the remaining 1,351 pending detailed review; no main fix is claimed yet.
 
 All conjunction predicates/messages, comments, function signatures and decorators are retained. Exception setup is evaluated before the expected operation. The ruleset test now requires list-selection faults to fail in begin_control and detailed-rule faults in finish_control, preserving the two-request bound. The launcher has one documented common refusal exit; all eight actual malformed-input probes preserve status 2 with empty stdout/stderr.
@@ -73,6 +75,6 @@ published shared source. [Canonical recipe](https://github.com/opensoft/openBenc
 
 The [final verification receipt](backlog-after.json) binds the gate, batch counts,
 historical analysis availability and the inventory and ledger hashes. The
-original inventory and earlier diagnostics remain in place. All nine analyses
-that were live at the start of this task remained available. The issue #73
-evidence retains the earlier archived analysis.
+original inventory and earlier diagnostics remain in place. Sonar still lists
+all nine analysis identifiers that were live at the start of this task. The
+issue #73 evidence retains the earlier archived analysis record.
