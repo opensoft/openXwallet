@@ -1,5 +1,34 @@
 # Preparation and Issuer Slice Evidence
 
+## Current design acceptance and P3 preparation, 2026-11-19
+
+[Owner acceptance](p3-design-basis-acceptance.md) names T013-S1 at081dad41cfb4
+with consumer049ede52b6ee as design basis only. Role nominations are subject to
+confirmation. The [P3 source plan](p3-azure-composition-plan.md) implements the
+planning commission under proposed factory `add-protected-runtime-azure-composition`;
+it commissions no code or operation. Earlier pending-design wording below is
+historical. P2 remains incomplete; P3 source acceptance and isolated implementation
+are separate. All four operational stages and T001/T013/T014/T015 remain open.
+
+## 2026-11-19 read-only target inventory and selection proposal
+
+The owner commissioned read-only inventory, concrete T013 selections and the
+codeXfactory handoff refresh. #95 head `5303411fde20240b956ae5831f4aa5805f00abc5`
+landed as `05790f37383cdaeb2815b2912d45f267f608fbe3`, with equal tree
+`f8fc860bc530d88a5941a74557df5719eb28b75c` and successful independent
+[main run44438983720](https://github.com/opensoft/openXwallet/actions/runs/44438983720).
+The [T013-S1 proposal](hosting-issuance-selections.md) distinguishes observed
+QA quota/restrictions/identity/protection metadata from proposed resources and
+appointments. Detailed command/response/error/hash receipts stay host-local.
+
+D2as v5 is quota/restriction blocked; D2as v6 is the selected design candidate,
+not reserved capacity. Complete pricing, verified administrative/access boundaries,
+provider-safe retirement and actual deployment composition remain open. Existing
+workflows/entrypoints/pins and all task checkboxes are preserved. No source-only
+result is relabeled live qualification. This local documentation refresh creates
+no resource, role, credential, token, lock, protected run or public receipt;
+setup/dispatch unauthorized, feedback deferred, blocked writes unreplayed.
+
 Status: T012V and T012VJ source accepted and landed; T013 operational selections/qualification unapproved
 Scope: source/isolated fixtures only, with historical preparation and earlier slice evidence
 
@@ -3216,3 +3245,19 @@ schema/transaction, neutral pin, workflow, budget, deadline or default activatio
 changes. T001/T013/T014/T015 remain unchecked. Setup/dispatch unauthorized,
 feedback deferred, blocked writes unreplayed. No live provider qualification,
 token mint, protected-machine acceptance or operational grant is inferred.
+
+## P3 source publication and local review corrections
+
+The owner commissioned P3 preparation PRs, actual factory-ledger provenance,
+hosted CI/local Codex review and finding resolution before ratification, scoped
+to the first pilot. [Factory#1353](https://github.com/opensoft/openXfactory/pull/1353)
+uses the real PR identity and preserves all prior ledger rows. The factory owns
+exact closed phase variants, later final-scope link and pre-run/run cleanup
+receipts; the adapter plan/matrix/proposed tasks mirror them. Late read-only
+observations do not extend expired mutation/proof authority or budgets.
+
+An initial source-test diagnostic lacked the exact pinned neutral spec checkout;
+that checkout was supplied without product/test/pin changes. Detailed source-test
+and review receipts remain local. Final exact-head hosted CI/local review are
+separate from any live qualification. No implementation/setup/dispatch or owner
+checkbox is granted by publication; feedback deferred, blocked writes unreplayed.

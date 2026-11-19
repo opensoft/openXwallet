@@ -1,5 +1,17 @@
 # Implementation Plan: Protected Machine Runtime Qualification
 
+## Proposed P3 source extension, 2026-11-19
+
+[The exact owner record](p3-design-basis-acceptance.md) accepts T013-S1 design
+basis only and commissions P3 proposal/plan preparation. The proposed factory
+add-protected-runtime-azure-composition capability and [P3 plan](p3-azure-composition-plan.md)
+address concrete local/remote deployment composition. [Acceptance/traceability](p3-azure-composition-acceptance.md)
+maps its twelve proposed requirements to the sole T013P source tasks. This is
+unratified/uncommissioned future source and does not amend the accepted baseline
+by implication. Roles unconfirmed; implementation/setup/dispatch unauthorized;
+T001/T013/T014/T015 and consumer T002 remain open. Earlier slice statuses below
+are historical source context.
+
 **Branch**: `017-protected-runtime-qualification` | **Date**: 2026-11-12
 **Spec**: [spec.md](spec.md)
 **State**: #94 source accepted at `b1430cedbf555afbfbe0a6de8a41e9208cfc145a`, normally merged as `255035a41761a88293e565573a319dc112a48522` with equal tree; independent push/main CI verified. T012V/T012VJ source acceptance is complete. [Current handoff](evidence.md#2026-11-18-94-source-acceptance-and-t013-refresh) refreshes T013 preparation only; T001/T013-T015 and all setup/dispatch authority remain ungranted.

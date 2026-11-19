@@ -1,5 +1,32 @@
 # T013 owner decision packet
 
+## Current design acceptance and P3 preparation, 2026-11-19
+
+[Owner acceptance](p3-design-basis-acceptance.md) names T013-S1 at081dad41cfb4
+with consumer049ede52b6ee as design basis only. Role nominations are subject to
+confirmation. The [P3 source plan](p3-azure-composition-plan.md) implements the
+planning commission under proposed factory `add-protected-runtime-azure-composition`;
+it commissions no code or operation. Earlier pending-design wording below is
+historical. P2 remains incomplete; P3 source acceptance and isolated implementation
+are separate. All four operational stages and T001/T013/T014/T015 remain open.
+
+## Current T013-S1 proposal, 2026-11-19 UTC
+
+#95 is source-accepted and landed as `05790f37383cdaeb2815b2912d45f267f608fbe3`;
+[post-merge CI](https://github.com/opensoft/openXwallet/actions/runs/44438983720)
+passes. The [concrete selection proposal](hosting-issuance-selections.md) records
+fresh read-only QA/GitHub inventory and S01-S12 for owner design-basis acceptance.
+It replaces the older generic size recommendation with unrestricted D2as v6;
+D2as v5 is blocked by family quota and subscription restriction. Common trusted
+subscription administrators, incomplete full pricing and provider-safe external
+watchdog retirement are explicit limits. Detailed inventory stays host-local.
+
+No selection is accepted by this preparation. P2 remains incomplete, P3 concrete
+composition/activation remains unselected, and every operational stage remains
+NOT GRANTED. T001/T013/T014/T015 remain unchecked. Named human roles are proposals,
+not appointments. No absolute operational window or final executing source is
+invented. The earlier #94 source record below is retained historical context.
+
 Status: T012V/T012VJ source accepted through #94; preparation only; every operational stage NOT GRANTED
 Updated: 2026-11-18
 Governance: factory `prepare-protected-runtime-qualification`; adapter feature 017

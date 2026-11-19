@@ -14,7 +14,8 @@ ownership, validation, versioning, and release constraints.
 
 - Active feature: 017-protected-runtime-qualification; plan:
   specs/017-protected-runtime-qualification/plan.md.
-  Current bounded T012T preparation subplan: specs/017-protected-runtime-qualification/hosting-evidence-plan.md.
+  Current P3 preparation subplan: specs/017-protected-runtime-qualification/p3-azure-composition-plan.md.
+  Earlier T012T subplan remains historical: specs/017-protected-runtime-qualification/hosting-evidence-plan.md.
 - Ratified factory composition: opensoft/openXfactory,
   openspec/changes/prepare-protected-runtime-qualification/.
   Feature 017 tasks.md is the sole implementation list. Brett Heap ratified
@@ -698,3 +699,14 @@ no retry/reset, grant, dispatch selection or source-update policy is inherited
 from source verification. Default operational_bindings() still refuses
 workflow-operational-host-unselected before outputs/OIDC. Setup, one dispatch,
 actual-run authority and cleanup/readback remain separately NOT GRANTED.
+
+## Current T013-S1 design acceptance and P3 planning only
+
+Brett accepted adapter081dad41cfb42a3bc58aefe356bb6d424fab871d with
+consumer049ede52b6ee03f15a57ecf7cdb9517002d8714f as design basis only; roles
+subject to confirmation. Prepare factory add-protected-runtime-azure-composition
+and feature017 P3 subplan/research/model/interfaces/acceptance/tasks. T013P01-P09
+are proposed/uncommissioned, not implementation permission. Keep original
+operational_bindings/default entrypoint, profiles, pins, budgets and existing
+checkboxes unchanged. No implementation/setup/dispatch, workload token, feedback
+or blocked-write replay. T013/T014/T015 and consumer058 T002 stay gated.

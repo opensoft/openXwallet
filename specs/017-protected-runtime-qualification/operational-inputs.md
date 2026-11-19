@@ -1,5 +1,23 @@
 # T013 Operational Selection Packet
 
+## Current design acceptance and P3 preparation, 2026-11-19
+
+[Owner acceptance](p3-design-basis-acceptance.md) names T013-S1 at081dad41cfb4
+with consumer049ede52b6ee as design basis only. Role nominations are subject to
+confirmation. The [P3 source plan](p3-azure-composition-plan.md) implements the
+planning commission under proposed factory `add-protected-runtime-azure-composition`;
+it commissions no code or operation. Earlier pending-design wording below is
+historical. P2 remains incomplete; P3 source acceptance and isolated implementation
+are separate. All four operational stages and T001/T013/T014/T015 remain open.
+
+Current proposal: [T013-S1 selections](hosting-issuance-selections.md), prepared
+2026-11-19 UTC after accepted #95/main `05790f37383c`. The owner has commissioned
+read-only inventory, concrete selection preparation and consumer handoff refresh
+only. S01-S12 await design-basis acceptance; P2 is incomplete and P3 service/
+activation composition remains unselected. Read-only observations do not supply
+live claims, issued credentials, initialized state or cleanup readiness. All four
+operational stages remain NOT GRANTED; the earlier #94 handoff is historical.
+
 Status: T012V/T012VJ source accepted through #94; T013 operational selections unaccepted; setup/dispatch NOT GRANTED
 Updated: 2026-11-18
 Governance: `opensoft/openXfactory`, `prepare-protected-runtime-qualification`

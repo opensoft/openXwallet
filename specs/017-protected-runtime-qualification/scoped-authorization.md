@@ -1,5 +1,22 @@
 # T013 Scoped Authorization Draft
 
+## Current design acceptance and P3 preparation, 2026-11-19
+
+[Owner acceptance](p3-design-basis-acceptance.md) names T013-S1 at081dad41cfb4
+with consumer049ede52b6ee as design basis only. Role nominations are subject to
+confirmation. The [P3 source plan](p3-azure-composition-plan.md) implements the
+planning commission under proposed factory `add-protected-runtime-azure-composition`;
+it commissions no code or operation. Earlier pending-design wording below is
+historical. P2 remains incomplete; P3 source acceptance and isolated implementation
+are separate. All four operational stages and T001/T013/T014/T015 remain open.
+
+Current decision candidate: [T013-S1 S01-S12](hosting-issuance-selections.md),
+2026-11-19 UTC, at accepted #95/main `05790f37383c`. It is a proposed design basis,
+not completed P2 or P3 and not a scoped setup/dispatch/run/cleanup grant. The owner
+has not accepted these selections or appointed the nominees. Every NOT GRANTED
+stage below remains unchanged; source selection, actual window/expiry, deployment
+composition, effective protections and provider-safe retirement remain gates.
+
 Status: T012V/T012VJ source accepted through #94; every operational stage NOT GRANTED
 Updated: 2026-11-18
 Selections: [operational inputs](operational-inputs.md)
