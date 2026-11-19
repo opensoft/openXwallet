@@ -1,9 +1,9 @@
 # Operator source conformance runbook
 
-Status: T012V source candidate; exact-head validation receipt tracked in PR #78; final-head CI/owner acceptance pending
+Status: T012V/T012VJ source accepted through #94; merged-main CI verified; operational selections unapproved
 Kind: source-runbook
 Scope: offline source and disposable local fixtures only
-Sole source publication task: tasks.md T012V; owner acceptance and operations separate
+Source task list: tasks.md T012V/T012VJ; accepted source and operational authority remain separate
 
 ## Authority and required inputs
 
@@ -22,8 +22,7 @@ gates and is not part of this recipe. Leave neutral pins, locks, workflows,
 ordinary/staging/finalization/cleanup budgets, original clocks and default refusal
 unchanged. The sequential ordinary source-CI job cap is 90 minutes under
 T012V delegated wall-time governance; the separate traced coverage jobs retain
-45-minute caps. Actual final-head hosted timing is recorded on PR #78, not
-inferred from local execution. Accepted main #79 OpenSpec tooling explicitly
+45-minute caps. Actual current source/main timing is recorded in the [#94 handoff](evidence.md#2026-11-18-94-source-acceptance-and-t013-refresh), not inferred from local execution. Accepted main #79 OpenSpec tooling explicitly
 initializes and authenticates shared source in the exact spec leg. Complete-source
 analysis also reads that leg; ordinary product/runtime validation stays code-only.
 
@@ -156,12 +155,13 @@ An intermediate pytest pass count, anchor line or tiny self-test corpus verdict
 is insufficient. Final source-check exceptions/cancellation/zero-exit attempts
 emit fixed refusal and cannot leave a final PASS.
 
-Current measured candidate collection is 2,811 full parent cases (plus 11
-subtests), 2,389 mandatory native nodes and 64 conformance self-tests. All prior
-2,781 full and 2,369 native identities and anchors remain. Hosted-evidence module
-has 218 cases; probe controls add 22 and canonical-journal controls 115.
-H03=97/H10=105/H11=284/H12=142. Collection is not a passing execution receipt; current
-execution/cleanup status is in [implementation evidence](hosting-conformance-implementation.md).
+Current accepted collection is 2,859 full parent cases (plus 11 subtests),
+2,437 mandatory native nodes and 64 conformance self-tests. All previous 2,811
+full and 2,389 native identities/order/fingerprints/anchors remain. The staging-
+store module adds 48 cases; hosted-evidence remains 218, probe controls 22 and
+canonical-journal controls 115. H03=145/H10=105/H11=284/H12=142. Collection alone
+is not execution evidence; actual accepted qualification, independent cleanup
+and merged-main CI are in the [#94 handoff](evidence.md#2026-11-18-94-source-acceptance-and-t013-refresh).
 The [qualification matrix](qualification-matrix.md) maps every H group to actual
 positive/mutation controls and remaining live gates. Anchors overlap and their
 counts must not be summed as independent tests.
@@ -357,10 +357,29 @@ are retained, and ten pin/two real lifecycle controls pass. Fresh complete sourc
 qualification/cleanup/CI and owner acceptance remain required; no setup/dispatch
 permission follows.
 
-## Current main #89 source checkpoint
+## Historical main #89 source checkpoint
 
 Candidate `bf87eaefc74e876431d7a7c0e09b8802cb126e77` consumes the published typed predicates/root repin.
 Use the [current source record](hosting-conformance-implementation.md#t012v-main-89-source-checkpoint) and PR #78's actual final-head receipt.
 Collection 2811/2389, nineteen recipe hash/syntax checks and ten pin/two real
 lifecycle controls pass; complete qualification/review/cleanup/CI/Sonar and owner
 ratification remain required. This grants no setup, dispatch or live acceptance.
+
+## Current accepted #94 source handoff
+
+Brett Heap source-ratified [openXwallet #94](https://github.com/opensoft/openXwallet/pull/94#issuecomment-6991564275) at `b1430cedbf555afbfbe0a6de8a41e9208cfc145a`
+and directed landing when green, independent post-merge verification, then this
+T013 refresh. It merged normally as `255035a41761a88293e565573a319dc112a48522` on `2026-11-18T21:03:25Z`,
+with tree `f40947b61c1a9a8a073b1ffe40fc9f042c20daad` exactly equal to the ratified tree.
+The [source qualification](https://github.com/opensoft/openXwallet/pull/94#issuecomment-6989959898) and [independent main receipt](https://github.com/opensoft/openXwallet/pull/94#issuecomment-6993081869)
+remain separate. T012V/T012VJ are accepted source; T001/T013/T014/T015 remain
+unchecked. No operational `accepted_commit`, deployment, principal,
+credential, appointment or grant is selected by this source act or its later
+documentation descendant.
+
+Ordinary source-CI reruns supply no protected-operation authority. The accepted
+operational broker still permits only its separately approved first run attempt;
+no retry/reset, grant, dispatch selection or source-update policy is inherited
+from source verification. Default operational_bindings() still refuses
+workflow-operational-host-unselected before outputs/OIDC. Setup, one dispatch,
+actual-run authority and cleanup/readback remain separately NOT GRANTED.

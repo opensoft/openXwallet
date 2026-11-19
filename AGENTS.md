@@ -581,7 +581,7 @@ Collection 2811/2389 retains IDs/order/fingerprints, and ten pin/two real lifecy
 controls pass. Fresh complete qualification/cleanup/CI/Sonar and owner ratification
 remain PR #78 gates. No source acceptance or operational grant is inferred.
 
-### Current T012V accepted-main #89 source
+### Historical T012V accepted-main #89 source
 
 Code candidate `bf87eaefc74e876431d7a7c0e09b8802cb126e77` consumes the published typed predicates and
 wallet root 38f9d0cb, with code 6fb72ed4/spec 878293fb and explicit owner bb0e9dae
@@ -591,7 +591,7 @@ Freeze 384 inputs, with 374 non-document bytes preserved through final checkpoin
 Fresh review/full/native/cleanup/CI/Sonar and owner ratification remain gates.
 Setup/dispatch unauthorized, feedback deferred and blocked writes unreplayed.
 
-## Current #78 source acceptance and T013 handoff
+## Historical #78 source acceptance and T013 handoff
 
 Brett source-ratified #78 at `92545e32b4e5f950209cc7312a1a6309055b299d`, directed landing when green and this T013
 refresh. Normal merge `2997c8a238f6de6f74488fed933371d7f97d3ca5` has tree `a36a7d66955aa841a3b9aa1e61ecd1a1efad04a9`, carrying only the reviewed
@@ -677,3 +677,24 @@ commission. Earlier exact-source qualification and review remain historical;
 fresh exact-source full/native, cleanup, local Codex follow-up and hosted CI/
 analysis readback are required. T001/T013-T015/setup/dispatch stay ungranted;
 feedback deferred, blocked writes unreplayed.
+
+## Current #94 source acceptance and T013 refresh
+
+Brett Heap source-ratified [openXwallet #94](https://github.com/opensoft/openXwallet/pull/94#issuecomment-6991564275) at `b1430cedbf555afbfbe0a6de8a41e9208cfc145a`
+and directed landing when green, independent post-merge verification, then this
+T013 refresh. It merged normally as `255035a41761a88293e565573a319dc112a48522` on `2026-11-18T21:03:25Z`,
+with tree `f40947b61c1a9a8a073b1ffe40fc9f042c20daad` exactly equal to the ratified tree.
+The [source qualification](https://github.com/opensoft/openXwallet/pull/94#issuecomment-6989959898) and [independent main receipt](https://github.com/opensoft/openXwallet/pull/94#issuecomment-6993081869)
+remain separate. T012V/T012VJ are accepted source; T001/T013/T014/T015 remain
+unchecked. No operational `accepted_commit`, deployment, principal,
+credential, appointment or grant is selected by this source act or its later
+documentation descendant.
+
+The [current handoff](specs/017-protected-runtime-qualification/evidence.md#2026-11-18-94-source-acceptance-and-t013-refresh) records actual merged-main CI, current pins/workflow hashes and fresh read-only repository facts. The documentation candidate selects no executing workflow SHA, service, credential or grant. Source handoff publication, hosted CI, local Codex review and finding resolution are now commissioned; owner source ratification and all operational decisions remain separate. Earlier candidate labels are historical; feature017 tasks.md remains the sole list.
+
+Ordinary source-CI reruns supply no protected-operation authority. The accepted
+operational broker still permits only its separately approved first run attempt;
+no retry/reset, grant, dispatch selection or source-update policy is inherited
+from source verification. Default operational_bindings() still refuses
+workflow-operational-host-unselected before outputs/OIDC. Setup, one dispatch,
+actual-run authority and cleanup/readback remain separately NOT GRANTED.

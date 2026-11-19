@@ -1,15 +1,22 @@
 # Hosting and issuance selection basis
 
-Status: proposed operational values; source accepted through T012V, no operational selection
+Status: proposed operational values; source accepted through T012V/T012VJ, no operational selection
 Kind: planning
-Authority: #78 source ratified; user commissioned T013 refresh; appointments, operational selections, setup and dispatch remain separate
+Authority: #78/#94 source ratified; user commissioned T013 refresh; appointments, operational selections, setup and dispatch remain separate
 
 ## Accepted source and observed non-secret facts
 
-The hosted source is now accepted through [#78](evidence.md#2026-11-17-78-source-acceptance-and-t013-refresh) at `92545e32b4e5f950209cc7312a1a6309055b299d`,
-landed as `2997c8a238f6de6f74488fed933371d7f97d3ca5`. This supersedes the historical preparation status below,
-not the later owner selection/readback obligations. Default operational bindings
-still refuse; no target, principal, key, image, grant or executing SHA is selected.
+Brett Heap source-ratified [openXwallet #94](https://github.com/opensoft/openXwallet/pull/94#issuecomment-6991564275) at `b1430cedbf555afbfbe0a6de8a41e9208cfc145a`
+and directed landing when green, independent post-merge verification, then this
+T013 refresh. It merged normally as `255035a41761a88293e565573a319dc112a48522` on `2026-11-18T21:03:25Z`,
+with tree `f40947b61c1a9a8a073b1ffe40fc9f042c20daad` exactly equal to the ratified tree.
+The [source qualification](https://github.com/opensoft/openXwallet/pull/94#issuecomment-6989959898) and [independent main receipt](https://github.com/opensoft/openXwallet/pull/94#issuecomment-6993081869)
+remain separate. T012V/T012VJ are accepted source; T001/T013/T014/T015 remain
+unchecked. No operational `accepted_commit`, deployment, principal,
+credential, appointment or grant is selected by this source act or its later
+documentation descendant.
+
+Historical preparation and provider research below remain dated proposals, with no current price/capacity or operational acceptance inferred.
 
 Historical preparation baseline:
 Adapter #66 was source-ratified at c8050f9eb1ffbcdbc7fdba66a032ca9649f25ae0 and

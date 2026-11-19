@@ -2,7 +2,7 @@
 
 **Branch**: `017-protected-runtime-qualification` | **Date**: 2026-11-12
 **Spec**: [spec.md](spec.md)
-**State**: Source handoff #91 at cf2c0eee65fc is accepted and landed as bd1b0d8b6ec2. T012VJ is implemented and qualified only in isolation at integrated runtime c32ac5147fd504426483681a11dc8b60f4aac0fc, based on accepted main #92. See [journal result](sqlite-journal-plan.md#isolated-correction-result). T001/T013-T015 and setup/dispatch authority remain ungranted.
+**State**: #94 source accepted at `b1430cedbf555afbfbe0a6de8a41e9208cfc145a`, normally merged as `255035a41761a88293e565573a319dc112a48522` with equal tree; independent push/main CI verified. T012V/T012VJ source acceptance is complete. [Current handoff](evidence.md#2026-11-18-94-source-acceptance-and-t013-refresh) refreshes T013 preparation only; T001/T013-T015 and all setup/dispatch authority remain ungranted.
 
 Bootstrap amendment `fix-protected-runtime-dispatch-bootstrap` was source
 accepted and landed in factory #1311 / adapter #60. The static dispatch selection

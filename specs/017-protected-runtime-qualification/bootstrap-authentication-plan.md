@@ -1,10 +1,20 @@
 # GitHub bootstrap authentication source and operational handoff
 
-Status: source accepted in #65; T012M handoff complete; T013 hosting/issuance/setup/dispatch unapproved
-Updated: 2026-11-14
+Status: bootstrap #65 and hosted/journal source through #94 accepted; T013 deployment/setup/dispatch unapproved
+Updated: 2026-11-18
 Owner boundary: factory grammar; adapter feature 017 implementation; no neutral API promotion
 
 The factory-owned [design](github-bootstrap-proposal.md) was source-ratified in #1314 / adapter #64. Subsequent isolated T012H–K implementation and T012L review/acceptance landed in #65 at merge `366533bed77293b096b0a7dbda61399ff5dbafe5`, with tree equal to ratified head `ab34ff4ec4fe27d56c8fd09c99614785c23e760f`. [Evidence](evidence.md#2026-11-14-65-source-acceptance-and-t012m-handoff) records the owner decision, checks and scope. T012M reconciles accepted source here; it grants no live operation.
+
+
+Current [#94 source/main-CI handoff](evidence.md#2026-11-18-94-source-acceptance-and-t013-refresh) records the accepted staging-journal correction and current dependency/source readback. No authenticated deployed callback, phase subject, credential, actual-run authority or operational source-update control is selected.
+
+Ordinary source-CI reruns supply no protected-operation authority. The accepted
+operational broker still permits only its separately approved first run attempt;
+no retry/reset, grant, dispatch selection or source-update policy is inherited
+from source verification. Default operational_bindings() still refuses
+workflow-operational-host-unselected before outputs/OIDC. Setup, one dispatch,
+actual-run authority and cleanup/readback remain separately NOT GRANTED.
 
 ## Three independently established facts
 
