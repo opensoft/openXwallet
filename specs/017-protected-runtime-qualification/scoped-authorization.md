@@ -1,5 +1,12 @@
 # T013 Scoped Authorization Draft
 
+Current decision candidate: [T013-S1 S01-S12](hosting-issuance-selections.md),
+2026-11-19 UTC, at accepted #95/main `05790f37383c`. It is a proposed design basis,
+not completed P2 or P3 and not a scoped setup/dispatch/run/cleanup grant. The owner
+has not accepted these selections or appointed the nominees. Every NOT GRANTED
+stage below remains unchanged; source selection, actual window/expiry, deployment
+composition, effective protections and provider-safe retirement remain gates.
+
 Status: T012V/T012VJ source accepted through #94; every operational stage NOT GRANTED
 Updated: 2026-11-18
 Selections: [operational inputs](operational-inputs.md)

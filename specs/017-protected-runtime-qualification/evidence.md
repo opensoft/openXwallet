@@ -1,5 +1,24 @@
 # Preparation and Issuer Slice Evidence
 
+## 2026-11-19 read-only target inventory and selection proposal
+
+The owner commissioned read-only inventory, concrete T013 selections and the
+codeXfactory handoff refresh. #95 head `5303411fde20240b956ae5831f4aa5805f00abc5`
+landed as `05790f37383cdaeb2815b2912d45f267f608fbe3`, with equal tree
+`f8fc860bc530d88a5941a74557df5719eb28b75c` and successful independent
+[main run44438983720](https://github.com/opensoft/openXwallet/actions/runs/44438983720).
+The [T013-S1 proposal](hosting-issuance-selections.md) distinguishes observed
+QA quota/restrictions/identity/protection metadata from proposed resources and
+appointments. Detailed command/response/error/hash receipts stay host-local.
+
+D2as v5 is quota/restriction blocked; D2as v6 is the selected design candidate,
+not reserved capacity. Complete pricing, verified administrative/access boundaries,
+provider-safe retirement and actual deployment composition remain open. Existing
+workflows/entrypoints/pins and all task checkboxes are preserved. No source-only
+result is relabeled live qualification. This local documentation refresh creates
+no resource, role, credential, token, lock, protected run or public receipt;
+setup/dispatch unauthorized, feedback deferred, blocked writes unreplayed.
+
 Status: T012V and T012VJ source accepted and landed; T013 operational selections/qualification unapproved
 Scope: source/isolated fixtures only, with historical preparation and earlier slice evidence
 

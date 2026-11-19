@@ -1,5 +1,14 @@
 Current source handoff: #94 source-only ratification at `b1430cedbf555afbfbe0a6de8a41e9208cfc145a` landed normally as `255035a41761a88293e565573a319dc112a48522`. The [current acceptance/main-CI record](evidence.md#2026-11-18-94-source-acceptance-and-t013-refresh) supersedes earlier pending-candidate labels. T012V/T012VJ source acceptance is complete; T001/T013/T014/T015 stay unchecked. Earlier commissioning/checkpoint paragraphs retain historical scope. This refresh selects no operational accepted_commit or grant; setup/dispatch unauthorized, feedback deferred, blocked writes unreplayed.
 
+Current 2026-11-19 UTC commission: read-only target inventory, concrete T013
+selection proposal and consumer handoff refresh. #95 is source accepted/landed as
+`05790f37383cdaeb2815b2912d45f267f608fbe3` with successful independent main CI.
+[Proposal T013-S1](hosting-issuance-selections.md) awaits design-basis acceptance;
+it commissions no P3 implementation or operation. All existing task checkboxes
+are preserved, including unchecked T001/T013/T014/T015. The following older
+checkpoints retain their historical scope. Setup/dispatch unauthorized, feedback
+deferred; blocked writes unreplayed.
+
 Historical T012V main #89 candidate integration: code candidate `bf87eaefc74e876431d7a7c0e09b8802cb126e77` consumes governed typed predicates and coherent root 38f9d0cb/code 6fb72ed4/spec 878293fb, keeping owner bb0e9dae separate. Nineteen recipe hash/Bash checks, ten pin/two actual lifecycle controls and collection 2811/2389 pass. Fresh complete review/full/native/cleanup/CI/Sonar and actual owner ratification remain required; T012V/T001/T013-T015 stay unchecked, setup/dispatch ungranted, feedback deferred and blocked writes unreplayed. See hosting-conformance-implementation.md.
 
 Historical #78 source acceptance: Brett ratified #78 at `92545e32b4e5f950209cc7312a1a6309055b299d` for source acceptance
