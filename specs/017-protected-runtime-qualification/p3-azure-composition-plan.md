@@ -1,12 +1,20 @@
 # Implementation Plan: P3 Azure deployment composition
 
-**Branch**: `017-t013-target-selections` | **Date**: 2026-11-19
+**Branch**: `017-p3-namespace` | **Date**: 2026-11-19
 **Spec**: [feature017](spec.md), proposed P3 extension below
-**State**: planning complete candidate; new source decision unratified; implementation unauthorized
+**State**: P3 source decision accepted; T013P01/T013P02 isolated source commissioned; later implementation and operations remain uncommissioned
 **Input**: [exact T013-S1 design acceptance and preparation commission](p3-design-basis-acceptance.md)
 **Factory owner**: opensoft/openXfactory `openspec/changes/add-protected-runtime-azure-composition/`
-**Factory candidate**: [PR#1353](https://github.com/opensoft/openXfactory/pull/1353), reviewed contract checkpoint `c2dfbbcc6fa6965fcde18661bddca1dac7128d47` (unratified; planning reference, not execution pin)
-**Sole implementation list**: [tasks.md](tasks.md), proposed T013P01-T013P09, all unchecked
+**Factory candidate**: [PR#1353](https://github.com/opensoft/openXfactory/pull/1353), reviewed contract checkpoint `c2dfbbcc6fa6965fcde18661bddca1dac7128d47` (source-ratified; landed as c41f023762115fbe13e160e0ce5223cc6ab461c8; not an operational execution pin)
+**Sole implementation list**: [tasks.md](tasks.md), T013P01/T013P02 first source slice; T013P03-T013P09 remain pending
+
+## Current bounded commission
+
+The [first-slice record](p3-namespace-implementation.md) records exact paired
+source ratification/landing and Brett's later isolated P01/P02 commission.
+Preparation-time future/unratified/unauthorized labels below retain their original
+scope and do not override that current source commission. Setup/dispatch and
+later source slices are not granted. The new source is not yet source-accepted.
 
 ## Summary
 

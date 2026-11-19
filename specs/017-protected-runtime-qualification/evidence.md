@@ -3261,3 +3261,23 @@ that checkout was supplied without product/test/pin changes. Detailed source-tes
 and review receipts remain local. Final exact-head hosted CI/local review are
 separate from any live qualification. No implementation/setup/dispatch or owner
 checkbox is granted by publication; feedback deferred, blocked writes unreplayed.
+
+## 2026-11-19 first bounded P3 source implementation
+
+The [P01/P02 authority and implementation record](p3-namespace-implementation.md)
+records exact source-ratified/landed factory1353, adapter96 and consumer586 and
+the subsequent first-slice isolated commission. Closed records and conditional
+namespace semantics pass 166 focused source controls; actual full/native source
+receipts and cleanup are recorded separately at their implementation checkpoint.
+No later P3 task, operational owner act, provider deployment, workload token,
+protected dispatch, human assurance or consumer T002 acceptance is inferred.
+
+### First P3 slice candidate review
+
+PR #97 local expert review reproduced and corrected a cross-resource admission
+race with a read-only unchanged-revision barrier on the original Decision. Four
+deterministic interleavings extend the focused corpus to 170 passing cases; the
+current product measurement covers 466 statements and 112 branches at 100%.
+Selection validation helpers preserve the closed record guards. Exact-head
+full/native and hosted CI receipts remain separate from this focused checkpoint;
+no source acceptance, setup, dispatch or live provider result is implied.

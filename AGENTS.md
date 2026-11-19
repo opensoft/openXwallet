@@ -710,3 +710,23 @@ are proposed/uncommissioned, not implementation permission. Keep original
 operational_bindings/default entrypoint, profiles, pins, budgets and existing
 checkboxes unchanged. No implementation/setup/dispatch, workload token, feedback
 or blocked-write replay. T013/T014/T015 and consumer058 T002 stay gated.
+
+## First bounded P3 source slice
+
+Brett source-ratified factory1353 c2dfbbcc6fa6, adapter96 9a087cf8c146 and
+consumer586 aa4a50eea567; all landed in order with equal ratified/merged trees
+and green independent main CI. His later instruction commissions isolated
+T013P01/T013P02 only. See feature017 p3-namespace-implementation.md and tasks.md.
+New code is an unaccepted local source candidate; the conditional storage test
+double is not a Blob deployment. Later P3 tasks and T001/T013/T014/T015, roles,
+consumer T002 and human acceptance remain gated. Preserve old runtime/profile/
+workflow/pin bytes and every prior matrix identity/fingerprint/anchor. Default
+operational_bindings still refuses. Setup/dispatch unauthorized; feedback deferred;
+historical blocked writes unreplayed.
+
+## First P3 slice candidate review commission
+
+Brett commissions candidate PR #97, hosted source CI and local Codex expert
+review, resolution of findings and presentation for source-only ratification.
+Only T013P01/P02 is commissioned. Later P03-P09, setup/dispatch and live acceptance
+remain separate; feedback stays deferred and blocked writes remain unreplayed.
