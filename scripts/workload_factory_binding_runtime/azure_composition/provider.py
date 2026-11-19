@@ -4,13 +4,13 @@ No credential acquisition, network client, initialization, watchdog or route is
 provided. Ports own authentication and durable private receipts; response fields
 and public dataclass construction are not provenance. Public reports stay separate.
 """
-from dataclasses import dataclass, field
+from dataclasses import dataclass, replace
 from urllib.parse import urlsplit
 import re
 import threading
 import weakref
 
-from workload_factory_binding.evidence import BindingError, canonical, byte_digest
+from workload_factory_binding.evidence import BindingError, canonical, digest
 from ..github_bootstrap.common import Decision, document as decoded
 from ..hosted.readback import ReadBudget
 from .namespace import Namespace
@@ -210,6 +210,8 @@ def _succeeded(reply, url):
     check(status.get("status") == "Succeeded" and status.get("error") is None)
     if "name" in status:
         check(status["name"] == urlsplit(url).path.split("/")[-1])
+    if "id" in status:
+        check(status["id"] == urlsplit(url).path)
 
 
 class Provider:
@@ -340,7 +342,17 @@ class Provider:
 
     def _exchange(self, request, decision, guard=lambda: None):
         guard()
-        reply = self._call("arm", self._port.exchange, decision, request, before_send=guard)
+        decision.remaining()
+        request = replace(request, expires_at=min(request.expires_at, decision.deadline))
+
+        def before_send():
+            guard()
+            decision.remaining()
+            # A later fence may shorten authority again. Do not send the frozen
+            # request with a longer durable expiry, or retry a consumed attempt.
+            check(request.expires_at <= decision.deadline)
+
+        reply = self._call("arm", self._port.exchange, decision, request, before_send=before_send)
         check(type(reply) is Reply and type(reply.status) is int)
         check(type(reply.body) is bytes and len(reply.body) <= 1048576)
         stored = self._receipt(reply.receipt_ref, decision)
@@ -454,7 +466,6 @@ class Provider:
                 generations.append(Generation(path, identity, operation.receipt_ref,
                     reply.receipt_ref, reply.identity_ref, terminal))
             parent = generations[-1]
-            from dataclasses import replace
             return replace(parent, children=tuple(generations[:-1]))
         except Exception:
             raise BindingError(ERROR) from None
@@ -499,7 +510,7 @@ class Provider:
         resource = next(r for r in self._reserved.value["resources"] if r["resource_path"] == path)
         for dependency in resource["dependency_paths"]:
             state = self._namespace.read(self._reserved, dependency, decision=decision).value
-            check(state["state"] == "absent-tombstoned" and "creation" in state)
+            check(state["state"] == "absent-tombstoned")
             policy = self._policy(dependency)
             absent = self._exchange(self._request("GET", policy, "observe:absent", decision), decision)
             check(absent.status == 404)
@@ -558,13 +569,14 @@ def compatible_layout(selection, vm, image, disks, *, approved_build, authentica
         check(type(authenticated_build) is bytes and authenticated_build == approved_build)
         check(build["image_id"] == selection.image_id)
         ref(build["build_recipe_ref"])
-        from .selection import digest
+        from .selection import digest as validate_digest
         for name in ("source_roles_digest", "image_measurement_digest"):
-            digest(build[name])
+            validate_digest(build[name])
         check(type(vm) is Reply and type(image) is Reply and type(disks) is tuple)
         model, artifact = _object(vm.body), _object(image.body)
         check(vm.status == image.status == 200 and artifact["id"] == selection.image_id
               and model["id"] == selection.vm_id)
+        check(model["properties"]["vmId"] == selection.incarnation_id)
         check(selection.role != "worker" or len(selection.disk_ids) == 1)
         check(artifact["properties"]["provisioningState"] == "Succeeded")
         storage = model["properties"]["storageProfile"]
@@ -574,6 +586,7 @@ def compatible_layout(selection, vm, image, disks, *, approved_build, authentica
         check(all(type(x.get("lun")) is int and x["lun"] == 0 for x in storage["dataDisks"]))
         check(len(disks) == len(selection.disk_ids))
         identities = []
+        disk_properties = []
         for path, observed in zip(selection.disk_ids, disks):
             check(type(observed) is Reply and observed.status == 200)
             value = _object(observed.body)
@@ -586,6 +599,8 @@ def compatible_layout(selection, vm, image, disks, *, approved_build, authentica
             check(shares is None or (type(shares) is int and shares == 1))
             check(value["properties"].get("shareInfo", []) == [])
             identities.append(value["properties"]["uniqueId"])
+            disk_properties.append(value["properties"])
+        check(digest({"image": artifact["properties"], "disks": disk_properties}) == selection.storage_digest)
         check(len(set(identities)) == len(identities))
         _detach_vm(model["properties"])
         return tuple(identities)

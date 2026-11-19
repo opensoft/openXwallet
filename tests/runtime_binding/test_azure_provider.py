@@ -926,3 +926,174 @@ def test_original_async_creation_http_error_never_becomes_success(fx, status, ph
     else:
         refused(make().retire, generation, attempt_ref="retire:bad-http", decision=n.decision())
     assert port.sends("DELETE") == []
+
+
+@pytest.mark.parametrize("late", [False, True])
+def test_clipped_preflight_deadline_is_durable_and_cannot_be_renewed(fx, late):
+    r, ns, _, _, port, make = fx
+    original = port.read
+
+    def short_fence(reference, **kwargs):
+        value = original(reference, **kwargs)
+        return replace(value, expires_at=NOW + 1) if reference.startswith("/") else value
+
+    port.read = short_fence
+    decision = n.decision()
+    operation = make().create(n.PATHS["public_ip"], decision=decision)
+    with closing(sqlite3.connect(port.path)) as db:
+        raw = db.execute("SELECT body FROM receipts WHERE ref=?", (operation.receipt_ref,)).fetchone()[0]
+    assert decision.deadline == NOW + 1
+    assert json.loads(raw)["request"]["expires_at"] == NOW + 1
+    port.read = original
+    if late:
+        refused(make().admit, operation, decision=n.decision(NOW + 2))
+        state = ns.read(r, operation.path, decision=n.decision(NOW + 2)).value
+        assert state["state"] == "create-consumed"
+    else:
+        generation = make().admit(operation, decision=n.decision())
+        assert generation.identity == IDENTITIES["public_ip"]
+    assert len(port.sends("PUT")) == 1
+
+
+@pytest.mark.parametrize("method", ["GET", "PUT", "DELETE"])
+def test_shortening_only_at_actual_send_refuses_without_replay(fx, method):
+    r, ns, _, _, port, make = fx
+    service = make()
+    generation = None
+    if method == "DELETE":
+        initial = n.decision()
+        generation = service.admit(service.create(n.PATHS["vm"], decision=initial), decision=initial)
+    elif method == "GET":
+        port.put_model(n.PATHS["vm"])
+    decision = n.decision()
+    original = port.read
+    shortened = False
+
+    def fence(reference, **kwargs):
+        value = original(reference, **kwargs)
+        return replace(value, expires_at=NOW + 1) if shortened and reference.startswith("/") else value
+
+    def at_send(request):
+        nonlocal shortened
+        if request.method == method:
+            shortened = True
+            if method == "GET":
+                decision.clip(NOW + 1)
+
+    port.read, port.before_send = fence, at_send
+    before = len(port.sends(method))
+    if method == "GET":
+        refused(service.observe, n.PATHS["vm"], decision=decision)
+    elif method == "PUT":
+        refused(service.create, n.PATHS["public_ip"], decision=decision)
+    else:
+        refused(service.retire, generation, attempt_ref="retire:clipped", decision=decision)
+    assert len(port.sends(method)) == before
+    port.read, port.before_send = original, None
+    if method == "PUT":
+        assert ns.read(r, n.PATHS["public_ip"], decision=n.decision()).value["state"] == "create-consumed"
+        refused(make().create, n.PATHS["public_ip"], decision=n.decision())
+    elif method == "DELETE":
+        assert ns.read(r, generation.path, decision=n.decision()).value["state"] == "retiring"
+        refused(make().retire, generation, attempt_ref="retire:retry", decision=n.decision())
+    assert len(port.sends(method)) == before
+
+
+@pytest.mark.parametrize("change", ["vm", "os-disk", "retained-disk", "image-property"])
+def test_selected_vm_and_storage_incarnations_cannot_be_substituted(rb, change):
+    selection, vm, image, disks, build = layout(rb, "gate")
+    actual = rb.deployment_reader().read(decision=rb.use()).data()
+    assert actual["incarnation_id"] == selection.incarnation_id
+    p.compatible_layout(selection, vm, image, disks, approved_build=build, authenticated_build=build)
+    model, artifact = json.loads(vm.body), json.loads(image.body)
+    values = [json.loads(reply.body) for reply in disks]
+    if change == "vm":
+        model["properties"]["vmId"] = str(uuid.UUID(int=991))
+    elif change == "image-property":
+        artifact["properties"]["measurement"] = "unselected"
+    else:
+        values[0 if change == "os-disk" else 1]["properties"]["uniqueId"] = str(uuid.UUID(int=992))
+    refused(p.compatible_layout, selection, replace(vm, body=canonical(model)),
+        replace(image, body=canonical(artifact)),
+        tuple(replace(reply, body=canonical(value)) for reply, value in zip(disks, values)),
+        approved_build=build, authenticated_build=build)
+
+
+@pytest.mark.parametrize("phase", ["active", "historic"])
+@pytest.mark.parametrize("foreign", [False, True])
+def test_original_operation_id_binds_active_and_historic_success(fx, phase, foreign):
+    from urllib.parse import urlsplit
+    _, _, _, _, port, make = fx
+    port.async_kind, port.status = "vm", "Succeeded"
+
+    def response_id(request, reply):
+        if "/locations/" not in request.url:
+            return reply
+        value = json.loads(reply.body)
+        value["id"] = urlsplit(request.url).path + ("-foreign" if foreign and phase == "active" else "")
+        return replace(reply, body=canonical(value))
+
+    port.reply_mutation = response_id
+    service, decision = make(), n.decision()
+    operation = service.create(n.PATHS["vm"], decision=decision)
+    if phase == "active":
+        if foreign:
+            refused(service.admit, operation, decision=decision)
+        else:
+            assert service.admit(operation, decision=decision).identity == IDENTITIES["vm"]
+        return
+    generation = service.admit(operation, decision=decision)
+    if foreign:
+        def corrupt_terminal(receipt):
+            if receipt.reply.receipt_ref != generation.terminal_receipt:
+                return receipt
+            value = json.loads(receipt.reply.body)
+            value["id"] += "-foreign"
+            return replace(receipt, reply=replace(receipt.reply, body=canonical(value)))
+        port.receipt_mutation = corrupt_terminal
+        refused(make().retire, generation, attempt_ref="retire:contradictory", decision=n.decision())
+        assert port.sends("DELETE") == []
+    else:
+        retirement = make()
+        decision = n.decision()
+        operation = retirement.retire(generation, attempt_ref="retire:matched", decision=decision)
+        retirement.deletion_complete(operation, generation, decision=decision)
+        assert len(port.sends("DELETE")) == 1
+
+
+@pytest.mark.parametrize("replacement", [False, True])
+def test_partial_setup_never_created_dependency_needs_tombstone_and_fresh_absence(fx, replacement):
+    r, ns, _, approved, port, _ = fx
+    # A real partial setup can leave a created NIC unattached to any VM.
+    selected = tuple(replace(policy, present=policy.detached) if policy.kind == "nic"
+                     else policy for policy in approved)
+    port.policies = {policy.path: policy for policy in selected}
+    service = p.Provider(reserved=r, namespace=ns, policies=selected, port=port,
+        receipts=port, fencing=port, writer_ref=WRITER, admission_ref=ADMISSION,
+        retained_paths=(IMAGE,))
+    decision = n.decision()
+    nic = service.admit(service.create(n.PATHS["nic"], decision=decision), decision=decision)
+    # observe() refuses a model404, but the independent original GET receipt is
+    # durable. The selected cleanup caller uses that fact for a never-created
+    # tombstone, without fabricating an incarnation or consuming a create.
+    refused(service.observe, n.PATHS["vm"], decision=n.decision())
+    with closing(sqlite3.connect(port.path)) as db:
+        receipts = [(reference, json.loads(raw)) for reference, raw in db.execute("SELECT ref,body FROM receipts")]
+    absence = next(reference for reference, fact in receipts
+                   if fact["request"]["path"] == n.PATHS["vm"] and fact["reply"]["status"] == 404)
+    ns.transition(r, n.PATHS["vm"], state="absent-tombstoned",
+        observation_ref=absence, decision=n.decision())
+    tombstone = ns.read(r, n.PATHS["vm"], decision=n.decision()).value
+    assert tombstone["state"] == "absent-tombstoned"
+    assert "creation" not in tombstone
+    if replacement:
+        port.put_model(n.PATHS["vm"])
+        refused(service.retire, nic, attempt_ref="retire:partial", decision=n.decision())
+        assert port.sends("DELETE") == []
+    else:
+        decision = n.decision()
+        operation = service.retire(nic, attempt_ref="retire:partial", decision=decision)
+        service.deletion_complete(operation, nic, decision=decision)
+        assert len(port.sends("DELETE")) == 1
+        assert ns.read(r, nic.path, decision=n.decision()).value["state"] == "absent-tombstoned"
+    assert all(path != n.PATHS["vm"] for path, in port.sends("PUT"))

@@ -1,3 +1,13 @@
+Current T013P03 publication/review commission: Brett commissions PR #98,
+hosted source CI, the local nine-role Codex panel, finding resolution and
+presentation for source-only ratification. No source acceptance or merge is
+granted. The initial panel reproduced four defects; the corrected source has
+195 passing focused controls and 13 detected guard/table mutations. Replacement
+full/native qualification, cleanup, exact-head follow-up and hosted CI remain
+pending at this checkpoint. Earlier e416/37d0 completion records are historical
+for the initial candidate. P04-P09, setup/dispatch and consumer/human acceptance
+remain gated; feedback deferred and blocked writes unreplayed.
+
 Current T013P03 isolated result: runtime/test commit e416399f4f663463236576782174a42824d96aa4
 passes seven ordered gates, full 3,209 parents plus 11 subtests and native 2,787,
 with independent helper, retention and container/fixture teardown. See feature017

@@ -1,3 +1,13 @@
+Current T013P03 publication/review commission: Brett commissions PR #98,
+hosted source CI, the local nine-role Codex panel, finding resolution and
+presentation for source-only ratification. No source acceptance or merge is
+granted. The initial panel reproduced four defects; the corrected source has
+195 passing focused controls and 13 detected guard/table mutations. Replacement
+full/native qualification, cleanup, exact-head follow-up and hosted CI remain
+pending at this checkpoint. Earlier e416/37d0 completion records are historical
+for the initial candidate. P04-P09, setup/dispatch and consumer/human acceptance
+remain gated; feedback deferred and blocked writes unreplayed.
+
 # T013P03 isolated provider implementation
 
 Status: local source candidate; isolated T013P03 qualification and independent
@@ -115,3 +125,65 @@ diagnostic. Raw host-local evidence is retained under p3-provider-20261119.
 T013P03 is complete for isolated source implementation/testing. P04-P09 and
 T001/T013/T014/T015, consumer execution, appointments and human acceptance remain
 gated. Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.
+
+## PR #98 local review corrections
+
+Brett commissions candidate publication, hosted source CI, local Codex review,
+finding resolution and presentation for source-only ratification. This supplies
+no owner source acceptance, merge, setup or dispatch authority. The initial
+candidate was 37d0d629acb24a3febfa2d3b41c3ac65e7c09da7; its local runtime
+qualification at e416399 remains historical and is not promoted to the corrected
+runtime.
+
+The local nine-role panel covered architecture, performance, security, QA,
+static analysis, contracts/integration, persistence, reliability and simplicity.
+Four reproduced findings required bounded corrections within the existing P03
+requirements:
+
+- A request was frozen before fences could shorten its original Decision.
+  The provider now freezes expiry after the upfront guard and checks the
+  actual before-send guard again. Any further shortening refuses before send,
+  permanently preserving consumption with no retry. This applies to GET,
+  PUT and DELETE.
+- Compatibility compared selected paths and GUID syntax without binding the
+  selected VM incarnation or image/disk storage digest. Both exact bindings are
+  now checked against DeploymentSelection, alongside the existing independent
+  Detach and managed-image controls.
+- A successful original-operation status could contain a contradictory optional
+  id. The shared status validator now compares a present id with the original
+  operation path, in active and historical checks; status-only positives remain.
+- Partial setup could permanently block cleanup when a dependency was validly
+  tombstoned without ever being created. Dependency eligibility now accepts that
+  permanent tombstone with a fresh authenticated provider404, without inventing
+  a creation triplet. The resource being retired still needs its own original
+  creation/incarnation proof. A replacement at the dependency path refuses.
+
+Unused imports were removed in the same bounded correction. No existing runtime
+module, default refusal, profile, dependency, pin, workflow, budget, provider
+version or factory-owned record is changed.
+
+The corrected focused run passes 195 cases with 478/478 provider statements and
+84/84 branches covered. It adds 15 independent controls for clipped authority,
+actual-send drift, VM/disk/image substitution, operation-ID correlation and
+partial cleanup. Actual collection is 3,224 full parent cases and 2,802 native cases;
+these are measured collection counts, not replacement full/native pass claims.
+The original module identities and anchor prefixes remain; only the measured
+provider count/digest and bounded R01/H11 controls are extended.
+
+Thirteen independent mutations are detected: the original seven guards/tables
+and six guard reversions for these corrections. The first correction run
+(188 pass/7 fail) exposed a digest-validator/hash-function naming collision in the
+fix; its artifacts remain diagnostic. The corrected run passes all 195 cases.
+All initial specialist diagnostic roots were independently audited and removed.
+Replacement complete qualification and exact-head follow-up remain pending.
+
+The superseded initial hosted run 44627841385 was canceled after findings were
+confirmed; it is not a passing final-head receipt. Fresh hosted CI is required
+after all pre-push gates pass. GitHub Codex's connector refused the initial review
+because of account usage limits; no completed connector review is claimed.
+The local panel supplies the requested review path. Raw host-local publication
+evidence is retained under p3-provider-publication-20261119.
+
+Source-only ratification, P04-P09, live provider/schema qualification, roles,
+consumer058 T002 and independent human approval remain separate. Setup/dispatch
+unauthorized; feedback deferred; blocked writes unreplayed.
