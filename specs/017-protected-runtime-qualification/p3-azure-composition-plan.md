@@ -5,7 +5,7 @@
 **State**: planning complete candidate; new source decision unratified; implementation unauthorized
 **Input**: [exact T013-S1 design acceptance and preparation commission](p3-design-basis-acceptance.md)
 **Factory owner**: opensoft/openXfactory `openspec/changes/add-protected-runtime-azure-composition/`
-**Factory local candidate**: `ad488a73b591dfeb5fe52330684ce17a3c58f666` (unpublished/unratified; planning reference, not execution pin)
+**Factory local candidate**: `283073d7f6d208abafe613ebd2a7ee0cb2d59c06` (unpublished/unratified; planning reference, not execution pin)
 **Sole implementation list**: [tasks.md](tasks.md), proposed T013P01-T013P09, all unchecked
 
 ## Summary
