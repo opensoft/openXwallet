@@ -80,7 +80,7 @@ that attempt. Concurrent contenders force stale ETags and only one succeeds.
 Loss/corruption of expected state, partial reservation, lost responses, expired
 scope and contradictory history refuse without reset or send.
 
-Focused verification: 162 cases pass. Measurement covers all 443 executable
+Focused verification: 166 cases pass. Measurement covers all 443 executable
 statements and all 118 branches of the two new source modules. This is local
 source coverage, not a hosted Sonar or live-provider result.
 
@@ -112,3 +112,13 @@ changed. Default operational_bindings still refuses. Setup, dispatch, workload
 token acquisition, later P3 implementation, live qualification, consumer/human
 acceptance and feedback are not commissioned here. Historical blocked writes
 remain unreplayed.
+
+## Independent guard counterfactuals
+
+Five disposable source copies each remove one real guard: canonical bytes, exact
+provisioning projection, one-use attempt, permanent catalog claim and setup
+not-before. Each copy fails its intended assertion, while all 166 controls pass
+against the unchanged product source. These are retained negative diagnostics.
+Three existing conformance self-controls initially timed out at their unchanged
+20-second bound in the shared bench (144 other cases passed); that run is
+diagnostic only. Complete verification uses the standard isolated QA container.

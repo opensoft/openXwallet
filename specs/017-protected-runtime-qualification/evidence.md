@@ -3267,7 +3267,7 @@ checkbox is granted by publication; feedback deferred, blocked writes unreplayed
 The [P01/P02 authority and implementation record](p3-namespace-implementation.md)
 records exact source-ratified/landed factory1353, adapter96 and consumer586 and
 the subsequent first-slice isolated commission. Closed records and conditional
-namespace semantics pass 162 focused source controls; actual full/native source
+namespace semantics pass 166 focused source controls; actual full/native source
 receipts and cleanup are recorded separately at their implementation checkpoint.
 No later P3 task, operational owner act, provider deployment, workload token,
 protected dispatch, human assurance or consumer T002 acceptance is inferred.

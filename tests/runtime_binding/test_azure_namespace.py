@@ -751,3 +751,21 @@ def test_nested_storage_read_cannot_reset_original_decision_or_mutate_after_dead
     reject(ns.reserve, r, approved=r.raw, decision=original)
     assert original.deadline == end
     assert store.events == [("read", INDEX)]
+
+
+@pytest.mark.parametrize("encoding", ["leading-space", "pretty", "unsorted"])
+def test_valid_record_noncanonical_serializations_refuse(encoding):
+    value = vector()
+    if encoding == "leading-space":
+        raw = b" " + canonical(value)
+    elif encoding == "pretty":
+        raw = json.dumps(value, sort_keys=True, indent=2).encode()
+    else:
+        raw = json.dumps(value, separators=(",", ":")).encode()
+    reject(s.reservation, raw, approved=raw)
+
+
+def test_namespace_setup_not_before_is_enforced_before_storage(fixture):
+    r, store, ns = fixture
+    reject(ns.reserve, r, approved=r.raw, decision=decision(NOW - 11))
+    assert store.events == []

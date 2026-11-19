@@ -49,7 +49,7 @@ Current bounded P3 source commission (2026-11-19): Brett source-ratified factory
 all three landed with matching trees and green independent main CI. His separate
 first-slice isolated implementation instruction commissions T013P01/T013P02 only.
 See [first-slice authority/as-built record](p3-namespace-implementation.md).
-The 162 focused controls pass; broader exact-source qualification is recorded
+The 166 focused controls pass; broader exact-source qualification is recorded
 separately. T013P03-P09 and all operational/human/consumer gates remain pending.
 
 This later source acceptance is distinct from the earlier S1 design basis.
