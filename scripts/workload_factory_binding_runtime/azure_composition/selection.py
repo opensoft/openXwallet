@@ -108,17 +108,15 @@ class Record:
         return byte_digest(self.raw)
 
 
-def _envelope(value, phase):
-    keys = COMMON if phase == "reservation" else COMMON | {
-        "reservation_digest", "provisioning_readback_ref"}
-    closed(value, keys)
-    check(value["profile"] == ENVELOPE and value["phase"] == phase)
-    for key in keys:
+def _references(value):
+    for key in value:
         if key.endswith("_ref"):
             ref(value[key])
         elif key.endswith("_digest"):
             digest(value[key])
-    target = value["target"]
+
+
+def _target(target):
     closed(target, "tenant_id subscription_id region parent_paths".split())
     for name in ("tenant_id", "subscription_id"):
         check(type(target[name]) is str and UUID.fullmatch(target[name]) is not None)
@@ -126,35 +124,36 @@ def _envelope(value, phase):
     parents = paths(target["parent_paths"], minimum=1, maximum=8)
     for parent in parents:
         check(parent.split("/")[2] == target["subscription_id"])
-    window = value["window"]
+    return parents
+
+
+def _window(window):
     closed(window, ("not_before", "not_after"))
     for stamp in window.values():
         epoch(stamp)
     check(0 < window["not_after"] - window["not_before"] <= 86400)
-    resources = value["resources"]
-    check(type(resources) is list and 1 <= len(resources) <= 24)
-    selected = {}
-    ordered = []
-    for resource in resources:
-        closed(resource, RESOURCE if phase == "reservation" else RESOURCE | CREATION)
-        check(type(resource["kind"]) is str and resource["kind"] in KINDS)
-        key = arm_key(resource["resource_path"])
-        parts = key[1:].split("/")
-        check(len(parts) == 8 and tuple(parts[5:7]) == KINDS[resource["kind"]])
-        check(parts[1] == target["subscription_id"])
-        check(any(parts[:len(p[1:].split("/"))] == p[1:].split("/") for p in parents))
-        check(resource["disposition"] == "ephemeral")
-        for name in ("resource_policy_ref", "create_attempt_ref"):
+
+
+def _resource(resource, phase, target, parents):
+    closed(resource, RESOURCE if phase == "reservation" else RESOURCE | CREATION)
+    check(type(resource["kind"]) is str and resource["kind"] in KINDS)
+    key = arm_key(resource["resource_path"])
+    parts = key[1:].split("/")
+    check(len(parts) == 8 and tuple(parts[5:7]) == KINDS[resource["kind"]])
+    check(parts[1] == target["subscription_id"])
+    check(any(parts[:len(p[1:].split("/"))] == p[1:].split("/") for p in parents))
+    check(resource["disposition"] == "ephemeral")
+    for name in ("resource_policy_ref", "create_attempt_ref"):
+        ref(resource[name])
+    if phase == "provisioned":
+        for name in CREATION:
             ref(resource[name])
-        if phase == "provisioned":
-            for name in CREATION:
-                ref(resource[name])
-        dependency_keys = paths(resource["dependency_paths"], maximum=23)
-        check(key not in dependency_keys)
-        check(key not in selected)
-        selected[key] = resource
-        ordered.append(key)
-    check(ordered == sorted(ordered))
+    dependency_keys = paths(resource["dependency_paths"], maximum=23)
+    check(key not in dependency_keys)
+    return key
+
+
+def _dependencies(selected):
     for key, resource in selected.items():
         for dependency in resource["dependency_paths"]:
             other = selected.get(arm_key(dependency))
@@ -176,6 +175,28 @@ def _envelope(value, phase):
 
     for key in selected:
         visit(key)
+
+
+def _envelope(value, phase):
+    keys = COMMON if phase == "reservation" else COMMON | {
+        "reservation_digest", "provisioning_readback_ref"}
+    closed(value, keys)
+    check(value["profile"] == ENVELOPE and value["phase"] == phase)
+    _references(value)
+    target = value["target"]
+    parents = _target(target)
+    _window(value["window"])
+    resources = value["resources"]
+    check(type(resources) is list and 1 <= len(resources) <= 24)
+    selected = {}
+    ordered = []
+    for resource in resources:
+        key = _resource(resource, phase, target, parents)
+        check(key not in selected)
+        selected[key] = resource
+        ordered.append(key)
+    check(ordered == sorted(ordered))
+    _dependencies(selected)
 
 
 def reservation(raw, *, approved):
@@ -261,11 +282,7 @@ class RetirementAuthority:
     authenticated_results: bytes = field(repr=False)
 
 
-def retirement(raw, *, reserved, authority, deployed=None, linked=None):
-    check(type(reserved) is Record and type(authority) is RetirementAuthority)
-    before = reserved.value
-    _envelope(before, "reservation")
-    value = document(raw)
+def _retirement_envelope(value, before, reserved, authority):
     base = set("""profile phase deployment_ref namespace_ref owner_scope_ref
 reservation_digest authority_ref observer_ref observation_authority_ref observed_at
 expires_at outcome resource_results preservation_digest""".split())
@@ -274,11 +291,7 @@ expires_at outcome resource_results preservation_digest""".split())
     closed(value, base if phase == "setup" else base | {
         "provisioned_envelope_digest", "final_scope_ref"})
     check(value["profile"] == RETIREMENT)
-    for key, item in value.items():
-        if key.endswith("_ref"):
-            ref(item)
-        elif key.endswith("_digest"):
-            digest(item)
+    _references(value)
     for key in ("deployment_ref", "namespace_ref", "owner_scope_ref"):
         check(value[key] == before[key])
     check(value["reservation_digest"] == reserved.digest)
@@ -294,6 +307,12 @@ expires_at outcome resource_results preservation_digest""".split())
         epoch(stamp)
     check(value["observed_at"] <= authority.now < value["expires_at"]
           <= min(value["observed_at"] + 60, authority.observation_deadline))
+    return phase
+
+
+def _retirement_phase(value, before, reserved, authority, deployed, linked):
+    phase = value["phase"]
+    after = None
     if phase == "setup":
         check(deployed is None and linked is None)
         check(authority.authority_ref == before["setup_authority_ref"])
@@ -310,38 +329,39 @@ expires_at outcome resource_results preservation_digest""".split())
               and link.get("deployment_ref") == before["deployment_ref"]
               and link.get("case_ref") == before["case_ref"]
               and value["final_scope_ref"] == link.get("final_scope_ref"))
-    results = value["resource_results"]
-    check(type(authority.authenticated_results) is bytes
-          and canonical(results) == authority.authenticated_results)
-    check(type(results) is list and len(results) == len(before["resources"]))
-    states = set()
-    for resource, result in zip(before["resources"], results):
-        check(type(result) is dict)
-        state = result.get("state")
-        if phase == "run":
-            check(state != "not-created")
-        common = {"resource_path", "kind", "create_attempt_ref", "state", "readback_ref"}
-        known = {"incarnation_ref", "retirement_operation_ref"}
-        if state == "not-created":
-            closed(result, common)
-        elif state == "absent":
-            closed(result, common | known)
-        else:
-            check(state in ("failed", "pending", "indeterminate"))
-            extra = set(result) - common - {"reason"}
-            check(extra in (set(), {"incarnation_ref"}, known))
-            closed(result, common | {"reason"} | extra)
-            check(type(result["reason"]) is str and result["reason"] in REASONS)
-        for key in ("resource_path", "kind", "create_attempt_ref"):
-            check(result[key] == resource[key])
-        for key, item in result.items():
-            if key.endswith("_ref"):
-                ref(item)
-        if phase == "run" and "incarnation_ref" in result:
-            expected_resource = next(r for r in after["resources"]
-                                     if r["resource_path"] == result["resource_path"])
-            check(result["incarnation_ref"] == expected_resource["incarnation_ref"])
-        states.add(state)
+    return after
+
+
+def _retirement_result(result, resource, phase, after):
+    check(type(result) is dict)
+    state = result.get("state")
+    if phase == "run":
+        check(state != "not-created")
+    common = {"resource_path", "kind", "create_attempt_ref", "state", "readback_ref"}
+    known = {"incarnation_ref", "retirement_operation_ref"}
+    if state == "not-created":
+        closed(result, common)
+    elif state == "absent":
+        closed(result, common | known)
+    else:
+        check(state in ("failed", "pending", "indeterminate"))
+        extra = set(result) - common - {"reason"}
+        check(extra in (set(), {"incarnation_ref"}, known))
+        closed(result, common | {"reason"} | extra)
+        check(type(result["reason"]) is str and result["reason"] in REASONS)
+    for key in ("resource_path", "kind", "create_attempt_ref"):
+        check(result[key] == resource[key])
+    for key, item in result.items():
+        if key.endswith("_ref"):
+            ref(item)
+    if phase == "run" and "incarnation_ref" in result:
+        expected_resource = next(r for r in after["resources"]
+                                 if r["resource_path"] == result["resource_path"])
+        check(result["incarnation_ref"] == expected_resource["incarnation_ref"])
+    return state
+
+
+def _retirement_outcome(authority, states):
     if authority.now >= authority.cleanup_deadline or "failed" in states:
         outcome = "failed"
     elif "indeterminate" in states:
@@ -352,5 +372,21 @@ expires_at outcome resource_results preservation_digest""".split())
         outcome = "incomplete"
     else:
         outcome = "complete"
-    check(value["outcome"] == outcome)
+    return outcome
+
+
+def retirement(raw, *, reserved, authority, deployed=None, linked=None):
+    check(type(reserved) is Record and type(authority) is RetirementAuthority)
+    before = reserved.value
+    _envelope(before, "reservation")
+    value = document(raw)
+    phase = _retirement_envelope(value, before, reserved, authority)
+    after = _retirement_phase(value, before, reserved, authority, deployed, linked)
+    results = value["resource_results"]
+    check(type(authority.authenticated_results) is bytes
+          and canonical(results) == authority.authenticated_results)
+    check(type(results) is list and len(results) == len(before["resources"]))
+    states = {_retirement_result(result, resource, phase, after)
+              for resource, result in zip(before["resources"], results)}
+    check(value["outcome"] == _retirement_outcome(authority, states))
     return Record(raw)

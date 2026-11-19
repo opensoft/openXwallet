@@ -723,3 +723,10 @@ consumer T002 and human acceptance remain gated. Preserve old runtime/profile/
 workflow/pin bytes and every prior matrix identity/fingerprint/anchor. Default
 operational_bindings still refuses. Setup/dispatch unauthorized; feedback deferred;
 historical blocked writes unreplayed.
+
+## First P3 slice candidate review commission
+
+Brett commissions candidate PR #97, hosted source CI and local Codex expert
+review, resolution of findings and presentation for source-only ratification.
+Only T013P01/P02 is commissioned. Later P03-P09, setup/dispatch and live acceptance
+remain separate; feedback stays deferred and blocked writes remain unreplayed.

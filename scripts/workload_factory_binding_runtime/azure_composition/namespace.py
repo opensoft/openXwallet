@@ -38,7 +38,8 @@ class Namespace:
     """Internal service, supplied only trusted storage/clock/approved scope.
 
     Store port: read(key, timeout=), create_only(key, raw, timeout=) and
-    replace(key, raw, etag=, timeout=), each returning an authenticated Snapshot.
+    replace(key, raw, etag=, timeout=), each returning a linearizable authenticated Snapshot.
+    Per-key ETags change on every mutation and are never reused.
     A conflict or uncertain result refuses after at most one read-only reload.
     The original Decision is passed in; this class never allocates or renews one.
     """
@@ -240,10 +241,18 @@ class Namespace:
         try:
             result = provisioned(raw, reserved=reserved,
                                  authenticated_readback=authenticated_readback)
+            snapshots = []
             for resource in result.value["resources"]:
-                _, current = self._current(reserved, resource["resource_path"], decision)
+                path = resource["resource_path"]
+                snap, current = self._current(reserved, path, decision)
                 check(current["state"] == "admitted")
                 check(current["creation"] == {k: resource[k] for k in CREATION})
+                snapshots.append((arm_key(path), snap))
+            # Non-reused revisions make the unchanged read intervals overlap:
+            # the whole admitted set existed between the two read passes.
+            for key, original in snapshots:
+                current = self._call("read", decision, key)
+                check(current == original)
             return result
         except Exception:
             raise BindingError(ERROR) from None

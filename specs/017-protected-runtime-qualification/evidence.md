@@ -3271,3 +3271,13 @@ namespace semantics pass 166 focused source controls; actual full/native source
 receipts and cleanup are recorded separately at their implementation checkpoint.
 No later P3 task, operational owner act, provider deployment, workload token,
 protected dispatch, human assurance or consumer T002 acceptance is inferred.
+
+### First P3 slice candidate review
+
+PR #97 local expert review reproduced and corrected a cross-resource admission
+race with a read-only unchanged-revision barrier on the original Decision. Four
+deterministic interleavings extend the focused corpus to 170 passing cases; the
+current product measurement covers 466 statements and 112 branches at 100%.
+Selection validation helpers preserve the closed record guards. Exact-head
+full/native and hosted CI receipts remain separate from this focused checkpoint;
+no source acceptance, setup, dispatch or live provider result is implied.

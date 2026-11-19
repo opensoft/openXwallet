@@ -61,6 +61,13 @@ reload and refuses; it never resends. Admitted incarnation/operation/readback
 bindings cannot change. Retirement attempts remain consumed after ambiguity and
 terminal tombstones cannot become available again.
 
+Provisioned admission collects all admitted snapshots, then rereads their unchanged
+ETags and bytes using the same Decision. The authenticated storage port requires
+linearizable reads and non-reused per-key revisions. The overlapping read intervals
+prove the complete admitted set existed together; any concurrent revision, missing
+record or corruption refuses without mutation or retry. This historical snapshot
+does not grant later runtime authority or prevent subsequent retirement.
+
 The existing caller Decision bounds nested store calls and is never allocated or
 renewed here. Namespace mutations in this slice remain inside the original setup
 window; later provider/watchdog integration must provide its separately approved
@@ -80,8 +87,8 @@ that attempt. Concurrent contenders force stale ETags and only one succeeds.
 Loss/corruption of expected state, partial reservation, lost responses, expired
 scope and contradictory history refuse without reset or send.
 
-Focused verification: 166 cases pass. Measurement covers all 443 executable
-statements and all 118 branches of the two new source modules. This is local
+Focused verification after local review: 170 cases pass. Measurement covers all 466 executable
+statements and all 112 branches of the two new source modules. This is local
 source coverage, not a hosted Sonar or live-provider result.
 
 The native matrix adds only this measured module and bounded R01/H11 anchors.
@@ -117,8 +124,19 @@ remain unreplayed.
 
 Five disposable source copies each remove one real guard: canonical bytes, exact
 provisioning projection, one-use attempt, permanent catalog claim and setup
-not-before. Each copy fails its intended assertion, while all 166 controls pass
+not-before. Each copy fails its intended assertion, while the original 166 controls pass
 against the unchanged product source. These are retained negative diagnostics.
 Three existing conformance self-controls initially timed out at their unchanged
 20-second bound in the shared bench (144 other cases passed); that run is
 diagnostic only. Complete verification uses the standard isolated QA container.
+
+## Candidate review correction
+
+PR #97 adds a read-only two-pass consistency barrier after a deterministic review
+reproduction showed a provisioned envelope could combine resource states that were
+never simultaneously admitted. Four new controls exercise split admission, legal
+ABA revisions, disappearance and changed bytes. No mutation or retry is added.
+The two large selection validators are split into focused helpers with the same
+guards and phase/resource bindings. Hosted CI and exact-head full/native receipts
+are separate from these focused and source-review results. Source ratification
+and later P03-P09 implementation remain separate owner decisions.

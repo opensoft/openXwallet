@@ -769,3 +769,60 @@ def test_namespace_setup_not_before_is_enforced_before_storage(fixture):
     r, store, ns = fixture
     reject(ns.reserve, r, approved=r.raw, decision=decision(NOW - 11))
     assert store.events == []
+
+
+def change_admission_view(store, ns, r, resources, interleaving):
+    first = resources[0]["resource_path"]
+    if interleaving == "split-admission":
+        ns.transition(r, first, state="retiring", observation_ref="observed:retire",
+                      retirement_attempt_ref="retire:one", decision=decision())
+        for resource in resources[1:]:
+            ns.transition(r, resource["resource_path"], state="admitted",
+                          observation_ref="observed:create", creation=CREATED, decision=decision())
+    elif interleaving == "aba":
+        # Restore identical bytes through legal transitions; only the revision changes.
+        ns.transition(r, first, state="quarantined", observation_ref="observed:uncertain",
+                      decision=decision())
+        ns.transition(r, first, state="admitted", observation_ref="observed:create",
+                      decision=decision())
+    elif interleaving == "missing":
+        store.remove(s.arm_key(first))
+    else:
+        value = json.loads(store.read(s.arm_key(first), timeout=1).raw)
+        value["observation_ref"] = "observed:changed"
+        store.corrupt(s.arm_key(first), canonical(value))
+
+
+@pytest.mark.parametrize("interleaving", ["split-admission", "aba", "missing", "changed-bytes"])
+def test_provisioned_requires_one_consistent_admitted_set(fixture, interleaving):
+    r, store, ns = fixture
+    ns.reserve(r, approved=r.raw, decision=decision())
+    resources = r.value["resources"]
+    first, last = resources[0]["resource_path"], resources[-1]["resource_path"]
+    for resource in resources:
+        path = resource["resource_path"]
+        ns.consume_create(r, path, attempt_ref=resource["create_attempt_ref"], decision=decision())
+        if interleaving != "split-admission" or path == first:
+            ns.transition(r, path, state="admitted", observation_ref="observed:create",
+                          creation=CREATED, decision=decision())
+    d = deployed(r)
+    mutations = []
+    trigger = first if interleaving in ("split-admission", "aba") else last
+
+    def change_after_snapshot(key):
+        if key != s.arm_key(trigger):
+            return
+        store.read_hook = None
+        change_admission_view(store, ns, r, resources, interleaving)
+        mutations.extend(store.events)
+        store.events.clear()
+
+    store.read_hook = change_after_snapshot
+    reject(ns.provisioned, d.raw, reserved=r, authenticated_readback=d.raw, decision=decision())
+    assert mutations, "the deterministic concurrent change must actually run"
+    assert all(op == "read" for op, _ in store.events)
+    store.read_hook = None
+    if interleaving == "split-admission":
+        assert ns.read(r, first, decision=decision()).value["state"] == "retiring"
+        assert all(ns.read(r, x["resource_path"], decision=decision()).value["state"] == "admitted"
+                   for x in resources[1:])
