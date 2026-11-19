@@ -16,10 +16,10 @@ The sole executable task list is tasks.md; this table is acceptance traceability
 | R04 | Runner token transport has explicit trust and secret boundaries | T013P04 | Original frozen runner transport via selected fake provider and exact phase policy | URL/bearer substitution, duplicate query, origin/redirect/proxy confusion, changed phase/source |
 | R05 | Images and disks match the accepted readers | T013P03 | Measured managed-image ID plus OS/one-data-disk control/gate records | Marketplace URN as image ID, mutable build, extra/wrong disk, delete retained disk |
 | R06 | Issuance and local helpers exclude the workload | T013P05/T013P06 | Allowed role succeeds; worker known-good preimage is explicitly denied | Worker MI/key/socket/policy privilege; CSR/role self-approval, overbroad/expired scope |
-| R07 | Infrastructure ownership is separate from runtime cleanup | T013P02/T013P07/T013P09 | Old RunPlan and separate infrastructure receipt each validated and combined honestly | VM-as-process/disk-as-file, old-report added field, only one cleanup scope succeeds |
+| R07 | Infrastructure ownership is separate from runtime cleanup | T013P02/T013P07/T013P09 | Closed reservation/provisioned projection and later link; old RunPlan plus separate setup/run infrastructure receipt combined honestly | Early static/run/provider fields, unknown/extra keys, incomplete/rebound resource set, wrong phase, hash cycle, VM-as-process/disk-as-file or old-report field |
 | R08 | Resource paths cannot acquire replacement generations | T013P02/T013P03 | Durable consume-before-send, one concurrent winner, terminal original create | Lost response/pending LRO, stale sender, restart, missing tombstone, reuse after cleanup/evidence expiry |
 | R09 | Retirement uses proven controller fencing and per-kind identity | T013P03/T013P07 | Each approved kind has exact own incarnation/dependencies, no ordinary writer | Replacement between GET/DELETE, same tags/new GUID, unknown writer/type/attachment, unsupported CAS claim |
-| R10 | External watchdog reconciles actual outcomes | T013P07 | Independent service/state survives worker/gate/control loss and deduplicates triggers | HTTP202 called complete, failed timer, pending/lost operation, unavailable audit, foreign generation |
+| R10 | External watchdog reconciles actual outcomes | T013P07 | Independent service/state handles partial setup, predispatch abort and post-P7/control loss, deduplicates triggers, and reports expiry under read-only authority | Invented pre-run link/incarnation/LRO, HTTP202/bare404 success, failed timer, lost operation/audit, foreign generation, expired observation authority or reporting renews mutation/budget |
 | R11 | Current budgets and redaction remain mandatory | T013P04-T013P09 | Complete positive within original caps and secret-free bounded projection | Nested uncharged I/O, clock/Decision reset, oversize/drop bytes, synthetic origin/private payload |
 | R12 | Source qualification and consumer acceptance stay separate | T013P09 | Exact-source full/native collection and independent owned-fixture absence | Skipped/missing/deselected old matrix, count guessed, source result relabeled live/human/T002 |
 
@@ -51,3 +51,12 @@ scope, independent initialized namespace/state, real GitHub claims/provider beha
 watchdog/control-loss and actual absence/revocation/preservation require separate
 T013/P4-P8 authorization/readback and T014. Consumer058 T002 and independent human
 assurance remain separate. No live negative or mutation probe is authorized here.
+
+Phase controls must include failure/expiry before provisioning completes, after
+P5 before dispatch, and after P7 finalization. Forbidden unavailable fields are
+absent rather than null/synthetic. Test exact sorted reservation projection and
+set equality, case/percent-encoded path aliases, changed ownership/policy/attempt,
+and the absence of a backward static/final-link commitment. A current read-only
+observer can emit late failure without any mutation; expired observation authority
+refuses emission and missing evidence fails qualification. No test may reset an
+original cleanup/proof Decision or accept late completion as timely success.

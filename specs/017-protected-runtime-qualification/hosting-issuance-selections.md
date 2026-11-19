@@ -31,8 +31,9 @@ remain NOT GRANTED; T001/T013/T014/T015 remain unchecked.
 Inventory observed at 2026-11-19 03:39-03:46 UTC, with subscription-explicit Azure
 management reads, narrow directory metadata reads and GitHub GETs. Detailed
 resource/RBAC/network/directory responses and query receipts remain host-local;
-no secret/key/token value or workload OIDC token was requested. This local draft
-has not been pushed, published as a PR or added as a public qualification receipt.
+no secret/key/token value or workload OIDC token was requested. At inventory preparation this was a local draft. P3 source publication is now
+commissioned; raw inventory/query receipts remain local and no optional public
+qualification receipt is exported.
 
 - Opensoft QA subscription `297b2389-33bf-48c8-8deb-0b92838431e4` in tenant
   `74ce1e7d-7455-4694-b00d-9ac83c6821ce` is Enabled. Its ten resource groups

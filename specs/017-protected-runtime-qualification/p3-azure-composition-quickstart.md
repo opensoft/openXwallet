@@ -38,3 +38,18 @@ No deploy/apply/setup/dispatch/signing command is supplied. Actual hosting, sour
 images, principals, protections, state, complete costs and windows require later
 T013 selection/setup/readback decisions. T014/T015 and consumer058 T002/human
 assurance remain separate. Feedback deferred; blocked writes unreplayed.
+
+## Current source checkout closure
+
+The pinned neutral root delegates verification into its spec leg, and the full
+source suite reads that exact script. In addition to the scoped root/code checkout,
+initialize the exact pinned spec leg explicitly; do not fetch floating/recursive
+legs. These are source checkout commands, not operational setup:
+
+```sh
+git submodule update --init openWallet
+git -C openWallet submodule update --init code spec
+```
+
+The first publication diagnostic stopped because this pinned spec checkout was
+missing. Correcting checkout requires no product/test/pin/expectation change.

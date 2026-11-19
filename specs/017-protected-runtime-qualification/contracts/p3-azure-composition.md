@@ -4,8 +4,8 @@ Status: proposed; no source implementation or operational endpoint
 Owner: factory add-protected-runtime-azure-composition, supporting-docs/composition-boundary.md
 
 This adapter realizes no new neutral contract. The factory packet owns exact
-proposed deployment-envelope, local-measurement and infrastructure-retirement
-profiles/fields/caps. No executable JSON/schema/sample grant is generated here.
+proposed reservation/provisioned deployment forms, later final-scope link,
+local-measurement and setup/run retirement profiles/fields/caps. No executable JSON/schema/sample grant is generated here.
 
 | Proposed boundary | Inputs selected by trusted authority | Required output/provenance |
 | --- | --- | --- |
@@ -29,3 +29,28 @@ Compatibility tests must preserve every old parser/profile, local exact type/PID
 namespace check, neutral observation/proof and report field. Extra cloud evidence
 is an independent receipt required by overall deployment acceptance. Passing an
 old source/fixture report alone never establishes new remote or deployed origin.
+
+## Closed phase forms and truthful cleanup
+
+The exact grammar belongs to the [reviewed factory boundary](https://github.com/opensoft/openXfactory/blob/c2dfbbcc6fa6965fcde18661bddca1dac7128d47/openspec/changes/add-protected-runtime-azure-composition/supporting-docs/composition-boundary.md).
+Reservation freezes complete resource paths/kinds/policies/dependencies/attempts
+and forbids unavailable provider/static/full/run facts. Provisioned form adds
+only authenticated actual terminal creation/readback and preserves the exact
+ordered six-field reservation projection. Neither form contains static/run
+commitments. Only the later actual-run link binds independent selection/full
+bytes/run/attempt/lease, without a backward hash cycle. The adapter cannot invent
+new keys, types or null placeholders outside that factory-owned union.
+
+Setup retirement binds original reservation/setup-cleanup authority before any
+P7 link, including partial creation, expiry and predispatch abort. Run retirement
+adds actual provisioned/final-scope references. Unknown incarnation/operation
+facts remain absent under closed pending/indeterminate result variants; bare404
+or a lost response cannot prove a create will not take effect. Complete requires
+the exact reserved set and independent preservation/revocation.
+
+Fresh read-only observation authority is separate from original mutation scope.
+Late failure can be reported without renewing any permission, lease, Decision,
+budget or retry; observing completion after the approved cleanup deadline still
+fails qualification. If current observation authority is absent, emission refuses
+and missing authenticated evidence fails visibly. Proposed16KiB envelope caps
+do not alter the existing larger per-reader caps.

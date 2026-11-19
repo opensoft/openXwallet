@@ -3245,3 +3245,19 @@ schema/transaction, neutral pin, workflow, budget, deadline or default activatio
 changes. T001/T013/T014/T015 remain unchecked. Setup/dispatch unauthorized,
 feedback deferred, blocked writes unreplayed. No live provider qualification,
 token mint, protected-machine acceptance or operational grant is inferred.
+
+## P3 source publication and local review corrections
+
+The owner commissioned P3 preparation PRs, actual factory-ledger provenance,
+hosted CI/local Codex review and finding resolution before ratification, scoped
+to the first pilot. [Factory#1353](https://github.com/opensoft/openXfactory/pull/1353)
+uses the real PR identity and preserves all prior ledger rows. The factory owns
+exact closed phase variants, later final-scope link and pre-run/run cleanup
+receipts; the adapter plan/matrix/proposed tasks mirror them. Late read-only
+observations do not extend expired mutation/proof authority or budgets.
+
+An initial source-test diagnostic lacked the exact pinned neutral spec checkout;
+that checkout was supplied without product/test/pin changes. Detailed source-test
+and review receipts remain local. Final exact-head hosted CI/local review are
+separate from any live qualification. No implementation/setup/dispatch or owner
+checkbox is granted by publication; feedback deferred, blocked writes unreplayed.

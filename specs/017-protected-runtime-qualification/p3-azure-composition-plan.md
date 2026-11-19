@@ -5,7 +5,7 @@
 **State**: planning complete candidate; new source decision unratified; implementation unauthorized
 **Input**: [exact T013-S1 design acceptance and preparation commission](p3-design-basis-acceptance.md)
 **Factory owner**: opensoft/openXfactory `openspec/changes/add-protected-runtime-azure-composition/`
-**Factory local candidate**: `283073d7f6d208abafe613ebd2a7ee0cb2d59c06` (unpublished/unratified; planning reference, not execution pin)
+**Factory candidate**: [PR#1353](https://github.com/opensoft/openXfactory/pull/1353), reviewed contract checkpoint `c2dfbbcc6fa6965fcde18661bddca1dac7128d47` (unratified; planning reference, not execution pin)
 **Sole implementation list**: [tasks.md](tasks.md), proposed T013P01-T013P09, all unchecked
 
 ## Summary
@@ -187,3 +187,15 @@ actual assigned IDs/protections/exclusions/init/watchdog receipts. P6 one dispat
 P7 actual-run authority and P8/T014 machine qualification/cleanup remain separate.
 T015 assesses delivery; consumer058 T002 and independent human approval stay gated.
 Feedback deferred; all blocked writes remain unreplayed.
+
+## Publication contract-review corrections
+
+The factory now owns exact closed reservation/provisioned forms and a later
+final-scope link. Pre-create facts cannot include provider/static/full/run values;
+provisioning preserves the complete reserved set/attempt/owner via exact projection.
+The later link binds independently assigned/approved facts without a cycle.
+Setup and run retirement receipts cover failures both before P7 and after it.
+Fresh read-only expiry observations never extend expired mutation/proof authority.
+T013P02/P07/P09 and the acceptance matrix require phase/omission/rebinding/late
+observation controls. This is source-planning finding resolution only.
+The new16KiB envelope cap does not change existing per-reader response limits.
