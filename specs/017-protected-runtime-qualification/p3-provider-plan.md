@@ -1,4 +1,17 @@
+Current T013P03 isolated implementation commission (2026-11-19): Brett explicitly
+instructed implementation and testing of T013P03 using the prepared provider
+subplan, first pilot only. Earlier preparation-only labels are historical for
+this slice. Only P03 code/tests/qualification are commissioned; P04-P09 and
+operational setup/dispatch remain unauthorized. Feedback deferred; blocked writes
+and rejected optional publications remain unreplayed. Do not mark P03 complete
+until substantive exact-source isolated qualification and cleanup pass.
+
 # T013P03 provider capability and compatibility subplan
+
+The current isolated implementation checkpoint is recorded in
+[p3-provider-implementation.md](p3-provider-implementation.md). The preparation
+status and proposed paths below record the original prepared subplan; the current
+commission above supersedes its implementation-only restriction.
 
 Status: preparation only; implementation is not commissioned.
 Scope: first codeXfactory machine-possession pilot, feature 017 T013P03 only.

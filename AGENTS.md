@@ -1,3 +1,11 @@
+Current T013P03 isolated implementation commission (2026-11-19): Brett explicitly
+instructed implementation and testing of T013P03 using the prepared provider
+subplan, first pilot only. Earlier preparation-only labels are historical for
+this slice. Only P03 code/tests/qualification are commissioned; P04-P09 and
+operational setup/dispatch remain unauthorized. Feedback deferred; blocked writes
+and rejected optional publications remain unreplayed. Do not mark P03 complete
+until substantive exact-source isolated qualification and cleanup pass.
+
 # Agent Instructions
 
 Use the shared OpenSpec/Speckit workflow from:
@@ -15,7 +23,7 @@ ownership, validation, versioning, and release constraints.
 - Active feature: 017-protected-runtime-qualification; plan:
   specs/017-protected-runtime-qualification/plan.md.
   Current P3 preparation subplan: specs/017-protected-runtime-qualification/p3-azure-composition-plan.md.
-  Next bounded slice preparation: specs/017-protected-runtime-qualification/p3-provider-plan.md (T013P03; implementation uncommissioned).
+  Current bounded slice: specs/017-protected-runtime-qualification/p3-provider-plan.md (T013P03; isolated implementation commissioned).
   Earlier T012T subplan remains historical: specs/017-protected-runtime-qualification/hosting-evidence-plan.md.
 - Ratified factory composition: opensoft/openXfactory,
   openspec/changes/prepare-protected-runtime-qualification/.
@@ -733,7 +741,7 @@ Only T013P01/P02 is commissioned. Later P03-P09, setup/dispatch and live accepta
 remain separate; feedback stays deferred and blocked writes remain unreplayed.
 
 
-## #97 source acceptance and bounded P03 preparation
+## Historical #97 source acceptance and bounded P03 preparation
 
 Brett source-ratified #97 at 33a00d474621921a1bd22ac95ba8f254d9875c11 and directed
 landing when green, independent post-merge CI, then next bounded P3 preparation.

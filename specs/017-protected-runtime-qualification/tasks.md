@@ -1,4 +1,15 @@
-Current source acceptance and next-slice preparation (2026-11-19): Brett ratified
+Current P03 implementation checkpoint: [provider as-built](p3-provider-implementation.md).
+Focused tests pass; the P03 checkbox awaits full/native qualification and cleanup.
+
+Current T013P03 isolated implementation commission (2026-11-19): Brett explicitly
+instructed implementation and testing of T013P03 using the prepared provider
+subplan, first pilot only. Earlier preparation-only labels are historical for
+this slice. Only P03 code/tests/qualification are commissioned; P04-P09 and
+operational setup/dispatch remain unauthorized. Feedback deferred; blocked writes
+and rejected optional publications remain unreplayed. Do not mark P03 complete
+until substantive exact-source isolated qualification and cleanup pass.
+
+Historical source acceptance and next-slice preparation (2026-11-19): Brett ratified
 openXwallet #97 at 33a00d474621921a1bd22ac95ba8f254d9875c11 for source acceptance
 only. It landed normally as 3ca99fc79ab6ce5339cfd9e347559b241f7a57b8 with the
 identical tree; independent main CI and its actual Sonar gate passed.
