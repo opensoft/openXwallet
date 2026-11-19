@@ -25,6 +25,16 @@ IMAGE = n.PARENT + "/providers/Microsoft.Compute/images/measured"
 IDENTITIES = {kind: str(uuid.UUID(int=i + 1)) for i, kind in enumerate(n.PATHS)}
 WRITER, ADMISSION = "writer:sole", "admission:closed"
 
+# Independent literal provider oracle; never derive these from the product tables.
+OWN_FIELDS = {"vm": "vmId", "os_disk": "uniqueId", "nic": "resourceGuid",
+    "public_ip": "resourceGuid", "vnet": "resourceGuid", "nsg": "resourceGuid"}
+API_VERSIONS = {"vm": "2025-04-01", "os_disk": "2025-01-02", "nic": "2026-01-01",
+    "public_ip": "2026-01-01", "vnet": "2026-01-01", "nsg": "2026-01-01"}
+RESOURCE_TYPES = {"vm": "Microsoft.Compute/virtualMachines", "os_disk": "Microsoft.Compute/disks",
+    "nic": "Microsoft.Network/networkInterfaces", "public_ip": "Microsoft.Network/publicIPAddresses",
+    "vnet": "Microsoft.Network/virtualNetworks", "nsg": "Microsoft.Network/networkSecurityGroups"}
+
+
 
 def projections():
     vm = {"storageProfile": {"imageReference": {"id": IMAGE},
@@ -91,9 +101,9 @@ class Ports:
         policy = self.policies[path]
         props = json.loads(policy.detached if detached else policy.present)
         root = {k: props.pop(k) for k in ("managedBy", "managedByExtended") if k in props}
-        value = {"id": path, "type": "/".join(p.KINDS[policy.kind]),
+        value = {"id": path, "type": RESOURCE_TYPES[policy.kind],
                  "location": "westus", "properties": {"provisioningState": "Succeeded",
-                 p.IDENTITIES[policy.kind]: IDENTITIES[policy.kind], **props}, **root}
+                 OWN_FIELDS[policy.kind]: IDENTITIES[policy.kind], **props}, **root}
         if mutation:
             mutation(value)
         with closing(sqlite3.connect(self.path)) as db:
@@ -147,6 +157,7 @@ class Ports:
 
     def _respond(self, request):
         policy = self.policies[request.path]
+        assert request.url.endswith("?api-version=" + API_VERSIONS[policy.kind])
         locator = None
         identity_ref = "incarnation:" + policy.kind
         if "/locations/" in request.url:
@@ -157,8 +168,8 @@ class Ports:
             body, status = self.body(request.path), 201
             if self.async_kind == policy.kind:
                 locator = (p.ARM + "/subscriptions/" + n.SUB + "/providers/" +
-                    p.KINDS[policy.kind][0] + "/locations/westus/operations/op-1?api-version=" +
-                    p.VERSIONS[policy.kind])
+                    RESOURCE_TYPES[policy.kind].split("/")[0] + "/locations/westus/operations/op-1?api-version=" +
+                    API_VERSIONS[policy.kind])
                 body, status, identity_ref = canonical({"properties": {"provisioningState": "Creating"}}), 202, None
         elif request.method == "DELETE":
             with closing(sqlite3.connect(self.path)) as db:
@@ -167,8 +178,8 @@ class Ports:
             body, status, identity_ref = b"", 204, None
             if self.async_kind == policy.kind:
                 locator = (p.ARM + "/subscriptions/" + n.SUB + "/providers/" +
-                    p.KINDS[policy.kind][0] + "/locations/westus/operations/op-1?api-version=" +
-                    p.VERSIONS[policy.kind])
+                    RESOURCE_TYPES[policy.kind].split("/")[0] + "/locations/westus/operations/op-1?api-version=" +
+                    API_VERSIONS[policy.kind])
                 body, status = canonical({}), 202
         else:
             body = self.body(request.path)
@@ -249,15 +260,15 @@ def test_each_kind_single_provider_fact_mutation_refuses(fx, kind, field):
         elif field == "location":
             v["location"] = "other"
         elif field == "missing-identity":
-            del v["properties"][p.IDENTITIES[kind]]
+            del v["properties"][OWN_FIELDS[kind]]
         elif field == "identity-type":
-            v["properties"][p.IDENTITIES[kind]] = 7
+            v["properties"][OWN_FIELDS[kind]] = 7
         elif field == "state":
             v["properties"]["provisioningState"] = "Updating"
         elif field == "missing-policy":
-            v["properties"].pop(next(k for k in v["properties"] if k not in (p.IDENTITIES[kind], "provisioningState")), None)
+            v["properties"].pop(next(k for k in v["properties"] if k not in (OWN_FIELDS[kind], "provisioningState")), None)
         elif field == "foreign-policy":
-            v["properties"][next(k for k in v["properties"] if k not in (p.IDENTITIES[kind], "provisioningState"))] = "foreign"
+            v["properties"][next(k for k in v["properties"] if k not in (OWN_FIELDS[kind], "provisioningState"))] = "foreign"
         elif field == "extra-policy":
             v["properties"]["unknownAssociation"] = {"id": "foreign"}
         else:

@@ -73,6 +73,13 @@ No stripping, API fallback or relaxed legacy shape is used.
   branches. This is source-test coverage, not deployed Azure capability.
 - Five independent guard removals are detected by assertion failures: own GUID
   shape, sole writer, OS Detach, selected measured image and original expiry.
+  Two further table substitutions (wrong own identity field and wrong network
+  API version) break independent positive controls.
+- The provider double uses independent literal API versions, resource types and
+  incarnation-field names, and checks the actual requested version. It does not
+  construct its oracle from implementation tables. The earlier full/native
+  runs at 8a0b268 were stopped for this test-oracle correction, audited and
+  removed; their exit137 results are diagnostic, not passing qualification.
 - Actual collection is 3,209 full parent cases and 2,787 mandatory native cases.
   The new module contributes 180; all previous module counts, node fingerprints
   and anchor prefixes are preserved. Only bounded R01/H11 anchors are appended.
