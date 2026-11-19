@@ -1,6 +1,6 @@
 # P3 preparation and future isolated-source verification
 
-Status: preparation only; implementation/setup/dispatch unauthorized
+Status: source decision accepted; first P01/P02 isolated source commissioned; setup/dispatch unauthorized
 
 ## Inspect the planning packet
 
@@ -53,3 +53,9 @@ git -C openWallet submodule update --init code spec
 
 The first publication diagnostic stopped because this pinned spec checkout was
 missing. Correcting checkout requires no product/test/pin/expectation change.
+
+## First bounded source slice
+
+See [commission, source boundary and isolated verification](p3-namespace-implementation.md).
+Only T013P01/T013P02 are commissioned. Source checkout/tests are not operational
+setup. Later P3 source work, provider requests, setup and dispatch remain gated.

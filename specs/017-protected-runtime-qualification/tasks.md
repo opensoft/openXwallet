@@ -1,3 +1,13 @@
+Current bounded P3 source commission (2026-11-19): Brett source-ratified factory
+#1353 c2dfbbcc6fa6, adapter #96 9a087cf8c146 and consumer #586 aa4a50eea567;
+all three landed with matching trees and green independent main CI. His separate
+first-slice isolated implementation instruction commissions T013P01/T013P02 only.
+See [first-slice authority/as-built record](p3-namespace-implementation.md).
+The 162 focused controls pass; broader exact-source qualification is recorded
+separately. T013P03-P09 and all operational/human/consumer gates remain pending.
+Earlier planning-only/pending-ratification labels below are historical.
+Setup/dispatch unauthorized; feedback deferred; historical blocked writes unreplayed.
+
 Current source handoff: #94 source-only ratification at `b1430cedbf555afbfbe0a6de8a41e9208cfc145a` landed normally as `255035a41761a88293e565573a319dc112a48522`. The [current acceptance/main-CI record](evidence.md#2026-11-18-94-source-acceptance-and-t013-refresh) supersedes earlier pending-candidate labels. T012V/T012VJ source acceptance is complete; T001/T013/T014/T015 stay unchecked. Earlier commissioning/checkpoint paragraphs retain historical scope. This refresh selects no operational accepted_commit or grant; setup/dispatch unauthorized, feedback deferred, blocked writes unreplayed.
 
 Current 2026-11-19 P3 commission: [exact S1 design acceptance](p3-design-basis-acceptance.md)
@@ -178,14 +188,14 @@ Current source-accepted private39 realization: [as-built record](hosting-evidenc
 
 ### Operational owner gates — not granted
 
-## Proposed P3 source composition (not commissioned for implementation)
+## P3 source composition — first bounded slice commissioned
 
 These source tasks are conditional on future exact paired acceptance and isolated
 implementation commissioning. They do not replace T013's owner/operator act or
 create a factory/consumer duplicate task list. R01-R12 trace to the factory delta.
 
-- [ ] T013P01 [O] Obtain exact paired P3 source acceptance and explicit isolated implementation commission; files: specs/017-protected-runtime-qualification/p3-design-basis-acceptance.md, p3-azure-composition-plan.md, evidence.md; verify: actual owner record distinguishes S1 design-only acceptance, unconfirmed roles and P3 source semantics, with operational authority still absent (R01).
-- [ ] T013P02 [O] Implement factory-owned closed reservation/provisioned/final-link and setup/run retirement records plus permanent authoritative namespace transitions; files: scripts/workload_factory_binding_runtime/azure_composition/selection.py, namespace.py, tests/runtime_binding/test_azure_namespace.py; verify: exact phase/type/key sets, unavailable-field refusal, complete ordered reservation projection, no backward hash cycle, canonical caps, conditional create/ETag concurrency, consume-before-send/crash and permanent non-reuse/missing-state refusals, without old RunPlan/report changes (R07/R08).
+- [x] T013P01 [O] Obtain exact paired P3 source acceptance and explicit isolated implementation commission; files: specs/017-protected-runtime-qualification/p3-design-basis-acceptance.md, p3-azure-composition-plan.md, evidence.md; verify: actual owner record distinguishes S1 design-only acceptance, unconfirmed roles and P3 source semantics, with operational authority still absent (R01).
+- [x] T013P02 [O] Implement factory-owned closed reservation/provisioned/final-link and setup/run retirement records plus permanent authoritative namespace transitions; files: scripts/workload_factory_binding_runtime/azure_composition/selection.py, namespace.py, tests/runtime_binding/test_azure_namespace.py, tests/runtime_binding/matrix_contract.py; verify: exact phase/type/key sets, unavailable-field refusal, complete ordered reservation projection, no backward hash cycle, canonical caps, conditional create/ETag concurrency, consume-before-send/crash and permanent non-reuse/missing-state refusals, without old RunPlan/report changes (R07/R08).
 - [ ] T013P03 [O] Implement bounded per-kind Azure readback/operation capabilities and measured-image/two-retained-disk compatibility; files: scripts/workload_factory_binding_runtime/azure_composition/provider.py, tests/runtime_binding/test_azure_provider.py; verify: exact documented API/incarnation/dependency/terminal-operation and Detach semantics, no marketplace-ID substitution, unsupported type/replacement/pending-write refusal and no live provider request (R05/R08/R09).
 - [ ] T013P04 [O] Implement source-selected original-runner capture and bounded phase transport; files: scripts/workload_factory_binding_runtime/azure_composition/runner_transport.py, tests/runtime_binding/test_azure_runner_transport.py; verify: exact trusted origin/path policy, frozen private bearer/endpoint, valid signed-claim/provider-correlation positive and URL/redirect/proxy/source/phase/credential-export mutations within original limits, no discovery token (R04/R11).
 - [ ] T013P05 [O] Implement protected local worker-host adapters and authenticated complete-byte remote measurement/finalization composition; files: scripts/workload_factory_binding_runtime/azure_composition/local_host.py, remote_evidence.py, tests/runtime_binding/test_azure_measurement.py; verify: real local kernel/PID/namespace/process/TLS observations, two independently selected observers, full canonical bytes/closed late derivation and cross-host substitution/worker-access refusals, with existing local exact types/manager/profile semantics preserved (R03/R06).

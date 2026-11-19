@@ -41,3 +41,16 @@ assurance, domain consent/marker and consumer execution locks remain separate.
 The original default operational_bindings refusal, offline gates, APIs, pins,
 workflows and source-role/input/budget contracts are preserved in this preparation.
 Feedback deferred; blocked writes and optional rejected publications unreplayed.
+
+## P3 exact source acceptance and first isolated slice
+
+Current bounded P3 source commission (2026-11-19): Brett source-ratified factory
+#1353 c2dfbbcc6fa6, adapter #96 9a087cf8c146 and consumer #586 aa4a50eea567;
+all three landed with matching trees and green independent main CI. His separate
+first-slice isolated implementation instruction commissions T013P01/T013P02 only.
+See [first-slice authority/as-built record](p3-namespace-implementation.md).
+The 162 focused controls pass; broader exact-source qualification is recorded
+separately. T013P03-P09 and all operational/human/consumer gates remain pending.
+
+This later source acceptance is distinct from the earlier S1 design basis.
+Roles remain unconfirmed and all setup/dispatch authority remains absent.
