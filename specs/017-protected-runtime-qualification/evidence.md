@@ -3333,3 +3333,35 @@ or dispatch is selected by this source acceptance or its documentation descendan
 T013P03-P09, T001/T013/T014/T015, consumer058 T002 and independent human approval
 remain separate gates. Feedback deferred; historical blocked writes and rejected
 optional publication helpers remain unreplayed.
+
+
+## 2026-11-19 T013P03 isolated provider qualification
+
+Brett commissioned isolated P03 implementation/testing using the prepared provider
+subplan, first pilot only. Qualified runtime/test commit e416399f4f663463236576782174a42824d96aa4
+passes all seven ordered gates with unchanged source: full 3,209 parent cases plus
+11 subtests, native 2,787, zero failures/errors/skips. The 180 provider controls
+cover 467/467 statements and 82/82 branches; five guard removals and two incorrect
+product-table substitutions fail independently. All previous module counts,
+node digests and anchor prefixes remain unchanged; only the measured new module
+and bounded R01/H11 anchors are appended.
+
+The [as-built record](p3-provider-implementation.md) describes the trusted-port
+boundary, one VM/implicit-OS-disk send, original response/status binding, current
+fence and per-kind retirement, retained-image proof, unchanged legacy reader
+and remaining real-transport/schema/composition gates. The earlier 8a0b268 full
+and native runs were stopped for an independent-oracle correction (exit 137),
+audited and removed; they are diagnostic and not promoted. Fresh qualification
+uses the corrected commit above.
+
+Both final exact container generations are absent. Independent audits found no
+matching live helpers, verified ten earlier positive preservation fixtures plus
+two new six-kind provider/retained-image fixtures, and removed both owned roots.
+Raw ordered gate logs, source hashes, XML, coverage, mutation, preservation and
+teardown receipts remain host-local under p3-provider-20261119. The following
+documentation receipt commit changes no qualified runtime/test/matrix bytes.
+
+No PR publication, hosted CI, formal PR panel, owner source acceptance, operational
+accepted_commit, Azure write/token, setup or protected dispatch is inferred.
+P04-P09, T001/T013/T014/T015, consumer058 T002, roles and independent human
+approval stay gated. Feedback deferred; historical blocked writes unreplayed.

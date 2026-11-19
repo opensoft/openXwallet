@@ -1,7 +1,8 @@
 # T013P03 isolated provider implementation
 
-Status: local source candidate; focused qualification passed. Full ordered gates,
-native isolation and independent final teardown remain pending at this checkpoint.
+Status: local source candidate; isolated T013P03 qualification and independent
+cleanup passed. Publication, hosted CI, formal PR review and owner source
+acceptance remain separate.
 No source acceptance, publication, setup, dispatch or Azure qualification is implied.
 
 ## Authority and source basis
@@ -10,7 +11,7 @@ Brett separately commissioned isolated T013P03 implementation and testing using
 [p3-provider-plan.md](p3-provider-plan.md), first codeXfactory pilot only.
 The accepted factory composition and P01/P02 source remain the governing basis.
 Feature017 [tasks.md](tasks.md) is the sole implementation list. The P03 checkbox
-stays open until required qualification and cleanup are actually complete.
+records completed isolated implementation, qualification and cleanup only.
 P04-P09, T001/T013/T014/T015, appointments, consumer058 T002 and independent human
 approval remain gated. Feedback deferred; blocked writes unreplayed.
 
@@ -89,7 +90,28 @@ No stripping, API fallback or relaxed legacy shape is used.
   qualification; no skipped or failing diagnostic is relabeled as a final pass.
 
 No old runtime module, input, profile, pin, workflow, dependency or validator is
-changed. Full/native qualification and teardown receipts must bind the frozen
-candidate before this checkpoint may be promoted. Production transport,
+changed. Full/native qualification and teardown bind the frozen
+runtime/test candidate recorded below. Production transport,
 authentication, actual provider-version/schema support and complete S1 route fit
 remain later authorization/acceptance gates.
+
+## Complete isolated qualification
+
+Qualified runtime/test commit: e416399f4f663463236576782174a42824d96aa4. All seven ordered offline
+gates pass: contract pin, wallet pin, YAML syntax, plain validator, strict
+validator, complete full tests and pinned OpenSpec CLI validation. Full tests
+pass 3,209 parent cases plus 11 subtests; mandatory native matrix passes 2,787
+cases. Both have zero failures, errors and skips. Source remained unchanged
+through both runs. The documentation receipt commit changes no runtime, test,
+matrix, profile, dependency, pin or workflow bytes.
+
+Both exact Docker generations are absent. Independent audits verified all
+266 helper receipts, ten earlier positive preservation fixtures, and one
+new six-kind provider preservation fixture per run. Both owned fixture roots
+were audited and removed. The retained images survived every ephemeral deletion;
+no live Azure operation occurred. Earlier stopped runs remain explicitly
+diagnostic. Raw host-local evidence is retained under p3-provider-20261119.
+
+T013P03 is complete for isolated source implementation/testing. P04-P09 and
+T001/T013/T014/T015, consumer execution, appointments and human acceptance remain
+gated. Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.

@@ -1,3 +1,10 @@
+Current T013P03 isolated result: runtime/test commit e416399f4f663463236576782174a42824d96aa4
+passes seven ordered gates, full 3,209 parents plus 11 subtests and native 2,787,
+with independent helper, retention and container/fixture teardown. See feature017
+p3-provider-implementation.md. P03 isolated implementation is complete; source
+acceptance/publication, P04-P09 and operational setup/dispatch remain separate.
+Feedback deferred; blocked writes unreplayed.
+
 Current T013P03 isolated implementation commission (2026-11-19): Brett explicitly
 instructed implementation and testing of T013P03 using the prepared provider
 subplan, first pilot only. Earlier preparation-only labels are historical for
