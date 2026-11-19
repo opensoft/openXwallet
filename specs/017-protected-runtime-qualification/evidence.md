@@ -1,5 +1,15 @@
 # Preparation and Issuer Slice Evidence
 
+## Current design acceptance and P3 preparation, 2026-11-19
+
+[Owner acceptance](p3-design-basis-acceptance.md) names T013-S1 at081dad41cfb4
+with consumer049ede52b6ee as design basis only. Role nominations are subject to
+confirmation. The [P3 source plan](p3-azure-composition-plan.md) implements the
+planning commission under proposed factory `add-protected-runtime-azure-composition`;
+it commissions no code or operation. Earlier pending-design wording below is
+historical. P2 remains incomplete; P3 source acceptance and isolated implementation
+are separate. All four operational stages and T001/T013/T014/T015 remain open.
+
 ## 2026-11-19 read-only target inventory and selection proposal
 
 The owner commissioned read-only inventory, concrete T013 selections and the

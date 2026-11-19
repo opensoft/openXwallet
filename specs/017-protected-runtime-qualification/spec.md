@@ -1,5 +1,17 @@
 # Feature Specification: Protected Machine Runtime Qualification
 
+## Proposed P3 source extension, 2026-11-19
+
+[The exact owner record](p3-design-basis-acceptance.md) accepts T013-S1 design
+basis only and commissions P3 proposal/plan preparation. The proposed factory
+add-protected-runtime-azure-composition capability and [P3 plan](p3-azure-composition-plan.md)
+address concrete local/remote deployment composition. [Acceptance/traceability](p3-azure-composition-acceptance.md)
+maps its twelve proposed requirements to the sole T013P source tasks. This is
+unratified/uncommissioned future source and does not amend the accepted baseline
+by implication. Roles unconfirmed; implementation/setup/dispatch unauthorized;
+T001/T013/T014/T015 and consumer T002 remain open. Earlier slice statuses below
+are historical source context.
+
 **Feature Branch**: `017-protected-runtime-qualification`
 **Created**: 2026-11-12
 **Status**: T012G–L source accepted; T012M handoff complete; T013 operational acceptance pending

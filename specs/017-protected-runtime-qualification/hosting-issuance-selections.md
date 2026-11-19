@@ -1,9 +1,14 @@
 # Hosting and issuance selection proposal
 
-Status: proposed design basis for owner acceptance; P2 incomplete; setup/dispatch NOT GRANTED
+Status: T013-S1 design basis accepted at081dad41cfb4; roles unconfirmed; P2 incomplete; setup/dispatch NOT GRANTED
 Proposal: T013-S1, 2026-11-19 UTC (2026-11-18 America/La_Paz)
 Scope: read-only inventory and documentation; no implementation commissioning or operational grant
 Authority: existing factory `prepare-protected-runtime-qualification` and `add-protected-runtime-hosting-issuance`; sole implementation list remains feature017 tasks.md
+
+Current owner act: [T013-S1 acceptance and P3 preparation](p3-design-basis-acceptance.md).
+The proposal below is the accepted design basis at the named commit. Its
+operational caveats remain, and the historical proposed-acceptance wording below
+is not a new unaccepted choice. P3's separate source composition is unratified.
 
 ## Accepted entry state
 

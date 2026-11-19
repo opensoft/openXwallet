@@ -1,5 +1,15 @@
 # T013 owner decision packet
 
+## Current design acceptance and P3 preparation, 2026-11-19
+
+[Owner acceptance](p3-design-basis-acceptance.md) names T013-S1 at081dad41cfb4
+with consumer049ede52b6ee as design basis only. Role nominations are subject to
+confirmation. The [P3 source plan](p3-azure-composition-plan.md) implements the
+planning commission under proposed factory `add-protected-runtime-azure-composition`;
+it commissions no code or operation. Earlier pending-design wording below is
+historical. P2 remains incomplete; P3 source acceptance and isolated implementation
+are separate. All four operational stages and T001/T013/T014/T015 remain open.
+
 ## Current T013-S1 proposal, 2026-11-19 UTC
 
 #95 is source-accepted and landed as `05790f37383cdaeb2815b2912d45f267f608fbe3`;
