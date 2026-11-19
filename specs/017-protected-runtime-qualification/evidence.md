@@ -3281,3 +3281,55 @@ current product measurement covers 466 statements and 112 branches at 100%.
 Selection validation helpers preserve the closed record guards. Exact-head
 full/native and hosted CI receipts remain separate from this focused checkpoint;
 no source acceptance, setup, dispatch or live provider result is implied.
+
+
+## 2026-11-19 #97 source acceptance and P03 preparation
+
+Brett Heap stated in this chat:
+
+> I ratify openXwallet #97 at 33a00d474621 for source acceptance only. Land when green, verify post-merge CI, then prepare the next bounded P3 slice. Keep setup/dispatch unauthorized, feedback deferred; don’t replay blocked writes.
+
+The unambiguous ratified head is
+`33a00d474621921a1bd22ac95ba8f254d9875c11`.
+[PR #97](https://github.com/opensoft/openXwallet/pull/97) merged normally at
+`3ca99fc79ab6ce5339cfd9e347559b241f7a57b8` on
+`2026-11-19T19:26:46Z`. The merged and ratified trees both equal
+`6878c610c28a77cebb9514b09096f3fc0248d2d6`. No administrative override was used.
+
+Ratified-source qualification passed 170 focused cases, 3,029 full parent cases
+plus 11 subtests and all 2,607 mandatory native cases, with zero failures, errors
+or skips; all seven ordered offline gates passed. The local Codex panel comprised
+nine standard specialists, one Azure storage specialist and independent coordinator
+review, all bound to this head. Local product coverage measured 466 statements and
+112 branches at 100%. Five earlier guard mutations remain historical diagnostics;
+they are not promoted to fresh final-head mutation results.
+
+[Independent merged-main CI](https://github.com/opensoft/openXwallet/actions/runs/44598396381)
+passed all five jobs: source conformance, full/mandatory native tests, primary and
+isolated coverage, and Sonar analysis. Actual main analysis
+`3db8aeda-8d2e-47b2-b9e0-3c5a64f6df65` names the exact merge revision.
+The unchanged gate passed: security/reliability/maintainability A, evaluated new
+coverage 86.6%, duplication 0.0%, reviewed hotspots 100%. The original manual
+baseline `d434a8d1-6d41-4cfe-9413-e1868fc1c18d` remains retained. Main's evaluated
+baseline coverage is distinct from the PR's 100% new-code result.
+
+Three PR scanner advisories were disclosed before ratification and remain openly
+retained: S6353 (Minor, ASCII digit notation), S1192 (Critical scanner severity /
+High maintainability impact, repeated provider literal in one closed kind table),
+and S5713 (Minor, redundant UnicodeError subclass catch). Static and contract
+reviewers independently dispositioned them nonblocking; they were not fixed,
+dismissed or concealed, and no correctness/security finding remains.
+
+Independent final-source fixture audits recorded 24,994 process-generation
+observations, ten preservation controls and 262 helper cleanup receipts with no
+live attributable PID or teardown failure. Both qualification containers and
+fixture roots, plus three focused-review roots, were absent after audited removal.
+These are isolated source cleanup facts, not Azure retirement qualification.
+
+The current instruction authorizes [T013P03 preparation](p3-provider-plan.md)
+only after this main verification. No provider implementation, actual image,
+endpoint, principal/credential, initialization, executing accepted_commit, setup
+or dispatch is selected by this source acceptance or its documentation descendant.
+T013P03-P09, T001/T013/T014/T015, consumer058 T002 and independent human approval
+remain separate gates. Feedback deferred; historical blocked writes and rejected
+optional publication helpers remain unreplayed.

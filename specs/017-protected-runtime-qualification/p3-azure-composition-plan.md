@@ -1,5 +1,17 @@
 # Implementation Plan: P3 Azure deployment composition
 
+Current source acceptance and next-slice preparation (2026-11-19): Brett ratified
+openXwallet #97 at 33a00d474621921a1bd22ac95ba8f254d9875c11 for source acceptance
+only. It landed normally as 3ca99fc79ab6ce5339cfd9e347559b241f7a57b8 with the
+identical tree; independent main CI and its actual Sonar gate passed.
+See [the exact acceptance/main receipt](evidence.md#2026-11-19-97-source-acceptance-and-p03-preparation).
+The next bounded slice is [T013P03 provider preparation](p3-provider-plan.md);
+its implementation is not commissioned. P01/P02 remain complete; P03-P09 and
+T001/T013/T014/T015 retain their prior checkbox states. Setup/dispatch remain
+unauthorized, roles unconfirmed, feedback deferred and blocked writes unreplayed.
+Earlier commission/candidate labels below retain their historical scope.
+
+
 **Branch**: `017-p3-namespace` | **Date**: 2026-11-19
 **Spec**: [feature017](spec.md), proposed P3 extension below
 **State**: P3 source decision accepted; T013P01/T013P02 isolated source commissioned; later implementation and operations remain uncommissioned

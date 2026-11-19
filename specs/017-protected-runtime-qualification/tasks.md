@@ -1,3 +1,14 @@
+Current source acceptance and next-slice preparation (2026-11-19): Brett ratified
+openXwallet #97 at 33a00d474621921a1bd22ac95ba8f254d9875c11 for source acceptance
+only. It landed normally as 3ca99fc79ab6ce5339cfd9e347559b241f7a57b8 with the
+identical tree; independent main CI and its actual Sonar gate passed.
+See [the exact acceptance/main receipt](evidence.md#2026-11-19-97-source-acceptance-and-p03-preparation).
+The next bounded slice is [T013P03 provider preparation](p3-provider-plan.md);
+its implementation is not commissioned. P01/P02 remain complete; P03-P09 and
+T001/T013/T014/T015 retain their prior checkbox states. Setup/dispatch remain
+unauthorized, roles unconfirmed, feedback deferred and blocked writes unreplayed.
+Earlier commission/candidate labels below retain their historical scope.
+
 Current bounded P3 source commission (2026-11-19): Brett source-ratified factory
 #1353 c2dfbbcc6fa6, adapter #96 9a087cf8c146 and consumer #586 aa4a50eea567;
 all three landed with matching trees and green independent main CI. His separate

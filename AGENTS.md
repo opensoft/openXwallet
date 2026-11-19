@@ -15,6 +15,7 @@ ownership, validation, versioning, and release constraints.
 - Active feature: 017-protected-runtime-qualification; plan:
   specs/017-protected-runtime-qualification/plan.md.
   Current P3 preparation subplan: specs/017-protected-runtime-qualification/p3-azure-composition-plan.md.
+  Next bounded slice preparation: specs/017-protected-runtime-qualification/p3-provider-plan.md (T013P03; implementation uncommissioned).
   Earlier T012T subplan remains historical: specs/017-protected-runtime-qualification/hosting-evidence-plan.md.
 - Ratified factory composition: opensoft/openXfactory,
   openspec/changes/prepare-protected-runtime-qualification/.
@@ -730,3 +731,22 @@ Brett commissions candidate PR #97, hosted source CI and local Codex expert
 review, resolution of findings and presentation for source-only ratification.
 Only T013P01/P02 is commissioned. Later P03-P09, setup/dispatch and live acceptance
 remain separate; feedback stays deferred and blocked writes remain unreplayed.
+
+
+## #97 source acceptance and bounded P03 preparation
+
+Brett source-ratified #97 at 33a00d474621921a1bd22ac95ba8f254d9875c11 and directed
+landing when green, independent post-merge CI, then next bounded P3 preparation.
+Normal merge 3ca99fc79ab6ce5339cfd9e347559b241f7a57b8 has the identical ratified
+tree; main run44598396381 and its actual unchanged Sonar gate passed.
+Feature017 evidence.md records the exact owner act, head/tree, qualification,
+review/advisory dispositions, main analysis and retained manual baseline.
+
+Only T013P03 preparation is commissioned now; follow p3-provider-plan.md and the
+sole row in tasks.md. Do not implement provider.py or mark P03 complete.
+The legacy public-IP/Detach shape and credential-transport limits are explicit
+compatibility gates, not permission to strip provider fields or relax old readers.
+Preserve runtime/profile/workflow/pin/dependency bytes and all task checkboxes.
+P04-P09, T001/T013/T014/T015, unconfirmed roles, consumer058 T002 and independent
+human acceptance remain gated. Setup/dispatch unauthorized, feedback deferred,
+historical blocked writes and rejected optional publication helpers unreplayed.

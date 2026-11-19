@@ -54,3 +54,18 @@ separately. T013P03-P09 and all operational/human/consumer gates remain pending.
 
 This later source acceptance is distinct from the earlier S1 design basis.
 Roles remain unconfirmed and all setup/dispatch authority remains absent.
+
+## First P3 implementation source accepted; next slice prepared only
+
+Brett subsequently ratified openXwallet #97 at
+`33a00d474621921a1bd22ac95ba8f254d9875c11` for source acceptance only and directed
+landing when green, post-merge verification, then next-slice preparation.
+It merged normally as `3ca99fc79ab6ce5339cfd9e347559b241f7a57b8` with the identical
+tree. [The current evidence record](evidence.md#2026-11-19-97-source-acceptance-and-p03-preparation)
+records successful independent main CI and evaluated Sonar/baseline verification.
+
+This accepts P01/P02 source, including the reviewed admission consistency barrier;
+it does not commission P03 code. [The next bounded subplan](p3-provider-plan.md)
+prepares the existing T013P03 provider/operation/image-disk task only. All owner,
+operational, role-confirmation, later-source and consumer/human gates remain as
+recorded above. No inherited setup, dispatch, credential or provider permission.
