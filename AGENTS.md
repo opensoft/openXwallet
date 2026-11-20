@@ -1,3 +1,14 @@
+Current T013P04 isolated qualification (2026-11-20): code/test/matrix head
+6f4fb345bc99b0ea3a5bddc3bacdf381f123360f passes all seven ordered gates,
+3,334 full parent cases plus 11 subtests, 2,912 mandatory native cases and
+110 focused controls. Ten guard-removal counterfactuals detect the intended
+assertions. Independent helper/namespace/retained-state audit and owned-fixture
+disposal pass. See feature017 evidence.md and p3-runner-transport-plan.md.
+Only P04 is completed in isolation; publication/source acceptance, P05-P09,
+T001/T013-T015 and consumer/human/operational gates remain separate. Setup/dispatch
+unauthorized; feedback deferred; blocked writes unreplayed. Earlier checkpoints
+below retain their dated scope.
+
 Current T013P04 isolated implementation commission (2026-11-20): Brett directs
 implementation and testing using p3-runner-transport-plan.md at prepared commit
 6fcd43f4872fdeb91748fe9d654634a62093b6e0. Only the existing T013P04 row is
@@ -81,7 +92,7 @@ ownership, validation, versioning, and release constraints.
 - Active feature: 017-protected-runtime-qualification; plan:
   specs/017-protected-runtime-qualification/plan.md.
   Current P3 preparation subplan: specs/017-protected-runtime-qualification/p3-azure-composition-plan.md.
-  Current bounded slice: specs/017-protected-runtime-qualification/p3-runner-transport-plan.md (T013P04; isolated implementation commissioned 2026-11-20).
+  Current bounded slice: specs/017-protected-runtime-qualification/p3-runner-transport-plan.md (T013P04; isolated source qualified, publication/acceptance pending).
   Earlier T012T subplan remains historical: specs/017-protected-runtime-qualification/hosting-evidence-plan.md.
 - Ratified factory composition: opensoft/openXfactory,
   openspec/changes/prepare-protected-runtime-qualification/.

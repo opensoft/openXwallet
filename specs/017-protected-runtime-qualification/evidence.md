@@ -3500,3 +3500,67 @@ checkboxes remain unchanged. P04 implementation, P05-P09, T001/T013/T014/T015,
 consumer058 T002, actual endpoint/credential/subject selection, appointments and
 independent human acceptance remain gated. No operational accepted_commit, setup
 or dispatch is selected. Feedback deferred; blocked writes unreplayed.
+
+
+## 2026-11-20 T013P04 isolated implementation
+
+Owner act: "Go ahead and implement and test T013P04 in isolation using the prepared
+plan at 6fcd43f4872f. Keep scope on the first pilot, setup/dispatch unauthorized,
+feedback deferred; don't replay blocked writes." This commissions only the
+existing task, not P05-P09, publication, source acceptance or operational authority.
+
+Qualified code/test/matrix commit: `6f4fb345bc99b0ea3a5bddc3bacdf381f123360f`.
+Prepared plan: `6fcd43f4872fdeb91748fe9d654634a62093b6e0`.
+All 406 frozen tracked input hashes and the selected wallet root/code/spec and
+owning-code identities were verified unchanged across qualification.
+
+As built: a private RunnerCapture holds the original URL/bearer, independent
+closed RunnerPolicy and original Decision. Strict strings prevent changed
+injection values from forging equality. It refuses missing/changed injection
+before GET and at the actual TLS READY-to-GO checkpoint; consumes one attempt
+before any possible transmission; and rejects retries after success, uncertainty,
+exception or cancellation. Existing actual TokenClient/Https and exact intrinsic
+AdmissionClient/Channel/PrivateHttps remain the transport and admission path.
+Only the returned immutable JWT authenticates phase POST. Original runner values
+are not reconsulted for POST. No discovery token or default operational wiring is added.
+
+| Check | Exact qualified-source result |
+| --- | --- |
+| Focused P04 controls | 110 passed, zero failures/errors/skips; 127/127 executable statements and both measured branches covered, no exclusions |
+| Guard-removal counterfactuals | Ten guards detected by assertion failures, passing ten-case baseline, no fixture errors; source unchanged |
+| Full ordered source gates | All seven passed; 3,334 parent cases plus 11 subtests, zero failures/errors/skips, 2,388.45 seconds |
+| Mandatory native conformance | 2,912 passed, zero failures/errors/skips, explicit runtime-conformance PASS, 2,011.53 seconds |
+| Prior corpus preservation | All prior 3,224 full and 2,802 native identities/order, per-module fingerprints and anchor prefixes preserved; new anchors extend existing families |
+| Full independent cleanup | 12,523 process records, 133 helper receipts, 427 journals and five retained-state preservation checks; zero live; owned root removed |
+| Native independent cleanup | 12,509 process records, 133 helper receipts, 427 journals and five retained-state preservation checks; zero live; owned root removed |
+
+Both complete runs report 487 multiprocessing/fork deprecation warnings in existing code paths.
+Their separate read-only, no-external-network containers used the previously
+selected image and unprivileged/capability-dropped application boundary. Immutable
+container-ID readback confirms their namespaces are absent. The independent audit
+also disposed of focused and interrupted-diagnostic fixture roots in 27 scopes;
+logs, XML, hashes, coverage and mutant source/report evidence were retained.
+
+Provenance: earlier 7050471 full/native attempts were deliberately interrupted
+for the equality-forging value correction and remain diagnostic. Three regressions
+reproduced that defect before correction. Earlier focused ledger-oracle failures
+were corrected from measured reads without changing budgets. One instrumented
+protected positive failed during mixed activity; the cause is unestablished.
+Separate redacted diagnostics and the final clean 110-case instrumented run,
+complete full run and complete native run remain distinct receipts. No original
+clock, read count, body cap, guard, test identity or gate was weakened to pass.
+
+The complete protected fixture uses source8/protection4/control4/correlation8,
+24 GitHub reads inside the original 26 ceiling. Runner token GET is not charged
+as a REST correlation read. The effective 512-character request-bearer and
+16,377-character POST-token limits remain; a fitting 512-character bearer and
+near-limit genuine signed JWT pass. Actual GitHub injection compatibility remains
+unqualified and cannot be inferred from these synthetic inputs.
+
+Only T013P04 is now complete in isolation. The final completion-record commit
+changes documentation only and must preserve every qualified non-document byte.
+Publication, hosted CI/local expert review and owner source ratification remain
+separate. P05-P09, T001/T013/T014/T015, consumer058 T002 and independent human
+assurance are not advanced. Roles remain unconfirmed; no operational
+accepted_commit is selected. Setup/dispatch unauthorized, feedback deferred,
+blocked writes unreplayed.

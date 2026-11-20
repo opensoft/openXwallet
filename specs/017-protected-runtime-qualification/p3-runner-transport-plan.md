@@ -1,6 +1,6 @@
 # T013P04 original runner capture and bounded phase transport subplan
 
-Status: isolated implementation commissioned 2026-11-20; qualification in progress.
+Status: T013P04 isolated implementation qualified 2026-11-20; unpublished source candidate.
 Scope: first codeXfactory machine-possession pilot, feature017 T013P04 only.
 Branch: `017-p3-runner-transport-prep`; prepared 2026-11-20 UTC.
 Sole implementation list: [tasks.md](tasks.md). This refines its existing P04 row,
@@ -32,9 +32,9 @@ No operational accepted_commit is selected. Feedback deferred; blocked writes un
 ## Technical context and constitution check
 
 Use existing Python 3.12/Linux, locked dependencies and internal package conventions.
-Later product path: `scripts/workload_factory_binding_runtime/azure_composition/runner_transport.py`.
-Later controls: `tests/runtime_binding/test_azure_runner_transport.py`. Neither is
-created by preparation. Measure collection changes only after implementation.
+Implementation path: `scripts/workload_factory_binding_runtime/azure_composition/runner_transport.py`.
+Controls: `tests/runtime_binding/test_azure_runner_transport.py`. Both were created by the explicit isolated commission, after preparation.
+Measured collection and completion evidence are recorded below.
 
 The feature deliberately has no local constitution. Use the factory decisions,
 repository rules and shared OpenSpec/Speckit protocol; do not inherit another
@@ -209,3 +209,32 @@ ratification. Preparation is neither that commission nor acceptance/merge author
 P05-P09, actual origin/credential compatibility/subjects/proof audience, appointments,
 setup, dispatch, provider writes, full S1 qualification and independent human/consumer
 gates remain separate. Feedback deferred; blocked writes unreplayed.
+
+
+## 2026-11-20 isolated implementation result
+
+The owner explicitly commissioned T013P04 using prepared plan commit
+`6fcd43f4872fdeb91748fe9d654634a62093b6e0`. Earlier future/preparation wording
+records that baseline; it does not describe the completed isolated source slice.
+Qualified code/test/matrix head: `6f4fb345bc99b0ea3a5bddc3bacdf381f123360f`.
+See [the qualification and cleanup record](evidence.md#2026-11-20-t013p04-isolated-implementation).
+
+The [private implementation](../../scripts/workload_factory_binding_runtime/azure_composition/runner_transport.py)
+and [110 controls](../../tests/runtime_binding/test_azure_runner_transport.py)
+exercise actual local TLS GET, signature-valid bootstrap identity, independently
+corroborated fixture facts and the existing intrinsic phase clients/controller.
+They retain fixed GET/POST attempt counts and the same original Decision, with
+no runner-pair use after GET and no new callback injected into intrinsic POST.
+
+All seven ordered gates pass, including 3,334 full parent cases plus 11 subtests;
+mandatory native conformance passes all 2,912 cases. The focused 110-case run has
+100% statement/branch coverage for this module (127 statements/two branches).
+Ten removed-guard counterfactuals are detected by actual assertion failures,
+with a passing ten-case baseline and no fixture errors. Every old accepted
+node identity/order, per-module fingerprint and anchor prefix is preserved.
+Independent namespace/helper/retention audit and owned-fixture disposal pass.
+
+Only T013P04 is marked complete by this result. P05-P09, publication/hosted CI/
+local expert review, source ratification, real runner endpoint/credential-length
+compatibility, role appointments and every operational/human/consumer gate
+remain separate. Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.
