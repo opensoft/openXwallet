@@ -30,6 +30,7 @@ _SAFE = re.compile(r"[A-Za-z0-9._~-]{1,256}\Z", re.ASCII)
 
 
 def _private(operation):
+    # Every exception class may carry credentials, including termination signals.
     # Raise outside the handler: suppressed display alone still retains context.
     try:
         return operation()
@@ -58,7 +59,7 @@ class RunnerPolicy:
                     and all(32 < ord(c) < 127 for c in self.origin), ERROR)
             parsed = urlsplit(self.origin)
             require(parsed.scheme == "https" and parsed.hostname
-                    and re.fullmatch(r"[a-z0-9]+(?:[a-z0-9.-]*[a-z0-9])?", parsed.hostname)
+                    and re.fullmatch(r"[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?", parsed.hostname)
                     and parsed.username is None and parsed.password is None
                     and not parsed.path and not parsed.query and not parsed.fragment
                     and (parsed.port is None or 0 < parsed.port <= 65535), ERROR)

@@ -1,3 +1,17 @@
+Current PR #99 Sonar follow-up (2026-11-20): the initial hosted run passes its
+five jobs and unchanged six-condition gate, but reports eight actionable source/
+test advisories and one intentional privacy catch. The hostname regex now removes
+overlapping repetition without changing its accepted language. Seven negative
+assertions move successful setup outside raises. Whole-BaseException sanitization
+is retained deliberately: SystemExit/GeneratorExit/custom termination exceptions
+can also contain runner credentials. Three actual-capture controls require fixed
+errors and absent context without requests. No rule suppression or Sonar status
+mutation is used. Collection is 115 focused, 3,339 full parents and 2,917 native.
+The interrupted 10fc043 full run is diagnostic, not completed qualification.
+Final frozen full/native, cleanup, exact-head panel and replacement hosted CI
+remain required before presentation. P04 only; setup/dispatch unauthorized,
+feedback deferred; blocked writes unreplayed. Earlier checkpoints are historical.
+
 Current T013P04 PR #99 privacy correction (2026-11-20): the initial b92375d
 local panel clearance was superseded by a coordinator/security/QA reproduction.
 Normal instance __getstate__ exposed the captured slotted endpoint/bearer and

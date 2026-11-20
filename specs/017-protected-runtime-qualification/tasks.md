@@ -1,7 +1,7 @@
-Current PR #99 correction: the normal-instance state-export finding supersedes
-initial publication clearance. Only T013P04 is reopened pending corrected frozen
-qualification and cleanup; no owner-act or other task state changes. See the
-2026-11-20 publication correction in evidence.md.
+Current PR #99 correction: state-export and initial hosted Sonar follow-ups
+supersede initial publication clearance. Only T013P04 is reopened pending final
+frozen qualification and cleanup; no owner-act or other task state changes.
+See the 2026-11-20 publication corrections in evidence.md.
 
 Current T013P04 isolated implementation commission (2026-11-20): Brett directs
 implementation and testing using p3-runner-transport-plan.md at prepared commit

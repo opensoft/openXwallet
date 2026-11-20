@@ -3598,3 +3598,33 @@ No prior condition, counter, deadline, body cap, scope or authority gate is rela
 P05-P09, owner source acceptance/merge, actual GitHub/Azure and human/consumer
 qualification remain separate. Setup/dispatch unauthorized, feedback deferred,
 blocked writes unreplayed.
+
+
+## 2026-11-20 PR #99 initial hosted analyzer follow-up
+
+Initial hosted run [44780093094](https://github.com/opensoft/openXwallet/actions/runs/44780093094)
+at published b92375d passes its five jobs and actual unchanged Sonar gate. The
+analyzer also reports nine open advisories: hostname regex S8786, seven exception
+test S5778 issues and privacy-boundary S5754. Passing the gate does not dispose of
+those findings. The regex and seven test assertions are corrected narrowly; no
+limit, accepted URL language, guard or prior assertion is removed.
+
+Security and static specialists differed over narrowing BaseException. Coordinator
+disposition retains the deliberate credential-sanitization catch: termination
+exceptions can carry the original runner material too. A fixed error raised outside
+the handler avoids retained cause/context, and fresh empty KeyboardInterrupt is
+preserved. Three actual-capture termination controls cover SystemExit, GeneratorExit
+and a custom direct BaseException. S5754 is an explicit intentional rule exception,
+not a hidden suppression, false-positive API classification or changed gate.
+
+Measured collection is 115 focused, 3,339 full parents and 2,917 native, preserving
+all earlier candidate and accepted identities/order/fingerprints/anchor prefixes.
+The 10fc043 full run was deliberately stopped at approximately 74 percent without
+reported test failure so the final source can be qualified afresh. Its namespace
+is absent and its independent interrupted-run audit removed the owned root after
+checking 10,495 process records, 101 helper receipts, 327 journals and one completed
+positive retained-state case, with zero live attributable processes. This is
+diagnostic cleanup, not complete qualification. Final source gates/native, final
+cleanup, exact-head specialist follow-up and corrected-head hosted CI remain pending.
+Owner acceptance/merge and P05-P09 remain separate. Setup/dispatch unauthorized;
+feedback deferred; blocked writes unreplayed.

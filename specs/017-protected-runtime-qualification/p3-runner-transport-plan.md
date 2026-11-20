@@ -1,6 +1,6 @@
 # T013P04 original runner capture and bounded phase transport subplan
 
-Status: PR #99 routine state-export correction implemented; renewed qualification pending.
+Status: PR #99 state-export and Sonar follow-ups implemented; final qualification pending.
 Scope: first codeXfactory machine-possession pilot, feature017 T013P04 only.
 Branch: `017-p3-runner-transport-prep`; prepared 2026-11-20 UTC.
 Sole implementation list: [tasks.md](tasks.md). This refines its existing P04 row,
@@ -255,3 +255,28 @@ Corrected collection has 112 P04 cases, preserving every earlier node ID/order,
 module fingerprint and anchor prefix; new controls extend existing R01. Corrected
 frozen full/native, cleanup, specialist follow-up and hosted CI remain required.
 Source scope and all existing limits/defaults/pins/operational gates remain unchanged.
+
+
+## PR #99 initial hosted analyzer follow-up
+
+The initial published head passes hosted CI and the unchanged quality gate but
+reports a regex repetition warning and seven multi-invocation exception assertions.
+The hostname expression now uses one initial alphanumeric character rather than
+an overlapping repetition; the accepted language and all independent limits remain
+unchanged. Seven negative tests construct their fitting inputs/capture before the
+exception assertion, leaving only the intended failing invocation inside it.
+
+S5754's broad-catch advisory is intentionally retained after security/coordinator
+review. Every BaseException subclass can carry credentials in its payload or
+context, including SystemExit, GeneratorExit and a custom direct subclass. The
+private boundary must sanitize those too; narrowing the catch or reraising the
+original would weaken privacy. Three new actual-capture controls prove fixed
+refusal, absent cause/context and no request. Empty KeyboardInterrupt cancellation
+semantics remain unchanged. This is a documented intentional rule exception, not
+a suppressed rule or an API-classified false positive; final Sonar must be read.
+
+Collection is now 115 focused controls, 3,339 full parent cases and 2,917 native.
+All prior identities/order/fingerprints/anchor prefixes are preserved. The 10fc043
+full run was stopped without reported failure at approximately 74 percent for
+these corrections; its audited cleanup remains diagnostic. Final frozen source
+qualification, cleanup, review and replacement hosted CI are still required.

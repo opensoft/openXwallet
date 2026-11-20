@@ -180,7 +180,8 @@ def test_unselected_origin_path_and_encoding_refuse_before_send(runner, change):
 def test_policy_requires_closed_independent_selection(field, value):
     policy = RunnerPolicy("a" * 40, "preflight", "https://selected.invalid", "/job/token")
     assert policy.endpoint() == "https://selected.invalid/job/token"
-    with pytest.raises(BindingError, match="^" + ERROR + "$"): replace(policy, **{field: value}).endpoint()
+    changed = replace(policy, **{field: value})
+    with pytest.raises(BindingError, match="^" + ERROR + "$"): changed.endpoint()
 
 
 @pytest.mark.parametrize("change", ["url", "bearer", "pair", "missing-url", "missing-bearer"])
@@ -257,7 +258,8 @@ def test_validly_signed_wrong_claims_cannot_produce_readiness(runner, field):
                      "job_workflow_ref": "opensoft/openXwallet/.github/workflows/worker.yml@refs/heads/main",
                      "environment": "qa"}[field]
     r.token = jwt(r.stage.v.h.issuer_key, claims)
-    with pytest.raises(BindingError, match="^" + ERROR + "$"): r.capture().admit()
+    capture = r.capture()
+    with pytest.raises(BindingError, match="^" + ERROR + "$"): capture.admit()
     assert len(r.requests) == 1
     assert r.stage.agent.children == {}
 
@@ -270,7 +272,8 @@ def test_current_provider_corroboration_is_required_after_real_get(runner, chang
     elif change == "self-review": r.stage.g.reviews[0]["user"]["id"] = int(r.stage.policy.initiating_user_id)
     elif change == "source-moved": r.stage.rb.main_sha = "f" * 40
     else: r.stage.rb.hold["state"] = "revoked"
-    with pytest.raises(BindingError): r.capture("protected-admission").admit()
+    capture = r.capture("protected-admission")
+    with pytest.raises(BindingError): capture.admit()
     assert len(r.requests) == 1
     assert r.stage.agent.children == {}
     assert not r.stage.rb.stage_lease_path.exists()
@@ -299,7 +302,8 @@ def test_transport_failures_are_bounded_and_reap_private_helpers(runner, monkeyp
         r.transport = Https(ca_file=ca)
     use = r.stage.use()
     if mode == "slow": use.clip(r.stage.v.h.now + 1); use.end = use.monotonic() + .4
-    with pytest.raises(BindingError): r.capture(decision=use).admit()
+    capture = r.capture(decision=use)
+    with pytest.raises(BindingError): capture.admit()
     assert len(r.requests) <= 1
     assert children
     assert all(child.poll() is not None for child in children)
@@ -341,7 +345,8 @@ def test_oversized_returned_jwt_refuses_before_intrinsic_post(runner, monkeypatc
         reads.append(True)
         return original(client, *args, **kwargs)
     monkeypatch.setattr(AdmissionClient, "read", read)
-    with pytest.raises(BindingError): r.capture().admit()
+    capture = r.capture()
+    with pytest.raises(BindingError): capture.admit()
     assert reads == []
     assert len(r.requests) == 1
     assert r.posts == []
@@ -389,7 +394,8 @@ def test_qualification_allocation_is_preserved_without_join_or_upgrade(runner):
     assert budget.count("private") == 39
     assert budget.github_requests == 0
     with pytest.raises(BindingError): budget.consume("private")
-    with pytest.raises(BindingError): budget.join(r.stage.use())
+    independent = r.stage.use()
+    with pytest.raises(BindingError): budget.join(independent)
 
 
 def test_tls_send_cancellation_reaps_child_before_request(runner, monkeypatch):
@@ -432,7 +438,8 @@ def test_canary_exception_has_no_retained_cause_or_context(runner):
     r = runner
     class Broken(dict):
         def get(self, key): raise ValueError(SECRET + r.endpoint)
-    with pytest.raises(BindingError) as error: r.capture(environment=Broken(r.environment))
+    broken = Broken(r.environment)
+    with pytest.raises(BindingError) as error: r.capture(environment=broken)
     assert str(error.value) == ERROR
     assert error.value.__cause__ is None
     assert error.value.__context__ is None
@@ -518,6 +525,25 @@ def test_normal_state_hook_cannot_export_runner_material(runner, target):
     with pytest.raises(BindingError, match="^" + ERROR + "$") as caught:
         selected.__getstate__()
     assert str(caught.value) == ERROR
+    assert caught.value.__cause__ is None
+    assert caught.value.__context__ is None
+    assert SECRET not in repr(caught.value)
+    assert r.endpoint not in repr(caught.value)
+    assert r.requests == []
+
+
+class PrivateTermination(BaseException):
+    """A trusted accessor failure can use any exception class."""
+
+
+@pytest.mark.parametrize("failure", [SystemExit, GeneratorExit, PrivateTermination])
+def test_termination_exception_cannot_export_runner_material(runner, failure):
+    r = runner
+    class Broken(dict):
+        def get(self, key): raise failure(SECRET + r.endpoint)
+    broken = Broken(r.environment)
+    with pytest.raises(BindingError, match="^" + ERROR + "$") as caught:
+        r.capture(environment=broken)
     assert caught.value.__cause__ is None
     assert caught.value.__context__ is None
     assert SECRET not in repr(caught.value)
