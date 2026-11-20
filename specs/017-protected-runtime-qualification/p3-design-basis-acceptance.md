@@ -1,6 +1,6 @@
 # T013-S1 acceptance and P3 preparation authority
 
-Status: design basis accepted; P3 source proposal unratified; implementation unauthorized
+Status: design/P3 and P01-P03 source accepted; P04 preparation only; operations unauthorized
 Recorded: 2026-11-19
 Kind: owner-decision-record
 
@@ -69,3 +69,17 @@ it does not commission P03 code. [The next bounded subplan](p3-provider-plan.md)
 prepares the existing T013P03 provider/operation/image-disk task only. All owner,
 operational, role-confirmation, later-source and consumer/human gates remain as
 recorded above. No inherited setup, dispatch, credential or provider permission.
+
+## P03 source accepted; runner capture prepared only
+
+Brett ratified #98 at `03d1ee71b53187b5b52233db02b7cca55281b3aa` for source
+acceptance only, then directed landing when green, main verification and next-slice
+preparation. Normal merge `7f85c43c6a4eee311d7033e59df2d8bbd4b1ddf7` has the
+identical tree. [The acceptance/main receipt](evidence.md#2026-11-20-98-source-acceptance-and-p04-preparation)
+records independent CI, actual main gate and retained baseline.
+
+[T013P04](p3-runner-transport-plan.md) prepares original runner capture and phase
+transport only. No implementation, owner checkbox, actual credential/endpoint
+policy/subject/proof audience or operational accepted_commit is selected.
+Setup/dispatch, role confirmation, P05-P09 and consumer/human gates stay separate.
+Earlier S1/P3/P01-P03 checkpoints retain their original dated authority.

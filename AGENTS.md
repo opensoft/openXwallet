@@ -1,4 +1,14 @@
-T013P03 publication follow-up (2026-11-20): the public-IP compatibility control
+Current #98 source acceptance and P04 preparation (2026-11-20): Brett ratified
+03d1ee71b53187b5b52233db02b7cca55281b3aa for source acceptance only. Normal merge
+7f85c43c6a4eee311d7033e59df2d8bbd4b1ddf7 has the identical tree; independent main
+CI and its actual unchanged Sonar/baseline gate pass. See feature017 evidence.md.
+The next bounded subplan is p3-runner-transport-plan.md (T013P04 preparation only).
+P01-P03 source is accepted; P04 code, P05-P09, T001/T013/T014/T015 and consumer058
+T002 remain gated. No operational accepted_commit, appointment, setup or dispatch
+is selected. Feedback deferred; blocked writes unreplayed. Earlier checkpoints
+below retain their historical scope.
+
+Historical T013P03 publication follow-up (2026-11-20): the public-IP compatibility control
 now proves an id-only legacy-reader positive using a complete public-IP reply
 and matching digest before testing expanded-link refusal. Removing the exact-link
 guard leaves the earlier test green but makes this corrected test fail. Reader
@@ -62,7 +72,7 @@ ownership, validation, versioning, and release constraints.
 - Active feature: 017-protected-runtime-qualification; plan:
   specs/017-protected-runtime-qualification/plan.md.
   Current P3 preparation subplan: specs/017-protected-runtime-qualification/p3-azure-composition-plan.md.
-  Current bounded slice: specs/017-protected-runtime-qualification/p3-provider-plan.md (T013P03; isolated implementation commissioned).
+  Current bounded slice: specs/017-protected-runtime-qualification/p3-runner-transport-plan.md (T013P04; preparation only, implementation not commissioned).
   Earlier T012T subplan remains historical: specs/017-protected-runtime-qualification/hosting-evidence-plan.md.
 - Ratified factory composition: opensoft/openXfactory,
   openspec/changes/prepare-protected-runtime-qualification/.

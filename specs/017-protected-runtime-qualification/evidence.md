@@ -3461,3 +3461,42 @@ logs remain diagnostic. Three fresh isolated trials passed with the original
 original failure. The final complete native rerun occurred after the full run
 finished, with unchanged source, cases, counters and deadlines. Only the full
 passing rerun above is qualification; no guard, test or limit was relaxed.
+
+
+## 2026-11-20 #98 source acceptance and P04 preparation
+
+Brett Heap stated in this chat:
+
+> I ratify openXwallet #98 at 03d1ee71b531 for source acceptance only. Land when green, verify post-merge CI, then prepare the next bounded P3 slice. Keep setup/dispatch unauthorized, feedback deferred; don’t replay blocked writes.
+
+[The owner act](https://github.com/opensoft/openXwallet/pull/98#issuecomment-7029557300)
+binds full head `03d1ee71b53187b5b52233db02b7cca55281b3aa`. All runnable checks
+and exact-head local nine-specialist review were clear. Normal merge (no admin)
+produced `7f85c43c6a4eee311d7033e59df2d8bbd4b1ddf7` at 2026-11-20T03:36:56Z.
+Both trees equal `bd9f68cde018b2d43fbef967ce1f2ec59d8e7995`.
+[The final source receipt](https://github.com/opensoft/openXwallet/pull/98#issuecomment-7028953308)
+records provider 195, statements 479/479, branches 84/84; full 3,224 parent cases plus 11
+subtests, native 2,802, 15 detected mutations and 266 audited qualification helper
+receipts with owned containers/fixtures absent. GitHub Codex was quota-limited,
+not a completed review. Earlier failed/diagnostic runs remain separately labeled.
+
+[Independent main CI44668933427](https://github.com/opensoft/openXwallet/actions/runs/44668933427)
+passes all five jobs at that merge. [The main verification receipt](https://github.com/opensoft/openXwallet/pull/98#issuecomment-7030639187)
+records actual main Sonar analysis `40c42641-dd44-422a-b294-7a813f279a6f` at the
+exact revision: gate 9 unchanged, six conditions OK, none ignored; 87.0% new coverage
+over 17,475 lines, 0% duplication, A reliability/security/maintainability, 100% hotspot
+review. Original manual baseline `d434a8d1-6d41-4cfe-9413-e1868fc1c18d` remains
+selected at 2026-08-27T11:16:42+0000. No unresolved issue occurs in #98 changed
+paths. Sixteen unresolved issues on unchanged paths remain outside this change;
+they are neither reported fixed nor relabeled minor. Both protected workflow
+run counts remain zero.
+
+P03 source is accepted and landed. [T013P04](p3-runner-transport-plan.md) is prepared
+only. Research preserves effective request-bearer 512 / POST-token 16,377 caps, requires
+negative drift comparisons plus frozen private sends, and separates token-GET
+capture guarding from unchanged intrinsic POST guards. No runtime code/test,
+matrix, workflow, lock, pin, public profile or role changes are made. All task
+checkboxes remain unchanged. P04 implementation, P05-P09, T001/T013/T014/T015,
+consumer058 T002, actual endpoint/credential/subject selection, appointments and
+independent human acceptance remain gated. No operational accepted_commit, setup
+or dispatch is selected. Feedback deferred; blocked writes unreplayed.
