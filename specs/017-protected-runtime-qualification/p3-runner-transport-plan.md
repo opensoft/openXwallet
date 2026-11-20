@@ -1,6 +1,6 @@
 # T013P04 original runner capture and bounded phase transport subplan
 
-Status: T013P04 isolated implementation qualified 2026-11-20; unpublished source candidate.
+Status: PR #99 routine state-export correction implemented; renewed qualification pending.
 Scope: first codeXfactory machine-possession pilot, feature017 T013P04 only.
 Branch: `017-p3-runner-transport-prep`; prepared 2026-11-20 UTC.
 Sole implementation list: [tasks.md](tasks.md). This refines its existing P04 row,
@@ -238,3 +238,20 @@ Only T013P04 is marked complete by this result. P05-P09, publication/hosted CI/
 local expert review, source ratification, real runner endpoint/credential-length
 compatibility, role appointments and every operational/human/consumer gate
 remain separate. Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.
+
+
+## PR #99 routine state-export correction
+
+Publication review found that blocking reduction did not block Python's inherited
+normal-instance __getstate__ hook. Actual capture and token-transport fixtures
+exported their private slot state. This is a routine export within R04's existing
+privacy boundary, distinct from hostile base-class bypass/private-slot inspection.
+Shared _Opaque now refuses that hook. Two new actual-instance controls require
+fixed private errors, absent cause/context and no runner request; both fail on
+the previously published source. Two unused non-fixture test imports were removed.
+
+The earlier 110-case qualification and initial panel clearances are historical.
+Corrected collection has 112 P04 cases, preserving every earlier node ID/order,
+module fingerprint and anchor prefix; new controls extend existing R01. Corrected
+frozen full/native, cleanup, specialist follow-up and hosted CI remain required.
+Source scope and all existing limits/defaults/pins/operational gates remain unchanged.

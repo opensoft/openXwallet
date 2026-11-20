@@ -1,3 +1,15 @@
+Current T013P04 PR #99 privacy correction (2026-11-20): the initial b92375d
+local panel clearance was superseded by a coordinator/security/QA reproduction.
+Normal instance __getstate__ exposed the captured slotted endpoint/bearer and
+original mapping, despite blocked reduction. Shared _Opaque now refuses that
+routine hook; two actual-instance regressions fail before correction and pass
+with it. Only T013P04 publication finding resolution is commissioned. The current
+112-control source needs renewed frozen full/native qualification, independent
+cleanup, exact-head expert follow-up and replacement hosted CI before source-only
+ratification. Earlier 6f4fb34/b92375d receipts remain historical. Do not advance
+P05-P09 or operational/human/consumer gates. Setup/dispatch unauthorized; feedback
+deferred; blocked writes unreplayed.
+
 Current T013P04 isolated qualification (2026-11-20): code/test/matrix head
 6f4fb345bc99b0ea3a5bddc3bacdf381f123360f passes all seven ordered gates,
 3,334 full parent cases plus 11 subtests, 2,912 mandatory native cases and

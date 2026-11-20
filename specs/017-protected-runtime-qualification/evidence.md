@@ -3564,3 +3564,37 @@ separate. P05-P09, T001/T013/T014/T015, consumer058 T002 and independent human
 assurance are not advanced. Roles remain unconfirmed; no operational
 accepted_commit is selected. Setup/dispatch unauthorized, feedback deferred,
 blocked writes unreplayed.
+
+
+## 2026-11-20 PR #99 state-export review correction
+
+The owner commissioned PR publication, hosted CI, local Codex review, finding
+resolution and presentation for source-only ratification. PR #99 opened at
+`b92375d18b6a6bc084305a9e9f199376796c2795` over accepted main
+`7f85c43c6a4eee311d7033e59df2d8bbd4b1ddf7`. An initial nine-specialist pass was
+followed by a coordinator/security/QA investigation that superseded its privacy
+clearance: normal capture.__getstate__ exported captured endpoint/bearer and the
+original mapping through the inherited object state hook. The token transport
+inherited the same routine export.
+
+The actual-fixture security probe confirmed the export without token GET or
+admission. Two independent in-repo regressions then failed on published runtime
+with DID NOT RAISE (2.93 seconds); no raw or live credential was printed or used.
+The correction adds a refusing normal state hook to shared _Opaque and direct
+capture/token-transport controls. Existing reduction refusal remains intact;
+explicit hostile base-class bypass is still outside the accepted Python threat
+model. Unused Decision/bootstrap-audience imports were removed from the test
+module; fixture dependencies and existing test assertions remain unchanged.
+
+Corrected focused run: 112 passed in 132.84 seconds. Complete collection is
+3,336 full parent cases and 2,914 native cases, preserving the prior 3,334/2,912
+candidate identities and every earlier accepted identity/order/fingerprint/anchor
+prefix. New controls extend existing R01, not a new conformance family.
+The earlier 6f4fb34 full/native/focused/cleanup and b92375d initial review receipts
+remain separate historical evidence. Corrected immutable-source full/native,
+cleanup, exact-head expert follow-up and replacement hosted CI are still pending
+at this checkpoint; T013P04 remains reopened until those local gates pass.
+No prior condition, counter, deadline, body cap, scope or authority gate is relaxed.
+P05-P09, owner source acceptance/merge, actual GitHub/Azure and human/consumer
+qualification remain separate. Setup/dispatch unauthorized, feedback deferred,
+blocked writes unreplayed.

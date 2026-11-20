@@ -86,6 +86,9 @@ class _Opaque:
     def __reduce_ex__(self, protocol):
         raise BindingError(ERROR)
 
+    def __getstate__(self):
+        raise BindingError(ERROR)
+
 
 class _TokenTransport(_Opaque):
     __slots__ = ("_https", "_guard", "_url", "_headers", "_decision", "_ca")

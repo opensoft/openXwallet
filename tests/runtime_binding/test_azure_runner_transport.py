@@ -13,9 +13,7 @@ import threading
 import pytest
 from workload_factory_binding.evidence import BindingError, canonical, decode64
 from workload_factory_binding_runtime.azure_composition.runner_transport import RunnerCapture, RunnerPolicy, ERROR
-from workload_factory_binding_runtime.github_bootstrap.common import Decision
 from workload_factory_binding_runtime.github_bootstrap.https import Https
-from workload_factory_binding_runtime.github_bootstrap.identity import BOOTSTRAP_AUDIENCE
 from workload_factory_binding_runtime.hosted.private_http import PrivateHttps
 from workload_factory_binding_runtime.hosted.readback import ReadBudget, start_qualification
 from workload_factory_binding_runtime.workflow import operational_bindings
@@ -509,4 +507,19 @@ def test_non_string_original_endpoint_cannot_authenticate_itself(runner):
     r = runner
     environment = {URL: EqualityAlias("https://unselected.invalid/token"), BEARER: SECRET}
     with pytest.raises(BindingError): r.capture(environment=environment)
+    assert r.requests == []
+
+
+@pytest.mark.parametrize("target", ["capture", "token-transport"])
+def test_normal_state_hook_cannot_export_runner_material(runner, target):
+    r = runner
+    capture = r.capture()
+    selected = capture if target == "capture" else capture._token_client.transport
+    with pytest.raises(BindingError, match="^" + ERROR + "$") as caught:
+        selected.__getstate__()
+    assert str(caught.value) == ERROR
+    assert caught.value.__cause__ is None
+    assert caught.value.__context__ is None
+    assert SECRET not in repr(caught.value)
+    assert r.endpoint not in repr(caught.value)
     assert r.requests == []
