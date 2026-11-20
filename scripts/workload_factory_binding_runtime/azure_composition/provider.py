@@ -18,6 +18,7 @@ from .selection import Record, arm_key, check, closed, document, ref, UUID, KIND
 
 ERROR = "azure-provider-refused"
 ARM = "https://management.azure.com"
+_API_VERSION_QUERY = "?api-version="
 VM_VERSION = "2025-04-01"
 DISK_VERSION = "2025-01-02"
 NETWORK_VERSION = "2026-01-01"
@@ -325,10 +326,10 @@ class Provider:
         check(request.headers == ((("If-None-Match", "*"),)
               if request.method == "PUT" and policy.kind == "vm" else ()))
         check(request.claims == (self._claims(request.path) if request.method == "PUT" else ()))
-        if request.method == "GET" and request.url != ARM + request.path + "?api-version=" + VERSIONS[policy.kind]:
+        if request.method == "GET" and request.url != ARM + request.path + _API_VERSION_QUERY + VERSIONS[policy.kind]:
             _locator(request.url, path=request.path, kind=policy.kind)
         else:
-            check(request.url == ARM + request.path + "?api-version=" + VERSIONS[policy.kind])
+            check(request.url == ARM + request.path + _API_VERSION_QUERY + VERSIONS[policy.kind])
         window = self._reserved.value["window"]
         check(type(request.not_before) is int and type(request.expires_at) is int
               and window["not_before"] <= request.not_before < request.expires_at <= window["not_after"]
@@ -367,7 +368,7 @@ class Provider:
         decision.clip(window["not_after"])
         ref(attempt)
         headers = (("If-None-Match", "*"),) if method == "PUT" and policy.kind == "vm" else ()
-        return Request(method, url or ARM + policy.path + "?api-version=" + VERSIONS[policy.kind],
+        return Request(method, url or ARM + policy.path + _API_VERSION_QUERY + VERSIONS[policy.kind],
                        policy.create_body if method == "PUT" else b"", headers,
                        self._reserved.digest, policy.path, policy.kind, attempt, now, decision.deadline,
                        self._claims(policy.path) if method == "PUT" else ())
@@ -478,7 +479,7 @@ class Provider:
         check(original.reply.status in (200, 201, 202))
         check(original.request.method == "PUT" and (generation.path, resource["create_attempt_ref"]) in original.request.claims
               and original.request.claims == self._claims(original.request.path)
-              and original.request.url == ARM + original.request.path + "?api-version=" + VERSIONS[policy.kind]
+              and original.request.url == ARM + original.request.path + _API_VERSION_QUERY + VERSIONS[policy.kind]
               and original.request.body == policy.create_body
               and original.request.headers == ((("If-None-Match", "*"),) if policy.kind == "vm" else ()))
         terminal = self._receipt(generation.terminal_receipt, decision, active=False)
@@ -497,7 +498,7 @@ class Provider:
         recorded = self._receipt(generation.readback_receipt, decision, active=False)
         check(recorded.request.expires_at <= original.request.expires_at)
         check(recorded.request.method == "GET" and recorded.request.path == generation.path)
-        check(recorded.request.url == ARM + generation.path + "?api-version=" + VERSIONS[self._policy(generation.path).kind])
+        check(recorded.request.url == ARM + generation.path + _API_VERSION_QUERY + VERSIONS[self._policy(generation.path).kind])
         check(_model(recorded.reply, self._policy(generation.path)) == generation.identity)
         check(recorded.reply.identity_ref == generation.identity_ref)
         current = self._namespace.read(self._reserved, generation.path, decision=decision).value

@@ -575,12 +575,23 @@ def test_expanded_public_ip_detach_is_validated_separately_and_not_stripped(rb, 
     selection, _, _, _, _ = layout(rb, "control")
     pip = rb.ids["nic"].replace("networkInterfaces/nic-001", "publicIPAddresses/control")
     nic = rb.arm[rb.ids["nic"]]["properties"]
-    nic["ipConfigurations"][0]["properties"]["publicIPAddress"] = {"id": pip, "properties": {"deleteOption": "Detach"}}
-    rb.deployment = replace(selection, public_ip_id=pip,
-        network_digest=digest({"nic": nic, "subnet": rb.arm[rb.ids["subnet"]]["properties"],
-            "nsg": rb.arm[rb.ids["nsg"]]["properties"], "public_ip": {}}))
+    public_ip = {"id": pip, "properties": {
+        "provisioningState": "Succeeded", "ipAddress": "198.51.100.4"}}
+    rb.arm[pip] = public_ip
+    nic["ipConfigurations"][0]["properties"]["publicIPAddress"] = {"id": pip}
+    network = {"nic": nic, "subnet": rb.arm[rb.ids["subnet"]]["properties"],
+        "nsg": rb.arm[rb.ids["nsg"]]["properties"], "public_ip": public_ip["properties"]}
+    rb.deployment = replace(selection, public_ip_id=pip, network_digest=digest(network))
+    reader, decision = rb.deployment_reader(), rb.use()
+    actual = reader.read(decision=decision).data()
+    assert actual["network_digest"] == rb.deployment.network_digest
+    # Even independently selected expanded bytes cannot widen the legacy shape.
+    nic["ipConfigurations"][0]["properties"]["publicIPAddress"] = {
+        "id": pip, "properties": {"deleteOption": "Detach"}}
+    rb.deployment = replace(rb.deployment, network_digest=digest(network))
+    reader, decision = rb.deployment_reader(), rb.use()
     with pytest.raises(BindingError):
-        rb.deployment_reader().read(decision=rb.use())
+        reader.read(decision=decision)
     assert nic["ipConfigurations"][0]["properties"]["publicIPAddress"]["properties"] == {"deleteOption": "Detach"}
 
 

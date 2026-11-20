@@ -1,3 +1,16 @@
+T013P03 publication follow-up (2026-11-20): the public-IP compatibility control
+now proves an id-only legacy-reader positive using a complete public-IP reply
+and matching digest before testing expanded-link refusal. Removing the exact-link
+guard leaves the earlier test green but makes this corrected test fail. Reader
+and Decision setup occur outside its single-call exception assertion. A private
+API-version query constant also removes five duplicate literals without changing
+the inlined runtime AST. No existing reader, profile, workflow, budget or pin
+is changed. Earlier a97/162a qualification is bound to those historical heads;
+renewed qualification, cleanup, local review and hosted CI must bind this
+corrected candidate before source-only owner ratification. Final exact-head
+qualification and hosted gate receipts accompany PR #98. No merge, setup or
+protected dispatch is granted; feedback deferred; blocked writes unreplayed.
+
 # Preparation and Issuer Slice Evidence
 
 ## Current design acceptance and P3 preparation, 2026-11-19
@@ -3431,7 +3444,7 @@ unauthorized; feedback deferred; blocked writes unreplayed.
 
 ## PR #98 corrected isolated qualification and local review
 
-Current T013P03 corrected qualification: runtime/test commit a97a69c399efd9a1b30093073bae6637c9046812
+Historical T013P03 corrected qualification: runtime/test commit a97a69c399efd9a1b30093073bae6637c9046812
 passes all seven ordered offline gates, full 3,224 cases plus 11 subtests and
 native 2,802 cases, with zero failures/errors/skips. All nine local Codex
 specialists clear this corrected head; independent fixture/helper/retention
