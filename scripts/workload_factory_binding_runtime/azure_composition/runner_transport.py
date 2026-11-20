@@ -53,7 +53,7 @@ class RunnerPolicy:
         def selected():
             require(type(self.source_commit) is str and SHA.fullmatch(self.source_commit)
                     and self.source_commit != "0" * 40
-                    and self.phase in (_PREFLIGHT, _PROTECTED), ERROR)
+                    and type(self.phase) is str and self.phase in (_PREFLIGHT, _PROTECTED), ERROR)
             require(type(self.origin) is str and len(self.origin) <= 512
                     and all(32 < ord(c) < 127 for c in self.origin), ERROR)
             parsed = urlsplit(self.origin)
@@ -100,6 +100,7 @@ class _TokenTransport(_Opaque):
         def exchange():
             require(method == "GET" and url == self._url and headers == self._headers
                     and decision is self._decision and type(self._https) is Https
+                    and type(self._https.ca_file) is type(self._ca)
                     and self._https.ca_file == self._ca, ERROR)
             return self._https.exchange(method, url, headers=headers, decision=decision,
                                         before_send=self._guard)
@@ -130,8 +131,8 @@ class RunnerCapture(_Opaque):
                 and type(admission.channel.transport) is PrivateHttps
                 and admission.phase == (_PREFLIGHT if policy.phase == _PREFLIGHT else "protected"), ERROR)
         admission.channel.current()
-        bearer = original.get(_BEARER)
-        require(original.get(_URL) == endpoint and reference(bearer)
+        original_url, bearer = original.get(_URL), original.get(_BEARER)
+        require(type(original_url) is str and original_url == endpoint and reference(bearer)
                 and len(bearer) <= 512, ERROR)
         from dataclasses import asdict
         self._policy, self._endpoint, self._bearer = policy, endpoint, bearer
@@ -173,8 +174,9 @@ class RunnerCapture(_Opaque):
 
     def _capture_current(self):
         self._current()
-        require(self._original.get(_URL) == self._endpoint
-                and self._original.get(_BEARER) == self._bearer, ERROR)
+        original_url, bearer = self._original.get(_URL), self._original.get(_BEARER)
+        require(type(original_url) is str and type(bearer) is str
+                and original_url == self._endpoint and bearer == self._bearer, ERROR)
 
     def admit(self):
         def admit():

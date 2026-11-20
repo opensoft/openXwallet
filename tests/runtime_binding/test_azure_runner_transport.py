@@ -28,6 +28,13 @@ BEARER = "ACTIONS_ID_TOKEN_REQUEST_TOKEN"
 SECRET = "p04-private-request-canary"
 
 
+class EqualityAlias(str):
+    """Changed injection value that claims equality without retaining the bytes."""
+    def __eq__(self, other): return True
+    __hash__ = str.__hash__
+
+
+
 @pytest.fixture
 def runner(stage, tmp_path):
     root = tmp_path / "original-runner-tls"
@@ -171,7 +178,7 @@ def test_unselected_origin_path_and_encoding_refuse_before_send(runner, change):
     ("path", "/a/../token"), ("path", "/a/%74oken"), ("path", "//token"),
     ("path", "/token?query=x"), ("query", (("audience", "x"),)),
     ("query", (("AUDIENCE", "x"),)), ("query", (("x", "a"), ("x", "b"))),
-    ("query", (("x", "a&b"),)), ("phase", "qualify"), ("phase", "cleanup"), ("source_commit", "0" * 40)])
+    ("query", (("x", "a&b"),)), ("phase", EqualityAlias("qualify")), ("phase", "qualify"), ("phase", "cleanup"), ("source_commit", "0" * 40)])
 def test_policy_requires_closed_independent_selection(field, value):
     policy = RunnerPolicy("a" * 40, "preflight", "https://selected.invalid", "/job/token")
     assert policy.endpoint() == "https://selected.invalid/job/token"
@@ -485,4 +492,21 @@ def test_observed_read_charges_cannot_regress_before_send(runner, group):
     if group == "correlation": use.api_requests = 0
     else: budget.state["counts"][group] = 0
     with pytest.raises(BindingError): capture.admit()
+    assert r.requests == []
+
+
+
+@pytest.mark.parametrize("field", [URL, BEARER])
+def test_non_string_injection_drift_cannot_forge_equality(runner, field):
+    r = runner
+    capture = r.capture()
+    r.environment[field] = EqualityAlias("substituted-private-canary")
+    with pytest.raises(BindingError): capture.admit()
+    assert r.requests == []
+
+
+def test_non_string_original_endpoint_cannot_authenticate_itself(runner):
+    r = runner
+    environment = {URL: EqualityAlias("https://unselected.invalid/token"), BEARER: SECRET}
+    with pytest.raises(BindingError): r.capture(environment=environment)
     assert r.requests == []
