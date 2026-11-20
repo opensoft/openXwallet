@@ -1,6 +1,6 @@
 # T013P04 original runner capture and bounded phase transport subplan
 
-Status: PR #99 state-export and Sonar follow-ups implemented; final qualification pending.
+Status: corrected isolated source qualified; final publication/owner acceptance pending.
 Scope: first codeXfactory machine-possession pilot, feature017 T013P04 only.
 Branch: `017-p3-runner-transport-prep`; prepared 2026-11-20 UTC.
 Sole implementation list: [tasks.md](tasks.md). This refines its existing P04 row,
@@ -280,3 +280,20 @@ All prior identities/order/fingerprints/anchor prefixes are preserved. The 10fc0
 full run was stopped without reported failure at approximately 74 percent for
 these corrections; its audited cleanup remains diagnostic. Final frozen source
 qualification, cleanup, review and replacement hosted CI are still required.
+
+
+## Final corrected qualification
+
+Qualified runtime/test/matrix head: `19c516bcd50e6f2f966f669f313a5b0f043d2eb6`. Final source passes all seven
+ordered gates, full 3,339 parent cases plus 11 subtests, native 2,917 and focused
+115 controls. Module statement/branch coverage is 100% (129 statements/two branches),
+with twelve detected guard-family counterfactuals and a passing twelve-case baseline.
+Nine local specialist follow-ups clear this exact code head. Independent namespace/
+helper/retention audit and owned-fixture disposal pass for both complete runs.
+See [the final corrected record](evidence.md#final-pr-99-corrected-isolated-qualification).
+
+Earlier pending and initial 110/112-case records retain their dated scope. The
+completion-record commit changes documentation only; final-publication hosted CI
+and exact-head review confirmation remain separate. Only P04 is complete in
+isolation; owner ratification, P05-P09 and operational/human/consumer gates remain
+separate. Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.

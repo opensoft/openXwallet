@@ -3635,3 +3635,49 @@ suffixes. One normalized function anchor now covers all three parameter cases.
 Every required matrix anchor resolves to normalized measured native collection
 before any final full/native acceptance run. Focused runtime evidence alone was
 not treated as matrix qualification.
+
+
+## Final PR #99 corrected isolated qualification
+
+Qualified runtime/test/matrix commit: `19c516bcd50e6f2f966f669f313a5b0f043d2eb6`. All 406 frozen tracked inputs
+and selected dependency head/tree/status remain unchanged through the seven
+ordered gates and mandatory native conformance. The final completion-record
+commit changes documentation only; its publication/hosted receipts remain separate.
+
+| Check | Corrected-source result |
+| --- | --- |
+| Focused P04 controls | 115 passed, zero failures/errors/skips; 129/129 statements and both measured branches covered, no exclusions |
+| Guard-family counterfactuals | Twelve detected by assertion failures, passing twelve-case baseline, zero fixture errors/skips; includes the termination privacy narrowing-catch control |
+| Full ordered source gates | Seven passed; 3,339 parent cases plus 11 subtests, zero failures/errors/skips, 2,674.50 seconds for pytest |
+| Mandatory native conformance | 2,917 passed, zero failures/errors/skips, explicit runtime-conformance PASS and exit zero |
+| Full independent cleanup | 12,540 process records, 133 helper receipts, 427 journals, five retained-state checks; zero live, owned root removed |
+| Native independent cleanup | 12,527 process records, 133 helper receipts, 427 journals, five retained-state checks; zero live, owned root removed |
+
+All previous candidate and accepted identities/order/module fingerprints/anchor
+prefixes are preserved; P04 adds its controls through existing conformance families.
+All nine local Codex specialists clear this exact corrected code head after finding
+resolution. The initial state-export clearance was superseded; its reproduced P2
+is fixed. Eight analyzer advisories are corrected. The deliberate S5754 privacy
+catch is documented and exercised by SystemExit/GeneratorExit/direct-BaseException
+controls; no analyzer suppression, API reclassification or gate relaxation is used.
+The prequalification matrix-anchor typo was fixed before complete acceptance runs.
+
+The interrupted 10fc043 full run and earlier initial candidate qualifications
+remain diagnostic/historical receipts, distinct from this final source. An initial
+19c516b complete attempt stopped after 2,534 passes on an existing lifecycle
+primary-register setup refusal, before that case's intended unlink assertion.
+Its cause is unestablished; isolated repetitions and the later complete run have
+separate receipts. That failed attempt is retained as diagnostic, never promoted
+to qualification. No limit,
+clock, request ceiling, token cap, guard, previous assertion or default is weakened.
+Both final containers use the selected pinned image, read-only source, loopback-only
+network and unprivileged/capability-dropped application boundary. Immutable container
+IDs are absent after completion. Independent audits preserve shared/retained state
+and remove only owned fixture roots; reports/XML/logs remain outside those roots.
+
+Only T013P04 is complete in isolation. Replacement final-publication hosted CI and
+exact final-head local review confirmation are separate checks; owner source-only
+ratification and merge are not granted by this record. Actual GitHub injection
+compatibility remains unqualified. P05-P09, appointments, operational accepted_commit,
+T001/T013-T015, consumer058 T002 and independent human assurance remain gated.
+Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.

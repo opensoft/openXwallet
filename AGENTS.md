@@ -1,3 +1,14 @@
+Current final T013P04 corrected qualification: runtime/test/matrix head
+19c516bcd50e6f2f966f669f313a5b0f043d2eb6 passes all seven ordered gates, 3,339 full
+parent cases plus 11 subtests, 2,917 native cases and 115 focused controls. Twelve
+guard-family counterfactuals detect their intended assertions. Nine local roles
+clear this code head; independent namespace/helper/retention cleanup passes.
+The completion receipt changes documentation only; final published-head hosted CI/
+review confirmation and owner source-only ratification remain separate. Earlier
+initial/pending checkpoints below retain their historical scope. P04 only; P05-P09
+and operational/human/consumer gates remain gated. Setup/dispatch unauthorized;
+feedback deferred; blocked writes unreplayed.
+
 Current PR #99 Sonar follow-up (2026-11-20): the initial hosted run passes its
 five jobs and unchanged six-condition gate, but reports eight actionable source/
 test advisories and one intentional privacy catch. The hostname regex now removes
