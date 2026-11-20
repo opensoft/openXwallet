@@ -1,3 +1,12 @@
+Current T013P04 isolated implementation commission (2026-11-20): Brett directs
+implementation and testing using p3-runner-transport-plan.md at prepared commit
+6fcd43f4872fdeb91748fe9d654634a62093b6e0. Only the existing T013P04 row is
+commissioned. P05-P09, setup/dispatch, actual provider/token acquisition,
+appointments, operational accepted_commit and consumer/human acceptance remain
+gated. Local TLS and signed fixture evidence is isolated source evidence only.
+Feedback deferred; historical blocked writes unreplayed. Earlier preparation-only
+labels below describe their dated checkpoints.
+
 Current #98 source acceptance and P04 preparation (2026-11-20): Brett ratified
 03d1ee71b53187b5b52233db02b7cca55281b3aa for source acceptance only. Normal merge
 7f85c43c6a4eee311d7033e59df2d8bbd4b1ddf7 has the identical tree; independent main

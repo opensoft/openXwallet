@@ -1,6 +1,6 @@
 # T013P04 original runner capture and bounded phase transport subplan
 
-Status: preparation only; isolated implementation is not commissioned.
+Status: isolated implementation commissioned 2026-11-20; qualification in progress.
 Scope: first codeXfactory machine-possession pilot, feature017 T013P04 only.
 Branch: `017-p3-runner-transport-prep`; prepared 2026-11-20 UTC.
 Sole implementation list: [tasks.md](tasks.md). This refines its existing P04 row,
@@ -24,7 +24,8 @@ and [D4](https://github.com/opensoft/openXfactory/blob/c2dfbbcc6fa6965fcde18661b
 own runner trust, phase and budget semantics. This is a refinement within those
 accepted boundaries, not a new wire profile, role, input or grant.
 
-P04 code, P05-P09, setup/dispatch, T001/T013/T014/T015, consumer058 T002 and
+The subsequent owner instruction commissions P04 code and testing in isolation.
+P05-P09, setup/dispatch, T001/T013/T014/T015, consumer058 T002 and
 independent human assurance remain gated. Roles are still subject to confirmation.
 No operational accepted_commit is selected. Feedback deferred; blocked writes unreplayed.
 
