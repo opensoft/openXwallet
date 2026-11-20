@@ -3427,3 +3427,24 @@ evidence is retained under p3-provider-publication-20261119.
 Source-only ratification, P04-P09, live provider/schema qualification, roles,
 consumer058 T002 and independent human approval remain separate. Setup/dispatch
 unauthorized; feedback deferred; blocked writes unreplayed.
+
+
+## PR #98 corrected isolated qualification and local review
+
+Current T013P03 corrected qualification: runtime/test commit a97a69c399efd9a1b30093073bae6637c9046812
+passes all seven ordered offline gates, full 3,224 cases plus 11 subtests and
+native 2,802 cases, with zero failures/errors/skips. All nine local Codex
+specialists clear this corrected head; independent fixture/helper/retention
+and container cleanup passes. This documentation receipt changes no qualified
+runtime/test/matrix bytes. Hosted CI on the publication head and source-only
+owner ratification remain separate. No merge or operational grant is inferred.
+P04-P09 and setup/dispatch remain gated; feedback deferred; blocked writes unreplayed.
+
+
+An earlier same-head native attempt failed the unchanged private-HTTPS lifecycle
+registration positive and was interrupted for its traceback. Its failed XML and
+logs remain diagnostic. Three fresh isolated trials passed with the original
+10-second bound; those trials did not reproduce or conclusively explain the
+original failure. The final complete native rerun occurred after the full run
+finished, with unchanged source, cases, counters and deadlines. Only the full
+passing rerun above is qualification; no guard, test or limit was relaxed.

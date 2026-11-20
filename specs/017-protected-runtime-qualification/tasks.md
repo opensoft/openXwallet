@@ -1,4 +1,13 @@
-Current T013P03 publication/review commission: Brett commissions PR #98,
+Current T013P03 corrected qualification: runtime/test commit a97a69c399efd9a1b30093073bae6637c9046812
+passes all seven ordered offline gates, full 3,224 cases plus 11 subtests and
+native 2,802 cases, with zero failures/errors/skips. All nine local Codex
+specialists clear this corrected head; independent fixture/helper/retention
+and container cleanup passes. This documentation receipt changes no qualified
+runtime/test/matrix bytes. Hosted CI on the publication head and source-only
+owner ratification remain separate. No merge or operational grant is inferred.
+P04-P09 and setup/dispatch remain gated; feedback deferred; blocked writes unreplayed.
+
+Earlier T013P03 publication/review checkpoint: Brett commissions PR #98,
 hosted source CI, the local nine-role Codex panel, finding resolution and
 presentation for source-only ratification. No source acceptance or merge is
 granted. The initial panel reproduced four defects; the corrected source has
@@ -8,7 +17,7 @@ pending at this checkpoint. Earlier e416/37d0 completion records are historical
 for the initial candidate. P04-P09, setup/dispatch and consumer/human acceptance
 remain gated; feedback deferred and blocked writes unreplayed.
 
-The P03 checkbox awaits replacement full/native qualification and cleanup.
+The P03 checkbox records completed isolated implementation, review and qualification; owner source acceptance remains separate.
 
 Current P03 isolated qualification: [provider as-built](p3-provider-implementation.md).
 Full/native gates and independent cleanup pass; source acceptance remains separate.
@@ -230,7 +239,7 @@ create a factory/consumer duplicate task list. R01-R12 trace to the factory delt
 
 - [x] T013P01 [O] Obtain exact paired P3 source acceptance and explicit isolated implementation commission; files: specs/017-protected-runtime-qualification/p3-design-basis-acceptance.md, p3-azure-composition-plan.md, evidence.md; verify: actual owner record distinguishes S1 design-only acceptance, unconfirmed roles and P3 source semantics, with operational authority still absent (R01).
 - [x] T013P02 [O] Implement factory-owned closed reservation/provisioned/final-link and setup/run retirement records plus permanent authoritative namespace transitions; files: scripts/workload_factory_binding_runtime/azure_composition/selection.py, namespace.py, tests/runtime_binding/test_azure_namespace.py, tests/runtime_binding/matrix_contract.py; verify: exact phase/type/key sets, unavailable-field refusal, complete ordered reservation projection, no backward hash cycle, canonical caps, conditional create/ETag concurrency, consume-before-send/crash and permanent non-reuse/missing-state refusals, without old RunPlan/report changes (R07/R08).
-- [ ] T013P03 [O] Implement bounded per-kind Azure readback/operation capabilities and measured-image/two-retained-disk compatibility; files: scripts/workload_factory_binding_runtime/azure_composition/provider.py, tests/runtime_binding/test_azure_provider.py; verify: exact documented API/incarnation/dependency/terminal-operation and Detach semantics, no marketplace-ID substitution, unsupported type/replacement/pending-write refusal and no live provider request (R05/R08/R09).
+- [x] T013P03 [O] Implement bounded per-kind Azure readback/operation capabilities and measured-image/two-retained-disk compatibility; files: scripts/workload_factory_binding_runtime/azure_composition/provider.py, tests/runtime_binding/test_azure_provider.py; verify: exact documented API/incarnation/dependency/terminal-operation and Detach semantics, no marketplace-ID substitution, unsupported type/replacement/pending-write refusal and no live provider request (R05/R08/R09).
 - [ ] T013P04 [O] Implement source-selected original-runner capture and bounded phase transport; files: scripts/workload_factory_binding_runtime/azure_composition/runner_transport.py, tests/runtime_binding/test_azure_runner_transport.py; verify: exact trusted origin/path policy, frozen private bearer/endpoint, valid signed-claim/provider-correlation positive and URL/redirect/proxy/source/phase/credential-export mutations within original limits, no discovery token (R04/R11).
 - [ ] T013P05 [O] Implement protected local worker-host adapters and authenticated complete-byte remote measurement/finalization composition; files: scripts/workload_factory_binding_runtime/azure_composition/local_host.py, remote_evidence.py, tests/runtime_binding/test_azure_measurement.py; verify: real local kernel/PID/namespace/process/TLS observations, two independently selected observers, full canonical bytes/closed late derivation and cross-host substitution/worker-access refusals, with existing local exact types/manager/profile semantics preserved (R03/R06).
 - [ ] T013P06 [O] Wire independently approved enrollment/issuance, peer credentials and retained state boundaries; files: scripts/workload_factory_binding_runtime/azure_composition/issuance.py, tests/runtime_binding/test_azure_issuance.py; verify: approved role positive, valid-preimage worker denial, nonce/host/source/fingerprint/effective-scope mutations, no self-enrollment/MI/key leakage and no runtime ledger initialization/reset/rollback (R06).

@@ -1,4 +1,13 @@
-Current T013P03 publication/review commission: Brett commissions PR #98,
+Current T013P03 corrected qualification: runtime/test commit a97a69c399efd9a1b30093073bae6637c9046812
+passes all seven ordered offline gates, full 3,224 cases plus 11 subtests and
+native 2,802 cases, with zero failures/errors/skips. All nine local Codex
+specialists clear this corrected head; independent fixture/helper/retention
+and container cleanup passes. This documentation receipt changes no qualified
+runtime/test/matrix bytes. Hosted CI on the publication head and source-only
+owner ratification remain separate. No merge or operational grant is inferred.
+P04-P09 and setup/dispatch remain gated; feedback deferred; blocked writes unreplayed.
+
+Earlier T013P03 publication/review checkpoint: Brett commissions PR #98,
 hosted source CI, the local nine-role Codex panel, finding resolution and
 presentation for source-only ratification. No source acceptance or merge is
 granted. The initial panel reproduced four defects; the corrected source has

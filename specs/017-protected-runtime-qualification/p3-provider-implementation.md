@@ -1,4 +1,13 @@
-Current T013P03 publication/review commission: Brett commissions PR #98,
+Current T013P03 corrected qualification: runtime/test commit a97a69c399efd9a1b30093073bae6637c9046812
+passes all seven ordered offline gates, full 3,224 cases plus 11 subtests and
+native 2,802 cases, with zero failures/errors/skips. All nine local Codex
+specialists clear this corrected head; independent fixture/helper/retention
+and container cleanup passes. This documentation receipt changes no qualified
+runtime/test/matrix bytes. Hosted CI on the publication head and source-only
+owner ratification remain separate. No merge or operational grant is inferred.
+P04-P09 and setup/dispatch remain gated; feedback deferred; blocked writes unreplayed.
+
+Earlier T013P03 publication/review checkpoint: Brett commissions PR #98,
 hosted source CI, the local nine-role Codex panel, finding resolution and
 presentation for source-only ratification. No source acceptance or merge is
 granted. The initial panel reproduced four defects; the corrected source has
@@ -187,3 +196,35 @@ evidence is retained under p3-provider-publication-20261119.
 Source-only ratification, P04-P09, live provider/schema qualification, roles,
 consumer058 T002 and independent human approval remain separate. Setup/dispatch
 unauthorized; feedback deferred; blocked writes unreplayed.
+
+## Corrected runtime qualification and teardown
+
+The corrected runtime/test commit a97a69c399efd9a1b30093073bae6637c9046812 passes seven ordered
+offline gates. Full 3,224 parent cases plus 11 subtests and all 2,802 native
+cases pass without failure/error/skip. All nine specialist follow-ups are clear.
+The 195 focused cases cover 478/478 provider statements and 84/84 branches;
+13 independent guard/table mutations are detected. The initial failed correction
+measurement and canceled initial hosted run remain diagnostic, not passing final
+qualification.
+
+Independent audits verify 266 helper receipts, ten earlier preservation fixtures,
+two new six-kind provider/retained-image fixtures and both partial-setup
+controls per run. The valid never-created VM tombstone needs no invented
+incarnation and allows one NIC retirement; a replacement dependency permits
+zero deletions. Both exact container generations and both audited fixture roots
+are absent. Current source hashes and all selected dependency identities remain
+unchanged through qualification.
+
+This documentation receipt changes no qualified runtime, tests, matrix, profile,
+workflow, pin or dependency. Fresh hosted source CI and owner source ratification
+remain separate from this local result. No merge, setup or protected dispatch is
+authorized by it. The production transport, real Azure schema/version and complete
+S1 composition remain later gates. Feedback deferred; blocked writes unreplayed.
+
+An earlier same-head native attempt failed the unchanged private-HTTPS lifecycle
+registration positive and was interrupted for its traceback. Its failed XML and
+logs remain diagnostic. Three fresh isolated trials passed with the original
+10-second bound; those trials did not reproduce or conclusively explain the
+original failure. The final complete native rerun occurred after the full run
+finished, with unchanged source, cases, counters and deadlines. Only the full
+passing rerun above is qualification; no guard, test or limit was relaxed.
