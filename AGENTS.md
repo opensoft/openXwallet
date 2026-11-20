@@ -1,3 +1,50 @@
+T013P03 publication follow-up (2026-11-20): the public-IP compatibility control
+now proves an id-only legacy-reader positive using a complete public-IP reply
+and matching digest before testing expanded-link refusal. Removing the exact-link
+guard leaves the earlier test green but makes this corrected test fail. Reader
+and Decision setup occur outside its single-call exception assertion. A private
+API-version query constant also removes five duplicate literals without changing
+the inlined runtime AST. No existing reader, profile, workflow, budget or pin
+is changed. Earlier a97/162a qualification is bound to those historical heads;
+renewed qualification, cleanup, local review and hosted CI must bind this
+corrected candidate before source-only owner ratification. Final exact-head
+qualification and hosted gate receipts accompany PR #98. No merge, setup or
+protected dispatch is granted; feedback deferred; blocked writes unreplayed.
+
+Historical T013P03 corrected qualification: runtime/test commit a97a69c399efd9a1b30093073bae6637c9046812
+passes all seven ordered offline gates, full 3,224 cases plus 11 subtests and
+native 2,802 cases, with zero failures/errors/skips. All nine local Codex
+specialists clear this corrected head; independent fixture/helper/retention
+and container cleanup passes. This documentation receipt changes no qualified
+runtime/test/matrix bytes. Hosted CI on the publication head and source-only
+owner ratification remain separate. No merge or operational grant is inferred.
+P04-P09 and setup/dispatch remain gated; feedback deferred; blocked writes unreplayed.
+
+Earlier T013P03 publication/review checkpoint: Brett commissions PR #98,
+hosted source CI, the local nine-role Codex panel, finding resolution and
+presentation for source-only ratification. No source acceptance or merge is
+granted. The initial panel reproduced four defects; the corrected source has
+195 passing focused controls and 13 detected guard/table mutations. Replacement
+full/native qualification, cleanup, exact-head follow-up and hosted CI remain
+pending at this checkpoint. Earlier e416/37d0 completion records are historical
+for the initial candidate. P04-P09, setup/dispatch and consumer/human acceptance
+remain gated; feedback deferred and blocked writes unreplayed.
+
+Current T013P03 isolated result: runtime/test commit e416399f4f663463236576782174a42824d96aa4
+passes seven ordered gates, full 3,209 parents plus 11 subtests and native 2,787,
+with independent helper, retention and container/fixture teardown. See feature017
+p3-provider-implementation.md. P03 isolated implementation is complete; source
+acceptance/publication, P04-P09 and operational setup/dispatch remain separate.
+Feedback deferred; blocked writes unreplayed.
+
+Current T013P03 isolated implementation commission (2026-11-19): Brett explicitly
+instructed implementation and testing of T013P03 using the prepared provider
+subplan, first pilot only. Earlier preparation-only labels are historical for
+this slice. Only P03 code/tests/qualification are commissioned; P04-P09 and
+operational setup/dispatch remain unauthorized. Feedback deferred; blocked writes
+and rejected optional publications remain unreplayed. Do not mark P03 complete
+until substantive exact-source isolated qualification and cleanup pass.
+
 # Agent Instructions
 
 Use the shared OpenSpec/Speckit workflow from:
@@ -15,6 +62,7 @@ ownership, validation, versioning, and release constraints.
 - Active feature: 017-protected-runtime-qualification; plan:
   specs/017-protected-runtime-qualification/plan.md.
   Current P3 preparation subplan: specs/017-protected-runtime-qualification/p3-azure-composition-plan.md.
+  Current bounded slice: specs/017-protected-runtime-qualification/p3-provider-plan.md (T013P03; isolated implementation commissioned).
   Earlier T012T subplan remains historical: specs/017-protected-runtime-qualification/hosting-evidence-plan.md.
 - Ratified factory composition: opensoft/openXfactory,
   openspec/changes/prepare-protected-runtime-qualification/.
@@ -730,3 +778,22 @@ Brett commissions candidate PR #97, hosted source CI and local Codex expert
 review, resolution of findings and presentation for source-only ratification.
 Only T013P01/P02 is commissioned. Later P03-P09, setup/dispatch and live acceptance
 remain separate; feedback stays deferred and blocked writes remain unreplayed.
+
+
+## Historical #97 source acceptance and bounded P03 preparation
+
+Brett source-ratified #97 at 33a00d474621921a1bd22ac95ba8f254d9875c11 and directed
+landing when green, independent post-merge CI, then next bounded P3 preparation.
+Normal merge 3ca99fc79ab6ce5339cfd9e347559b241f7a57b8 has the identical ratified
+tree; main run44598396381 and its actual unchanged Sonar gate passed.
+Feature017 evidence.md records the exact owner act, head/tree, qualification,
+review/advisory dispositions, main analysis and retained manual baseline.
+
+Only T013P03 preparation is commissioned now; follow p3-provider-plan.md and the
+sole row in tasks.md. Do not implement provider.py or mark P03 complete.
+The legacy public-IP/Detach shape and credential-transport limits are explicit
+compatibility gates, not permission to strip provider fields or relax old readers.
+Preserve runtime/profile/workflow/pin/dependency bytes and all task checkboxes.
+P04-P09, T001/T013/T014/T015, unconfirmed roles, consumer058 T002 and independent
+human acceptance remain gated. Setup/dispatch unauthorized, feedback deferred,
+historical blocked writes and rejected optional publication helpers unreplayed.

@@ -1,3 +1,16 @@
+T013P03 publication follow-up (2026-11-20): the public-IP compatibility control
+now proves an id-only legacy-reader positive using a complete public-IP reply
+and matching digest before testing expanded-link refusal. Removing the exact-link
+guard leaves the earlier test green but makes this corrected test fail. Reader
+and Decision setup occur outside its single-call exception assertion. A private
+API-version query constant also removes five duplicate literals without changing
+the inlined runtime AST. No existing reader, profile, workflow, budget or pin
+is changed. Earlier a97/162a qualification is bound to those historical heads;
+renewed qualification, cleanup, local review and hosted CI must bind this
+corrected candidate before source-only owner ratification. Final exact-head
+qualification and hosted gate receipts accompany PR #98. No merge, setup or
+protected dispatch is granted; feedback deferred; blocked writes unreplayed.
+
 # Preparation and Issuer Slice Evidence
 
 ## Current design acceptance and P3 preparation, 2026-11-19
@@ -3281,3 +3294,170 @@ current product measurement covers 466 statements and 112 branches at 100%.
 Selection validation helpers preserve the closed record guards. Exact-head
 full/native and hosted CI receipts remain separate from this focused checkpoint;
 no source acceptance, setup, dispatch or live provider result is implied.
+
+
+## 2026-11-19 #97 source acceptance and P03 preparation
+
+Brett Heap stated in this chat:
+
+> I ratify openXwallet #97 at 33a00d474621 for source acceptance only. Land when green, verify post-merge CI, then prepare the next bounded P3 slice. Keep setup/dispatch unauthorized, feedback deferred; don’t replay blocked writes.
+
+The unambiguous ratified head is
+`33a00d474621921a1bd22ac95ba8f254d9875c11`.
+[PR #97](https://github.com/opensoft/openXwallet/pull/97) merged normally at
+`3ca99fc79ab6ce5339cfd9e347559b241f7a57b8` on
+`2026-11-19T19:26:46Z`. The merged and ratified trees both equal
+`6878c610c28a77cebb9514b09096f3fc0248d2d6`. No administrative override was used.
+
+Ratified-source qualification passed 170 focused cases, 3,029 full parent cases
+plus 11 subtests and all 2,607 mandatory native cases, with zero failures, errors
+or skips; all seven ordered offline gates passed. The local Codex panel comprised
+nine standard specialists, one Azure storage specialist and independent coordinator
+review, all bound to this head. Local product coverage measured 466 statements and
+112 branches at 100%. Five earlier guard mutations remain historical diagnostics;
+they are not promoted to fresh final-head mutation results.
+
+[Independent merged-main CI](https://github.com/opensoft/openXwallet/actions/runs/44598396381)
+passed all five jobs: source conformance, full/mandatory native tests, primary and
+isolated coverage, and Sonar analysis. Actual main analysis
+`3db8aeda-8d2e-47b2-b9e0-3c5a64f6df65` names the exact merge revision.
+The unchanged gate passed: security/reliability/maintainability A, evaluated new
+coverage 86.6%, duplication 0.0%, reviewed hotspots 100%. The original manual
+baseline `d434a8d1-6d41-4cfe-9413-e1868fc1c18d` remains retained. Main's evaluated
+baseline coverage is distinct from the PR's 100% new-code result.
+
+Three PR scanner advisories were disclosed before ratification and remain openly
+retained: S6353 (Minor, ASCII digit notation), S1192 (Critical scanner severity /
+High maintainability impact, repeated provider literal in one closed kind table),
+and S5713 (Minor, redundant UnicodeError subclass catch). Static and contract
+reviewers independently dispositioned them nonblocking; they were not fixed,
+dismissed or concealed, and no correctness/security finding remains.
+
+Independent final-source fixture audits recorded 24,994 process-generation
+observations, ten preservation controls and 262 helper cleanup receipts with no
+live attributable PID or teardown failure. Both qualification containers and
+fixture roots, plus three focused-review roots, were absent after audited removal.
+These are isolated source cleanup facts, not Azure retirement qualification.
+
+The current instruction authorizes [T013P03 preparation](p3-provider-plan.md)
+only after this main verification. No provider implementation, actual image,
+endpoint, principal/credential, initialization, executing accepted_commit, setup
+or dispatch is selected by this source acceptance or its documentation descendant.
+T013P03-P09, T001/T013/T014/T015, consumer058 T002 and independent human approval
+remain separate gates. Feedback deferred; historical blocked writes and rejected
+optional publication helpers remain unreplayed.
+
+
+## 2026-11-19 T013P03 isolated provider qualification
+
+Brett commissioned isolated P03 implementation/testing using the prepared provider
+subplan, first pilot only. Qualified runtime/test commit e416399f4f663463236576782174a42824d96aa4
+passes all seven ordered gates with unchanged source: full 3,209 parent cases plus
+11 subtests, native 2,787, zero failures/errors/skips. The 180 provider controls
+cover 467/467 statements and 82/82 branches; five guard removals and two incorrect
+product-table substitutions fail independently. All previous module counts,
+node digests and anchor prefixes remain unchanged; only the measured new module
+and bounded R01/H11 anchors are appended.
+
+The [as-built record](p3-provider-implementation.md) describes the trusted-port
+boundary, one VM/implicit-OS-disk send, original response/status binding, current
+fence and per-kind retirement, retained-image proof, unchanged legacy reader
+and remaining real-transport/schema/composition gates. The earlier 8a0b268 full
+and native runs were stopped for an independent-oracle correction (exit 137),
+audited and removed; they are diagnostic and not promoted. Fresh qualification
+uses the corrected commit above.
+
+Both final exact container generations are absent. Independent audits found no
+matching live helpers, verified ten earlier positive preservation fixtures plus
+two new six-kind provider/retained-image fixtures, and removed both owned roots.
+Raw ordered gate logs, source hashes, XML, coverage, mutation, preservation and
+teardown receipts remain host-local under p3-provider-20261119. The following
+documentation receipt commit changes no qualified runtime/test/matrix bytes.
+
+No PR publication, hosted CI, formal PR panel, owner source acceptance, operational
+accepted_commit, Azure write/token, setup or protected dispatch is inferred.
+P04-P09, T001/T013/T014/T015, consumer058 T002, roles and independent human
+approval stay gated. Feedback deferred; historical blocked writes unreplayed.
+
+## PR #98 local review corrections
+
+Brett commissions candidate publication, hosted source CI, local Codex review,
+finding resolution and presentation for source-only ratification. This supplies
+no owner source acceptance, merge, setup or dispatch authority. The initial
+candidate was 37d0d629acb24a3febfa2d3b41c3ac65e7c09da7; its local runtime
+qualification at e416399 remains historical and is not promoted to the corrected
+runtime.
+
+The local nine-role panel covered architecture, performance, security, QA,
+static analysis, contracts/integration, persistence, reliability and simplicity.
+Four reproduced findings required bounded corrections within the existing P03
+requirements:
+
+- A request was frozen before fences could shorten its original Decision.
+  The provider now freezes expiry after the upfront guard and checks the
+  actual before-send guard again. Any further shortening refuses before send,
+  permanently preserving consumption with no retry. This applies to GET,
+  PUT and DELETE.
+- Compatibility compared selected paths and GUID syntax without binding the
+  selected VM incarnation or image/disk storage digest. Both exact bindings are
+  now checked against DeploymentSelection, alongside the existing independent
+  Detach and managed-image controls.
+- A successful original-operation status could contain a contradictory optional
+  id. The shared status validator now compares a present id with the original
+  operation path, in active and historical checks; status-only positives remain.
+- Partial setup could permanently block cleanup when a dependency was validly
+  tombstoned without ever being created. Dependency eligibility now accepts that
+  permanent tombstone with a fresh authenticated provider404, without inventing
+  a creation triplet. The resource being retired still needs its own original
+  creation/incarnation proof. A replacement at the dependency path refuses.
+
+Unused imports were removed in the same bounded correction. No existing runtime
+module, default refusal, profile, dependency, pin, workflow, budget, provider
+version or factory-owned record is changed.
+
+The corrected focused run passes 195 cases with 478/478 provider statements and
+84/84 branches covered. It adds 15 independent controls for clipped authority,
+actual-send drift, VM/disk/image substitution, operation-ID correlation and
+partial cleanup. Actual collection is 3,224 full parent cases and 2,802 native cases;
+these are measured collection counts, not replacement full/native pass claims.
+The original module identities and anchor prefixes remain; only the measured
+provider count/digest and bounded R01/H11 controls are extended.
+
+Thirteen independent mutations are detected: the original seven guards/tables
+and six guard reversions for these corrections. The first correction run
+(188 pass/7 fail) exposed a digest-validator/hash-function naming collision in the
+fix; its artifacts remain diagnostic. The corrected run passes all 195 cases.
+All initial specialist diagnostic roots were independently audited and removed.
+Replacement complete qualification and exact-head follow-up remain pending.
+
+The superseded initial hosted run 44627841385 was canceled after findings were
+confirmed; it is not a passing final-head receipt. Fresh hosted CI is required
+after all pre-push gates pass. GitHub Codex's connector refused the initial review
+because of account usage limits; no completed connector review is claimed.
+The local panel supplies the requested review path. Raw host-local publication
+evidence is retained under p3-provider-publication-20261119.
+
+Source-only ratification, P04-P09, live provider/schema qualification, roles,
+consumer058 T002 and independent human approval remain separate. Setup/dispatch
+unauthorized; feedback deferred; blocked writes unreplayed.
+
+
+## PR #98 corrected isolated qualification and local review
+
+Historical T013P03 corrected qualification: runtime/test commit a97a69c399efd9a1b30093073bae6637c9046812
+passes all seven ordered offline gates, full 3,224 cases plus 11 subtests and
+native 2,802 cases, with zero failures/errors/skips. All nine local Codex
+specialists clear this corrected head; independent fixture/helper/retention
+and container cleanup passes. This documentation receipt changes no qualified
+runtime/test/matrix bytes. Hosted CI on the publication head and source-only
+owner ratification remain separate. No merge or operational grant is inferred.
+P04-P09 and setup/dispatch remain gated; feedback deferred; blocked writes unreplayed.
+
+
+An earlier same-head native attempt failed the unchanged private-HTTPS lifecycle
+registration positive and was interrupted for its traceback. Its failed XML and
+logs remain diagnostic. Three fresh isolated trials passed with the original
+10-second bound; those trials did not reproduce or conclusively explain the
+original failure. The final complete native rerun occurred after the full run
+finished, with unchanged source, cases, counters and deadlines. Only the full
+passing rerun above is qualification; no guard, test or limit was relaxed.
