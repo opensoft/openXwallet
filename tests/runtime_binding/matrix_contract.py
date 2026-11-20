@@ -658,7 +658,5 @@ CASES["R01"] += _nodes("test_azure_runner_transport",
         "normal_state_hook_cannot_export_runner_material")
 
 CASES["R01"] += _nodes("test_azure_runner_transport",
-    "test_termination_exception_cannot_export_runner_material[SystemExit]",
-    "test_termination_exception_cannot_export_runner_material[GeneratorExit]",
-    "test_termination_exception_cannot_export_runner_material[PrivateTermination]",
+    "termination_exception_cannot_export_runner_material",
 )

@@ -3628,3 +3628,10 @@ diagnostic cleanup, not complete qualification. Final source gates/native, final
 cleanup, exact-head specialist follow-up and corrected-head hosted CI remain pending.
 Owner acceptance/merge and P05-P09 remain separate. Setup/dispatch unauthorized;
 feedback deferred; blocked writes unreplayed.
+
+A subsequent local follow-up caught a prequalification matrix-anchor typo: the
+new helper arguments repeated its automatic test_ prefix and included parameter
+suffixes. One normalized function anchor now covers all three parameter cases.
+Every required matrix anchor resolves to normalized measured native collection
+before any final full/native acceptance run. Focused runtime evidence alone was
+not treated as matrix qualification.
