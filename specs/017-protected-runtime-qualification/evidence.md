@@ -1,3 +1,32 @@
+## Nested P05 accounting correction - 2026-11-21 UTC
+
+The first enclosing guard at candidate `56b42ef` closes the original two red
+controls but remains insufficient inside a nested current_plan observation.
+Actual connected controls confirm two further variants: a late facts callback
+restores newly consumed protection/observation charges to the enclosing floor,
+and a selected clock erases a newly incremented private charge inside the shared
+budget check. Both returned unintended verified handoffs with zero fixture
+errors. PR #101 stays draft; the superseded r1 full run was intentionally stopped
+before editing source and is not qualification.
+
+The existing R03 accounting seam now retains real consumption in private,
+lexically active synchronous ContextVar checkpoints in hosted/readback.py.
+Original read/correlation/observation increments notify matching active scopes
+before further callbacks, while DecisionRead and the whole P05 finalization
+retain them through nested returns. Explicit join alone adds its verified member;
+finally resets every context token. Original objects, phase, time history and
+shrinking bounds remain checked. This does not track independent new threads.
+
+All 15 focused actual process/TLS controls pass. Actual collection is 3,451 full
+parents and 3,029 native cases, including 112 P05 identities; all previous IDs,
+other fingerprints and anchor prefixes are preserved. Final frozen full/native
+qualification, guard controls, cleanup and published-head CI remain pending.
+No new ledger, persistent state, callback substitution, wire/API/profile field,
+limit, credential selection or activation is introduced. The owning P05 task
+adds the shared helper path; no new requirement or duplicate task list.
+Fresh exact-source complete regression/native qualification and review remain
+required. Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.
+
 ## Current P05 publication correction - 2026-11-21 UTC
 
 The active feature058 goal continues with P05 candidate PR #101. Local expert

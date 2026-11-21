@@ -679,3 +679,90 @@ def test_current_fact_callback_cannot_reset_correlation_highwater(measured):
     finalizer=RemoteFinalizer(replace(p.binding,plan=replace(p.binding.plan,read_facts=DecisionRead(current))))
     with pytest.raises(BindingError):finalizer.finalize(p.stage.v.context,p.stage.v.token,decision=use)
     assert changed==[(3,3)]
+
+
+def test_late_fact_callback_cannot_refund_protection_reads(measured):
+    from workload_factory_binding_runtime.hosted.readback import start_finalization
+    p=measured;use=p.use();start_finalization(use);budget=ReadBudget(use)
+    for _ in range(8):budget.consume('protection')
+    actual=p.binding.plan.read_facts;saved=[];calls=[]
+    def current(ref,*,decision):
+        state=decision._hosted_reads
+        if len(calls)%2==0:saved.append((state['counts']['protection'],state['protection_observations']))
+        value=actual(ref,decision=decision);calls.append(True)
+        if len(calls)%2==0:
+            state['counts']['protection'],state['protection_observations']=saved[-1]
+        return value
+    bindings=replace(p.binding,plan=replace(p.binding.plan,read_facts=DecisionRead(current)),
+                     independent_plan=replace(p.binding.independent_plan,read_facts=DecisionRead(current)))
+    with pytest.raises(BindingError):RemoteFinalizer(bindings).finalize(p.stage.v.context,p.stage.v.token,decision=use)
+    assert len(calls)==2
+    assert saved==[(8,0)]
+
+
+def test_original_clock_cannot_erase_new_private_charge(measured):
+    from workload_factory_binding_runtime.hosted.readback import start_finalization
+    p=measured;holder=[];armed=[False];changed=[]
+    def clock():
+        value=p.wall()
+        if armed[0]:
+            state=holder[0]._hosted_reads
+            if state['counts']['private']>5:
+                changed.append(state['counts']['private']);state['counts']['private']=5
+        return value
+    bindings=replace(p.binding,plan=replace(p.binding.plan,clock=clock));finalizer=RemoteFinalizer(bindings)
+    use=Decision(clock=clock,monotonic=bindings.plan.monotonic);holder.append(use)
+    start_finalization(use);budget=ReadBudget(use)
+    for _ in range(5):budget.consume('private')
+    armed[0]=True
+    with pytest.raises(BindingError):finalizer.finalize(p.stage.v.context,p.stage.v.token,decision=use)
+    assert changed==[6]
+
+
+def test_clock_cannot_hide_regression_by_resetting_observed_history(measured):
+    from workload_factory_binding_runtime.hosted.readback import start_finalization
+    p=measured;holder=[];armed=[False];changed=[]
+    def monotonic():
+        value=time.monotonic()
+        if armed[0]:
+            changed.append(True);holder[0].last_mono=None
+            return value-5
+        return value
+    bindings=replace(p.binding,plan=replace(p.binding.plan,monotonic=monotonic));finalizer=RemoteFinalizer(bindings)
+    use=Decision(clock=bindings.plan.clock,monotonic=monotonic);holder.append(use);start_finalization(use)
+    armed[0]=True
+    with pytest.raises(BindingError):finalizer.finalize(p.stage.v.context,p.stage.v.token,decision=use)
+    assert changed
+
+
+
+def test_fact_callback_cannot_refund_its_own_nested_read(measured):
+    from workload_factory_binding_runtime.hosted.readback import start_finalization
+    p=measured;use=p.use();start_finalization(use);budget=ReadBudget(use)
+    for _ in range(5):budget.consume('private')
+    actual=p.binding.plan.read_facts;changed=[]
+    def current(ref,*,decision):
+        value=actual(ref,decision=decision)
+        before=budget.count('private')
+        p.clients[0].read(decision=decision)
+        changed.append((before,budget.count('private')))
+        budget.state['counts']['private']=before
+        return value
+    bindings=replace(p.binding,plan=replace(p.binding.plan,read_facts=DecisionRead(current)))
+    with pytest.raises(BindingError):RemoteFinalizer(bindings).finalize(p.stage.v.context,p.stage.v.token,decision=use)
+    assert changed==[(5,6)]
+
+
+def test_clock_cannot_refund_new_protection_observation(measured):
+    from workload_factory_binding_runtime.hosted.readback import start_finalization
+    p=measured;holder=[];changed=[]
+    def clock():
+        value=p.wall()
+        if holder and holder[0]._hosted_reads['protection_observations']:
+            changed.append(holder[0]._hosted_reads['protection_observations'])
+            holder[0]._hosted_reads['protection_observations']=0
+        return value
+    bindings=replace(p.binding,plan=replace(p.binding.plan,clock=clock));finalizer=RemoteFinalizer(bindings)
+    use=Decision(clock=clock,monotonic=bindings.plan.monotonic);start_finalization(use);holder.append(use)
+    with pytest.raises(BindingError):finalizer.finalize(p.stage.v.context,p.stage.v.token,decision=use)
+    assert changed==[1]

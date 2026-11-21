@@ -10,7 +10,7 @@ from ..github_bootstrap.common import Decision, document
 from ..hosted.admission import PlanBindings, current_plan, read_current
 from ..hosted.finalization import StagingReadback
 from ..hosted.private_http import PrivateHttps, Response
-from ..hosted.readback import LIMITS, ReadBudget, start_finalization
+from ..hosted.readback import _read_checkpoint,LIMITS, ReadBudget, start_finalization
 from ..launch import worker_configuration
 from .local_host import ERROR, PROFILE, RESPONSE, Scope, Opaque, private
 from .selection import ref
@@ -340,6 +340,10 @@ class RemoteFinalizer(Opaque):
                 and decision.clock is self.bindings.plan.clock
                 and decision.monotonic is self.bindings.plan.monotonic, ERROR)
         guard = _FinalizationGuard(self,decision)
+        with _read_checkpoint(decision,guard.ledger):
+            return self._guarded_finalize(context,token,decision,guard)
+
+    def _guarded_finalize(self,context,token,decision,guard):
         b = self.bindings
         expected,generation,first = self._derive(context,token,b.plan,b.primary,decision,guard)
         guard.check()

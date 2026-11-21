@@ -663,8 +663,8 @@ CASES["R01"] += _nodes("test_azure_runner_transport",
 
 
 # T013P05: measured new collection only; every preceding row/anchor is preserved.
-MODULE_COUNTS['tests/runtime_binding/test_azure_measurement.py'] = 107
-MODULE_DIGESTS['tests/runtime_binding/test_azure_measurement.py'] = '0e432d6bfcae71bd8535f07c1345191db94077afc4e8621d5991c668e3d47ab2'
+MODULE_COUNTS['tests/runtime_binding/test_azure_measurement.py'] = 112
+MODULE_DIGESTS['tests/runtime_binding/test_azure_measurement.py'] = '3306140329f334ad43c73ae5cbe720f549e1f85fc05b017c0b5de65c28111cf1'
 CASES['H03'] += _nodes("test_azure_measurement",
     'reconstructed_manager_cannot_adopt_original_owned_process',
     'actual_original_manager_or_protected_target_change_refuses')
@@ -703,3 +703,11 @@ CASES['H10'] += _nodes("test_azure_measurement",
     'preconsumed_private_capacity_refuses_without_callback_reset',
     'independent_clock_cannot_restore_consumed_authority',
     'current_fact_callback_cannot_reset_correlation_highwater')
+
+# P05 nested-consumption controls; keep all earlier matrix anchors in order.
+CASES['H10'] += _nodes("test_azure_measurement",
+    'late_fact_callback_cannot_refund_protection_reads',
+    'original_clock_cannot_erase_new_private_charge',
+    'clock_cannot_hide_regression_by_resetting_observed_history',
+    'fact_callback_cannot_refund_its_own_nested_read',
+    'clock_cannot_refund_new_protection_observation')
