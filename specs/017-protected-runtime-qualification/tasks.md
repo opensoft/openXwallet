@@ -1,3 +1,24 @@
+Current bounded commission (2026-11-21 UTC): Brett authorizes isolated
+implementation and testing of T013P05 using prepared p3-measurement-plan.md at
+9be62f196694103b6735df9237f511a87b20b10f. P05 remains unchecked until actual
+qualification and cleanup pass. Eligibility experiments must preserve accepted
+profiles, local types/manager semantics and original bounds. P06-P09 and all
+operational/human/consumer gates remain separate; setup/dispatch unauthorized,
+feedback deferred and historical blocked writes unreplayed.
+
+Historical #99 source acceptance and P05 preparation: Brett ratified
+9e46adca6ee3a4c4487fde93f6809b9f7c7a088c for source acceptance only. Normal merge
+066cae664f4033ac3b5a508321e1a782b03cf4d4 preserves the ratified tree; independent
+main CI and its actual unchanged Sonar/baseline gate pass. See feature017 evidence.md.
+P01-P04 source is accepted. The next bounded subplan is p3-measurement-plan.md,
+T013P05 preparation only. P05 implementation, P06-P09, T001/T013/T014/T015,
+consumer058 T002, appointments and operational accepted_commit remain gated.
+Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.
+Earlier dated checkpoints below retain their historical scope.
+
+Prepared detail: [T013P05 local/remote measurement](p3-measurement-plan.md).
+No checkbox changes are made by this source acceptance/preparation record.
+
 Current final PR #99 local qualification: corrected source 19c516bcd50e passes
 all seven ordered gates, full 3,339 plus 11 subtests and mandatory native 2,917,
 with independent cleanup and nine-role local source review. Only T013P04 is

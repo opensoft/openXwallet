@@ -1,3 +1,39 @@
+Current T013P05 eligibility (2026-11-21 UTC): four actual process/TLS probes
+pass, including a fitting 8,860-byte complete measurement and valid worker denial.
+The accepted direct response has no request nonce; shared PrivateHttps discards
+response headers and ObservationClient has another closed wrapper/operation set.
+See feature017 p3-measurement-compatibility.md for the evidenced interface gap and
+unaccepted direct-v2 nonce recommendation. Dependent remote code waits for the
+required governed factory/adapter source decision. P05 remains unchecked; no
+production module/test/profile/pin/workflow or operational gate is advanced.
+
+Current T013P05 isolated implementation commission (2026-11-21 UTC): Brett
+explicitly directs implementation and testing of the existing T013P05 row using
+the prepared p3-measurement-plan.md at 9be62f196694103b6735df9237f511a87b20b10f.
+Only P05 is commissioned. Demonstrate accepted local-manager/independent-observer,
+complete-byte/canonical derivation, authenticated transaction and original-budget
+eligibility before dependent implementation. A proven contract incompatibility
+requires the governed factory/adapter amendment; no field/wrapper/budget waiver.
+P06-P09, setup/dispatch and live human/consumer acceptance remain gated. Feedback
+deferred; blocked writes unreplayed. Earlier preparation checkpoints are historical.
+
+Historical #99 source acceptance and P05 preparation: Brett ratified
+9e46adca6ee3a4c4487fde93f6809b9f7c7a088c for source acceptance only. Normal merge
+066cae664f4033ac3b5a508321e1a782b03cf4d4 preserves the ratified tree; independent
+main CI and its actual unchanged Sonar/baseline gate pass. See feature017 evidence.md.
+P01-P04 source is accepted. The next bounded subplan is p3-measurement-plan.md,
+T013P05 preparation only. P05 implementation, P06-P09, T001/T013/T014/T015,
+consumer058 T002, appointments and operational accepted_commit remain gated.
+Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.
+Earlier dated checkpoints below retain their historical scope.
+Local preparation recovery (2026-11-21 UTC): all six offline checks now pass,
+including the default authenticated pinned OpenSpec --all (8 strict items).
+The old blocked process and never-started validation container are absent; both
+old and recovered owned scratch passed audit and removal. The earlier RTNL
+checkpoint is historical. See the P05 subplan recovery receipt. The recovered
+preparation is source-only; the later isolated P05 commission is recorded above,
+while proposed v2 acceptance, dependent code and operational gates stay separate.
+
 Current final T013P04 corrected qualification: runtime/test/matrix head
 19c516bcd50e6f2f966f669f313a5b0f043d2eb6 passes all seven ordered gates, 3,339 full
 parent cases plus 11 subtests, 2,917 native cases and 115 focused controls. Twelve
@@ -129,7 +165,7 @@ ownership, validation, versioning, and release constraints.
 - Active feature: 017-protected-runtime-qualification; plan:
   specs/017-protected-runtime-qualification/plan.md.
   Current P3 preparation subplan: specs/017-protected-runtime-qualification/p3-azure-composition-plan.md.
-  Current bounded slice: specs/017-protected-runtime-qualification/p3-runner-transport-plan.md (T013P04; isolated source qualified, publication/acceptance pending).
+  Current bounded slice: specs/017-protected-runtime-qualification/p3-measurement-plan.md (T013P05 isolated work commissioned; proposed v2 source acceptance pending before dependent code).
   Earlier T012T subplan remains historical: specs/017-protected-runtime-qualification/hosting-evidence-plan.md.
 - Ratified factory composition: opensoft/openXfactory,
   openspec/changes/prepare-protected-runtime-qualification/.

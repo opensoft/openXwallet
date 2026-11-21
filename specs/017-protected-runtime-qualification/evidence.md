@@ -3681,3 +3681,117 @@ ratification and merge are not granted by this record. Actual GitHub injection
 compatibility remains unqualified. P05-P09, appointments, operational accepted_commit,
 T001/T013-T015, consumer058 T002 and independent human assurance remain gated.
 Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.
+
+
+## PR #99 source acceptance and P05 preparation
+
+Brett's owner act:
+
+> I ratify openXwallet #99 at 9e46adca6ee3 for source acceptance only. Land when green, verify post-merge CI, then prepare the next bounded P3 slice. Keep setup/dispatch unauthorized, feedback deferred; don't replay blocked writes.
+
+The [owner record](https://github.com/opensoft/openXwallet/pull/99#issuecomment-7053784562) resolves the accepted prefix to
+`9e46adca6ee3a4c4487fde93f6809b9f7c7a088c`. All runnable exact-head PR checks and
+the nine-role local review were clear before normal merge. The connector remains
+review-quota limited; no completed connector review is claimed. The
+[PR qualification/final receipt](https://github.com/opensoft/openXwallet/pull/99#issuecomment-7051517205)
+retains full/native/focused/counterfactual/cleanup evidence and the deliberate
+S5754 disposition. Earlier failed/interrupted attempts remain diagnostic.
+
+Normal merge: `066cae664f4033ac3b5a508321e1a782b03cf4d4`.
+GitHub merged_at (UTC): `2026-11-21T00:06:49Z`.
+Ratified/merged tree: `8212c4a3f03e502ce418d5877111df26ec240f27`, exactly equal.
+Parents are previous main `7f85c43c6a4eee311d7033e59df2d8bbd4b1ddf7` and the
+ratified head. No administrative override was used.
+
+Independent [main push run 44841609525](https://github.com/opensoft/openXwallet/actions/runs/44841609525)
+passes all five pytest-suite/coverage-tests/isolated-coverage/source-conformance/
+sonar-analysis jobs at the actual merge. Raw primary logs confirm 3,339 full
+cases plus 11 subtests and 2,917 mandatory native cases with explicit
+runtime-conformance PASS. These are main receipts, not inferred PR results.
+The [main verification record](https://github.com/opensoft/openXwallet/pull/99#issuecomment-7054969838) retains the readback.
+
+Actual main Sonar analysis `acb7e4bf-bb98-4a4a-9117-85f1ec6b650d` evaluates
+exactly `066cae664f4033ac3b5a508321e1a782b03cf4d4`, with the ratified tree.
+Gate 9 remains OK with the same six conditions and none ignored: reliability,
+security and maintainability ratings A, new-code coverage 87.1% against the
+unchanged 80% threshold, duplication 0%, hotspots reviewed 100%. The original
+manual baseline `d434a8d1-6d41-4cfe-9413-e1868fc1c18d` remains active.
+Main's broader baseline differs from PR coverage; no claim of 100% main coverage
+or correction of older #73 findings is made. The P04 S5754 catch remains OPEN as
+ratified; no rule suppression/API classification/gate or baseline change occurs.
+
+Protected workflow IDs 417795073/417795071 still have zero runs. Source acceptance
+selects no operational accepted_commit, actual peer, credential, appointment,
+protected run, provider mutation, human assurance or consumer058 T002 acceptance.
+
+The next bounded artifact is [p3-measurement-plan.md](p3-measurement-plan.md),
+preparing only the existing unchecked T013P05 row. It traces actual accepted
+local/remote APIs and identifies complete-byte derivation, original accounting,
+peer/request correlation and aggregate 16KiB fit as implementation eligibility
+checks. No P05 module/test/profile/pin/workflow is created or changed here, and
+all task checkboxes remain unchanged. Preparation/source consistency and five
+fresh local offline checks pass. The default local pinned OpenSpec repeat is
+blocked in npm/kernel rtnl_dumpit; it has no successful exit. Independent main
+run 44841609525 already authenticated the same pinned artifact/80-package closure
+and passed root strict --all (8 items) plus neutral-spec strict validation (7 items).
+All 93 tracked governed OpenSpec/pin/verifier/bootstrap inputs are byte-identical
+to that verified main. This records separate main/local receipts, not six fresh
+local successes or a publication waiver. No source/contract/pin/check is weakened.
+
+The unstarted local container and blocked npm process/owned temporary root still
+need cleanup after safe runtime recovery; no bench, Docker or WSL restart was
+performed and that cleanup is not claimed complete. Merged-main runtime
+qualification remains independently verified. See the [P05 validation checkpoint](p3-measurement-plan.md#preparation-validation-checkpoint).
+P06-P09/T001/T013/T014/T015 and all operational/human/consumer gates remain
+separate. Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.
+
+
+## 2026-11-21 P05 preparation validation recovery
+
+The existing seven-document preparation at `203a885baf1c39b4b5531aa2e784224ceb2f7b65`
+was resumed only after the coordinating chat released its maintenance pause.
+All six local offline gates passed, including the default authenticated shared
+OpenSpec --all entrypoint: pinned artifact and 80-package closure verified,
+8 strict items passed and none failed. The runner rechecked all 407 frozen
+inputs and the clean prepared head before and after each gate. The earlier
+five-pass/kernel-blocked checkpoint describes the initial attempt only.
+
+The old blocked process and unstarted validation container are absent. Both the
+retained old bench scratch and recovered validation scratch passed independent
+process/resource audits and exact-root removal; shared caches and source were
+preserved. No old PID signal, default-gate bypass or blocked write was replayed.
+Detailed local logs and audit receipts remain with the existing qualification
+records. No full/native runtime retest is inferred from these document checks.
+
+The P05 subplan's local preparation blocker is closed. This documentation-only
+follow-up supplies no P05 implementation commission, publication/source approval,
+actual appointment or operational accepted_commit. All task checkbox states and
+runtime/test/profile/pin/workflow bytes remain unchanged. Setup/dispatch remain
+unauthorized, feedback deferred and all live/human/consumer gates open. See the
+[P05 recovery receipt](p3-measurement-plan.md#preparation-recovery-receipt---2026-11-21-utc).
+
+
+## 2026-11-21 P05 commission and isolated compatibility finding
+
+Brett explicitly commissions T013P05 implementation/testing in isolation using
+the prepared plan at `9be62f196694103b6735df9237f511a87b20b10f`. No other P3 row,
+setup/dispatch or live human/consumer gate is commissioned. The six preparation
+gates pass again at that recovery head; final scratch audit/removal is complete.
+
+Four disposable network-none process/TLS probes pass with no failures/errors/
+skips. One complete canonical measurement is 8,860 bytes (configuration 5,247,
+policy 2,870); approved root/artifact derivation matches its actual process
+composition. Pinned mTLS succeeds and explicitly denies a valid worker peer.
+The transport/client probes expose the request-correlation compatibility gap
+recorded in [p3-measurement-compatibility.md](p3-measurement-compatibility.md).
+These are eligibility diagnostics, not implemented or qualified P05 behavior.
+
+The initial fixture-import error and refused in-bench unshare started no eligible
+cases. The corrected isolated run passes all four. Its namespace is absent,
+independent audit covers 11 process generations with zero live processes, and
+both exact owned roots are removed. Source and shared resources remain; raw
+private material is absent from retained diagnostic reports. No dependent P05
+module, runtime test, profile, pin or workflow is created. P05 and every owner/
+operational checkbox remain unchanged. The original plan requires a governed
+factory/adapter decision before dependent remote code; proposed direct-v2 nonce
+semantics are not silently installed. Feedback deferred; blocked writes unreplayed.

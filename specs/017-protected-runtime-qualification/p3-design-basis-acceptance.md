@@ -1,6 +1,6 @@
 # T013-S1 acceptance and P3 preparation authority
 
-Status: design/P3 and P01-P03 source accepted; P04 preparation only; operations unauthorized
+Status: design/P3 and P01-P04 source accepted; isolated P05 work commissioned; v2 source acceptance pending; operations unauthorized
 Recorded: 2026-11-19
 Kind: owner-decision-record
 
@@ -83,3 +83,43 @@ transport only. No implementation, owner checkbox, actual credential/endpoint
 policy/subject/proof audience or operational accepted_commit is selected.
 Setup/dispatch, role confirmation, P05-P09 and consumer/human gates stay separate.
 Earlier S1/P3/P01-P03 checkpoints retain their original dated authority.
+
+
+## P04 source accepted; local and remote measurement prepared only
+
+Brett's next owner act:
+
+> I ratify openXwallet #99 at 9e46adca6ee3 for source acceptance only. Land when green, verify post-merge CI, then prepare the next bounded P3 slice. Keep setup/dispatch unauthorized, feedback deferred; don't replay blocked writes.
+
+The [exact PR record](https://github.com/opensoft/openXwallet/pull/99#issuecomment-7053784562) binds this act to
+`9e46adca6ee3a4c4487fde93f6809b9f7c7a088c`. Normal merge
+`066cae664f4033ac3b5a508321e1a782b03cf4d4` has the same tree. The
+[independent main receipt](https://github.com/opensoft/openXwallet/pull/99#issuecomment-7054969838) verifies all five jobs and the actual
+unchanged six-condition gate/manual baseline. This accepts P04 source, not real
+GitHub injection compatibility or any operational executing-source selection.
+
+At this preparation checkpoint, the [P05 subplan](p3-measurement-plan.md) prepared
+the existing local worker-host and authenticated complete-byte remote
+measurement/finalization row; P05 code was not yet commissioned. P06-P09, role confirmation, T001/T013/T014/T015, consumer058 T002,
+independent human assurance and setup/dispatch remain separate. Earlier owner
+records retain their exact original scope. Feedback deferred; blocked writes unreplayed.
+
+
+## Later isolated P05 and governance publication commission - 2026-11-21 UTC
+
+Brett subsequently answered "Implement and test T013P05 in isolation" using the
+prepared plan. Four compatibility probes passed and exposed the direct-response
+transaction-binding seam; they do not complete P05. The existing eligibility
+guard requires a governed amendment before dependent code when accepted
+interfaces cannot supply the binding.
+
+Brett then directed opening both governance PRs, completing the ledger,
+resolving the reported factory OpenSpec failure, running CI and local Codex
+review, and presenting v2 for ratification. Factory [#1359](https://github.com/opensoft/openXfactory/pull/1359)
+with adapter [#100](https://github.com/opensoft/openXwallet/pull/100) are those
+source candidates. v2 is not yet ratified; dependent v2 code remains gated.
+The canonical factory entrypoint already passes using its existing ratified
+exact-match disposition; the earlier bare-CLI result is diagnostic only.
+Earlier dated preparation records retain their historical scope. T013P05 stays
+unchecked, and P06-P09, all owner/operational/human/consumer gates and setup/
+dispatch remain separate. Feedback deferred; historical blocked writes unreplayed.

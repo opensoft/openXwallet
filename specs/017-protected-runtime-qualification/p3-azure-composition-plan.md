@@ -1,5 +1,29 @@
 # Implementation Plan: P3 Azure deployment composition
 
+Current bounded authority (2026-11-21 UTC): P01-P04 source is accepted and
+Brett has commissioned isolated T013P05 implementation/testing. Its four
+compatibility probes do not complete P05. The existing eligibility guard now
+requires the proposed direct-v2 transaction amendment in factory #1359 with
+adapter #100 to receive exact paired source acceptance before dependent code.
+See [P05 work](p3-measurement-plan.md) and its [candidate transaction plan](p3-measurement-transaction-plan.md).
+P06-P09 and all operational/human/consumer gates remain separate. Setup/dispatch
+unauthorized; feedback deferred; blocked writes unreplayed.
+
+## Historical source-acceptance and preparation checkpoints
+
+The following checkpoints retain the authority available when recorded; the
+current bounded commission above controls later isolated P05 work.
+
+Current #99 source acceptance and P05 preparation: Brett ratified
+9e46adca6ee3a4c4487fde93f6809b9f7c7a088c for source acceptance only. Normal merge
+066cae664f4033ac3b5a508321e1a782b03cf4d4 preserves the ratified tree; independent
+main CI and its actual unchanged Sonar/baseline gate pass. See feature017 evidence.md.
+P01-P04 source is accepted. The next bounded subplan is p3-measurement-plan.md,
+T013P05 preparation only. P05 implementation, P06-P09, T001/T013/T014/T015,
+consumer058 T002, appointments and operational accepted_commit remain gated.
+Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.
+Earlier dated checkpoints below retain their historical scope.
+
 Current #98 source acceptance and P04 preparation (2026-11-20): Brett ratified
 03d1ee71b53187b5b52233db02b7cca55281b3aa for source acceptance only. Normal merge
 7f85c43c6a4eee311d7033e59df2d8bbd4b1ddf7 has the identical tree; independent main
@@ -10,7 +34,7 @@ T002 remain gated. No operational accepted_commit, appointment, setup or dispatc
 is selected. Feedback deferred; blocked writes unreplayed. Earlier checkpoints
 below retain their historical scope.
 
-Current next-slice detail: [T013P04](p3-runner-transport-plan.md).
+Current next-slice detail: [T013P05](p3-measurement-plan.md).
 
 Current source acceptance and next-slice preparation (2026-11-19): Brett ratified
 openXwallet #97 at 33a00d474621921a1bd22ac95ba8f254d9875c11 for source acceptance
