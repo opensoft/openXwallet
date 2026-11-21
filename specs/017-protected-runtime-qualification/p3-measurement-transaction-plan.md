@@ -94,3 +94,16 @@ that incompatibility through governance before dependent code.
 Rollback retains old source/default refusal and permanently consumed attempts;
 there is no deployed migration or runtime activation. Setup/dispatch unauthorized;
 feedback deferred; historical blocked writes unreplayed.
+
+
+## Publication commission and canonical gate readback - 2026-11-21 UTC
+
+Brett authorizes opening both governance PRs, actual factory ledger completion,
+resolution of the reported factory OpenSpec failure, hosted CI and local Codex
+review, then presentation for v2 ratification. The apparent factory failure is
+resolved by running the required authenticated pinned entrypoint: its existing
+ratified exact-match Merged-into disposition applies and it exits zero with zero
+undispositioned failures and one accepted finding. The earlier bare-CLI result
+is diagnostic, not the canonical gate verdict. No validator, pin, accepted packet
+or exception is changed. Source ratification of v2 is not yet granted, and no
+dependent runtime code or operational authority is inferred from publication.
