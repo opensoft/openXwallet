@@ -3461,3 +3461,223 @@ logs remain diagnostic. Three fresh isolated trials passed with the original
 original failure. The final complete native rerun occurred after the full run
 finished, with unchanged source, cases, counters and deadlines. Only the full
 passing rerun above is qualification; no guard, test or limit was relaxed.
+
+
+## 2026-11-20 #98 source acceptance and P04 preparation
+
+Brett Heap stated in this chat:
+
+> I ratify openXwallet #98 at 03d1ee71b531 for source acceptance only. Land when green, verify post-merge CI, then prepare the next bounded P3 slice. Keep setup/dispatch unauthorized, feedback deferred; don’t replay blocked writes.
+
+[The owner act](https://github.com/opensoft/openXwallet/pull/98#issuecomment-7029557300)
+binds full head `03d1ee71b53187b5b52233db02b7cca55281b3aa`. All runnable checks
+and exact-head local nine-specialist review were clear. Normal merge (no admin)
+produced `7f85c43c6a4eee311d7033e59df2d8bbd4b1ddf7` at 2026-11-20T03:36:56Z.
+Both trees equal `bd9f68cde018b2d43fbef967ce1f2ec59d8e7995`.
+[The final source receipt](https://github.com/opensoft/openXwallet/pull/98#issuecomment-7028953308)
+records provider 195, statements 479/479, branches 84/84; full 3,224 parent cases plus 11
+subtests, native 2,802, 15 detected mutations and 266 audited qualification helper
+receipts with owned containers/fixtures absent. GitHub Codex was quota-limited,
+not a completed review. Earlier failed/diagnostic runs remain separately labeled.
+
+[Independent main CI44668933427](https://github.com/opensoft/openXwallet/actions/runs/44668933427)
+passes all five jobs at that merge. [The main verification receipt](https://github.com/opensoft/openXwallet/pull/98#issuecomment-7030639187)
+records actual main Sonar analysis `40c42641-dd44-422a-b294-7a813f279a6f` at the
+exact revision: gate 9 unchanged, six conditions OK, none ignored; 87.0% new coverage
+over 17,475 lines, 0% duplication, A reliability/security/maintainability, 100% hotspot
+review. Original manual baseline `d434a8d1-6d41-4cfe-9413-e1868fc1c18d` remains
+selected at 2026-08-27T11:16:42+0000. No unresolved issue occurs in #98 changed
+paths. Sixteen unresolved issues on unchanged paths remain outside this change;
+they are neither reported fixed nor relabeled minor. Both protected workflow
+run counts remain zero.
+
+P03 source is accepted and landed. [T013P04](p3-runner-transport-plan.md) is prepared
+only. Research preserves effective request-bearer 512 / POST-token 16,377 caps, requires
+negative drift comparisons plus frozen private sends, and separates token-GET
+capture guarding from unchanged intrinsic POST guards. No runtime code/test,
+matrix, workflow, lock, pin, public profile or role changes are made. All task
+checkboxes remain unchanged. P04 implementation, P05-P09, T001/T013/T014/T015,
+consumer058 T002, actual endpoint/credential/subject selection, appointments and
+independent human acceptance remain gated. No operational accepted_commit, setup
+or dispatch is selected. Feedback deferred; blocked writes unreplayed.
+
+
+## 2026-11-20 T013P04 isolated implementation
+
+Owner act: "Go ahead and implement and test T013P04 in isolation using the prepared
+plan at 6fcd43f4872f. Keep scope on the first pilot, setup/dispatch unauthorized,
+feedback deferred; don't replay blocked writes." This commissions only the
+existing task, not P05-P09, publication, source acceptance or operational authority.
+
+Qualified code/test/matrix commit: `6f4fb345bc99b0ea3a5bddc3bacdf381f123360f`.
+Prepared plan: `6fcd43f4872fdeb91748fe9d654634a62093b6e0`.
+All 406 frozen tracked input hashes and the selected wallet root/code/spec and
+owning-code identities were verified unchanged across qualification.
+
+As built: a private RunnerCapture holds the original URL/bearer, independent
+closed RunnerPolicy and original Decision. Strict strings prevent changed
+injection values from forging equality. It refuses missing/changed injection
+before GET and at the actual TLS READY-to-GO checkpoint; consumes one attempt
+before any possible transmission; and rejects retries after success, uncertainty,
+exception or cancellation. Existing actual TokenClient/Https and exact intrinsic
+AdmissionClient/Channel/PrivateHttps remain the transport and admission path.
+Only the returned immutable JWT authenticates phase POST. Original runner values
+are not reconsulted for POST. No discovery token or default operational wiring is added.
+
+| Check | Exact qualified-source result |
+| --- | --- |
+| Focused P04 controls | 110 passed, zero failures/errors/skips; 127/127 executable statements and both measured branches covered, no exclusions |
+| Guard-removal counterfactuals | Ten guards detected by assertion failures, passing ten-case baseline, no fixture errors; source unchanged |
+| Full ordered source gates | All seven passed; 3,334 parent cases plus 11 subtests, zero failures/errors/skips, 2,388.45 seconds |
+| Mandatory native conformance | 2,912 passed, zero failures/errors/skips, explicit runtime-conformance PASS, 2,011.53 seconds |
+| Prior corpus preservation | All prior 3,224 full and 2,802 native identities/order, per-module fingerprints and anchor prefixes preserved; new anchors extend existing families |
+| Full independent cleanup | 12,523 process records, 133 helper receipts, 427 journals and five retained-state preservation checks; zero live; owned root removed |
+| Native independent cleanup | 12,509 process records, 133 helper receipts, 427 journals and five retained-state preservation checks; zero live; owned root removed |
+
+Both complete runs report 487 multiprocessing/fork deprecation warnings in existing code paths.
+Their separate read-only, no-external-network containers used the previously
+selected image and unprivileged/capability-dropped application boundary. Immutable
+container-ID readback confirms their namespaces are absent. The independent audit
+also disposed of focused and interrupted-diagnostic fixture roots in 27 scopes;
+logs, XML, hashes, coverage and mutant source/report evidence were retained.
+
+Provenance: earlier 7050471 full/native attempts were deliberately interrupted
+for the equality-forging value correction and remain diagnostic. Three regressions
+reproduced that defect before correction. Earlier focused ledger-oracle failures
+were corrected from measured reads without changing budgets. One instrumented
+protected positive failed during mixed activity; the cause is unestablished.
+Separate redacted diagnostics and the final clean 110-case instrumented run,
+complete full run and complete native run remain distinct receipts. No original
+clock, read count, body cap, guard, test identity or gate was weakened to pass.
+
+The complete protected fixture uses source8/protection4/control4/correlation8,
+24 GitHub reads inside the original 26 ceiling. Runner token GET is not charged
+as a REST correlation read. The effective 512-character request-bearer and
+16,377-character POST-token limits remain; a fitting 512-character bearer and
+near-limit genuine signed JWT pass. Actual GitHub injection compatibility remains
+unqualified and cannot be inferred from these synthetic inputs.
+
+Only T013P04 is now complete in isolation. The final completion-record commit
+changes documentation only and must preserve every qualified non-document byte.
+Publication, hosted CI/local expert review and owner source ratification remain
+separate. P05-P09, T001/T013/T014/T015, consumer058 T002 and independent human
+assurance are not advanced. Roles remain unconfirmed; no operational
+accepted_commit is selected. Setup/dispatch unauthorized, feedback deferred,
+blocked writes unreplayed.
+
+
+## 2026-11-20 PR #99 state-export review correction
+
+The owner commissioned PR publication, hosted CI, local Codex review, finding
+resolution and presentation for source-only ratification. PR #99 opened at
+`b92375d18b6a6bc084305a9e9f199376796c2795` over accepted main
+`7f85c43c6a4eee311d7033e59df2d8bbd4b1ddf7`. An initial nine-specialist pass was
+followed by a coordinator/security/QA investigation that superseded its privacy
+clearance: normal capture.__getstate__ exported captured endpoint/bearer and the
+original mapping through the inherited object state hook. The token transport
+inherited the same routine export.
+
+The actual-fixture security probe confirmed the export without token GET or
+admission. Two independent in-repo regressions then failed on published runtime
+with DID NOT RAISE (2.93 seconds); no raw or live credential was printed or used.
+The correction adds a refusing normal state hook to shared _Opaque and direct
+capture/token-transport controls. Existing reduction refusal remains intact;
+explicit hostile base-class bypass is still outside the accepted Python threat
+model. Unused Decision/bootstrap-audience imports were removed from the test
+module; fixture dependencies and existing test assertions remain unchanged.
+
+Corrected focused run: 112 passed in 132.84 seconds. Complete collection is
+3,336 full parent cases and 2,914 native cases, preserving the prior 3,334/2,912
+candidate identities and every earlier accepted identity/order/fingerprint/anchor
+prefix. New controls extend existing R01, not a new conformance family.
+The earlier 6f4fb34 full/native/focused/cleanup and b92375d initial review receipts
+remain separate historical evidence. Corrected immutable-source full/native,
+cleanup, exact-head expert follow-up and replacement hosted CI are still pending
+at this checkpoint; T013P04 remains reopened until those local gates pass.
+No prior condition, counter, deadline, body cap, scope or authority gate is relaxed.
+P05-P09, owner source acceptance/merge, actual GitHub/Azure and human/consumer
+qualification remain separate. Setup/dispatch unauthorized, feedback deferred,
+blocked writes unreplayed.
+
+
+## 2026-11-20 PR #99 initial hosted analyzer follow-up
+
+Initial hosted run [44780093094](https://github.com/opensoft/openXwallet/actions/runs/44780093094)
+at published b92375d passes its five jobs and actual unchanged Sonar gate. The
+analyzer also reports nine open advisories: hostname regex S8786, seven exception
+test S5778 issues and privacy-boundary S5754. Passing the gate does not dispose of
+those findings. The regex and seven test assertions are corrected narrowly; no
+limit, accepted URL language, guard or prior assertion is removed.
+
+Security and static specialists differed over narrowing BaseException. Coordinator
+disposition retains the deliberate credential-sanitization catch: termination
+exceptions can carry the original runner material too. A fixed error raised outside
+the handler avoids retained cause/context, and fresh empty KeyboardInterrupt is
+preserved. Three actual-capture termination controls cover SystemExit, GeneratorExit
+and a custom direct BaseException. S5754 is an explicit intentional rule exception,
+not a hidden suppression, false-positive API classification or changed gate.
+
+Measured collection is 115 focused, 3,339 full parents and 2,917 native, preserving
+all earlier candidate and accepted identities/order/fingerprints/anchor prefixes.
+The 10fc043 full run was deliberately stopped at approximately 74 percent without
+reported test failure so the final source can be qualified afresh. Its namespace
+is absent and its independent interrupted-run audit removed the owned root after
+checking 10,495 process records, 101 helper receipts, 327 journals and one completed
+positive retained-state case, with zero live attributable processes. This is
+diagnostic cleanup, not complete qualification. Final source gates/native, final
+cleanup, exact-head specialist follow-up and corrected-head hosted CI remain pending.
+Owner acceptance/merge and P05-P09 remain separate. Setup/dispatch unauthorized;
+feedback deferred; blocked writes unreplayed.
+
+A subsequent local follow-up caught a prequalification matrix-anchor typo: the
+new helper arguments repeated its automatic test_ prefix and included parameter
+suffixes. One normalized function anchor now covers all three parameter cases.
+Every required matrix anchor resolves to normalized measured native collection
+before any final full/native acceptance run. Focused runtime evidence alone was
+not treated as matrix qualification.
+
+
+## Final PR #99 corrected isolated qualification
+
+Qualified runtime/test/matrix commit: `19c516bcd50e6f2f966f669f313a5b0f043d2eb6`. All 406 frozen tracked inputs
+and selected dependency head/tree/status remain unchanged through the seven
+ordered gates and mandatory native conformance. The final completion-record
+commit changes documentation only; its publication/hosted receipts remain separate.
+
+| Check | Corrected-source result |
+| --- | --- |
+| Focused P04 controls | 115 passed, zero failures/errors/skips; 129/129 statements and both measured branches covered, no exclusions |
+| Guard-family counterfactuals | Twelve detected by assertion failures, passing twelve-case baseline, zero fixture errors/skips; includes the termination privacy narrowing-catch control |
+| Full ordered source gates | Seven passed; 3,339 parent cases plus 11 subtests, zero failures/errors/skips, 2,674.50 seconds for pytest |
+| Mandatory native conformance | 2,917 passed, zero failures/errors/skips, explicit runtime-conformance PASS and exit zero |
+| Full independent cleanup | 12,540 process records, 133 helper receipts, 427 journals, five retained-state checks; zero live, owned root removed |
+| Native independent cleanup | 12,527 process records, 133 helper receipts, 427 journals, five retained-state checks; zero live, owned root removed |
+
+All previous candidate and accepted identities/order/module fingerprints/anchor
+prefixes are preserved; P04 adds its controls through existing conformance families.
+All nine local Codex specialists clear this exact corrected code head after finding
+resolution. The initial state-export clearance was superseded; its reproduced P2
+is fixed. Eight analyzer advisories are corrected. The deliberate S5754 privacy
+catch is documented and exercised by SystemExit/GeneratorExit/direct-BaseException
+controls; no analyzer suppression, API reclassification or gate relaxation is used.
+The prequalification matrix-anchor typo was fixed before complete acceptance runs.
+
+The interrupted 10fc043 full run and earlier initial candidate qualifications
+remain diagnostic/historical receipts, distinct from this final source. An initial
+19c516b complete attempt stopped after 2,534 passes on an existing lifecycle
+primary-register setup refusal, before that case's intended unlink assertion.
+Its cause is unestablished; isolated repetitions and the later complete run have
+separate receipts. That failed attempt is retained as diagnostic, never promoted
+to qualification. No limit,
+clock, request ceiling, token cap, guard, previous assertion or default is weakened.
+Both final containers use the selected pinned image, read-only source, loopback-only
+network and unprivileged/capability-dropped application boundary. Immutable container
+IDs are absent after completion. Independent audits preserve shared/retained state
+and remove only owned fixture roots; reports/XML/logs remain outside those roots.
+
+Only T013P04 is complete in isolation. Replacement final-publication hosted CI and
+exact final-head local review confirmation are separate checks; owner source-only
+ratification and merge are not granted by this record. Actual GitHub injection
+compatibility remains unqualified. P05-P09, appointments, operational accepted_commit,
+T001/T013-T015, consumer058 T002 and independent human assurance remain gated.
+Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.

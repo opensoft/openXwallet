@@ -1,4 +1,71 @@
-T013P03 publication follow-up (2026-11-20): the public-IP compatibility control
+Current final T013P04 corrected qualification: runtime/test/matrix head
+19c516bcd50e6f2f966f669f313a5b0f043d2eb6 passes all seven ordered gates, 3,339 full
+parent cases plus 11 subtests, 2,917 native cases and 115 focused controls. Twelve
+guard-family counterfactuals detect their intended assertions. Nine local roles
+clear this code head; independent namespace/helper/retention cleanup passes.
+The completion receipt changes documentation only; final published-head hosted CI/
+review confirmation and owner source-only ratification remain separate. Earlier
+initial/pending checkpoints below retain their historical scope. P04 only; P05-P09
+and operational/human/consumer gates remain gated. Setup/dispatch unauthorized;
+feedback deferred; blocked writes unreplayed.
+
+Current PR #99 Sonar follow-up (2026-11-20): the initial hosted run passes its
+five jobs and unchanged six-condition gate, but reports eight actionable source/
+test advisories and one intentional privacy catch. The hostname regex now removes
+overlapping repetition without changing its accepted language. Seven negative
+assertions move successful setup outside raises. Whole-BaseException sanitization
+is retained deliberately: SystemExit/GeneratorExit/custom termination exceptions
+can also contain runner credentials. Three actual-capture controls require fixed
+errors and absent context without requests. No rule suppression or Sonar status
+mutation is used. Collection is 115 focused, 3,339 full parents and 2,917 native.
+The interrupted 10fc043 full run is diagnostic, not completed qualification.
+Final frozen full/native, cleanup, exact-head panel and replacement hosted CI
+remain required before presentation. P04 only; setup/dispatch unauthorized,
+feedback deferred; blocked writes unreplayed. Earlier checkpoints are historical.
+
+Current T013P04 PR #99 privacy correction (2026-11-20): the initial b92375d
+local panel clearance was superseded by a coordinator/security/QA reproduction.
+Normal instance __getstate__ exposed the captured slotted endpoint/bearer and
+original mapping, despite blocked reduction. Shared _Opaque now refuses that
+routine hook; two actual-instance regressions fail before correction and pass
+with it. Only T013P04 publication finding resolution is commissioned. The current
+112-control source needs renewed frozen full/native qualification, independent
+cleanup, exact-head expert follow-up and replacement hosted CI before source-only
+ratification. Earlier 6f4fb34/b92375d receipts remain historical. Do not advance
+P05-P09 or operational/human/consumer gates. Setup/dispatch unauthorized; feedback
+deferred; blocked writes unreplayed.
+
+Current T013P04 isolated qualification (2026-11-20): code/test/matrix head
+6f4fb345bc99b0ea3a5bddc3bacdf381f123360f passes all seven ordered gates,
+3,334 full parent cases plus 11 subtests, 2,912 mandatory native cases and
+110 focused controls. Ten guard-removal counterfactuals detect the intended
+assertions. Independent helper/namespace/retained-state audit and owned-fixture
+disposal pass. See feature017 evidence.md and p3-runner-transport-plan.md.
+Only P04 is completed in isolation; publication/source acceptance, P05-P09,
+T001/T013-T015 and consumer/human/operational gates remain separate. Setup/dispatch
+unauthorized; feedback deferred; blocked writes unreplayed. Earlier checkpoints
+below retain their dated scope.
+
+Current T013P04 isolated implementation commission (2026-11-20): Brett directs
+implementation and testing using p3-runner-transport-plan.md at prepared commit
+6fcd43f4872fdeb91748fe9d654634a62093b6e0. Only the existing T013P04 row is
+commissioned. P05-P09, setup/dispatch, actual provider/token acquisition,
+appointments, operational accepted_commit and consumer/human acceptance remain
+gated. Local TLS and signed fixture evidence is isolated source evidence only.
+Feedback deferred; historical blocked writes unreplayed. Earlier preparation-only
+labels below describe their dated checkpoints.
+
+Current #98 source acceptance and P04 preparation (2026-11-20): Brett ratified
+03d1ee71b53187b5b52233db02b7cca55281b3aa for source acceptance only. Normal merge
+7f85c43c6a4eee311d7033e59df2d8bbd4b1ddf7 has the identical tree; independent main
+CI and its actual unchanged Sonar/baseline gate pass. See feature017 evidence.md.
+The next bounded subplan is p3-runner-transport-plan.md (T013P04 preparation only).
+P01-P03 source is accepted; P04 code, P05-P09, T001/T013/T014/T015 and consumer058
+T002 remain gated. No operational accepted_commit, appointment, setup or dispatch
+is selected. Feedback deferred; blocked writes unreplayed. Earlier checkpoints
+below retain their historical scope.
+
+Historical T013P03 publication follow-up (2026-11-20): the public-IP compatibility control
 now proves an id-only legacy-reader positive using a complete public-IP reply
 and matching digest before testing expanded-link refusal. Removing the exact-link
 guard leaves the earlier test green but makes this corrected test fail. Reader
@@ -62,7 +129,7 @@ ownership, validation, versioning, and release constraints.
 - Active feature: 017-protected-runtime-qualification; plan:
   specs/017-protected-runtime-qualification/plan.md.
   Current P3 preparation subplan: specs/017-protected-runtime-qualification/p3-azure-composition-plan.md.
-  Current bounded slice: specs/017-protected-runtime-qualification/p3-provider-plan.md (T013P03; isolated implementation commissioned).
+  Current bounded slice: specs/017-protected-runtime-qualification/p3-runner-transport-plan.md (T013P04; isolated source qualified, publication/acceptance pending).
   Earlier T012T subplan remains historical: specs/017-protected-runtime-qualification/hosting-evidence-plan.md.
 - Ratified factory composition: opensoft/openXfactory,
   openspec/changes/prepare-protected-runtime-qualification/.

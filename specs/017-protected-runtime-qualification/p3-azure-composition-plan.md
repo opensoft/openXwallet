@@ -1,5 +1,17 @@
 # Implementation Plan: P3 Azure deployment composition
 
+Current #98 source acceptance and P04 preparation (2026-11-20): Brett ratified
+03d1ee71b53187b5b52233db02b7cca55281b3aa for source acceptance only. Normal merge
+7f85c43c6a4eee311d7033e59df2d8bbd4b1ddf7 has the identical tree; independent main
+CI and its actual unchanged Sonar/baseline gate pass. See feature017 evidence.md.
+The next bounded subplan is p3-runner-transport-plan.md (T013P04 preparation only).
+P01-P03 source is accepted; P04 code, P05-P09, T001/T013/T014/T015 and consumer058
+T002 remain gated. No operational accepted_commit, appointment, setup or dispatch
+is selected. Feedback deferred; blocked writes unreplayed. Earlier checkpoints
+below retain their historical scope.
+
+Current next-slice detail: [T013P04](p3-runner-transport-plan.md).
+
 Current source acceptance and next-slice preparation (2026-11-19): Brett ratified
 openXwallet #97 at 33a00d474621921a1bd22ac95ba8f254d9875c11 for source acceptance
 only. It landed normally as 3ca99fc79ab6ce5339cfd9e347559b241f7a57b8 with the
