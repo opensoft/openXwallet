@@ -3769,3 +3769,29 @@ actual appointment or operational accepted_commit. All task checkbox states and
 runtime/test/profile/pin/workflow bytes remain unchanged. Setup/dispatch remain
 unauthorized, feedback deferred and all live/human/consumer gates open. See the
 [P05 recovery receipt](p3-measurement-plan.md#preparation-recovery-receipt---2026-11-21-utc).
+
+
+## 2026-11-21 P05 commission and isolated compatibility finding
+
+Brett explicitly commissions T013P05 implementation/testing in isolation using
+the prepared plan at `9be62f196694103b6735df9237f511a87b20b10f`. No other P3 row,
+setup/dispatch or live human/consumer gate is commissioned. The six preparation
+gates pass again at that recovery head; final scratch audit/removal is complete.
+
+Four disposable network-none process/TLS probes pass with no failures/errors/
+skips. One complete canonical measurement is 8,860 bytes (configuration 5,247,
+policy 2,870); approved root/artifact derivation matches its actual process
+composition. Pinned mTLS succeeds and explicitly denies a valid worker peer.
+The transport/client probes expose the request-correlation compatibility gap
+recorded in [p3-measurement-compatibility.md](p3-measurement-compatibility.md).
+These are eligibility diagnostics, not implemented or qualified P05 behavior.
+
+The initial fixture-import error and refused in-bench unshare started no eligible
+cases. The corrected isolated run passes all four. Its namespace is absent,
+independent audit covers 11 process generations with zero live processes, and
+both exact owned roots are removed. Source and shared resources remain; raw
+private material is absent from retained diagnostic reports. No dependent P05
+module, runtime test, profile, pin or workflow is created. P05 and every owner/
+operational checkbox remain unchanged. The original plan requires a governed
+factory/adapter decision before dependent remote code; proposed direct-v2 nonce
+semantics are not silently installed. Feedback deferred; blocked writes unreplayed.

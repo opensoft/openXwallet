@@ -1,3 +1,11 @@
+Current bounded commission (2026-11-21 UTC): Brett authorizes isolated
+implementation and testing of T013P05 using prepared p3-measurement-plan.md at
+9be62f196694103b6735df9237f511a87b20b10f. P05 remains unchecked until actual
+qualification and cleanup pass. Eligibility experiments must preserve accepted
+profiles, local types/manager semantics and original bounds. P06-P09 and all
+operational/human/consumer gates remain separate; setup/dispatch unauthorized,
+feedback deferred and historical blocked writes unreplayed.
+
 Current #99 source acceptance and P05 preparation: Brett ratified
 9e46adca6ee3a4c4487fde93f6809b9f7c7a088c for source acceptance only. Normal merge
 066cae664f4033ac3b5a508321e1a782b03cf4d4 preserves the ratified tree; independent

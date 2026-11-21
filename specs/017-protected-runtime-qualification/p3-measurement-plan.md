@@ -1,6 +1,7 @@
 # T013P05 local measurement and remote finalization subplan
 
-Status: preparation only; isolated implementation is not commissioned.
+Status: isolated T013P05 implementation/testing commissioned on 2026-11-21 UTC;
+qualification and later source acceptance remain pending.
 Scope: first codeXfactory machine-possession pilot, existing feature017 T013P05.
 Branch: `017-p3-measurement-prep`. The sole implementation list is [tasks.md](tasks.md).
 This refines that existing row; it creates no additional feature or task list.
@@ -273,3 +274,27 @@ the P05 checkbox remains unchecked and isolated implementation is uncommissioned
 Publication, source acceptance, P06-P09 and all live operational/human/consumer
 gates remain separate. Setup/dispatch unauthorized; feedback deferred; historical
 blocked writes unreplayed.
+
+
+## Isolated P05 implementation commission - 2026-11-21 UTC
+
+After preparation recovery, Brett explicitly answered "Implement and test
+T013P05 in isolation" using this plan at `9be62f196694103b6735df9237f511a87b20b10f`.
+The existing eligibility conditions and sole task row remain authoritative.
+Earlier preparation-only/no-experiment instructions describe their dated scope;
+this commission authorizes those isolated feasibility experiments and P05 code,
+without changing any accepted contract or completing its checkbox. P06-P09,
+setup/dispatch, publication and live human/consumer acceptance remain separate.
+
+
+## P05 isolated eligibility finding - 2026-11-21 UTC
+
+Four real process/TLS probes establish a fitting complete canonical body and
+independent root-based derivation for one fixture, selected-peer availability
+and explicit valid-worker denial. They also expose an interface incompatibility
+for the required explicit response transaction correlation. The [compatibility
+finding and concrete recommendation](p3-measurement-compatibility.md) preserve
+the accepted v1/direct-body/operation/budget rules. The original eligibility
+stop applies before dependent remote runtime code; direct v2 is proposed only,
+not accepted or implemented. Actual local-manager/observer independence and
+complete remote finalization budget fit remain unproven. P05 stays unchecked.

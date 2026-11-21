@@ -1,3 +1,22 @@
+Current T013P05 eligibility (2026-11-21 UTC): four actual process/TLS probes
+pass, including a fitting 8,860-byte complete measurement and valid worker denial.
+The accepted direct response has no request nonce; shared PrivateHttps discards
+response headers and ObservationClient has another closed wrapper/operation set.
+See feature017 p3-measurement-compatibility.md for the evidenced interface gap and
+unaccepted direct-v2 nonce recommendation. Dependent remote code waits for the
+required governed factory/adapter source decision. P05 remains unchecked; no
+production module/test/profile/pin/workflow or operational gate is advanced.
+
+Current T013P05 isolated implementation commission (2026-11-21 UTC): Brett
+explicitly directs implementation and testing of the existing T013P05 row using
+the prepared p3-measurement-plan.md at 9be62f196694103b6735df9237f511a87b20b10f.
+Only P05 is commissioned. Demonstrate accepted local-manager/independent-observer,
+complete-byte/canonical derivation, authenticated transaction and original-budget
+eligibility before dependent implementation. A proven contract incompatibility
+requires the governed factory/adapter amendment; no field/wrapper/budget waiver.
+P06-P09, setup/dispatch and live human/consumer acceptance remain gated. Feedback
+deferred; blocked writes unreplayed. Earlier preparation checkpoints are historical.
+
 Current #99 source acceptance and P05 preparation: Brett ratified
 9e46adca6ee3a4c4487fde93f6809b9f7c7a088c for source acceptance only. Normal merge
 066cae664f4033ac3b5a508321e1a782b03cf4d4 preserves the ratified tree; independent
