@@ -1,3 +1,29 @@
+## Current isolated P05 implementation checkpoint - 2026-11-21 UTC
+
+Owner-ratified factory #1359 (`15d6328ba428`) landed first as
+`ee1800c7baed409a9679f34c7a87e21dc01ea3d7`; adapter #100 (`d6aa44d9ebef`)
+followed as `cc0a91b9991e8b73fa32ddb431d0cfb7bfee20a3`. Both merged trees equal
+the ratified trees. Independent main CI and all six unchanged, evaluated Sonar
+conditions pass for each merge (factory run44878733896, adapter run44878770163).
+
+The commissioned T013P05 implementation now exists. Its connected isolated
+eligibility is demonstrated using protected local current-fact reads, original
+manager/process provenance, two independent mTLS observers and complete-byte
+recomputation. All 99 focused controls pass together; all 14 deliberately weakened
+guard copies are detected without fixture errors. Actual collection adds only
+those 99 cases: 3,438 full parents and 3,016 mandatory native cases, preserving
+every prior identity, order, fingerprint and anchor prefix. Full/native frozen
+qualification and final owned-fixture cleanup remain pending; P05 stays unchecked.
+See `p3-measurement-implementation.md` in feature017 for the as-built boundaries.
+
+Earlier dated preparation, unratified, absent-code, unproven-eligibility and
+pending-main labels below are historical checkpoints, superseded only for this
+bounded P05 source continuation. Provider/admin contents remain isolated doubles;
+no operational deployment, issuer, enrollment or actual administrator separation
+is demonstrated. P06-P09 and T001/T013/T014/T015, live human and consumer gates,
+new P05 publication/review/source acceptance, setup and dispatch remain separate.
+Feedback deferred; historical blocked writes unreplayed.
+
 # Feature Specification: Protected Machine Runtime Qualification
 
 ## Proposed P3 source extension, 2026-11-19

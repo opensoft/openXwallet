@@ -660,3 +660,40 @@ CASES["R01"] += _nodes("test_azure_runner_transport",
 CASES["R01"] += _nodes("test_azure_runner_transport",
     "termination_exception_cannot_export_runner_material",
 )
+
+
+# T013P05: measured new collection only; every preceding row/anchor is preserved.
+MODULE_COUNTS['tests/runtime_binding/test_azure_measurement.py'] = 99
+MODULE_DIGESTS['tests/runtime_binding/test_azure_measurement.py'] = 'e9aab3cc9cd63e7534033174c50e0619451f88453feaa76f3ca6f8993474bcea'
+CASES['H03'] += _nodes("test_azure_measurement",
+    'reconstructed_manager_cannot_adopt_original_owned_process',
+    'actual_original_manager_or_protected_target_change_refuses')
+CASES['H04'] += _nodes("test_azure_measurement",
+    'connected_original_manager_two_observers_complete_derivation_and_original_budget',
+    'two_agreeing_observers_cannot_replace_independent_complete_derivation',
+    'well_typed_foreign_generation_cannot_construct_verified_handoff',
+    'independent_observer_does_not_accept_dead_worker_with_fresh_echo')
+CASES['H07'] += _nodes("test_azure_measurement",
+    'known_available_measurement_explicitly_denies_valid_worker_preimage',
+    'effective_peer_authority_precedes_durable_attempt')
+CASES['H08'] += _nodes("test_azure_measurement",
+    'authenticated_response_cannot_change_closed_canonical_scope',
+    'collapsed_observer_selection_is_ineligible',
+    'real_tls_requires_selected_server_and_client_material',
+    'selected_material_bytes_are_rechecked_before_measurement')
+CASES['H10'] += _nodes("test_azure_measurement",
+    'final_tls_material_checkpoint_refuses_fixed_interval_before_go',
+    'original_authority_cannot_expire_renew_or_reset_during_current_reads')
+CASES['H11'] += _nodes("test_azure_measurement",
+    'each_current_stage_lease_is_required_at_its_original_checkpoint',
+    'measurement_nonce_state_is_existing_selected_and_not_reinitialized',
+    'consumed_measurement_nonce_cannot_replay_after_success',
+    'lost_response_keeps_durable_nonce_consumed')
+CASES['H12'] += _nodes("test_azure_measurement",
+    'normal_state_export_cannot_disclose_private_selected_material',
+    'cancelled_tls_attempt_reaps_helper_without_private_error_context',
+    'server_cancellation_after_reservation_keeps_attempt_consumed')
+CASES['R01'] += _nodes("test_azure_measurement",
+    'current_local_control_state_changes_after_observation_refuse',
+    'late_actual_protection_change_after_observer_io_refuses',
+    'final_observation_is_followed_by_actual_current_control_state')

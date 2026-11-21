@@ -1,3 +1,65 @@
+## Current isolated P05 implementation checkpoint - 2026-11-21 UTC
+
+Owner-ratified factory #1359 (`15d6328ba428`) landed first as
+`ee1800c7baed409a9679f34c7a87e21dc01ea3d7`; adapter #100 (`d6aa44d9ebef`)
+followed as `cc0a91b9991e8b73fa32ddb431d0cfb7bfee20a3`. Both merged trees equal
+the ratified trees. Independent main CI and all six unchanged, evaluated Sonar
+conditions pass for each merge (factory run44878733896, adapter run44878770163).
+
+The commissioned T013P05 implementation now exists. Its connected isolated
+eligibility is demonstrated using protected local current-fact reads, original
+manager/process provenance, two independent mTLS observers and complete-byte
+recomputation. All 99 focused controls pass together; all 14 deliberately weakened
+guard copies are detected without fixture errors. Actual collection adds only
+those 99 cases: 3,438 full parents and 3,016 mandatory native cases, preserving
+every prior identity, order, fingerprint and anchor prefix. Full/native frozen
+qualification and final owned-fixture cleanup remain pending; P05 stays unchecked.
+See `p3-measurement-implementation.md` in feature017 for the as-built boundaries.
+
+Earlier dated preparation, unratified, absent-code, unproven-eligibility and
+pending-main labels below are historical checkpoints, superseded only for this
+bounded P05 source continuation. Provider/admin contents remain isolated doubles;
+no operational deployment, issuer, enrollment or actual administrator separation
+is demonstrated. P06-P09 and T001/T013/T014/T015, live human and consumer gates,
+new P05 publication/review/source acceptance, setup and dispatch remain separate.
+Feedback deferred; historical blocked writes unreplayed.
+
+## Current P05 v2 source acceptance and isolated continuation - 2026-11-21 UTC
+
+Brett source-ratified openXfactory #1359 at
+`15d6328ba42809dc5cf9280e110b824524b31652` with openXwallet #100 at
+`d6aa44d9ebef61e9070b6eff32fe4cc104b4f8c4`, directing ordered landing and
+resumption of isolated T013P05. Factory merged first as
+`ee1800c7baed409a9679f34c7a87e21dc01ea3d7`; adapter followed as
+`cc0a91b9991e8b73fa32ddb431d0cfb7bfee20a3`. Both merge trees equal their
+ratified trees. Final PR CI/evaluated gates and nine-role local review passed;
+independent post-merge main CI is still being observed separately.
+
+The direct v2 transaction semantics in the paired factory packet are now the
+accepted P05 refinement. Earlier draft/unratified/preparation-only labels below
+are historical. This grants isolated P05 implementation/testing, not P06-P09,
+setup/dispatch, operational selections or live/human/consumer acceptance.
+P05 stays unchecked until connected qualification and cleanup actually pass.
+
+Four external accounting diagnostics pass without errors/skips: the existing
+network-backed PlanFactReader finalization consumes private12 and six fresh
+protection observations; any additional read refuses at private attempt13.
+An in-memory private13 counterfactual makes the post-exhaustion refusal control
+fail at the intended DID NOT RAISE assertion. That is a route-specific
+compatibility finding, not proof that every permitted embedding is ineligible.
+Both diagnostic namespaces and 129 generation records were audited; both owned
+scratch roots were removed. Product/runtime/test/matrix source is unchanged.
+
+Existing PlanBindings also accepts a trusted local current-fact capability.
+The isolated continuation will test actual protected current-journal reads on the
+control side, preserving every fact/protection/authority recheck and charging all
+remaining RPCs to the original ledger. This is a fixture/source locality choice,
+not a selected operational deployment. No cached fact, copied digest, hidden
+network read, request/body/budget expansion or clock renewal is allowed. Its
+connected manager/independent-observer/complete-byte/budget eligibility remains
+unproven; keep the original eligibility stop if it cannot be demonstrated.
+Feedback deferred; historical blocked writes unreplayed.
+
 Current T013P05 eligibility (2026-11-21 UTC): four actual process/TLS probes
 pass, including a fitting 8,860-byte complete measurement and valid worker denial.
 The accepted direct response has no request nonce; shared PrivateHttps discards
