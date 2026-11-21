@@ -22,7 +22,7 @@ remain the architecture. Factory [R03/R06](https://github.com/opensoft/openXfact
 [D2/D9](https://github.com/opensoft/openXfactory/blob/c2dfbbcc6fa6965fcde18661bddca1dac7128d47/openspec/changes/add-protected-runtime-azure-composition/design.md) and the [closed remote-measurement boundary](https://github.com/opensoft/openXfactory/blob/c2dfbbcc6fa6965fcde18661bddca1dac7128d47/openspec/changes/add-protected-runtime-azure-composition/supporting-docs/composition-boundary.md)
 remain authoritative at that accepted source.
 
-P01-P04 source is accepted. This instruction prepares P05 only. P05 code,
+P01-P04 source is accepted. The original instruction at this checkpoint prepared P05 only. P05 code,
 P06-P09, T001/T013/T014/T015, consumer058 T002, appointments, actual peer/source
 selections, independent human approval, setup and dispatch remain separate gates.
 No live token, provider write, credential enrollment, image build or VM operation

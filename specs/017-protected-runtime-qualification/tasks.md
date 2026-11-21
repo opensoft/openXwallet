@@ -6,7 +6,7 @@ profiles, local types/manager semantics and original bounds. P06-P09 and all
 operational/human/consumer gates remain separate; setup/dispatch unauthorized,
 feedback deferred and historical blocked writes unreplayed.
 
-Current #99 source acceptance and P05 preparation: Brett ratified
+Historical #99 source acceptance and P05 preparation: Brett ratified
 9e46adca6ee3a4c4487fde93f6809b9f7c7a088c for source acceptance only. Normal merge
 066cae664f4033ac3b5a508321e1a782b03cf4d4 preserves the ratified tree; independent
 main CI and its actual unchanged Sonar/baseline gate pass. See feature017 evidence.md.

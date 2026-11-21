@@ -1,5 +1,19 @@
 # Implementation Plan: P3 Azure deployment composition
 
+Current bounded authority (2026-11-21 UTC): P01-P04 source is accepted and
+Brett has commissioned isolated T013P05 implementation/testing. Its four
+compatibility probes do not complete P05. The existing eligibility guard now
+requires the proposed direct-v2 transaction amendment in factory #1359 with
+adapter #100 to receive exact paired source acceptance before dependent code.
+See [P05 work](p3-measurement-plan.md) and its [candidate transaction plan](p3-measurement-transaction-plan.md).
+P06-P09 and all operational/human/consumer gates remain separate. Setup/dispatch
+unauthorized; feedback deferred; blocked writes unreplayed.
+
+## Historical source-acceptance and preparation checkpoints
+
+The following checkpoints retain the authority available when recorded; the
+current bounded commission above controls later isolated P05 work.
+
 Current #99 source acceptance and P05 preparation: Brett ratified
 9e46adca6ee3a4c4487fde93f6809b9f7c7a088c for source acceptance only. Normal merge
 066cae664f4033ac3b5a508321e1a782b03cf4d4 preserves the ratified tree; independent

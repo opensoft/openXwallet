@@ -17,7 +17,7 @@ requires the governed factory/adapter amendment; no field/wrapper/budget waiver.
 P06-P09, setup/dispatch and live human/consumer acceptance remain gated. Feedback
 deferred; blocked writes unreplayed. Earlier preparation checkpoints are historical.
 
-Current #99 source acceptance and P05 preparation: Brett ratified
+Historical #99 source acceptance and P05 preparation: Brett ratified
 9e46adca6ee3a4c4487fde93f6809b9f7c7a088c for source acceptance only. Normal merge
 066cae664f4033ac3b5a508321e1a782b03cf4d4 preserves the ratified tree; independent
 main CI and its actual unchanged Sonar/baseline gate pass. See feature017 evidence.md.
@@ -30,8 +30,9 @@ Local preparation recovery (2026-11-21 UTC): all six offline checks now pass,
 including the default authenticated pinned OpenSpec --all (8 strict items).
 The old blocked process and never-started validation container are absent; both
 old and recovered owned scratch passed audit and removal. The earlier RTNL
-checkpoint is historical. See the P05 subplan recovery receipt. P05 remains
-preparation only; implementation, publication and operational gates stay separate.
+checkpoint is historical. See the P05 subplan recovery receipt. The recovered
+preparation is source-only; the later isolated P05 commission is recorded above,
+while proposed v2 acceptance, dependent code and operational gates stay separate.
 
 Current final T013P04 corrected qualification: runtime/test/matrix head
 19c516bcd50e6f2f966f669f313a5b0f043d2eb6 passes all seven ordered gates, 3,339 full
