@@ -1,3 +1,37 @@
+## Current T013P05 isolated qualification - 2026-11-21 UTC
+
+Factory #1359 at `15d6328ba428` and adapter #100 at `d6aa44d9ebef` were
+owner-ratified for source acceptance and landed in that order as
+`ee1800c7baed409a9679f34c7a87e21dc01ea3d7` and
+`cc0a91b9991e8b73fa32ddb431d0cfb7bfee20a3`. Both merged trees equal the
+ratified trees. Independent main CI and all six evaluated, unchanged Sonar
+conditions pass for both merges.
+
+The later commissioned T013P05 source candidate `22184abbb4c4965fc55719e94f74868d1196ed2b` is implemented and
+qualified in isolation: all seven ordered gates, 3,438 full parent tests plus
+11 existing subtests, and all 3,016 mandatory native cases pass with zero
+failures, errors or skips. All 99 added identities and every prior matrix
+identity, fingerprint, ordering and anchor prefix are preserved. Fourteen
+selected guard controls pass unchanged; each of fourteen weakened isolated
+copies fails its intended assertion without fixture errors. Full and native
+qualification bind the same 412 frozen inputs and preserved dependencies.
+
+Independent post-process audits verify ten preservation cases in total, no
+attributable live generations and unissued measurement nonce state. Only owned
+test scratch and the two dedicated persistent ext4 test volumes are removed;
+source, dependency checkouts and shared caches remain. Earlier failed and
+instrumented attempts remain historical evidence, not qualification. The
+fixture correction changes independent setup locality only; original P05 clocks,
+fixed request interval, wire sizes and read budgets remain unchanged.
+
+Only T013P05 is complete in isolation. New P05 publication, hosted CI, local
+expert review and owner source acceptance remain separate. P06-P09,
+T001/T013/T014/T015, operational role appointments, setup, protected dispatch,
+actual provider/issuer/enrollment and live human/consumer acceptance remain
+ungranted. Feedback deferred; historical blocked writes unreplayed.
+
+Earlier dated status and pending labels below are historical checkpoints.
+
 ## Current isolated P05 implementation checkpoint - 2026-11-21 UTC
 
 Owner-ratified factory #1359 (`15d6328ba428`) landed first as
@@ -368,7 +402,7 @@ create a factory/consumer duplicate task list. R01-R12 trace to the factory delt
 - [x] T013P02 [O] Implement factory-owned closed reservation/provisioned/final-link and setup/run retirement records plus permanent authoritative namespace transitions; files: scripts/workload_factory_binding_runtime/azure_composition/selection.py, namespace.py, tests/runtime_binding/test_azure_namespace.py, tests/runtime_binding/matrix_contract.py; verify: exact phase/type/key sets, unavailable-field refusal, complete ordered reservation projection, no backward hash cycle, canonical caps, conditional create/ETag concurrency, consume-before-send/crash and permanent non-reuse/missing-state refusals, without old RunPlan/report changes (R07/R08).
 - [x] T013P03 [O] Implement bounded per-kind Azure readback/operation capabilities and measured-image/two-retained-disk compatibility; files: scripts/workload_factory_binding_runtime/azure_composition/provider.py, tests/runtime_binding/test_azure_provider.py; verify: exact documented API/incarnation/dependency/terminal-operation and Detach semantics, no marketplace-ID substitution, unsupported type/replacement/pending-write refusal and no live provider request (R05/R08/R09).
 - [x] T013P04 [O] Implement source-selected original-runner capture and bounded phase transport; files: scripts/workload_factory_binding_runtime/azure_composition/runner_transport.py, tests/runtime_binding/test_azure_runner_transport.py; verify: exact trusted origin/path policy, frozen private bearer/endpoint, valid signed-claim/provider-correlation positive and URL/redirect/proxy/source/phase/credential-export mutations within original limits, no discovery token (R04/R11).
-- [ ] T013P05 [O] Implement protected local worker-host adapters and authenticated complete-byte remote measurement/finalization composition, preserving original local manager/types/profiles and R03/R06 boundaries — files: `scripts/workload_factory_binding_runtime/azure_composition/local_host.py`, `scripts/workload_factory_binding_runtime/azure_composition/remote_evidence.py`, `tests/runtime_binding/test_azure_measurement.py`, `tests/runtime_binding/matrix_contract.py`, `AGENTS.md`, `specs/017-protected-runtime-qualification/tasks.md`, `specs/017-protected-runtime-qualification/spec.md`, `specs/017-protected-runtime-qualification/plan.md`, `specs/017-protected-runtime-qualification/p3-measurement-plan.md`, `specs/017-protected-runtime-qualification/p3-measurement-transaction-plan.md`, `specs/017-protected-runtime-qualification/p3-measurement-implementation.md`, `specs/017-protected-runtime-qualification/evidence.md` — verify: `python3 -B tests/runtime_binding/conformance.py --owner-code "$WALLET_BINDING_OWNER_CODE" --temp-root "$PILOT_QUALIFICATION_ROOT"`
+- [x] T013P05 [O] Implement protected local worker-host adapters and authenticated complete-byte remote measurement/finalization composition, preserving original local manager/types/profiles and R03/R06 boundaries — files: `scripts/workload_factory_binding_runtime/azure_composition/local_host.py`, `scripts/workload_factory_binding_runtime/azure_composition/remote_evidence.py`, `tests/runtime_binding/test_azure_measurement.py`, `tests/runtime_binding/matrix_contract.py`, `AGENTS.md`, `specs/017-protected-runtime-qualification/tasks.md`, `specs/017-protected-runtime-qualification/spec.md`, `specs/017-protected-runtime-qualification/plan.md`, `specs/017-protected-runtime-qualification/p3-measurement-plan.md`, `specs/017-protected-runtime-qualification/p3-measurement-transaction-plan.md`, `specs/017-protected-runtime-qualification/p3-measurement-implementation.md`, `specs/017-protected-runtime-qualification/evidence.md` — verify: `python3 -B tests/runtime_binding/conformance.py --owner-code "$WALLET_BINDING_OWNER_CODE" --temp-root "$PILOT_QUALIFICATION_ROOT"`
 - [ ] T013P06 [O] Wire independently approved enrollment/issuance, peer credentials and retained state boundaries; files: scripts/workload_factory_binding_runtime/azure_composition/issuance.py, tests/runtime_binding/test_azure_issuance.py; verify: approved role positive, valid-preimage worker denial, nonce/host/source/fingerprint/effective-scope mutations, no self-enrollment/MI/key leakage and no runtime ledger initialization/reset/rollback (R06).
 - [ ] T013P07 [O] Implement the separate external namespace/watchdog infrastructure reconciler; files: scripts/workload_factory_binding_runtime/azure_composition/retirement.py, tests/runtime_binding/test_azure_retirement.py; verify: partial-setup/expiry/predispatch and post-P7 closed receipt variants, no invented unavailable facts, no-name-reuse/sole-writer/per-kind order, original-operation/control-loss reconciliation, trigger deduplication, independent absence/revocation/preservation and separately authorized read-only late failure with no renewal/budget reset; no RG/force/cascade/retry or old-report relabel (R07/R09/R10).
 - [ ] T013P08 [O] Integrate an explicitly source-selected companion entrypoint and reviewed deployment packaging/workflow route; files: scripts/prepare-azure-protected-runtime.py, scripts/workload_factory_binding_runtime/azure_composition/entrypoint.py, deploy/qa-wallet-mfa/, .github/workflows/protected-runtime-qualification-run.yml, tests/runtime_binding/test_azure_entrypoint.py; verify: existing operational_bindings/default entrypoint unchanged/refusing, three inputs/seven runtime/eight source roles and same-commit phase permissions preserved, no env/file/plugin activation and no execution/setup from source selection alone (R02).

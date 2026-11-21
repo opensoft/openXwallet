@@ -1,3 +1,37 @@
+## Current T013P05 isolated qualification - 2026-11-21 UTC
+
+Factory #1359 at `15d6328ba428` and adapter #100 at `d6aa44d9ebef` were
+owner-ratified for source acceptance and landed in that order as
+`ee1800c7baed409a9679f34c7a87e21dc01ea3d7` and
+`cc0a91b9991e8b73fa32ddb431d0cfb7bfee20a3`. Both merged trees equal the
+ratified trees. Independent main CI and all six evaluated, unchanged Sonar
+conditions pass for both merges.
+
+The later commissioned T013P05 source candidate `22184abbb4c4965fc55719e94f74868d1196ed2b` is implemented and
+qualified in isolation: all seven ordered gates, 3,438 full parent tests plus
+11 existing subtests, and all 3,016 mandatory native cases pass with zero
+failures, errors or skips. All 99 added identities and every prior matrix
+identity, fingerprint, ordering and anchor prefix are preserved. Fourteen
+selected guard controls pass unchanged; each of fourteen weakened isolated
+copies fails its intended assertion without fixture errors. Full and native
+qualification bind the same 412 frozen inputs and preserved dependencies.
+
+Independent post-process audits verify ten preservation cases in total, no
+attributable live generations and unissued measurement nonce state. Only owned
+test scratch and the two dedicated persistent ext4 test volumes are removed;
+source, dependency checkouts and shared caches remain. Earlier failed and
+instrumented attempts remain historical evidence, not qualification. The
+fixture correction changes independent setup locality only; original P05 clocks,
+fixed request interval, wire sizes and read budgets remain unchanged.
+
+Only T013P05 is complete in isolation. New P05 publication, hosted CI, local
+expert review and owner source acceptance remain separate. P06-P09,
+T001/T013/T014/T015, operational role appointments, setup, protected dispatch,
+actual provider/issuer/enrollment and live human/consumer acceptance remain
+ungranted. Feedback deferred; historical blocked writes unreplayed.
+
+Earlier dated status and pending labels below are historical checkpoints.
+
 ## Current isolated P05 implementation checkpoint - 2026-11-21 UTC
 
 Owner-ratified factory #1359 (`15d6328ba428`) landed first as

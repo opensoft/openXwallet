@@ -1,6 +1,40 @@
+## Current T013P05 isolated qualification - 2026-11-21 UTC
+
+Factory #1359 at `15d6328ba428` and adapter #100 at `d6aa44d9ebef` were
+owner-ratified for source acceptance and landed in that order as
+`ee1800c7baed409a9679f34c7a87e21dc01ea3d7` and
+`cc0a91b9991e8b73fa32ddb431d0cfb7bfee20a3`. Both merged trees equal the
+ratified trees. Independent main CI and all six evaluated, unchanged Sonar
+conditions pass for both merges.
+
+The later commissioned T013P05 source candidate `22184abbb4c4965fc55719e94f74868d1196ed2b` is implemented and
+qualified in isolation: all seven ordered gates, 3,438 full parent tests plus
+11 existing subtests, and all 3,016 mandatory native cases pass with zero
+failures, errors or skips. All 99 added identities and every prior matrix
+identity, fingerprint, ordering and anchor prefix are preserved. Fourteen
+selected guard controls pass unchanged; each of fourteen weakened isolated
+copies fails its intended assertion without fixture errors. Full and native
+qualification bind the same 412 frozen inputs and preserved dependencies.
+
+Independent post-process audits verify ten preservation cases in total, no
+attributable live generations and unissued measurement nonce state. Only owned
+test scratch and the two dedicated persistent ext4 test volumes are removed;
+source, dependency checkouts and shared caches remain. Earlier failed and
+instrumented attempts remain historical evidence, not qualification. The
+fixture correction changes independent setup locality only; original P05 clocks,
+fixed request interval, wire sizes and read budgets remain unchanged.
+
+Only T013P05 is complete in isolation. New P05 publication, hosted CI, local
+expert review and owner source acceptance remain separate. P06-P09,
+T001/T013/T014/T015, operational role appointments, setup, protected dispatch,
+actual provider/issuer/enrollment and live human/consumer acceptance remain
+ungranted. Feedback deferred; historical blocked writes unreplayed.
+
+Earlier dated status and pending labels below are historical checkpoints.
+
 # T013P05 isolated measurement implementation
 
-Status: local candidate; full/native frozen qualification and cleanup pending.
+Status: T013P05 complete in isolation at `22184abbb4c4965fc55719e94f74868d1196ed2b`; publication, hosted CI, expert review and source acceptance remain open.
 The existing feature017 T013P05 row is the sole implementation task. The source
 basis is the owner-ratified and ordered-landed factory #1359 / adapter #100 pair;
 this new implementation has no publication, hosted CI or source acceptance yet.
@@ -133,3 +167,62 @@ Seven targeted connected/denial/manager/wire/cancellation eligibility cases pass
 with92 intentionally deselected using an external local-controller fixture copy.
 This is setup-locality evidence only; full/native qualification must bind the
 corrected candidate. Product runtime, transport and matrix bytes are unchanged.
+
+
+## Final isolated qualification receipt - 2026-11-21 UTC
+
+Qualified source: `22184abbb4c4965fc55719e94f74868d1196ed2b`; 412 frozen input hashes are unchanged throughout
+both runs. The full suite passes 3,438 parent cases and 11 existing subtests
+in 2336.590 seconds. Mandatory native conformance passes all
+3,016 cases in 1823.027 seconds and emits its final
+`runtime-conformance: PASS`. Neither run has failures, errors or skips.
+The full ordered gate sequence passes contract pin, neutral pin, YAML syntax,
+standard and strict adapter validation, the complete test suite and the
+unchanged authenticated pinned OpenSpec CLI gate.
+
+The final fourteen-control baseline passes. Each of fourteen guard-removal
+copies fails the intended selected test assertion, with no fixture errors;
+none alters product source. Actual full/native identities match the measured
+collection exactly, including the 99-case P05 module fingerprint. All old
+counts, fingerprints and anchor prefixes remain. The accepted neutral root,
+code, spec and explicit qualification-owner identities remain unchanged and
+clean; no dependency ref advances for this slice.
+
+The qualified fixtures use dedicated persistent ext4 storage, not tmpfs.
+Written state remains after the runtime process namespace exits and is read
+by a separate audit container. Each run verifies five lifecycle preservation
+cases before exact owned-root disposal. Measurement nonce journals contain
+consumed attempts only and no issued tokens. Both owned volume removals and
+container absences are verified; separate guard scratch is also audited and
+removed. Worktrees, dependency sources, shared caches and active benches are
+preserved. Host-local XML, source freezes, ordered gate results, connected
+proofs, nonce audits, independent audits and removal receipts are retained.
+
+The initial parallel full attempt had 560 passes and one positive measurement
+refusal; its native companion had an inherited pre-P05 staging setup error and
+was intentionally interrupted after that error. A sequential full attempt had
+630 passes and an inherited staging setup timeout. The first corrected-fixture
+full attempt had 527 passes and a failure in an unchanged authority transport
+case before any P05 code executed. None qualifies. Two structural cases, all
+28 wire cases, seven local-controller fixture cases and the 37-case unchanged
+authority transport group passed as targeted diagnostics. Short storage probes
+did not establish a root cause. The successful final runs do not claim a fix
+for all shared-host timing or a deployment performance guarantee.
+
+The P05 setup-locality correction retains the same selected StageController,
+signed identity, grant/correlation checks, durable cleanup acknowledgement,
+original HostAgent launch owner and actual mTLS HostClient registration/start/
+status. Existing P04 transport tests are preserved. P05 starts its original
+elapsed clock once after independent setup and generation selection; no timer,
+request interval, read allowance, nonce reuse or semantic retry is introduced.
+Post-run reporting corrected seven unittest class-name paths in the QA XML
+mapper; actual case identities and results were unchanged.
+
+This closes only T013P05's isolated implementation/test task. It supplies no
+new source acceptance or operational permission. The full network-backed
+PlanFactReader route remains ineligible at the original private-read budget;
+the qualified explicit local-fact capability preserves every current read and
+protection observation. Admin/provider payloads remain isolated doubles; actual
+administrator separation, issuer hosting, enrollment, human approval and
+consumer acceptance remain later gates. No P06-P09 implementation, setup,
+protected dispatch, feedback submission or historical blocked write occurs.
