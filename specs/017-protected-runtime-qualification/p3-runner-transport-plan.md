@@ -1,6 +1,6 @@
 # T013P04 original runner capture and bounded phase transport subplan
 
-Status: corrected isolated source qualified; final publication/owner acceptance pending.
+Status: P04 source accepted in #99; independent main verified; P05 preparation follows.
 Scope: first codeXfactory machine-possession pilot, feature017 T013P04 only.
 Branch: `017-p3-runner-transport-prep`; prepared 2026-11-20 UTC.
 Sole implementation list: [tasks.md](tasks.md). This refines its existing P04 row,
@@ -297,3 +297,19 @@ completion-record commit changes documentation only; final-publication hosted CI
 and exact-head review confirmation remain separate. Only P04 is complete in
 isolation; owner ratification, P05-P09 and operational/human/consumer gates remain
 separate. Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.
+
+
+## P04 source acceptance and handoff
+
+Brett source-ratified publication `9e46adca6ee3a4c4487fde93f6809b9f7c7a088c`.
+Normal merge `066cae664f4033ac3b5a508321e1a782b03cf4d4` has its identical tree;
+independent main CI and its actual Sonar/baseline verification pass. See the
+[acceptance/main record](evidence.md#pr-99-source-acceptance-and-p05-preparation).
+This later act supersedes earlier pending-publication labels without changing
+qualified code/test/matrix `19c516bcd50e6f2f966f669f313a5b0f043d2eb6` or its receipts.
+
+The next bounded preparation is [T013P05](p3-measurement-plan.md). P05 code and
+all actual peer/credential/origin compatibility, operational, human and consumer
+gates remain separate. The effective 512/16,377 bounds remain; actual GitHub injection compatibility
+is still unqualified.
+Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.

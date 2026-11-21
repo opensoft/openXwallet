@@ -1,3 +1,17 @@
+Current #99 source acceptance and P05 preparation: Brett ratified
+9e46adca6ee3a4c4487fde93f6809b9f7c7a088c for source acceptance only. Normal merge
+066cae664f4033ac3b5a508321e1a782b03cf4d4 preserves the ratified tree; independent
+main CI and its actual unchanged Sonar/baseline gate pass. See feature017 evidence.md.
+P01-P04 source is accepted. The next bounded subplan is p3-measurement-plan.md,
+T013P05 preparation only. P05 implementation, P06-P09, T001/T013/T014/T015,
+consumer058 T002, appointments and operational accepted_commit remain gated.
+Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.
+Earlier dated checkpoints below retain their historical scope.
+Local preparation validation: five offline checks pass; the default pinned
+OpenSpec repeat and owned-harness cleanup are blocked by kernel RTNL. Main strict
+OpenSpec passed on byte-identical governed inputs; this is not a fresh local
+exit or a publication waiver. See the P05 subplan validation checkpoint.
+
 Current final T013P04 corrected qualification: runtime/test/matrix head
 19c516bcd50e6f2f966f669f313a5b0f043d2eb6 passes all seven ordered gates, 3,339 full
 parent cases plus 11 subtests, 2,917 native cases and 115 focused controls. Twelve
@@ -129,7 +143,7 @@ ownership, validation, versioning, and release constraints.
 - Active feature: 017-protected-runtime-qualification; plan:
   specs/017-protected-runtime-qualification/plan.md.
   Current P3 preparation subplan: specs/017-protected-runtime-qualification/p3-azure-composition-plan.md.
-  Current bounded slice: specs/017-protected-runtime-qualification/p3-runner-transport-plan.md (T013P04; isolated source qualified, publication/acceptance pending).
+  Current bounded slice: specs/017-protected-runtime-qualification/p3-measurement-plan.md (T013P05; preparation only, implementation uncommissioned).
   Earlier T012T subplan remains historical: specs/017-protected-runtime-qualification/hosting-evidence-plan.md.
 - Ratified factory composition: opensoft/openXfactory,
   openspec/changes/prepare-protected-runtime-qualification/.
