@@ -298,3 +298,12 @@ the accepted v1/direct-body/operation/budget rules. The original eligibility
 stop applies before dependent remote runtime code; direct v2 is proposed only,
 not accepted or implemented. Actual local-manager/observer independence and
 complete remote finalization budget fit remain unproven. P05 stays unchecked.
+
+
+## Proposed transaction amendment handoff
+
+The [direct-v2 amendment plan](p3-measurement-transaction-plan.md) follows the
+evidenced compatibility finding and the original eligibility guard. Its factory
+proposal owns candidate request/response semantics. It is not accepted and does
+not replace the v1 source boundary or permit dependent code before exact paired
+source acceptance. The existing T013P05 row and all operational gates remain.
