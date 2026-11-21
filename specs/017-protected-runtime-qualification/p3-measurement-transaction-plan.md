@@ -107,3 +107,9 @@ undispositioned failures and one accepted finding. The earlier bare-CLI result
 is diagnostic, not the canonical gate verdict. No validator, pin, accepted packet
 or exception is changed. Source ratification of v2 is not yet granted, and no
 dependent runtime code or operational authority is inferred from publication.
+
+
+Paired publication: factory [#1359](https://github.com/opensoft/openXfactory/pull/1359)
+with adapter [#100](https://github.com/opensoft/openXwallet/pull/100). The factory's
+actual PR number supplies generated ledger provenance. Final-head hosted CI and
+local Codex review remain required before presenting v2 for source ratification.
