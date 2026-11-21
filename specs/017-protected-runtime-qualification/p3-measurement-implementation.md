@@ -1,3 +1,22 @@
+## Current P05 publication correction - 2026-11-21 UTC
+
+The active feature058 goal continues with P05 candidate PR #101. Local expert
+review and connected fault controls confirm a P2 enclosing-accounting gap at
+historical head `9db03bcb9d9d8d578b99247fe140d23deead4461`: an independent
+clock callback can reset private capacity between derivations, and a fact
+callback can reset correlation accounting. The no-reset baseline refuses at
+private12; reset8-to0 incorrectly returns a verified handoff with reported6
+while five preconsumed plus nine actual private reads total14. These are trusted
+callback fault controls, not a demonstrated remote worker exploit.
+
+T013P05 is reopened pending its bounded correction, fresh complete qualification,
+cleanup and exact-head review/CI. One retained guard now spans all derivations,
+independent Decision construction/join and original member/counter highwaters.
+No original wire field, profile, budget, deadline, host binding or activation
+boundary changes. Earlier completed-source receipts remain historical. Only
+this existing P05 task is being corrected; no new task list or factory semantics.
+Setup/dispatch remain unauthorized; feedback deferred; blocked writes unreplayed.
+
 ## Current T013P05 isolated qualification - 2026-11-21 UTC
 
 Factory #1359 at `15d6328ba428` and adapter #100 at `d6aa44d9ebef` were
@@ -44,8 +63,8 @@ this new implementation has no publication, hosted CI or source acceptance yet.
 `azure_composition/local_host.py` holds an explicitly selected local observer and
 mTLS measurement server. The direct internal-v2 request has the accepted 12 keys,
 including a fresh 64-character lowercase hexadecimal request nonce, and is bounded
-to 4,096 canonical bytes. The direct response contains exactly the existing 21
-fields plus that nonce, bounded to 16,384 complete canonical bytes. Configuration
+to 4,096 canonical bytes. The direct response contains exactly the existing 20
+fields plus that nonce (21 fields total), bounded to 16,384 complete canonical bytes. Configuration
 and policy are both carried in full. The unchanged PrivateHttps transport remains
 the only client exchange; no wrapper, fallback or old ObservationClient change.
 
@@ -226,3 +245,33 @@ protection observation. Admin/provider payloads remain isolated doubles; actual
 administrator separation, issuer hosting, enrollment, human approval and
 consumer acceptance remain later gates. No P06-P09 implementation, setup,
 protected dispatch, feedback submission or historical blocked write occurs.
+
+
+## P05 enclosing-accounting correction evidence - 2026-11-21 UTC
+
+Local review of PR #101 at `9db03bcb9d9d8d578b99247fe140d23deead4461` completed
+all nine expert seats. One P2 finding combines the constructor-boundary private
+reset and correlation/member rollback; no independent additional code finding
+was established. Actual connected red controls show one normal exhausted-budget
+refusal and two unintended verified handoffs, with zero fixture errors. This is
+a trusted callback fault-resistance correction under existing R03, not a new
+remote threat claim, wire or authority policy.
+
+The correction retains one enclosing guard across all three derivations and the
+independent Decision construction/join. It freezes ledger/count/member identities,
+numeric group and per-member highwaters, observation counters and both members'
+clock/end/deadline bounds. It validates again after ReadBudget.check invokes
+selected clocks; legitimate narrowing and the one permitted join remain.
+
+The focused corrected run passes ten cases with 97 intentionally deselected:
+eight new regressions and both original connected positives. The persistence,
+reliability and QA seats clear the bounded delta; exact-head follow-up and fresh
+complete qualification/cleanup/CI are still pending. Actual collection is now
+3,446 full parents plus the existing eleven subtests and 3,024 mandatory native
+cases. All previous IDs and relative order, other module fingerprints and anchor
+prefixes remain. The P05 module has 107 cases and SHA-256
+`0e432d6bfcae71bd8535f07c1345191db94077afc4e8621d5991c668e3d47ab2`.
+Only the existing P05 task reopens. Earlier completed-source results remain
+historical until this correction qualifies; no owner acceptance or operational
+grant changes. Setup/dispatch unauthorized; feedback deferred; blocked writes
+unreplayed.

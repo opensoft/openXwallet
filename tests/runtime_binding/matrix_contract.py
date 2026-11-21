@@ -663,8 +663,8 @@ CASES["R01"] += _nodes("test_azure_runner_transport",
 
 
 # T013P05: measured new collection only; every preceding row/anchor is preserved.
-MODULE_COUNTS['tests/runtime_binding/test_azure_measurement.py'] = 99
-MODULE_DIGESTS['tests/runtime_binding/test_azure_measurement.py'] = 'e9aab3cc9cd63e7534033174c50e0619451f88453feaa76f3ca6f8993474bcea'
+MODULE_COUNTS['tests/runtime_binding/test_azure_measurement.py'] = 107
+MODULE_DIGESTS['tests/runtime_binding/test_azure_measurement.py'] = '0e432d6bfcae71bd8535f07c1345191db94077afc4e8621d5991c668e3d47ab2'
 CASES['H03'] += _nodes("test_azure_measurement",
     'reconstructed_manager_cannot_adopt_original_owned_process',
     'actual_original_manager_or_protected_target_change_refuses')
@@ -697,3 +697,9 @@ CASES['R01'] += _nodes("test_azure_measurement",
     'current_local_control_state_changes_after_observation_refuse',
     'late_actual_protection_change_after_observer_io_refuses',
     'final_observation_is_followed_by_actual_current_control_state')
+
+# P05 enclosing-authority regression controls; preserve every prior anchor prefix.
+CASES['H10'] += _nodes("test_azure_measurement",
+    'preconsumed_private_capacity_refuses_without_callback_reset',
+    'independent_clock_cannot_restore_consumed_authority',
+    'current_fact_callback_cannot_reset_correlation_highwater')

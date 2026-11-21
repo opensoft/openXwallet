@@ -625,3 +625,57 @@ def test_final_observation_is_followed_by_actual_current_control_state(measured)
     service.measure=observed_then_revoked
     with pytest.raises(BindingError):p.finalizer.finalize(p.stage.v.context,p.stage.v.token,decision=p.use())
     assert len(calls)==2
+
+
+def test_preconsumed_private_capacity_refuses_without_callback_reset(measured):
+    from workload_factory_binding_runtime.hosted.readback import start_finalization
+    p=measured;use=p.use();start_finalization(use);budget=ReadBudget(use)
+    for _ in range(5):budget.consume('private')
+    with pytest.raises(BindingError):p.finalizer.finalize(p.stage.v.context,p.stage.v.token,decision=use)
+    assert budget.count('private')==12
+
+
+@pytest.mark.parametrize('change',('private','protection','observations','counts_identity','members_identity','correlation'))
+def test_independent_clock_cannot_restore_consumed_authority(measured,change):
+    from workload_factory_binding_runtime.hosted.readback import start_finalization
+    p=measured;use=p.use();start_finalization(use);budget=ReadBudget(use)
+    if change in ('private','counts_identity'):
+        for _ in range(5):budget.consume('private')
+    elif change=='protection':
+        for _ in range(8):budget.consume('protection')
+    elif change=='observations':budget.begin_protection()
+    elif change=='correlation':
+        for _ in range(3):budget.consume_correlation()
+    actual=p.binding.independent_plan.clock;changed=[]
+    def current_clock():
+        value=actual()
+        if not changed:
+            changed.append(True)
+            if change=='private':budget.state['counts']['private']=0
+            elif change=='protection':budget.state['counts']['protection']=0
+            elif change=='observations':budget.state['protection_observations']=0
+            elif change=='counts_identity':budget.state['counts']={**budget.state['counts'],'private':0}
+            elif change=='members_identity':budget.state['members']=dict(budget.state['members'])
+            else:
+                use.api_requests=0;budget.state['members'][use]=0
+        return value
+    bindings=replace(p.binding,independent_plan=replace(p.binding.independent_plan,clock=current_clock))
+    finalizer=RemoteFinalizer(bindings)
+    with pytest.raises(BindingError):finalizer.finalize(p.stage.v.context,p.stage.v.token,decision=use)
+    assert changed
+
+
+def test_current_fact_callback_cannot_reset_correlation_highwater(measured):
+    from workload_factory_binding_runtime.hosted.readback import start_finalization
+    p=measured;use=p.use();start_finalization(use);budget=ReadBudget(use)
+    for _ in range(3):budget.consume_correlation()
+    actual=p.binding.plan.read_facts;changed=[]
+    def current(ref,*,decision):
+        value=actual(ref,decision=decision)
+        if not changed:
+            changed.append((decision.api_requests,budget.state['members'][decision]))
+            decision.api_requests=0;budget.state['members'][decision]=0
+        return value
+    finalizer=RemoteFinalizer(replace(p.binding,plan=replace(p.binding.plan,read_facts=DecisionRead(current))))
+    with pytest.raises(BindingError):finalizer.finalize(p.stage.v.context,p.stage.v.token,decision=use)
+    assert changed==[(3,3)]

@@ -1,3 +1,22 @@
+## Current P05 publication correction - 2026-11-21 UTC
+
+The active feature058 goal continues with P05 candidate PR #101. Local expert
+review and connected fault controls confirm a P2 enclosing-accounting gap at
+historical head `9db03bcb9d9d8d578b99247fe140d23deead4461`: an independent
+clock callback can reset private capacity between derivations, and a fact
+callback can reset correlation accounting. The no-reset baseline refuses at
+private12; reset8-to0 incorrectly returns a verified handoff with reported6
+while five preconsumed plus nine actual private reads total14. These are trusted
+callback fault controls, not a demonstrated remote worker exploit.
+
+T013P05 is reopened pending its bounded correction, fresh complete qualification,
+cleanup and exact-head review/CI. One retained guard now spans all derivations,
+independent Decision construction/join and original member/counter highwaters.
+No original wire field, profile, budget, deadline, host binding or activation
+boundary changes. Earlier completed-source receipts remain historical. Only
+this existing P05 task is being corrected; no new task list or factory semantics.
+Setup/dispatch remain unauthorized; feedback deferred; blocked writes unreplayed.
+
 ## Current T013P05 isolated qualification - 2026-11-21 UTC
 
 Factory #1359 at `15d6328ba428` and adapter #100 at `d6aa44d9ebef` were

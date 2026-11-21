@@ -10,7 +10,7 @@ from ..github_bootstrap.common import Decision, document
 from ..hosted.admission import PlanBindings, current_plan, read_current
 from ..hosted.finalization import StagingReadback
 from ..hosted.private_http import PrivateHttps, Response
-from ..hosted.readback import ReadBudget, start_finalization
+from ..hosted.readback import LIMITS, ReadBudget, start_finalization
 from ..launch import worker_configuration
 from .local_host import ERROR, PROFILE, RESPONSE, Scope, Opaque, private
 from .selection import ref
@@ -200,6 +200,74 @@ class VerifiedRemote(Opaque):
         self._provenance,self._decision,self._binding = provenance,decision,binding
 
 
+class _FinalizationGuard(Opaque):
+    """Retain one enclosing authority snapshot through every callback and join."""
+    __slots__ = ('binding','expected','ledger','counts','members','count_floor',
+                 'member_floor','observation_floor','budget')
+
+    def __init__(self, finalizer, decision):
+        self.binding,self.expected = finalizer.binding,finalizer._binding
+        initial = self.member_bounds(decision,0)
+        if not hasattr(decision,'_hosted_reads'):
+            start_finalization(decision)
+        self.ledger = decision._hosted_reads
+        self.counts,self.members = self.ledger['counts'],self.ledger['members']
+        require(type(self.counts) is dict and type(self.members) is dict
+                and set(self.members) == {decision}, ERROR)
+        self.count_floor = dict(self.counts)
+        self.member_floor = {decision:(*initial[:-1],self.members[decision])}
+        self.observation_floor = self.ledger['protection_observations']
+        self.budget = ReadBudget(decision)
+        self.check()
+
+    @staticmethod
+    def member_bounds(member, highwater):
+        return (member.clock,member.monotonic,member.end,member.deadline,
+                member.api_requests,highwater)
+
+    def validate(self):
+        require(self.binding() == self.expected and self.budget.state is self.ledger
+                and self.ledger['counts'] is self.counts
+                and self.ledger['members'] is self.members
+                and set(self.counts) == set(self.count_floor) == set(LIMITS)
+                and set(self.members) == set(self.member_floor)
+                and self.ledger['finalization'] is True
+                and self.ledger['staging'] is False
+                and self.ledger['qualification'] is False, ERROR)
+        require(all(type(value) is int and self.count_floor[key] <= value
+                    <= (18 if key == 'protection' else LIMITS[key])
+                    for key,value in self.counts.items()), ERROR)
+        observations = self.ledger['protection_observations']
+        require(type(observations) is int
+                and self.observation_floor <= observations <= 6, ERROR)
+        for member,bounds in self.member_floor.items():
+            clock,monotonic,end,deadline,requests,highwater = bounds
+            require(member._hosted_reads is self.ledger and member.clock is clock
+                    and member.monotonic is monotonic and member.end <= end
+                    and member.deadline <= deadline
+                    and type(member.api_requests) is int and member.api_requests >= requests
+                    and type(self.members[member]) is int
+                    and highwater <= self.members[member] <= member.api_requests, ERROR)
+
+    def check(self):
+        self.validate()
+        self.budget.check()
+        # ReadBudget checks invoke both selected clocks: observe their effects
+        # before retaining the next high-water snapshot, not just before I/O.
+        self.validate()
+        self.count_floor = dict(self.counts)
+        self.member_floor = {member:self.member_bounds(member,self.members[member])
+                             for member in self.member_floor}
+        self.observation_floor = self.ledger['protection_observations']
+
+    def join(self, independent):
+        self.check()
+        bounds = self.member_bounds(independent,0)
+        self.budget.join(independent)
+        self.member_floor[independent] = bounds
+        self.check()
+
+
 class RemoteFinalizer(Opaque):
     __slots__ = ('bindings','_binding')
     def __init__(self, bindings):
@@ -245,41 +313,24 @@ class RemoteFinalizer(Opaque):
         del snapshot['observed_at'],snapshot['expires_at']
         return canonical(snapshot),canonical(snapshot['generation'])
 
-    def _derive(self,context,token,plan_binding,client,decision):
-        ledger = ReadBudget(decision).state
-        clocks = (decision.clock,decision.monotonic)
-        end,deadline = decision.end,decision.deadline
-        counts = ledger['counts']
-        highwater = dict(counts)
-        members = ledger['members']
-        expected_members = set(members)
-        def guard():
-            nonlocal end,deadline,highwater
-            require(self.binding() == self._binding and decision.clock is clocks[0]
-                    and decision.monotonic is clocks[1] and decision.end <= end
-                    and decision.deadline <= deadline and decision._hosted_reads is ledger
-                    and ledger['counts'] is counts and ledger['members'] is members
-                    and set(members) == expected_members and set(counts) == set(highwater)
-                    and all(type(counts[k]) is int and counts[k] >= v for k,v in highwater.items())
-                    and ledger['finalization'] and not ledger['staging'] and not ledger['qualification'], ERROR)
-            ReadBudget(decision).check()
-            end,deadline,highwater = decision.end,decision.deadline,dict(counts)
-        guard()
+    def _derive(self,context,token,plan_binding,client,decision,guard):
+        guard.check()
         plan = current_plan(context,token,plan_binding,phase='protected',decision=decision)
-        guard()
+        guard.check()
         require(plan.raw == client.scope.plan.raw, ERROR)
         stage,generation = self._stage(plan,context,decision)
-        guard()
+        guard.check()
         observed = client.read(decision=decision)
-        guard()
+        guard.check()
         require(type(observed) is Observed and observed.decision is decision
                 and observed.generation == generation, ERROR)
         expected = expected_bytes(plan,context,document(generation),self.bindings.roots,decision)
+        guard.check()
         require((observed.configuration,observed.policy) == expected, ERROR)
         fresh = current_plan(context,token,plan_binding,phase='protected',decision=decision)
         require(fresh.raw == plan.raw and self._stage(fresh,context,decision) == (stage,generation)
                 and self.binding() == self._binding, ERROR)
-        guard()
+        guard.check()
         return expected,generation,observed.nonce
 
     def finalize(self,context,token,*,decision):
@@ -288,33 +339,24 @@ class RemoteFinalizer(Opaque):
         require(type(decision) is Decision and context == self.bindings.primary.scope.context
                 and decision.clock is self.bindings.plan.clock
                 and decision.monotonic is self.bindings.plan.monotonic, ERROR)
-        if not hasattr(decision,'_hosted_reads'):
-            start_finalization(decision)
-        budget = ReadBudget(decision)
-        require(budget.state['finalization'] and not budget.state['staging']
-                and not budget.state['qualification'] and len(budget.state['members']) == 1, ERROR)
-        original_clock,original_mono,original_end,original_deadline = decision.clock,decision.monotonic,decision.end,decision.deadline
-        def original():
-            require(decision.clock is original_clock and decision.monotonic is original_mono
-                    and decision.end <= original_end and decision.deadline <= original_deadline
-                    and decision._hosted_reads is budget.state, ERROR)
-            budget.check()
+        guard = _FinalizationGuard(self,decision)
         b = self.bindings
-        expected,generation,first = self._derive(context,token,b.plan,b.primary,decision)
-        original()
+        expected,generation,first = self._derive(context,token,b.plan,b.primary,decision,guard)
+        guard.check()
         own = Decision(clock=b.independent_plan.clock,monotonic=b.independent_plan.monotonic,
                        deadline=decision.deadline)
-        budget.join(own)
-        second,other,independent_nonce = self._derive(context,token,b.independent_plan,b.independent,own)
+        guard.check()
+        guard.join(own)
+        second,other,independent_nonce = self._derive(context,token,b.independent_plan,b.independent,own,guard)
         require(second == expected and other == generation and independent_nonce != first, ERROR)
-        original()
-        last,last_generation,last_nonce = self._derive(context,token,b.plan,b.primary,decision)
+        guard.check()
+        last,last_generation,last_nonce = self._derive(context,token,b.plan,b.primary,decision,guard)
         require(last == expected and last_generation == generation
                 and len({first,independent_nonce,last_nonce}) == 3, ERROR)
-        original()
+        guard.check()
         provenance = canonical(dict(observers=list(b.primary.scope.observer_refs),
             credentials=[b.primary.credential_origin,b.independent.credential_origin],
             approvals=[b.primary.approval_origin,b.independent.approval_origin],
             scope=b.primary.scope.record(),nonces=[first,independent_nonce,last_nonce]))
-        original()
+        guard.check()
         return VerifiedRemote(_SEAL,*expected,generation,provenance,decision,self._binding)
