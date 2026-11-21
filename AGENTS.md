@@ -164,7 +164,7 @@ ownership, validation, versioning, and release constraints.
 - Active feature: 017-protected-runtime-qualification; plan:
   specs/017-protected-runtime-qualification/plan.md.
   Current P3 preparation subplan: specs/017-protected-runtime-qualification/p3-azure-composition-plan.md.
-  Current bounded slice: specs/017-protected-runtime-qualification/p3-measurement-plan.md (T013P05; preparation only, implementation uncommissioned).
+  Current bounded slice: specs/017-protected-runtime-qualification/p3-measurement-plan.md (T013P05 isolated work commissioned; proposed v2 source acceptance pending before dependent code).
   Earlier T012T subplan remains historical: specs/017-protected-runtime-qualification/hosting-evidence-plan.md.
 - Ratified factory composition: opensoft/openXfactory,
   openspec/changes/prepare-protected-runtime-qualification/.
