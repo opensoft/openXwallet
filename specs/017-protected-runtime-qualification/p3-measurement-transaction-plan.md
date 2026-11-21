@@ -60,6 +60,10 @@ A substantive fitting positive must combine actual original local manager and
 process/namespace observations, independent local observers, pinned mTLS and
 valid request correlation, independently derived complete bytes, current scope,
 original nested charges/clocks and independently verified fixture cleanup.
+The fixed conservative request interval must still fit after TLS readiness;
+a delayed connection that exhausts it refuses before GO, without rewriting the
+request, renewing its budget or retrying. Response expiry cannot exceed the
+request deadline and the caller's original monotonic end still controls return.
 Actual source eligibility remains unproven until that connected positive passes.
 
 Refusal controls start from that available positive and mutate nonce (including
