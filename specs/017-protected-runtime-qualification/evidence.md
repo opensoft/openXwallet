@@ -3744,3 +3744,28 @@ performed and that cleanup is not claimed complete. Merged-main runtime
 qualification remains independently verified. See the [P05 validation checkpoint](p3-measurement-plan.md#preparation-validation-checkpoint).
 P06-P09/T001/T013/T014/T015 and all operational/human/consumer gates remain
 separate. Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.
+
+
+## 2026-11-21 P05 preparation validation recovery
+
+The existing seven-document preparation at `203a885baf1c39b4b5531aa2e784224ceb2f7b65`
+was resumed only after the coordinating chat released its maintenance pause.
+All six local offline gates passed, including the default authenticated shared
+OpenSpec --all entrypoint: pinned artifact and 80-package closure verified,
+8 strict items passed and none failed. The runner rechecked all 407 frozen
+inputs and the clean prepared head before and after each gate. The earlier
+five-pass/kernel-blocked checkpoint describes the initial attempt only.
+
+The old blocked process and unstarted validation container are absent. Both the
+retained old bench scratch and recovered validation scratch passed independent
+process/resource audits and exact-root removal; shared caches and source were
+preserved. No old PID signal, default-gate bypass or blocked write was replayed.
+Detailed local logs and audit receipts remain with the existing qualification
+records. No full/native runtime retest is inferred from these document checks.
+
+The P05 subplan's local preparation blocker is closed. This documentation-only
+follow-up supplies no P05 implementation commission, publication/source approval,
+actual appointment or operational accepted_commit. All task checkbox states and
+runtime/test/profile/pin/workflow bytes remain unchanged. Setup/dispatch remain
+unauthorized, feedback deferred and all live/human/consumer gates open. See the
+[P05 recovery receipt](p3-measurement-plan.md#preparation-recovery-receipt---2026-11-21-utc).

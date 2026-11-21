@@ -229,7 +229,7 @@ human approval and consumer gates remain separate. Setup/dispatch unauthorized;
 feedback deferred; blocked writes unreplayed.
 
 
-## Preparation validation checkpoint
+## Historical initial preparation validation checkpoint
 
 Five local offline checks pass: contract pin, wallet pin, syntax, plain validator
 and strict validator. The final local default pinned OpenSpec invocation did not
@@ -247,3 +247,29 @@ local exit or a waiver of any future publication gate. The new P05 document lies
 outside the unchanged OpenSpec corpus; its links, scope and checkbox consistency
 are checked separately. Complete the blocked local validation/owned-harness
 cleanup when runtime recovery can be coordinated safely with active bench work.
+
+
+## Preparation recovery receipt - 2026-11-21 UTC
+
+The coordinating chat released the Docker maintenance pause after the owning
+bench recovered. The unchanged prepared packet at `203a885baf1c39b4b5531aa2e784224ceb2f7b65`
+then passed all six offline gates locally: contract pin, wallet pin, syntax,
+plain validator, strict validator and the default authenticated shared
+`python -B scripts/validate-openspec-cli-pin.py --all` entrypoint. The last
+command verified the pinned artifact and 80-package dependency closure and
+reported 8 passed, 0 failed strict items. All 407 frozen inputs were rechecked
+before and after validation; the worktree remained clean at that prepared head.
+No path-mode override, network stub, source substitution or gate waiver was used.
+
+The old blocked process and never-started validation container are absent after
+coordinated recovery; no old PID kill was replayed against the new namespace.
+The retained old bench scratch and the new six-gate scratch each passed an
+independent process/resource audit and exact-root removal. Shared caches,
+worktree/source and validation logs remain. This supersedes the environment
+blocker above, not any implementation or operational acceptance gate.
+
+This follow-up changes preparation records only. P05 code/tests remain absent,
+the P05 checkbox remains unchecked and isolated implementation is uncommissioned.
+Publication, source acceptance, P06-P09 and all live operational/human/consumer
+gates remain separate. Setup/dispatch unauthorized; feedback deferred; historical
+blocked writes unreplayed.

@@ -7,10 +7,12 @@ T013P05 preparation only. P05 implementation, P06-P09, T001/T013/T014/T015,
 consumer058 T002, appointments and operational accepted_commit remain gated.
 Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.
 Earlier dated checkpoints below retain their historical scope.
-Local preparation validation: five offline checks pass; the default pinned
-OpenSpec repeat and owned-harness cleanup are blocked by kernel RTNL. Main strict
-OpenSpec passed on byte-identical governed inputs; this is not a fresh local
-exit or a publication waiver. See the P05 subplan validation checkpoint.
+Local preparation recovery (2026-11-21 UTC): all six offline checks now pass,
+including the default authenticated pinned OpenSpec --all (8 strict items).
+The old blocked process and never-started validation container are absent; both
+old and recovered owned scratch passed audit and removal. The earlier RTNL
+checkpoint is historical. See the P05 subplan recovery receipt. P05 remains
+preparation only; implementation, publication and operational gates stay separate.
 
 Current final T013P04 corrected qualification: runtime/test/matrix head
 19c516bcd50e6f2f966f669f313a5b0f043d2eb6 passes all seven ordered gates, 3,339 full
