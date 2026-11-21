@@ -105,3 +105,31 @@ profile, wire, workflow, budget, dependency pin and prior case identity remain.
 Only isolated T013P05 is commissioned. P06-P09, setup, protected dispatch, live
 human/consumer acceptance, new source publication/review and source ratification
 remain separate. Feedback deferred; historical blocked writes unreplayed.
+
+
+## Fixture isolation correction before final qualification
+
+The first parallel full attempt passed560 cases before a P05 positive call
+refused; its native companion had an inherited staging setup error and was
+intentionally interrupted after that error. A subsequent sequential full attempt
+passed630 cases, then its inherited public staging HTTP setup timed out before
+the P05 Decision existed. These are failed/diagnostic attempts, not qualification.
+Two targeted structural cases and all28 wire diagnostics pass; they do not prove
+the cause of the original generic measurement refusal. No clock or budget is
+expanded to erase these results.
+
+P05 fixture setup now calls the existing StageController.handle protected
+interface locally with the same three selected context inputs and signed fixture
+token. This retains selected_plan authentication, fresh grant/correlation, durable
+controller/host stores, independent cleanup acknowledgement and real mTLS
+HostClient registration/start/status. It avoids nesting this independent setup
+inside P04's public HTTP handler timer. The original HostAgent launch owner, real
+worker and kernel evidence remain. Existing P04 transport tests are unchanged.
+The real P05 elapsed clock still starts exactly once after setup and authenticated
+generation selection; its ten-second Decision, one-second fixed request interval,
+all per-request deadlines and every read budget remain unchanged.
+
+Seven targeted connected/denial/manager/wire/cancellation eligibility cases pass
+with92 intentionally deselected using an external local-controller fixture copy.
+This is setup-locality evidence only; full/native qualification must bind the
+corrected candidate. Product runtime, transport and matrix bytes are unchanged.

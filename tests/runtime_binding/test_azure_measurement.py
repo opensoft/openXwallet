@@ -68,7 +68,13 @@ def measured(stage,tmp_path):
         # Original retained manager launches exactly one real confined worker.
         wall()
         try:
-            ready=stage.protected.read(v.context,v.token,decision=stage.use())
+            # Independent fixture setup invokes the existing selected controller
+            # locally. Its signature/grant/correlation/durable lease and real
+            # mTLS HostClient checks remain; P04 owns the outer public HTTP test.
+            # No P05 Decision or elapsed-clock epoch exists during this setup.
+            ready=stage.controller.handle('protected',
+                {k:getattr(v.context,k) for k in ('accepted_commit','selection_digest','preauthorization_ref')},
+                v.token,decision=stage.use())
         except BaseException as error:
             import traceback
             # Fixed structural diagnostics only; never exception text or locals.
