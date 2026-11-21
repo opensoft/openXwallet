@@ -3,6 +3,8 @@
 Provider/authority administration remains trusted; snapshots are source facts,
 not live qualification or an atomic provider transaction.
 """
+from contextlib import contextmanager
+from contextvars import ContextVar
 from dataclasses import dataclass,asdict
 import secrets
 from urllib.parse import urlsplit
@@ -54,6 +56,80 @@ def start_qualification(decision):
     ReadBudget(decision).check()
 
 
+_ACTIVE_READS = ContextVar("hosted_active_read_checkpoints", default=())
+
+
+class _ReadCheckpoint:
+    """Callback-free audit of the original accounting objects at one boundary."""
+    def __init__(self, decision, state):
+        self.decision,self.state = decision,state
+        self.counts,self.members = state['counts'],state['members']
+        require(type(self.counts) is dict and type(self.members) is dict, ERROR)
+        self.values = dict(self.counts)
+        self.bounds = {member:(member.clock,member.monotonic,member.end,member.deadline,
+                               member.last,member.last_mono,member.api_requests,highwater)
+                       for member,highwater in self.members.items()}
+        self.observations = {name:state[name] for name in
+                             ('stage_observations','protection_observations')}
+        self.phases = {name:state[name] for name in
+                       ('staging','finalization','qualification')}
+        self.check()
+
+    def check(self):
+        require(self.decision._hosted_reads is self.state
+                and self.state['counts'] is self.counts and self.state['members'] is self.members
+                and set(self.counts) == set(self.values) and set(self.members) == set(self.bounds), ERROR)
+        require(all(integer(value) and 0 <= self.values[name] <= value
+                    for name,value in self.counts.items()), ERROR)
+        require(all(integer(self.state[name]) and 0 <= value <= self.state[name]
+                    for name,value in self.observations.items()), ERROR)
+        require(all(type(value) is bool and self.state[name] is value
+                    for name,value in self.phases.items()), ERROR)
+        for member,bounds in self.bounds.items():
+            clock,monotonic,end,deadline,wall,mono,requests,highwater = bounds
+            require(member._hosted_reads is self.state and member.clock is clock
+                    and member.monotonic is monotonic and member.end <= end
+                    and member.deadline <= deadline
+                    and integer(member.last) and member.last >= wall
+                    and type(member.last_mono) in (int,float) and member.last_mono >= mono
+                    and integer(member.api_requests) and member.api_requests >= requests
+                    and integer(self.members[member])
+                    and 0 <= highwater <= self.members[member] <= member.api_requests, ERROR)
+
+
+def _audit_reads(state, *, retain=False):
+    """Retain real nested consumption in this synchronous operation's scopes."""
+    active = tuple(item for item in _ACTIVE_READS.get() if item.state is state)
+    for item in active:
+        item.check()
+    if retain:
+        for item in active:
+            item.__init__(item.decision,state)
+
+
+@contextmanager
+def _read_checkpoint(decision, state):
+    _audit_reads(state)
+    checkpoint = _ReadCheckpoint(decision,state)
+    token = _ACTIVE_READS.set((*_ACTIVE_READS.get(),checkpoint))
+    try:
+        yield
+        _audit_reads(state,retain=True)
+    finally:
+        _ACTIVE_READS.reset(token)
+
+
+def _join_reads(state, independent):
+    for item in _ACTIVE_READS.get():
+        if item.state is state:
+            require(set(state['members']) == {*item.bounds,independent}
+                    and independent not in item.bounds, ERROR)
+            item.bounds[independent] = (independent.clock,independent.monotonic,
+                independent.end,independent.deadline,independent.last,
+                independent.last_mono,independent.api_requests,state['members'][independent])
+    _audit_reads(state,retain=True)
+
+
 class ReadBudget:
     def __init__(self, decision):
         require(type(decision) is Decision, ERROR)
@@ -64,26 +140,29 @@ class ReadBudget:
         self.check()
 
     def check(self):
-        members = self.state["members"]
-        require(self.decision in members and 1 <= len(members) <= (1 if self.state["staging"] or self.state["qualification"] else 2), ERROR)
-        correlation_limit = 8 if self.state["staging"] else 4
-        for member, highwater in tuple(members.items()):
-            member.now()
-            count = member.api_requests
-            require(integer(count) and highwater <= count <= correlation_limit, ERROR)
-            members[member] = count
-        require(sum(members.values()) <= correlation_limit, ERROR)
-        expiry = min(member.deadline for member in members)
-        for member in members:
-            member.clip(expiry)
-        requests = self.github_requests
-        if self.state["staging"]:
-            request_limit = 26
-        elif self.state["finalization"]:
-            request_limit = 28
-        else:
-            request_limit = 13
-        require(requests <= request_limit, ERROR)
+        with _read_checkpoint(self.decision,self.state):
+            members = self.state["members"]
+            require(self.decision in members and 1 <= len(members) <= (1 if self.state["staging"] or self.state["qualification"] else 2), ERROR)
+            correlation_limit = 8 if self.state["staging"] else 4
+            for member, highwater in tuple(members.items()):
+                member.now()
+                _audit_reads(self.state,retain=True)
+                count = member.api_requests
+                require(integer(count) and highwater <= count <= correlation_limit, ERROR)
+                members[member] = count
+            require(sum(members.values()) <= correlation_limit, ERROR)
+            expiry = min(member.deadline for member in members)
+            for member in members:
+                member.clip(expiry)
+                _audit_reads(self.state,retain=True)
+            requests = self.github_requests
+            if self.state["staging"]:
+                request_limit = 26
+            elif self.state["finalization"]:
+                request_limit = 28
+            else:
+                request_limit = 13
+            require(requests <= request_limit, ERROR)
 
     @property
     def github_requests(self):
@@ -98,21 +177,26 @@ class ReadBudget:
                 and independent.api_requests == 0 and len(self.state["members"]) == 1, ERROR)
         remaining = min(member.remaining() for member in self.state["members"])
         independent.now()
+        _audit_reads(self.state,retain=True)
         independent.end = min(independent.end, independent.last_mono + remaining)
         self.state["members"][independent] = 0
         independent._hosted_reads = self.state
+        _join_reads(self.state,independent)
         ReadBudget(independent).check()
 
     def consume_correlation(self):
         self.check()
         require(sum(self.state["members"].values()) < (8 if self.state["staging"] else 4), ERROR)
         self.decision.api_requests += 1
+        _audit_reads(self.state,retain=True)
         self.check()
 
     def begin_staging_observation(self):
         self.check()
         require(self.state["staging"] and self.state["stage_observations"] < 2, ERROR)
         self.state["stage_observations"] += 1
+        _audit_reads(self.state,retain=True)
+        self.check()
 
     def begin_protection(self):
         self.check()
@@ -121,6 +205,8 @@ class ReadBudget:
         if self.state["finalization"]:
             require(self.state["protection_observations"] < 6, ERROR)
         self.state["protection_observations"] += 1
+        _audit_reads(self.state,retain=True)
+        self.check()
 
     def consume(self, group):
         self.check()
@@ -135,6 +221,7 @@ class ReadBudget:
             limit = LIMITS[group]
         require(self.state["counts"][group] < limit, ERROR)
         self.state["counts"][group] += 1
+        _audit_reads(self.state,retain=True)
         self.check()
 
     def count(self, group):
@@ -243,5 +330,8 @@ class DecisionRead:
         require(callable(reader),ERROR);self.reader=reader
 
     def __call__(self,*arguments,decision):
-        ReadBudget(decision).check();result=self.reader(*arguments,decision=decision)
-        ReadBudget(decision).check();return result
+        budget = ReadBudget(decision)
+        with _read_checkpoint(decision,budget.state):
+            result = self.reader(*arguments,decision=decision)
+            budget.check()
+            return result

@@ -1,3 +1,147 @@
+## Nested P05 accounting correction - 2026-11-21 UTC
+
+The first enclosing guard at candidate `56b42ef` closes the original two red
+controls but remains insufficient inside a nested current_plan observation.
+Actual connected controls confirm two further variants: a late facts callback
+restores newly consumed protection/observation charges to the enclosing floor,
+and a selected clock erases a newly incremented private charge inside the shared
+budget check. Both returned unintended verified handoffs with zero fixture
+errors. PR #101 stays draft; the superseded r1 full run was intentionally stopped
+before editing source and is not qualification.
+
+The existing R03 accounting seam now retains real consumption in private,
+lexically active synchronous ContextVar checkpoints in hosted/readback.py.
+Original read/correlation/observation increments notify matching active scopes
+before further callbacks, while DecisionRead and the whole P05 finalization
+retain them through nested returns. Explicit join alone adds its verified member;
+finally resets every context token. Original objects, phase, time history and
+shrinking bounds remain checked. This does not track independent new threads.
+
+All 15 focused actual process/TLS controls pass. Actual collection is 3,451 full
+parents and 3,029 native cases, including 112 P05 identities; all previous IDs,
+other fingerprints and anchor prefixes are preserved. Final frozen full/native
+qualification, guard controls, cleanup and published-head CI remain pending.
+No new ledger, persistent state, callback substitution, wire/API/profile field,
+limit, credential selection or activation is introduced. The owning P05 task
+adds the shared helper path; no new requirement or duplicate task list.
+Fresh exact-source complete regression/native qualification and review remain
+required. Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.
+
+## Current P05 publication correction - 2026-11-21 UTC
+
+The active feature058 goal continues with P05 candidate PR #101. Local expert
+review and connected fault controls confirm a P2 enclosing-accounting gap at
+historical head `9db03bcb9d9d8d578b99247fe140d23deead4461`: an independent
+clock callback can reset private capacity between derivations, and a fact
+callback can reset correlation accounting. The no-reset baseline refuses at
+private12; reset8-to0 incorrectly returns a verified handoff with reported6
+while five preconsumed plus nine actual private reads total14. These are trusted
+callback fault controls, not a demonstrated remote worker exploit.
+
+T013P05 is reopened pending its bounded correction, fresh complete qualification,
+cleanup and exact-head review/CI. One retained guard now spans all derivations,
+independent Decision construction/join and original member/counter highwaters.
+No original wire field, profile, budget, deadline, host binding or activation
+boundary changes. Earlier completed-source receipts remain historical. Only
+this existing P05 task is being corrected; no new task list or factory semantics.
+Setup/dispatch remain unauthorized; feedback deferred; blocked writes unreplayed.
+
+## Current T013P05 isolated qualification - 2026-11-21 UTC
+
+Factory #1359 at `15d6328ba428` and adapter #100 at `d6aa44d9ebef` were
+owner-ratified for source acceptance and landed in that order as
+`ee1800c7baed409a9679f34c7a87e21dc01ea3d7` and
+`cc0a91b9991e8b73fa32ddb431d0cfb7bfee20a3`. Both merged trees equal the
+ratified trees. Independent main CI and all six evaluated, unchanged Sonar
+conditions pass for both merges.
+
+The later commissioned T013P05 source candidate `22184abbb4c4965fc55719e94f74868d1196ed2b` is implemented and
+qualified in isolation: all seven ordered gates, 3,438 full parent tests plus
+11 existing subtests, and all 3,016 mandatory native cases pass with zero
+failures, errors or skips. All 99 added identities and every prior matrix
+identity, fingerprint, ordering and anchor prefix are preserved. Fourteen
+selected guard controls pass unchanged; each of fourteen weakened isolated
+copies fails its intended assertion without fixture errors. Full and native
+qualification bind the same 412 frozen inputs and preserved dependencies.
+
+Independent post-process audits verify ten preservation cases in total, no
+attributable live generations and unissued measurement nonce state. Only owned
+test scratch and the two dedicated persistent ext4 test volumes are removed;
+source, dependency checkouts and shared caches remain. Earlier failed and
+instrumented attempts remain historical evidence, not qualification. The
+fixture correction changes independent setup locality only; original P05 clocks,
+fixed request interval, wire sizes and read budgets remain unchanged.
+
+Only T013P05 is complete in isolation. New P05 publication, hosted CI, local
+expert review and owner source acceptance remain separate. P06-P09,
+T001/T013/T014/T015, operational role appointments, setup, protected dispatch,
+actual provider/issuer/enrollment and live human/consumer acceptance remain
+ungranted. Feedback deferred; historical blocked writes unreplayed.
+
+Earlier dated status and pending labels below are historical checkpoints.
+
+## Current isolated P05 implementation checkpoint - 2026-11-21 UTC
+
+Owner-ratified factory #1359 (`15d6328ba428`) landed first as
+`ee1800c7baed409a9679f34c7a87e21dc01ea3d7`; adapter #100 (`d6aa44d9ebef`)
+followed as `cc0a91b9991e8b73fa32ddb431d0cfb7bfee20a3`. Both merged trees equal
+the ratified trees. Independent main CI and all six unchanged, evaluated Sonar
+conditions pass for each merge (factory run44878733896, adapter run44878770163).
+
+The commissioned T013P05 implementation now exists. Its connected isolated
+eligibility is demonstrated using protected local current-fact reads, original
+manager/process provenance, two independent mTLS observers and complete-byte
+recomputation. All 99 focused controls pass together; all 14 deliberately weakened
+guard copies are detected without fixture errors. Actual collection adds only
+those 99 cases: 3,438 full parents and 3,016 mandatory native cases, preserving
+every prior identity, order, fingerprint and anchor prefix. Full/native frozen
+qualification and final owned-fixture cleanup remain pending; P05 stays unchecked.
+See `p3-measurement-implementation.md` in feature017 for the as-built boundaries.
+
+Earlier dated preparation, unratified, absent-code, unproven-eligibility and
+pending-main labels below are historical checkpoints, superseded only for this
+bounded P05 source continuation. Provider/admin contents remain isolated doubles;
+no operational deployment, issuer, enrollment or actual administrator separation
+is demonstrated. P06-P09 and T001/T013/T014/T015, live human and consumer gates,
+new P05 publication/review/source acceptance, setup and dispatch remain separate.
+Feedback deferred; historical blocked writes unreplayed.
+
+## Current P05 v2 source acceptance and isolated continuation - 2026-11-21 UTC
+
+Brett source-ratified openXfactory #1359 at
+`15d6328ba42809dc5cf9280e110b824524b31652` with openXwallet #100 at
+`d6aa44d9ebef61e9070b6eff32fe4cc104b4f8c4`, directing ordered landing and
+resumption of isolated T013P05. Factory merged first as
+`ee1800c7baed409a9679f34c7a87e21dc01ea3d7`; adapter followed as
+`cc0a91b9991e8b73fa32ddb431d0cfb7bfee20a3`. Both merge trees equal their
+ratified trees. Final PR CI/evaluated gates and nine-role local review passed;
+independent post-merge main CI is still being observed separately.
+
+The direct v2 transaction semantics in the paired factory packet are now the
+accepted P05 refinement. Earlier draft/unratified/preparation-only labels below
+are historical. This grants isolated P05 implementation/testing, not P06-P09,
+setup/dispatch, operational selections or live/human/consumer acceptance.
+P05 stays unchecked until connected qualification and cleanup actually pass.
+
+Four external accounting diagnostics pass without errors/skips: the existing
+network-backed PlanFactReader finalization consumes private12 and six fresh
+protection observations; any additional read refuses at private attempt13.
+An in-memory private13 counterfactual makes the post-exhaustion refusal control
+fail at the intended DID NOT RAISE assertion. That is a route-specific
+compatibility finding, not proof that every permitted embedding is ineligible.
+Both diagnostic namespaces and 129 generation records were audited; both owned
+scratch roots were removed. Product/runtime/test/matrix source is unchanged.
+
+Existing PlanBindings also accepts a trusted local current-fact capability.
+The isolated continuation will test actual protected current-journal reads on the
+control side, preserving every fact/protection/authority recheck and charging all
+remaining RPCs to the original ledger. This is a fixture/source locality choice,
+not a selected operational deployment. No cached fact, copied digest, hidden
+network read, request/body/budget expansion or clock renewal is allowed. Its
+connected manager/independent-observer/complete-byte/budget eligibility remains
+unproven; keep the original eligibility stop if it cannot be demonstrated.
+Feedback deferred; historical blocked writes unreplayed.
+
 Current T013P05 eligibility (2026-11-21 UTC): four actual process/TLS probes
 pass, including a fitting 8,860-byte complete measurement and valid worker denial.
 The accepted direct response has no request nonce; shared PrivateHttps discards
