@@ -1,3 +1,24 @@
+## Current P05 qualification closeout - 2026-11-21 America/La_Paz
+
+P05 runtime source `0b174962aa504399bea7873189c8dc89a9e32fc4` now passes all seven ordered
+gates, 3,451 full parent tests plus 11 existing subtests, and all 3,029 mandatory
+native cases, with zero failures, errors or skips. The 112 P05 identities and
+all prior matrix identities remain intact. Eight local expert roles and completed
+GLM5.3 source security review report no actionable findings. Sixteen guard
+baselines pass and all sixteen weakened copies fail their intended assertions.
+Independent audits verify preservation, nonce state, no live fixture generations,
+and removal of the owned scratch roots and volumes, including the failed native
+attempt and diagnostic. That earlier transport refusal remains unresolved history,
+not a qualification result. The detailed receipt follows below.
+
+Only T013P05 is complete in isolation. Brett separately accepted the feature019
+main coverage job cap amendment from 45 to 90 minutes; runtime limits, coverage,
+thresholds, other job caps and operational permissions are unchanged. Replacement
+published-head CI, evaluated Sonar and PR #101 source ratification remain pending.
+P06-P09, setup/dispatch and live human/consumer acceptance remain unauthorized;
+feedback deferred and historical blocked writes unreplayed. Earlier pending and
+superseded-source labels below are historical checkpoints.
+
 ## Nested P05 accounting correction - 2026-11-21 UTC
 
 The first enclosing guard at candidate `56b42ef` closes the original two red
@@ -4025,3 +4046,45 @@ Only the existing P05 task reopens. Earlier completed-source results remain
 historical until this correction qualifies; no owner acceptance or operational
 grant changes. Setup/dispatch unauthorized; feedback deferred; blocked writes
 unreplayed.
+
+## P05 isolated qualification closeout 2026-11-21
+
+Qualified runtime source: `0b174962aa504399bea7873189c8dc89a9e32fc4`. The retained aggregate
+receipt is `qualification-final/verified-qualification.json`, SHA-256
+`f3fbddce4b8d296ebb944cba9733725dc84fdc4b0a338d2ac280945bcfa80656` in the scoped P05 qualification archive.
+It selects only `qualification-r2/full-volume` and
+`qualification-r3-native/native-volume`, binding the same 412 frozen inputs and
+four unchanged clean dependency heads/trees.
+
+| Check | Verified result |
+| --- | --- |
+| Ordered source gates | Both pins, YAML, normal/strict adapter validation, full suite, authenticated pinned OpenSpec `--all`: all seven pass |
+| Full regression | 3,451 parent cases plus 11 subtests; 2,664.223 seconds; zero failures/errors/skips |
+| Native conformance | 3,029 cases; 2,052.873 seconds; PASS; zero failures/errors/skips |
+| P05 matrix | All 112 identities; digest `3306140329f334ad43c73ae5cbe720f549e1f85fc05b017c0b5de65c28111cf1`; prior identities/fingerprints/anchors preserved |
+| Guard controls | 16 unchanged baselines pass; 16 weakened copies fail intended assertions without fixture errors; 17 roots audited and removed |
+| Review | Eight local non-security roles plus completed Z.ai GLM5.3 accounting/measurement source reviews; zero actionable findings |
+| Selected-run cleanup | Five preservation cases per run, three positive connected bindings per run, 223 measurement nonce journals per run with no issued token, no live owned processes; both fixture roots and volumes removed |
+| Counter-controls | Missing either positive observer journal refuses; wrong preservation count refuses before deletion; original journal bytes and retained file identities stay unchanged |
+
+The serial native selection replaces a failed r2 attempt with 3,028 passes and
+one initial protected-stage client refusal before the qualification Decision.
+Server-side progress does not prove the reply completed; its transport subtype
+remains unconfirmed. A fresh same-case diagnostic passed under original limits.
+The failed attempt, diagnostic, receipts and this limitation are retained; their
+owned namespaces, fixtures and volume are verified absent. No original request
+was replayed, no runtime limit was extended, and no failure is counted as a pass.
+
+The final evidence verifier also rejects a foreign review head, duplicate expert
+role and unresolved finding, and requires exact historical disposal receipts.
+Temporary GLM gateway generations and credential copies passed independent cleanup.
+The final Docker inventory found no P05 containers or test volumes.
+
+Hosted source run [44951462018](https://github.com/opensoft/openXwallet/actions/runs/44951462018)
+passed full/native, source-conformance and isolated coverage for the qualified
+runtime source. Its main coverage job reached 73 percent passing progress before
+GitHub cancelled it at 45 minutes, publishing no complete coverage artifact;
+Sonar skipped. Brett accepted only the bounded main coverage cap amendment to
+90 minutes. Feature019 T013 requires replacement exact-head coverage and the
+actual unchanged six-condition Sonar gate before PR #101 source acceptance.
+No main deployment or consumer/live qualification follows from isolated P05.

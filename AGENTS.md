@@ -1,3 +1,24 @@
+## Current P05 qualification closeout - 2026-11-21 America/La_Paz
+
+P05 runtime source `0b174962aa504399bea7873189c8dc89a9e32fc4` now passes all seven ordered
+gates, 3,451 full parent tests plus 11 existing subtests, and all 3,029 mandatory
+native cases, with zero failures, errors or skips. The 112 P05 identities and
+all prior matrix identities remain intact. Eight local expert roles and completed
+GLM5.3 source security review report no actionable findings. Sixteen guard
+baselines pass and all sixteen weakened copies fail their intended assertions.
+Independent audits verify preservation, nonce state, no live fixture generations,
+and removal of the owned scratch roots and volumes, including the failed native
+attempt and diagnostic. That earlier transport refusal remains unresolved history,
+not a qualification result. See [specs/017-protected-runtime-qualification/evidence.md](specs/017-protected-runtime-qualification/evidence.md#p05-isolated-qualification-closeout-2026-11-21).
+
+Only T013P05 is complete in isolation. Brett separately accepted the feature019
+main coverage job cap amendment from 45 to 90 minutes; runtime limits, coverage,
+thresholds, other job caps and operational permissions are unchanged. Replacement
+published-head CI, evaluated Sonar and PR #101 source ratification remain pending.
+P06-P09, setup/dispatch and live human/consumer acceptance remain unauthorized;
+feedback deferred and historical blocked writes unreplayed. Earlier pending and
+superseded-source labels below are historical checkpoints.
+
 ## Nested P05 accounting correction - 2026-11-21 UTC
 
 The first enclosing guard at candidate `56b42ef` closes the original two red

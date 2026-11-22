@@ -122,3 +122,19 @@ availability record: the August baseline stays live and selected, every other
 original live identity remains required, and archived data cannot qualify any
 current gate, coverage, profile or finding check. No historical snapshot was
 recreated or backdated. Full historical source/measure export is not claimed.
+
+## Accepted P05 source measurement budget amendment (2026-11-21 America/La_Paz)
+
+Status: Brett Heap accepted this bounded maintenance scope on 2026-11-21.
+Exact-head source ratification, replacement CI and evaluated Sonar remain pending.
+
+Change only coverage-tests timeout-minutes from 45 to
+90. Preserve isolated-coverage45, ordinary pytest90, source-conformance60 and
+analysis20. The earlier 45-minute main measurement decision remains historical.
+Preserve the fixed complementary partition, identical full inventory and passing
+assertion union, all native cases, raw branch evidence, source/pin snapshots,
+Python compatibility, all six gate conditions and retained baseline. No changed
+coverage threshold/exclusion, runtime clock, private budget, billing, protected
+setup/dispatch or operational permission follows. Require a replacement same-head
+coverage run and actual evaluated unchanged Sonar gate before acceptance; 90
+minutes is a bound, not a prediction or guarantee.
