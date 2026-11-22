@@ -1,8 +1,10 @@
 # T013P06 enrollment and issuance subplan
 
-Status: preparation only, commissioned by Brett Heap on 2026-11-22. The existing
-T013P06 row in [tasks.md](tasks.md) remains the sole implementation task and stays
-unchecked. No P06 implementation, service, setup or dispatch is commissioned.
+Status: isolated implementation and testing commissioned by Brett Heap on
+2026-11-22 using prepared plan `5dc47167444d`. The existing T013P06 row in
+[tasks.md](tasks.md) is the sole implementation task and remains unchecked until
+full/native qualification and independent cleanup. Setup/dispatch, P07-P09 and
+live provider/issuer or human/consumer acceptance remain separate.
 
 ## Accepted source and qualification gates
 
@@ -48,8 +50,8 @@ The [P3 plan](p3-azure-composition-plan.md) and
 [acceptance matrix](p3-azure-composition-acceptance.md) remain authoritative.
 This subplan refines existing wiring, not those contracts or public profiles.
 
-A later explicit commission is required to implement and test this row in
-isolation. Any failed prerequisite remains open; planning does not waive it.
+Brett subsequently commissioned implementation and testing of this existing row
+in isolation. Any failed prerequisite remains open; the commission does not waive it.
 P07-P09, T001/T013/T014/T015, operational appointments, codeXfactory 058 T002 and
 independent human/domain acceptance remain separate. Feedback is deferred;
 historical blocked writes remain unreplayed.
@@ -184,7 +186,7 @@ enrollment is not private-key distribution. Retained reports contain only
 allowed bounded readback/digests, never raw tokens, bearer URLs, private keys,
 provider payloads or human-factor/browser material.
 
-## Isolated acceptance controls for a later commission
+## Isolated acceptance controls
 
 These are acceptance criteria for the existing T013P06 row, not another
 executable task list and not claims that new tests already exist.
@@ -232,6 +234,8 @@ approval for a new GLM source-export packet and owner source ratification remain
 separate gates. The recorded parent main gate is complete; later source changes
 need fresh qualification and may not inherit this receipt as live authority.
 
-Preparation changes planning/context documents only. It supplies no P06 module,
-test, token, certificate, grant, deployed service, default route or protected
-origin. The next implementation step requires a new explicit isolated commission.
+The original preparation at `5dc47167444d` changed planning/context documents only.
+The subsequent isolated commission now supplies explicit source composition and
+regression controls; full/native qualification, independent cleanup and later
+publication/review/source acceptance remain distinct. It supplies no live service,
+operational App grant, default route or protected origin.

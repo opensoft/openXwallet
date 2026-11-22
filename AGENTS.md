@@ -1,4 +1,14 @@
-## Current qualified main and P06 preparation - 2026-11-22 America/La_Paz
+## Current T013P06 isolated implementation commission - 2026-11-22 America/La_Paz
+
+Brett explicitly commissioned implementation and testing of the existing T013P06
+row using prepared plan `5dc47167444d`. Work is confined to its composition,
+substantive tests, measured matrix and owning documents. Full/native qualification
+and independent cleanup remain required before marking that row complete.
+P07-P09, publication, setup/dispatch, live provider/issuer appointments and
+human/consumer acceptance remain separate. Feedback is deferred; historical
+blocked writes remain unreplayed. Earlier dated status below is historical.
+
+## Historical qualified main and P06 preparation - 2026-11-22 America/La_Paz
 
 Brett source-ratified #101 at `dc9ec9eb5e81` and #102 at `26e6a1efe739`.
 The latter landed normally, without an approval override, as

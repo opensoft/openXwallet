@@ -1,4 +1,16 @@
-## Current qualified main and P06 preparation - 2026-11-22 America/La_Paz
+## Current T013P06 isolated implementation commission - 2026-11-22 America/La_Paz
+
+Brett commissioned implementation and testing of the existing T013P06 row using
+prepared plan `5dc47167444d`. The explicit source composition reuses existing
+CSR enrollment, intrinsic App-role delivery, kernel credential and retirement
+ports, preserving pre-opened stores and one original Decision with charged nested
+I/O. It adds no listener, default activation, request field, profile or limit.
+Full/native qualification and independent cleanup remain pending; the existing
+T013P06 row stays unchecked. Earlier dated status below is historical.
+P07-P09, publication, setup/dispatch, live service appointments and human/consumer
+acceptance remain separate. Feedback is deferred; blocked writes unreplayed.
+
+## Historical qualified main and P06 preparation - 2026-11-22 America/La_Paz
 
 Brett source-ratified #101 at `dc9ec9eb5e81` and #102 at `26e6a1efe739`.
 The latter landed normally, without an approval override, as
@@ -4182,3 +4194,40 @@ Only the existing P06 plan/context is refreshed; its implementation row and all
 feature017 operational gates remain unchecked. Feature019 T013/T016 source-CI
 maintenance is complete against this main receipt. Feedback stays deferred and
 neither historical blocked write was replayed.
+
+
+## T013P06 isolated candidate and qualification start - 2026-11-22
+
+Brett commissioned implementation/testing of existing T013P06 using prepared
+plan `5dc47167444d`. The explicit composition reuses owning enrollment,
+InstallationIssuer/RoleDelivery, kernel credentials and InstallationRetirer.
+No shared primitive, default activation, wire profile, role or runtime cap changes.
+Selections, material bytes, pre-opened store identities, original Decision and
+accounting objects/highwaters are checked across callbacks and actual I/O.
+Provider route validation precedes selected fixture translation; every provider
+call is charged to private plus source/control/key, and the credential RPC is
+charged separately. Trusted local current readers must charge any actual I/O
+through existing clients. Host-root/platform administration remains a common TCB.
+
+The corrected standalone eligibility experiment passes all three App roles.
+Independent read-only audit retains issued enrollment and retired token state,
+34 reaped helper generations and original bounds. Its first missing JSON
+Content-Type fixture failure remains diagnostic. The first composition run
+passed 73 cases before exposing an unsanitized route-parser exception; the
+composition boundary was corrected. Replacement runs pass 102 and then all 110
+final cases. The separate collection attempt missing a writable capture temp
+root is also diagnostic; its corrected collection succeeds without changing
+product inputs. These attempts are not complete full/native qualification.
+
+Actual measured collection is 3,561 full parents and 3,139 native cases, adding
+110 P06 identities while preserving all 3,451/3,029 prior identities and their
+sorted identity order, all earlier counts/digests and matrix anchor prefixes.
+The existing task stays unchecked pending frozen complete gates/native and
+independent cleanup. Lost mint-response controls remain consumed and unknown;
+only known returned private capabilities can undergo verified retirement.
+Provider/admin facts are isolated doubles. Existing mandatory confinement and
+FD cancellation controls remain required alongside P06's actual mTLS and kernel
+worker controls. No isolated result establishes live issuer administration,
+assigned identity, real provider behavior or human/consumer acceptance.
+Publication, hosted CI, local Codex review and source ratification are later gates.
+Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.

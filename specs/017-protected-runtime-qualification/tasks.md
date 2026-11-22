@@ -1,4 +1,16 @@
-## Current qualified main and P06 preparation - 2026-11-22 America/La_Paz
+## Current T013P06 isolated implementation commission - 2026-11-22 America/La_Paz
+
+Brett commissioned implementation and testing of the existing T013P06 row using
+prepared plan `5dc47167444d`. The explicit source composition reuses existing
+CSR enrollment, intrinsic App-role delivery, kernel credential and retirement
+ports, preserving pre-opened stores and one original Decision with charged nested
+I/O. It adds no listener, default activation, request field, profile or limit.
+Full/native qualification and independent cleanup remain pending; the existing
+T013P06 row stays unchecked. Earlier dated status below is historical.
+P07-P09, publication, setup/dispatch, live service appointments and human/consumer
+acceptance remain separate. Feedback is deferred; blocked writes unreplayed.
+
+## Historical qualified main and P06 preparation - 2026-11-22 America/La_Paz
 
 Brett source-ratified #101 at `dc9ec9eb5e81` and #102 at `26e6a1efe739`.
 The latter landed normally, without an approval override, as

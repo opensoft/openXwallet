@@ -711,3 +711,37 @@ CASES['H10'] += _nodes("test_azure_measurement",
     'clock_cannot_hide_regression_by_resetting_observed_history',
     'fact_callback_cannot_refund_its_own_nested_read',
     'clock_cannot_refund_new_protection_observation')
+
+
+# T013P06: measured additions only; preserve all prior rows and anchor prefixes.
+MODULE_COUNTS['tests/runtime_binding/test_azure_issuance.py'] = 110
+MODULE_DIGESTS['tests/runtime_binding/test_azure_issuance.py'] = '49c6d8525f368261e60c564f02d4f66341e4d8bc6e9e35c046b05c8c7256322f'
+CASES['H06'] += _nodes('test_azure_issuance',
+    'complete_roles_and_unused_worker_preimages_fit_original_bounds',
+    'enrollment_self_claim_cannot_select_authority',
+    'independent_enrollment_facts_cannot_be_self_approved',
+    'independent_issuance_approval_precedes_reservation',
+    'selected_binding_substitution_refuses_before_effects',
+    'provider_failure_is_unavailable_and_consumed_without_retry')
+CASES['H07'] += _nodes('test_azure_issuance',
+    'complete_roles_and_unused_worker_preimages_fit_original_bounds',
+    'kernel_worker_cannot_resolve_selected_issuer_capability',
+    'private_request_cannot_select_role_destination_or_approval')
+CASES['H10'] += _nodes('test_azure_issuance',
+    'nested_callback_cannot_refund_or_replace_original_authority',
+    'precharged_original_budget_cannot_be_replaced_for_minting',
+    'already_overdrawn_enclosing_group_refuses_before_enrollment',
+    'replacing_operation_decision_cannot_renew_enrollment',
+    'current_time_or_approval_change_cannot_deliver_another_credential',
+    'original_authority_cannot_be_renewed_but_private_cleanup_survives')
+CASES['H11'] += _nodes('test_azure_issuance',
+    'retained_store_refuses_without_initialization_or_repair',
+    'reconstruction_with_same_store_cannot_replay_a_completed_attempt',
+    'concurrent_valid_attempts_have_one_durable_winner',
+    'uncertainty_retains_consumption_and_never_replays_send')
+CASES['H12'] += _nodes('test_azure_issuance',
+    'private_failure_and_cancellation_scrub_context_while_traceback_retained',
+    'runtime_composition_has_no_activation_or_serializable_private_state')
+CASES['R01'] += _nodes('test_azure_issuance',
+    'original_closed_route_validated_before_fixture_translation',
+    'late_selected_material_and_capability_substitution_refuses')
