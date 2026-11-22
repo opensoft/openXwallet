@@ -1,3 +1,18 @@
+## Current P05 acceptance and P06 preparation - 2026-11-22 America/La_Paz
+
+Brett ratified #101 at `dc9ec9eb5e81508ce99134b8c2c4a88c417aae88` for
+source acceptance. Normal merge `841f1bd230ac4452d5663adc50569c072cd4d32f`
+has the exact reviewed tree. Main CI attempt 1 timed out during native after the
+full suite passed; attempt 2 also timed out at the same cap during native.
+Both full suites passed, but neither native run completed and Sonar skipped.
+Main qualification remains open; earlier PR/local qualification is distinct.
+
+P06 preparation is authorized and captured in [the bounded subplan](p3-issuance-plan.md).
+The existing T013P06 implementation row remains unchecked. No P06 code/tests,
+setup/dispatch, P07-P09, live services or human/consumer acceptance are granted.
+Feedback remains deferred and blocked writes unreplayed. Earlier dated status
+below is historical; source acceptance does not supply operational authority.
+
 # Implementation Plan: P3 Azure deployment composition
 
 Current bounded authority (2026-11-21 UTC): P01-P04 source is accepted and

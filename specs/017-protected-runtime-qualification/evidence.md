@@ -1,3 +1,18 @@
+## Current P05 acceptance and P06 preparation - 2026-11-22 America/La_Paz
+
+Brett ratified #101 at `dc9ec9eb5e81508ce99134b8c2c4a88c417aae88` for
+source acceptance. Normal merge `841f1bd230ac4452d5663adc50569c072cd4d32f`
+has the exact reviewed tree. Main CI attempt 1 timed out during native after the
+full suite passed; attempt 2 also timed out at the same cap during native.
+Both full suites passed, but neither native run completed and Sonar skipped.
+Main qualification remains open; earlier PR/local qualification is distinct.
+
+P06 preparation is authorized and captured in [the bounded subplan](p3-issuance-plan.md).
+The existing T013P06 implementation row remains unchecked. No P06 code/tests,
+setup/dispatch, P07-P09, live services or human/consumer acceptance are granted.
+Feedback remains deferred and blocked writes unreplayed. Earlier dated status
+below is historical; source acceptance does not supply operational authority.
+
 ## Current P05 qualification closeout - 2026-11-21 America/La_Paz
 
 P05 runtime source `0b174962aa504399bea7873189c8dc89a9e32fc4` now passes all seven ordered
@@ -4088,3 +4103,32 @@ Sonar skipped. Brett accepted only the bounded main coverage cap amendment to
 90 minutes. Feature019 T013 requires replacement exact-head coverage and the
 actual unchanged six-condition Sonar gate before PR #101 source acceptance.
 No main deployment or consumer/live qualification follows from isolated P05.
+
+## 2026-11-22 P05 source acceptance and P06 preparation
+
+Brett accepted [#101](https://github.com/opensoft/openXwallet/pull/101) at
+`dc9ec9eb5e81508ce99134b8c2c4a88c417aae88` for source only. Normal squash merge
+`841f1bd230ac4452d5663adc50569c072cd4d32f` preserves tree
+`829dca6f3cc795edb7a80a81ec6a80fa9b6a1a8f`, with no administrative override.
+All required and runnable PR checks were green; optional Sourcery skipped its
+diff-size limit. Local expert and unchanged-runtime GLM evidence remain the
+review basis, not a hosted Codex review claim.
+
+[Main run 45019228544](https://github.com/opensoft/openXwallet/actions/runs/45019228544)
+at that merge passed coverage, isolated coverage and source conformance. Its
+combined full/native job passed 3,451 full tests plus 11 subtests in 2,866.35s,
+then exceeded the 90-minute job cap at 71 percent native progress. There was no
+logged assertion failure, but native did not finish and Sonar skipped. The
+cancelled attempt remains diagnostic. The one unchanged managed-runner retry
+also exceeded the same cap: 3,451 full tests plus 11 subtests passed in 2,928.41s;
+native reached 68 percent without a logged assertion failure, then was cancelled
+and Sonar skipped. No third retry was issued. The six-file ordinary source-CI
+cap proposal from 90 to 120 minutes remains unapplied pending owner acceptance;
+other caps, runtime limits and operational permissions remain unchanged. Main
+CI has not been verified green.
+
+The [P06 subplan](p3-issuance-plan.md) records accepted R06 ports, independent
+approval and mTLS/role bindings, fixed openXwallet App scope, original budgets,
+retained state and future substantive controls. The branch contains planning
+only; both future P06 module/test paths remain absent, its task unchecked and
+all operational/human/consumer gates open.
