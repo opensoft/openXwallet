@@ -73,6 +73,7 @@ class Provider(Opaque):
         require(decision is self.decision and self.binding() == self._binding, ERROR)
         self.check()
         selected = parse_target(method, url)
+        retain_mint_response = False
         if selected.netloc == 'api.github.com':
             github_path(method, selected.path, selected.query)
             install = '/app/installations/' + str(self.selection.installation_id)
@@ -81,6 +82,7 @@ class Provider(Opaque):
                        ('GET', '/installation/repositories', 'per_page=2&page=1'),
                        ('DELETE', '/installation/token', '')}
             require((method, selected.path, selected.query) in allowed, ERROR)
+            retain_mint_response = (method, selected.path, selected.query) == ('POST', install + '/access_tokens', '')
             group = 'source' if method == 'GET' else 'control'
         else:
             vault_route(method, selected)
@@ -102,8 +104,12 @@ class Provider(Opaque):
                 target += '?' + selected.query
         result = self.http.exchange(method, target, decision=decision,
                                     before_send=checkpoint, **kwargs)
-        self.check()
-        require(self.binding() == self._binding, ERROR)
+        # The owning issuer records a returned mint token before its mandatory
+        # current-authority check. Preserve that cleanup ordering even if time
+        # expires or issuance dependencies fail immediately after this response.
+        if not retain_mint_response:
+            self.check()
+            require(self.binding() == self._binding, ERROR)
         return result
 
 
@@ -152,7 +158,7 @@ class Issuance(Operation):
     only. credential_request creates and closes a fresh private reply capability.
     """
     __slots__ = ('enrollment', 'issuer', 'delivery', 'provider', 'channel',
-                 '_enrollment_reader', '_issuer_reader', '_binding')
+                 '_enrollment_reader', '_issuer_reader', '_binding', '_cleanup')
     def __init__(self, *, enrollment, selection, ledger, transport, credential_channel,
                  read_current, current_principal, decision):
         private(lambda: self._initialize(enrollment, selection, ledger, transport,
@@ -177,6 +183,8 @@ class Issuance(Operation):
             transport=self.provider, vault_credential=self._credential,
             read_current=self._issuer_current, current_principal=principal)
         self.delivery = RoleDelivery(enrollment=self.enrollment, issuer=self.issuer)
+        self._cleanup = (self.issuer, ledger, ledger.directory, ledger.identity,
+                         self.issuer.selection_digest, selection.role, decision)
         self._binding = self.binding()
         self.check()
 
@@ -252,8 +260,17 @@ class Issuance(Operation):
         # Cleanup access is private, and may outlive use authority. It never
         # resolves a usable credential or starts another minting attempt.
         def selected():
-            require(self.binding() == self._binding, ERROR)
-            return self.issuer.pending(ref)
+            issuer, ledger, directory, retained_identity, scope, role, original = self._cleanup
+            require(self.issuer is issuer and issuer.ledger is ledger
+                    and ledger.directory == directory and ledger.identity == retained_identity, ERROR)
+            cap = issuer.pending(ref)
+            require(type(cap) is IssuedToken and cap.ref == ref and cap.role == role
+                    and cap.selection_digest == scope and cap.ledger is ledger
+                    and cap._decision is original, ERROR)
+            # Lookup grants no use authority and needs no live issuance socket,
+            # TLS material, clock or storage read. Retirement checks actual state
+            # and identity before any provider effect under its selected clock.
+            return cap
         return private(selected)
 
 

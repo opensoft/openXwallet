@@ -1,6 +1,7 @@
 # T013P06 enrollment and issuance subplan
 
-Status: implemented and qualified in isolation from prepared plan `5dc47167444d`.
+Status: publication review corrections under the same isolated T013P06 commission;
+fresh qualification and cleanup pending. Prior recorded qualified source follows.
 Runtime/test/matrix source `ff6ccd7e8d07fc99afc346ba5a8a0c3b88b42e80` passes all
 seven ordered gates, 3,561 full parent cases plus 11 subtests and 3,139 mandatory
 native cases. Independent retained-state and cleanup audits pass; only existing
@@ -260,3 +261,39 @@ for retirement; the deliberate lost mint-response outcome remains consumed and
 indeterminate, with no fabricated retirement or automatic retry. Original source,
 dependency selections and all earlier matrix identities remain intact. This is
 isolated source qualification using provider/admin doubles, not live acceptance.
+
+
+## P06 publication-review cleanup correction
+
+Local Codex review of PR #103 reproduced P06-R1 and P06-R2 at `3891066d06ac`.
+Three real isolated controls fail at the intended assertions without fixture
+errors: valid returned mint response lost at the post-return deadline, and known
+handle lookup blocked by closed credential channel or missing selected TLS key.
+These failures supersede the earlier source's cleanup claim for those scenarios.
+
+The existing owning issuer deliberately stores a token before its post-mint
+current-authority check. The composition now returns only the exact selected
+GitHub access-token mint response directly to that ordering. All before-send
+checks and charges, the issuer's mandatory current checks, and the enclosing
+actor guard remain in force; expired/changed authority still refuses delivery.
+Other provider operations keep their post-return checks. This adds no new send,
+retry, budget, role, destination, primitive or wire behavior.
+
+Private pending lookup now retains original issuer, ledger/path/identity, scope,
+role and Decision ownership. It validates the exact IssuedToken against that
+selection without reading an issuance-only socket, TLS material, clock or live
+storage. This grants cleanup access only; use remains non-renewing and the
+existing Retirement checks actual identity/state before provider effects.
+
+The corrected source passes all 127 P06 cases and the three original external
+reproductions. Seventeen appended identities cover both delivered/post-mint
+failure outcomes across all issuance dependencies, deadline/material loss after
+a valid returned response, five capability-ownership substitutions and actual
+caller reply-pair cancellation with retained traceback, unchanged FD set and EOF.
+All 110 original P06 IDs and every other existing ID/fingerprint/anchor prefix
+remain. Collection is 3,578 full parents plus the existing 11 subtests and 3,156
+native cases. Complete frozen qualification and independent cleanup are pending.
+Initial hosted run45079406606 was intentionally cancelled as superseded, not
+promoted to qualification. Hosted CI and local final-delta review require the
+corrected exact head. Setup/dispatch unauthorized; feedback deferred; blocked
+writes unreplayed. P07-P09 and live human/consumer/provider acceptance stay open.

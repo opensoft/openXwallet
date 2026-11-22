@@ -714,8 +714,8 @@ CASES['H10'] += _nodes("test_azure_measurement",
 
 
 # T013P06: measured additions only; preserve all prior rows and anchor prefixes.
-MODULE_COUNTS['tests/runtime_binding/test_azure_issuance.py'] = 110
-MODULE_DIGESTS['tests/runtime_binding/test_azure_issuance.py'] = '49c6d8525f368261e60c564f02d4f66341e4d8bc6e9e35c046b05c8c7256322f'
+MODULE_COUNTS['tests/runtime_binding/test_azure_issuance.py'] = 127
+MODULE_DIGESTS['tests/runtime_binding/test_azure_issuance.py'] = '4891ce9484126e40421a48c96c8e883ae5e0729a07ef4b0093ce1c809e4fd3e2'
 CASES['H06'] += _nodes('test_azure_issuance',
     'complete_roles_and_unused_worker_preimages_fit_original_bounds',
     'enrollment_self_claim_cannot_select_authority',
@@ -745,3 +745,14 @@ CASES['H12'] += _nodes('test_azure_issuance',
 CASES['R01'] += _nodes('test_azure_issuance',
     'original_closed_route_validated_before_fixture_translation',
     'late_selected_material_and_capability_substitution_refuses')
+
+
+# P06 publication-review corrections: retain all initial 110 identities/anchors.
+CASES['H10'] += _nodes('test_azure_issuance',
+    'returned_mint_token_is_retained_before_postresponse_deadline_check')
+CASES['H11'] += _nodes('test_azure_issuance',
+    'private_cleanup_lookup_keeps_original_capability_ownership')
+CASES['H12'] += _nodes('test_azure_issuance',
+    'known_cleanup_handle_survives_issuance_dependency_failure',
+    'returned_mint_token_is_retained_before_postresponse_material_check',
+    'caller_reply_pair_closes_with_traceback_held_before_gc')

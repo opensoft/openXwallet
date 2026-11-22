@@ -438,3 +438,100 @@ def test_kernel_worker_cannot_resolve_selected_issuer_capability(composed):
         if process is not None:
             if process.poll() is None:process.kill()
             process.communicate()
+
+
+@pytest.mark.parametrize('failure',['credential-channel','ca','cert','key'])
+@pytest.mark.parametrize('outcome',['delivered','post-mint-refusal'])
+def test_known_cleanup_handle_survives_issuance_dependency_failure(composed,tmp_path,failure,outcome):
+    c=composed;source=c.p.transport();paths=[]
+    for index,path in enumerate([source.ca,source.cert,source.key]):
+        target=tmp_path/('private-selected-'+str(index)+'.pem');target.write_bytes(Path(path).read_bytes());target.chmod(0o600);paths.append(str(target))
+    transport=PrivateHttps(ca_file=paths[0],certificate=paths[1],private_key=paths[2],fixture_origin=c.p.endpoint)
+    c.actor=c.construct(transport=transport);peer=c.enrolled()
+    if outcome=='post-mint-refusal':c.p.changes['permissions']=True
+    result=c.call(peer,'/private',c.body)
+    assert result.status==(200 if outcome=='delivered' else 503)
+    cap=c.actor.pending(c.p.ref);use_until=cap.use_until;original=cap._decision
+    before=list(c.p.calls)
+    if failure=='credential-channel':c.channel.close()
+    else:Path(getattr(transport,failure)).unlink()
+    assert c.actor.pending(c.p.ref) is cap and cap.use_until==use_until and cap._decision is original
+    assert c.p.calls==before and c.p.active[cap.credential]
+    with pytest.raises(BindingError):c.actor.issuer.resolve(c.p.ref,c.p.nonce,decision=c.decision)
+    assert c.cleanup(cap).retire()['state']=='retired' and not c.p.active[cap.credential]
+
+
+def test_returned_mint_token_is_retained_before_postresponse_deadline_check(composed,monkeypatch):
+    c=composed;peer=c.enrolled();original=PrivateHttps.exchange;triggered=[];deadline=c.decision.deadline;end=c.decision.end
+    def exchange(http,method,url,**kwargs):
+        result=original(http,method,url,**kwargs)
+        if url==c.p.endpoint+'/app/installations/88/access_tokens' and not triggered:
+            triggered.append(True);c.s.now+=11;c.p.now=c.s.now
+        return result
+    monkeypatch.setattr(PrivateHttps,'exchange',exchange);c.actor=c.construct()
+    with pytest.raises(BindingError):c.call(peer,'/private',c.body)
+    cap=c.actor.pending(c.p.ref)
+    assert rows(c.p.ledger)[0][2]=='consumed' and cap.expires_at is None
+    assert cap.use_until<=deadline and cap._decision is c.decision and c.decision.end==end
+    assert c.p.active[cap.credential]
+    assert sum(path=='/app/installations/88/access_tokens' for _,path in c.p.calls)==1
+    with pytest.raises(BindingError):c.actor.issuer.resolve(c.p.ref,c.p.nonce,decision=Decision(clock=lambda:c.s.now))
+    assert c.cleanup(cap).retire()['state']=='retired'
+
+
+def test_returned_mint_token_is_retained_before_postresponse_material_check(composed,tmp_path,monkeypatch):
+    c=composed;source=c.p.transport();paths=[]
+    for index,path in enumerate([source.ca,source.cert,source.key]):
+        target=tmp_path/('late-selected-'+str(index)+'.pem');target.write_bytes(Path(path).read_bytes());target.chmod(0o600);paths.append(str(target))
+    transport=PrivateHttps(ca_file=paths[0],certificate=paths[1],private_key=paths[2],fixture_origin=c.p.endpoint)
+    peer=c.enrolled();original=PrivateHttps.exchange;triggered=[]
+    def exchange(http,method,url,**kwargs):
+        result=original(http,method,url,**kwargs)
+        if url==c.p.endpoint+'/app/installations/88/access_tokens' and not triggered:
+            triggered.append(True);Path(paths[2]).unlink()
+        return result
+    monkeypatch.setattr(PrivateHttps,'exchange',exchange);c.actor=c.construct(transport=transport)
+    assert c.call(peer,'/private',c.body).status in (403,503)
+    cap=c.actor.pending(c.p.ref)
+    assert cap.expires_at is None and rows(c.p.ledger)[0][2]=='consumed'
+    assert c.p.active[cap.credential] and c.cleanup(cap).retire()['state']=='retired'
+
+
+@pytest.mark.parametrize('field',['ledger','role','selection_digest','ref','_decision'])
+def test_private_cleanup_lookup_keeps_original_capability_ownership(composed,field):
+    c=composed;peer=c.enrolled();assert c.call(peer,'/private',c.body).status==200
+    cap=c.actor.pending(c.p.ref)
+    changes={'ledger':c.s.ledger,'role':'reader','selection_digest':digest({'wrong':True}),
+             'ref':'issuance:other','_decision':Decision(clock=lambda:c.s.now)}
+    c.actor.issuer._pending[c.p.ref]=replace(cap,**{field:changes[field]})
+    try:
+        with pytest.raises(BindingError):c.actor.pending(c.p.ref)
+    finally:c.actor.issuer._pending[c.p.ref]=cap
+    assert c.actor.pending(c.p.ref) is cap and c.p.active[cap.credential]
+
+
+@pytest.mark.parametrize('cancel',[False,True])
+def test_caller_reply_pair_closes_with_traceback_held_before_gc(composed,monkeypatch,cancel):
+    c=composed;canary='PRIVATE-PAIR-CANCELLATION';pairs=[];raised=[];caught=None
+    original_pair=composition.socket.socketpair;original_remaining=Decision.remaining
+    baseline=set(os.listdir('/proc/self/fd'))
+    def pair(*args,**kwargs):
+        reader,writer=original_pair(*args,**kwargs);observer=reader.dup();pairs.append((reader,writer,observer));return reader,writer
+    def remaining(decision):
+        if decision is c.decision and pairs and not raised:
+            raised.append(True)
+            raise KeyboardInterrupt(canary) if cancel else RuntimeError(canary)
+        return original_remaining(decision)
+    monkeypatch.setattr(composition.socket,'socketpair',pair);monkeypatch.setattr(Decision,'remaining',remaining)
+    try:
+        try:composition.private(lambda:c.actor._credential(deadline=c.decision.deadline))
+        except BaseException as error:caught=error
+        assert type(caught) is (KeyboardInterrupt if cancel else BindingError)
+        assert caught.__traceback__ is not None and caught.__context__ is None and caught.__cause__ is None
+        assert canary not in repr(caught) and len(pairs)==1
+        reader,writer,observer=pairs[0]
+        assert reader.fileno()==writer.fileno()==-1
+        observer.settimeout(.2);assert observer.recv(16)==b''
+    finally:
+        for reader,writer,observer in pairs:reader.close();writer.close();observer.close()
+    assert caught.__traceback__ is not None and set(os.listdir('/proc/self/fd'))==baseline

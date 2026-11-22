@@ -1,3 +1,17 @@
+## T013P06 publication review corrections - 2026-11-22 America/La_Paz
+
+PR #103 source review reproduced two cleanup defects at `3891066d06ac`: a valid
+returned mint response could be discarded before its handle was recorded at a
+deadline boundary, and known handle lookup depended on live issuance socket/TLS
+material. The bounded composition correction preserves the owning issuer's
+record-before-postcheck ordering for only the selected mint route and retains
+private cleanup ownership independently of issuance-only liveness. Fresh focused,
+complete full/native qualification, independent cleanup, exact-head hosted CI and
+final local review remain pending. T013P06 is reopened until those local gates
+pass. Earlier qualifications remain historical. No primitive, profile, role,
+request field, runtime limit, source target or default activation changes.
+Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.
+
 ## T013P06 isolated qualification complete - 2026-11-22 America/La_Paz
 
 T013P06 runtime/test/matrix source `ff6ccd7e8d07fc99afc346ba5a8a0c3b88b42e80`
