@@ -12,3 +12,9 @@
 - [x] T007 Verify published main gate, all eight original keys and preservation; close issue #73 with evidence.
 
 Completion evidence: [verified main receipt](../../docs/quality/sonar73-after.json) and [closeout](../../docs/quality/sonar73-acceptance.md). The explicit nine-live/ten-exported history distinction is part of that evidence; all current quality and baseline checks remain enforced.
+
+## Owner-accepted bounded source-CI budget maintenance (2026-11-21)
+
+- [x] T011 Record owner acceptance of the bounded main coverage job cap proposal (45 to 90 minutes); historical completed tasks remain unchanged.
+- [x] T012 Apply the single ordinary coverage-tests job cap amendment and verify all other workflow fields, runtime scopes and authority remain identical.
+- [ ] T013 Review and qualify the exact replacement head, complete complementary coverage and actual unchanged Sonar gate; retain failed timeout evidence and separate P05 qualification.

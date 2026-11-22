@@ -24,3 +24,16 @@ the nine-live/ten-exported historical-record distinction are recorded in the
 unchanged template-shell parser warnings remain separately recorded. Feature
 017, its frozen owner selection and operational acceptance remain separately
 governed.
+
+## Accepted P05 source measurement budget amendment (2026-11-21 America/La_Paz)
+
+Status: Brett Heap accepted this bounded maintenance scope on 2026-11-21.
+Exact-head source ratification, replacement CI and evaluated Sonar remain pending.
+
+Record the observed 45-minute timeout and owner decision first. Apply the
+single adapter-owned source-CI timer change; compare parsed workflows to prove
+all other fields match. Keep original frozen P05 qualification source untouched
+until its owned waiting resources are reconciled. Qualify a fresh reviewed head,
+complete complementary coverage and the actual unchanged Sonar gate; do not infer
+success from a longer cap or reuse the cancelled run as coverage evidence.
+Preserve already-completed source-quality history and all pending P05 gates.

@@ -173,7 +173,7 @@ jobs:
     runs-on: ubuntu-latest
     # Measure the fixed main partition; the isolated job supplies its one
     # complementary case. The verifier requires the entire assertion union.
-    timeout-minutes: 45
+    timeout-minutes: 90
     steps:
       - name: Require main for manual source validation
         id: manual-main-guard
