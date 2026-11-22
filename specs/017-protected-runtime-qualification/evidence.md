@@ -1,3 +1,19 @@
+## Reviewed P06 local qualification for publication - 2026-11-22 America/La_Paz
+
+Corrected runtime/test/matrix source `051d4583ee4ada5ad3167a0abd740cc9ed1b6bc1`
+passes all seven ordered gates, 3,578 full parent cases plus 11 subtests, and all
+3,156 mandatory native cases, with zero failures/errors/skips. All 127 P06 cases
+and the three original external reproductions pass. Nine local Codex review roles
+clear the initial scope and correction delta; both reproduced P2 cleanup findings
+are closed, with no remaining actionable finding. Five guard baselines pass and
+all five weakened copies fail their intended assertions without fixture errors.
+Independent audits pass; all owned fixture containers and ten P06 volumes across
+the initial/publication phases are absent. Only T013P06 is complete in isolation.
+This is the prepublication source checkpoint: final exact-head hosted CI, final
+Markdown-only review and owner source ratification remain separate. P07-P09,
+setup/dispatch and live provider/issuer/human/consumer acceptance remain ungranted.
+Feedback deferred; blocked writes unreplayed. Earlier dated status is historical.
+
 ## T013P06 publication review corrections - 2026-11-22 America/La_Paz
 
 PR #103 source review reproduced two cleanup defects at `3891066d06ac`: a valid
@@ -4349,3 +4365,56 @@ Initial hosted run45079406606 was intentionally cancelled as superseded, not
 promoted to qualification. Hosted CI and local final-delta review require the
 corrected exact head. Setup/dispatch unauthorized; feedback deferred; blocked
 writes unreplayed. P07-P09 and live human/consumer/provider acceptance stay open.
+
+
+## P06 reviewed local qualification - 2026-11-22
+
+PR #103 initial head `3891066d06ac` is superseded by the bounded correction.
+P06-R1 (returned mint response lost before cleanup capture at a deadline) and
+P06-R2 (known cleanup handle tied to live issuance dependencies) were reproduced
+by three actual isolated controls with no fixture errors. Their corrected
+source is `051d4583ee4ada5ad3167a0abd740cc9ed1b6bc1`; every one of its 417 frozen
+inputs matched before/after complete qualification and independent auditing.
+Manifest SHA-256: `7af078acb37aca1526e2448f171c4498ba087eb6ac9abf744a302cad7190d697`.
+
+| Gate | Verified corrected-source result |
+| --- | --- |
+| Focused | 127 P06 cases plus all three original external reproductions pass |
+| Full | 3,578 parents plus 11 subtests; 2,694.149 seconds; zero failures/errors/skips |
+| Native | 3,156 cases; 2,515.456 seconds; PASS; zero failures/errors/skips |
+| Ordered gates | Both pins, YAML, plain, strict, full and pinned OpenSpec pass |
+| Local Codex panel | Nine source roles review initial scope plus correction delta; both P2s closed; no remaining actionable finding |
+| Guard controls | Five original baselines pass; all five weakened isolated copies fail intended call assertions without fixture errors |
+
+The 17 appended cases preserve all 110 originalP06 identities and every prior
+non-P06 fingerprint, count, identity and matrix anchor prefix. They prove both
+successful and post-mint-refused known handles survive channel/CA/certificate/key
+loss, valid returned mint tokens are retained before deadline/material postchecks,
+lookup rejects five ownership substitutions, and actual caller reply endpoints
+close with exception tracebacks held while FD/EOF assertions run. No primitive,
+profile, schema, role, limit, pin, target or activation change is introduced.
+
+Each full/native independent audit verifies three P06 positive store pairs,
+127 cleanup receipts, five existing preservation cases and 223 unissued
+measurement nonce journals. Full/native process records total 20,175/20,176;
+these are records, not distinct-process counts. Four missing-purpose presence
+counterchecks per run refuse qualification while original journal hashes remain
+unchanged. Wrong preservation counts refuse deletion before touching the 599
+retained file identities in each run. No initial teardown failures or attributable
+live generations remain. All five publication-phase owned volumes are removed;
+the initial five P06 volumes remain absent, as do all owned fixture containers.
+The source and four accepted dependency heads/trees/status are unchanged.
+
+The deliberately lost/unknown token outcomes stay consumed and indeterminate;
+known returned handles are independently retired. The provider/admin doubles
+and isolated namespaces are gone. No live administration, hardware rollback
+resistance or human/consumer acceptance is inferred. Full reports, countercontrols,
+source manifests and bounded readback are retained outside the product worktree.
+
+This local checkpoint closes only T013P06 in isolation. Final published-head
+hosted CI, Markdown-only delta review and owner source ratification remain open.
+Initial hosted run 45079406606 was intentionally cancelled as superseded. Its
+incomplete results are diagnostic. Source records and execution evidence do not
+constitute a hosted Codex connector review. Setup/dispatch unauthorized; feedback
+deferred; historical blocked writes unreplayed. P07-P09 and operational feature017
+T001/T013/T014/T015 remain open.

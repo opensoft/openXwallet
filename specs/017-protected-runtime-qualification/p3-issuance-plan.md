@@ -1,14 +1,13 @@
 # T013P06 enrollment and issuance subplan
 
-Status: publication review corrections under the same isolated T013P06 commission;
-fresh qualification and cleanup pending. Prior recorded qualified source follows.
-Runtime/test/matrix source `ff6ccd7e8d07fc99afc346ba5a8a0c3b88b42e80` passes all
-seven ordered gates, 3,561 full parent cases plus 11 subtests and 3,139 mandatory
-native cases. Independent retained-state and cleanup audits pass; only existing
-T013P06 is checked. See [the closeout](evidence.md#t013p06-isolated-qualification-closeout-2026-11-22).
-Publication, hosted CI, local Codex review and source ratification remain separate.
-Setup/dispatch, P07-P09 and live provider/issuer or human/consumer acceptance remain
-ungranted. Earlier preparation checkpoints below retain their historical meaning.
+Status: the PR #103 review correction is implemented, reviewed and qualified in
+isolation at runtime/test/matrix source `051d4583ee4ada5ad3167a0abd740cc9ed1b6bc1`.
+All 127 P06 cases, 3,578 full parents plus 11 subtests, 3,156 native cases and seven
+ordered gates pass. Independent cleanup and nine-role local review pass. Both
+cleanup findings are closed and only T013P06 is checked in isolation. Final
+published-head CI, Markdown-only final review and owner source ratification remain
+separate; setup/dispatch, P07-P09 and live human/consumer/provider acceptance stay
+ungranted. Earlier qualification/preparation checkpoints below are historical.
 
 ## Accepted source and qualification gates
 
