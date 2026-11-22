@@ -52,10 +52,10 @@ permissions:
 jobs:
   pytest-suite:
     runs-on: ubuntu-latest
-    # Full + mandatory native measured 4053.824s (67m34s) at the T012U source.
-    # 90m is a bounded source-CI cap with ~25% headroom, not a runtime lease.
-    # Bound both plus bootstrap/headroom; a timeout is not a test verdict.
-    timeout-minutes: 90
+    # Main run 45019228544 reached the 90m cap twice during native conformance.
+    # 120m is a bounded source-CI cap; both complete verdicts remain required.
+    # Runtime limits, assertion coverage and other job caps are unchanged.
+    timeout-minutes: 120
     steps:
       - name: Require main for manual source validation
         id: manual-main-guard

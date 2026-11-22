@@ -18,3 +18,9 @@ Completion evidence: [verified main receipt](../../docs/quality/sonar73-after.js
 - [x] T011 Record owner acceptance of the bounded main coverage job cap proposal (45 to 90 minutes); historical completed tasks remain unchanged.
 - [x] T012 Apply the single ordinary coverage-tests job cap amendment and verify all other workflow fields, runtime scopes and authority remain identical.
 - [ ] T013 Review and qualify the exact replacement head, complete complementary coverage and actual unchanged Sonar gate; retain failed timeout evidence and separate P05 qualification.
+
+## Owner-accepted full/native source-CI maintenance (2026-11-22)
+
+- [x] T014 Record explicit owner scope acceptance of the ordinary pytest-suite job cap from 90 to 120; preserve completed maintenance history.
+- [x] T015 Apply only that cap/comment amendment and prove all other parsed workflow fields and runtime/operational contracts unchanged.
+- [ ] T016 Publish, locally review and qualify the exact candidate, obtain required source acceptance, verify completed main full/native and all six unchanged evaluated Sonar conditions; retain both cancelled attempts as diagnostic only.
