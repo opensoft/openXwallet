@@ -12,17 +12,33 @@ normally, without an administrative override, as
 `841f1bd230ac4452d5663adc50569c072cd4d32f`; both trees are
 `829dca6f3cc795edb7a80a81ec6a80fa9b6a1a8f`.
 
-The [post-merge source run](https://github.com/opensoft/openXwallet/actions/runs/45019228544)
-is an open qualification gate while this plan is prepared. Attempt 1 passed
-3,451 full tests plus 11 subtests, then reached the combined job's 90-minute cap
-during native conformance. That attempt is diagnostic, not completed main
-qualification. Attempt 2 also reached the same 90-minute cap: its full suite
-passed 3,451 tests plus 11 subtests in 2,928.41 seconds, and native reached 68
-percent without a logged assertion failure before cancellation. Sonar skipped
-again. Both incomplete attempts are diagnostic. Main qualification remains open;
-the earlier green PR analysis cannot substitute for it. A separate six-file
-source-CI cap proposal is prepared but unapplied and needs owner scope acceptance.
-Neither runtime limits nor the workflow were changed to manufacture success.
+Brett subsequently ratified [openXwallet #102](https://github.com/opensoft/openXwallet/pull/102)
+at `26e6a1efe739610a39a756e31582cbf03dff7bf1` and directed landing when green,
+fresh main verification, then this preparation refresh. Normal squash merge
+`4ca798601566091564a5696fdd89559f8d207885` has the exact ratified tree
+`6d98e9698de4ea77ecee7e823f75899032f14b5b`. It changes only the ordinary
+pytest job cap from 90 to 120 minutes and its owning governance records;
+runtime bounds and protected workflow remain unchanged.
+
+The [fresh main run](https://github.com/opensoft/openXwallet/actions/runs/45055670097)
+passes all five jobs: 3,451 full parent tests plus 11 subtests and all 3,029
+mandatory native cases, with zero failures, errors or skips and exact identity
+sets preserved. The combined job completed in 95m24s. Four source manifests
+and all pinned trees match the accepted source; the disjoint 3,450 plus 1
+coverage partitions cover the full parent suite. All six unchanged main Sonar
+conditions are evaluated and green: coverage 87.4%, duplication 0.1%, hotspot
+review 100% and all three ratings at 1. The original August 27 baseline and
+18,156 qualifying new lines remain intact. The [receipt](p3-parent-main-qualification.json)
+binds this run and analysis to a fresh GitHub/main and latest-Sonar readback.
+It documents this historical source run; it is not a runtime evidence profile,
+authority input or operational grant.
+The historical #101 main attempts both exceeded 90 minutes during native and
+skipped Sonar; neither failed attempt is promoted to qualification.
+
+The parent main qualification gate is closed for this recorded source only.
+The pre-existing client freshness/ordering limitation is unchanged: this
+as-of readback does not establish a permanent workflow guarantee. Later
+implementation and publication require their own exact-source qualification.
 
 The source contract is factory R06 in the
 [accepted factory delta](https://github.com/opensoft/openXfactory/blob/15d6328ba428/openspec/changes/add-protected-runtime-azure-composition/specs/protected-runtime-azure-composition/spec.md#L67),
@@ -213,7 +229,8 @@ conformance. Retain failed/interrupted attempts as diagnostic. Independently
 audit owned process/credential/nonce/file cleanup before disposal. Publication,
 exact-head CI, local Codex review under the current owner preference, any needed
 approval for a new GLM source-export packet and owner source ratification remain
-separate gates. Main CI recovery remains an explicit parent qualification gate.
+separate gates. The recorded parent main gate is complete; later source changes
+need fresh qualification and may not inherit this receipt as live authority.
 
 Preparation changes planning/context documents only. It supplies no P06 module,
 test, token, certificate, grant, deployed service, default route or protected

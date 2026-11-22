@@ -64,3 +64,19 @@ and the unchanged evaluated gate. Feature019 owns the only maintenance list.
 P06 remains planning only while the parent main qualification gate is open.
 Setup/dispatch, live provider calls, restarts, feedback and blocked-write replay
 remain unauthorized; no billing configuration change is included.
+
+## Source-CI maintenance closeout - 2026-11-22
+
+Brett source-ratified #101 and #102 and directed their governed landing. #102
+merged normally as `4ca798601566091564a5696fdd89559f8d207885`, with the exact
+ratified tree. [Fresh main CI](https://github.com/opensoft/openXwallet/actions/runs/45055670097)
+passes all five jobs, full/native exact identity sets and all six unchanged
+main quality conditions. The original August 27 baseline remains unchanged.
+The [receipt](../017-protected-runtime-qualification/p3-parent-main-qualification.json)
+records positive new coverage, complete complementary execution, source/pin
+coherence and a fresh latest-main analysis readback. Earlier failed attempts
+remain diagnostic. T013/T016 maintenance is complete; the accepted cap is a
+finite source-CI allowance, not a runtime lease or permission to operationalize.
+Feature017's P06 remains preparation-only and its implementation and all
+setup/dispatch/live/human/consumer gates stay open. The pre-existing workflow
+freshness/ordering limitation remains a separate governed follow-up.

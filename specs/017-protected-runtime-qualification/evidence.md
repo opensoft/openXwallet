@@ -1,4 +1,25 @@
-## Current P05 acceptance and P06 preparation - 2026-11-22 America/La_Paz
+## Current qualified main and P06 preparation - 2026-11-22 America/La_Paz
+
+Brett source-ratified #101 at `dc9ec9eb5e81` and #102 at `26e6a1efe739`.
+The latter landed normally, without an approval override, as
+`4ca798601566091564a5696fdd89559f8d207885`; its tree exactly matches the
+ratified candidate. [Fresh main CI](https://github.com/opensoft/openXwallet/actions/runs/45055670097)
+passes all five jobs, all 3,451 full parent tests plus 11 subtests and all
+3,029 mandatory native cases, with zero failures, errors or skips.
+All six unchanged Sonar conditions are evaluated and green: new coverage
+87.4%, duplication 0.1%, reviewed hotspots 100%, and all three ratings at 1.
+The original August 27 baseline is retained. Fresh GitHub main and the latest
+Sonar main analysis agree on that merge in the [source qualification receipt](p3-parent-main-qualification.json).
+This is an as-of source readback, not a permanent freshness or operational grant.
+The two earlier #101 main timeouts remain diagnostic history.
+
+Only [T013P06 preparation](p3-issuance-plan.md) is commissioned now.
+Its existing implementation row stays unchecked; no P06 code or tests exist.
+P07-P09, setup/dispatch, live issuer/provider appointments and human/consumer
+acceptance remain separate. Feedback is deferred and blocked writes unreplayed.
+Earlier dated status below is historical; feature017 operational tasks remain open.
+
+## Historical #101 acceptance and initial P06 preparation - 2026-11-22 America/La_Paz
 
 Brett ratified #101 at `dc9ec9eb5e81508ce99134b8c2c4a88c417aae88` for
 source acceptance. Normal merge `841f1bd230ac4452d5663adc50569c072cd4d32f`
@@ -4132,3 +4153,32 @@ approval and mTLS/role bindings, fixed openXwallet App scope, original budgets,
 retained state and future substantive controls. The branch contains planning
 only; both future P06 module/test paths remain absent, its task unchecked and
 all operational/human/consumer gates open.
+
+## Parent main qualification and P06 preparation refresh - 2026-11-22
+
+Source-ratified #102 landed normally as `4ca798601566091564a5696fdd89559f8d207885`
+with tree `6d98e9698de4ea77ecee7e823f75899032f14b5b`, exactly the approved
+candidate tree. [Main run45055670097](https://github.com/opensoft/openXwallet/actions/runs/45055670097)
+passes all five jobs and the complete full/native identity sets. The combined
+job took 5,724 seconds under the accepted 120-minute source-CI cap; runtime,
+coverage, quality, dependency and protected-workflow limits were unchanged.
+
+The [durable source receipt](p3-parent-main-qualification.json) records all
+3,451 full parent tests plus 11 subtests and 3,029 native cases with zero
+failures, errors or skips, four same-source manifests, matching dependency trees
+and complete complementary coverage. Main Sonar analysis
+`2ffd9d70-7ec6-440f-b01e-a4e758aa9df3` evaluates all six original conditions:
+87.4% new coverage, 0.1% new duplication, 100% reviewed hotspots and all three
+ratings at 1. Its original baseline remains analysis
+`d434a8d1-6d41-4cfe-9413-e1868fc1c18d` at 2026-08-27T11:16:42Z, with
+18,156 real new lines to cover. The fresh public latest-analysis readback and
+GitHub main before/after both identify the merged source. This is timestamped
+source qualification, not a permanent latest-tip guarantee.
+
+Both prior #101 main attempts remain cancelled diagnostic records. The new
+main run is independent of the earlier five-condition PR gate and supplies no
+P06 implementation, deployment, enrollment, App grant or operational approval.
+Only the existing P06 plan/context is refreshed; its implementation row and all
+feature017 operational gates remain unchecked. Feature019 T013/T016 source-CI
+maintenance is complete against this main receipt. Feedback stays deferred and
+neither historical blocked write was replayed.
