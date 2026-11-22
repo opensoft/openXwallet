@@ -1,3 +1,16 @@
+## T013P06 isolated qualification complete - 2026-11-22 America/La_Paz
+
+T013P06 runtime/test/matrix source `ff6ccd7e8d07fc99afc346ba5a8a0c3b88b42e80`
+passes all seven ordered gates, 3,561 full parent tests plus 11 subtests, and all
+3,139 mandatory native cases, with zero failures, errors or skips. All 110 P06
+cases pass. Every prior identity, count/digest and matrix anchor prefix remains.
+Independent audits verify retained state, ten preservation cases in total, no
+surviving owned generations and removal of all five owned fixture volumes.
+Only existing T013P06 is complete in isolation; publication, hosted CI, local
+Codex review and owner source ratification remain separate. P07-P09 and all
+operational/human/consumer gates remain open. Setup/dispatch unauthorized;
+feedback deferred; blocked writes unreplayed. Earlier dated status is historical.
+
 ## Current T013P06 isolated implementation commission - 2026-11-22 America/La_Paz
 
 Brett explicitly commissioned implementation and testing of the existing T013P06

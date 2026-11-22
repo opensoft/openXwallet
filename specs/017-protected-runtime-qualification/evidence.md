@@ -1,3 +1,16 @@
+## T013P06 isolated qualification complete - 2026-11-22 America/La_Paz
+
+T013P06 runtime/test/matrix source `ff6ccd7e8d07fc99afc346ba5a8a0c3b88b42e80`
+passes all seven ordered gates, 3,561 full parent tests plus 11 subtests, and all
+3,139 mandatory native cases, with zero failures, errors or skips. All 110 P06
+cases pass. Every prior identity, count/digest and matrix anchor prefix remains.
+Independent audits verify retained state, ten preservation cases in total, no
+surviving owned generations and removal of all five owned fixture volumes.
+Only existing T013P06 is complete in isolation; publication, hosted CI, local
+Codex review and owner source ratification remain separate. P07-P09 and all
+operational/human/consumer gates remain open. Setup/dispatch unauthorized;
+feedback deferred; blocked writes unreplayed. Earlier dated status is historical.
+
 ## Current T013P06 isolated implementation commission - 2026-11-22 America/La_Paz
 
 Brett commissioned implementation and testing of the existing T013P06 row using
@@ -4231,3 +4244,58 @@ worker controls. No isolated result establishes live issuer administration,
 assigned identity, real provider behavior or human/consumer acceptance.
 Publication, hosted CI, local Codex review and source ratification are later gates.
 Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.
+
+
+## T013P06 isolated qualification closeout - 2026-11-22
+
+Brett commissioned existing T013P06 from prepared plan `5dc47167444d`. Frozen
+runtime/test/matrix head is `ff6ccd7e8d07fc99afc346ba5a8a0c3b88b42e80`; all 417
+inputs were checked before and after execution and independent auditing. The
+source manifest SHA-256 is
+`1d10d170c12d10ba246a9d50e4eac46edc256231d2bb6227c572294f00a67107`.
+This closeout changes only the owning Markdown records and the existing P06
+checkbox; runtime, tests, matrix and accepted pins remain byte-identical.
+
+| Check | Verified result |
+| --- | --- |
+| Focused P06 | 110 passed |
+| Ordered source gates | Both pins, YAML, normal, strict, full and pinned OpenSpec: seven passed |
+| Full regression | 3,561 parents plus 11 subtests; 2,459.926 seconds; zero failures/errors/skips |
+| Mandatory native | 3,139 cases; 2,334.927 seconds; PASS; zero failures/errors/skips |
+| Matrix preservation | All prior 3,451/3,029 identities, counts/digests, sorted identity order and anchor prefixes preserved |
+| Guard countercontrols | Three baselines pass; each corresponding weakened isolated copy fails its intended assertion without fixture errors |
+
+The three real CSR/mTLS/kernel/RSA provider positives prove valid unused worker
+requests refuse before reservation/sign/mint and the same bytes then succeed
+through the approved actor. Broker, reader and source-reader retain exact
+permissions and fixed installation/repository/versioned-key selection. The
+complete sequence, including worker controls and actual verified retirement,
+fits original bounds at private12/source4/control2/key1: seven provider calls and
+one separately charged kernel credential RPC. The existing actual confinement,
+passive-reply and retained-traceback FD/EOF controls also pass in full/native.
+No shared primitive, role/profile/wire field, runtime limit or activation changes.
+
+Each independent post-container audit verifies all three P06 positive store pairs
+(issued enrollment, retired App), 110 P06 cleanup receipts, all five existing
+preservation cases and 223 unissued measurement nonce journals. Full/native
+process audit records total 20,032/20,039 respectively; these are records, not a
+claim of distinct processes. No attributable generations or initial teardown
+failures remain. Before deletion, both P05 nonce-purpose and both P06 store-purpose
+presence counterchecks refuse missing-state qualification while preserving the
+original journal hashes. The preservation-count countercheck likewise refuses
+deletion before touching any retained file. All five owned eligibility, focused,
+guard, full and native volumes are removed, and all owned containers are absent.
+Source and the four selected dependency heads, trees and status remain unchanged.
+The qualification harness and bounded evidence/logs are retained outside the product worktree.
+
+Lost mint-response controls remain consumed and unknown; they are not reported
+as verified token retirement. Known returned handles use existing private
+retirement and independent refusal readback. The isolated provider fixtures and
+all owned process namespaces are gone. No live provider/issuer administration,
+hardware rollback resistance or live human/consumer acceptance is established.
+
+Earlier fixture/route/auditor diagnostics are retained as diagnostics. Only
+T013P06 is closed in isolation. Publication, exact-head hosted CI, local Codex
+review and owner source ratification are later gates. P07-P09, T001/T013/T014/T015,
+operational appointments and codeXfactory consumer/human gates remain open.
+Setup/dispatch unauthorized; feedback deferred; historical blocked writes unreplayed.

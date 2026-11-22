@@ -1,10 +1,13 @@
 # T013P06 enrollment and issuance subplan
 
-Status: isolated implementation and testing commissioned by Brett Heap on
-2026-11-22 using prepared plan `5dc47167444d`. The existing T013P06 row in
-[tasks.md](tasks.md) is the sole implementation task and remains unchecked until
-full/native qualification and independent cleanup. Setup/dispatch, P07-P09 and
-live provider/issuer or human/consumer acceptance remain separate.
+Status: implemented and qualified in isolation from prepared plan `5dc47167444d`.
+Runtime/test/matrix source `ff6ccd7e8d07fc99afc346ba5a8a0c3b88b42e80` passes all
+seven ordered gates, 3,561 full parent cases plus 11 subtests and 3,139 mandatory
+native cases. Independent retained-state and cleanup audits pass; only existing
+T013P06 is checked. See [the closeout](evidence.md#t013p06-isolated-qualification-closeout-2026-11-22).
+Publication, hosted CI, local Codex review and source ratification remain separate.
+Setup/dispatch, P07-P09 and live provider/issuer or human/consumer acceptance remain
+ungranted. Earlier preparation checkpoints below retain their historical meaning.
 
 ## Accepted source and qualification gates
 
@@ -215,7 +218,7 @@ where their assumptions fit. Use real local crypto/TLS/process/state and
 independently selected provider/admin doubles. Isolated outcomes do not prove
 live provider behavior, assigned identities or actual administration.
 
-## Future validation and handoff
+## Validation and handoff
 
 The measured parent baseline is 3,451 full cases plus 11 subtests, 3,029 mandatory
 native cases and 112 P05 cases. Preserve every prior node identity, fingerprint,
@@ -239,3 +242,21 @@ The subsequent isolated commission now supplies explicit source composition and
 regression controls; full/native qualification, independent cleanup and later
 publication/review/source acceptance remain distinct. It supplies no live service,
 operational App grant, default route or protected origin.
+
+
+## Recorded isolated result
+
+All 110 P06 controls pass, including actual unused worker preimages followed by
+approved-service success on identical bytes for each App role. Each complete
+positive preserves the original ten-second bounds and consumes private12,
+source4, control2 and key1, including seven actual provider calls, one actual
+kernel credential resolution and verified retirement. Existing local independent
+fact readers do not hide network I/O; any embedding's I/O readers must use the
+same charged clients and Decision. The actor has no default listener or activation.
+
+The independently audited positives retain one issued enrollment and one retired
+App token per role. Post-mint returned capabilities remain privately available
+for retirement; the deliberate lost mint-response outcome remains consumed and
+indeterminate, with no fabricated retirement or automatic retry. Original source,
+dependency selections and all earlier matrix identities remain intact. This is
+isolated source qualification using provider/admin doubles, not live acceptance.
