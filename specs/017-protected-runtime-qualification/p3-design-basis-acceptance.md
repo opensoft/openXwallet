@@ -1,3 +1,27 @@
+## P06 source accepted; P07 preparation only - 2026-11-23 America/La_Paz
+
+Brett source-ratified openXwallet #103 at
+`6796cccfc5912d9ddcf05a8cc5c694e67cb88c33` and directed normal landing,
+independent main CI verification, then T013P07 preparation. Normal squash merge
+`4b64db85fc28881656ef7e73c0c4a1dd760c9078` preserves the exact ratified tree.
+Main run 45135684248 passes all five effective jobs after a Sonar-only retry of
+a scanner-download HTTP403. The four successful source jobs and their original
+execution evidence were retained. The actual main analysis matches the merge;
+all six unchanged conditions pass: coverage 87.5%, duplication 0.1%, reviewed
+hotspots 100%, ratings 1. The original August 27 manual baseline remains intact.
+The independent Linux audit verifies all 102 production files, six configurations,
+four pinned repository trees, genuine coverage provenance, the exact 3,581 full
+parents plus 11 subtests, and all 3,159 native identities. The earlier P06
+sanitizer advisory remains documented; no Sonar issue status or gate was changed.
+
+Only the existing T013P07 subplan is prepared. Its implementation is not
+commissioned, and every task/owner checkbox retains its prior state. The plan
+gates separate cleanup authority and complete-graph budget fit; it accepts no
+reservation/window rewrite, per-resource budget reset or new contract. P08-P09
+and live/operator/human/consumer gates remain separate. Setup/dispatch unauthorized;
+feedback deferred; historical blocked writes unreplayed. Earlier dated checkpoints
+retain their original historical meaning.
+
 # T013-S1 acceptance and P3 preparation authority
 
 Status: design/P3 and P01-P04 source accepted; isolated P05 work commissioned; v2 source acceptance pending; operations unauthorized
@@ -123,3 +147,46 @@ exact-match disposition; the earlier bare-CLI result is diagnostic only.
 Earlier dated preparation records retain their historical scope. T013P05 stays
 unchecked, and P06-P09, all owner/operational/human/consumer gates and setup/
 dispatch remain separate. Feedback deferred; historical blocked writes unreplayed.
+
+
+## 2026-11-23 #103 source acceptance and P07 preparation
+
+Brett Heap stated:
+
+> I ratify openXwallet #103 at 6796cccfc5912d9ddcf05a8cc5c694e67cb88c33 for source acceptance only. Land when green, verify main CI, then prepare T013P07. Keep setup/dispatch unauthorized, feedback deferred; don’t replay blocked writes.
+
+[PR #103](https://github.com/opensoft/openXwallet/pull/103) landed normally as
+`4b64db85fc28881656ef7e73c0c4a1dd760c9078`, without an administrative override. Its tree
+`5bec465200373c2f83bc7cbbbda40dd4d944958a` exactly equals the ratified head.
+The [main run](https://github.com/opensoft/openXwallet/actions/runs/45135684248)
+passes all five effective jobs, with 3,581 full parents plus 11 subtests and 3,159
+native cases, zero failures/errors/skips and exact preserved identity sets.
+Only Sonar's pinned-scanner HTTP403 download failure was retried; original source
+job timestamps and artifacts were retained. The fresh main analysis evaluates
+all six unchanged conditions and preserves the original August 27 baseline.
+See the [qualified parent receipt](p3-retirement-parent-main-qualification.json).
+
+Independent Linux verification of the actual analysis-attempt-2 bundle matches
+the GitHub archive digest, all four pinned source trees, 102 production files,
+six configurations, every coverage denominator including zero-hit files, genuine
+raw parent branch shards/core probes, exact assertion-phase partition and native
+identities. GitHub main before/after and the latest Sonar main analysis agree on
+the merge as of the recorded readback; this supplies no permanent freshness guarantee.
+The prior 44 main advisories are preserved; the sole introduced advisory is the
+reviewed private sanitizer S5754 in issuance.py. It remains OPEN, not suppressed,
+accepted or falsely marked resolved. Earlier failed/download-only receipts remain
+diagnostic, distinct from the successful second analysis attempt.
+
+The [P07 subplan](p3-retirement-plan.md) prepares the single existing T013P07 row.
+Current setup-window-limited provider/namespace paths and P03's per-resource
+Decision control are explicit eligibility constraints. Additive cleanup paths
+must preserve legacy refusals; any required contract/cap change returns to its
+governed owner before dependent implementation. All task/owner checkbox states
+remain unchanged. P08/P09, T001/T013/T014/T015, role confirmation and consumer058
+T002/human acceptance stay gated. Setup/dispatch unauthorized; feedback deferred;
+historical blocked writes unreplayed. No P07 runtime result is claimed.
+
+This documentation-only preparation uses the existing six fast offline gates,
+feature prerequisite, link, checkbox and non-document/pin/dependency preservation
+audits before its local commit. Main full/native source qualification is recorded
+above; the preparation creates no new executable, fixture, test or measured case.
