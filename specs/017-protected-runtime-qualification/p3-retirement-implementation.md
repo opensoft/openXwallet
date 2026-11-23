@@ -1,6 +1,6 @@
 # T013P07 isolated retirement implementation
 
-Status: implementation candidate; full/native qualification and publication remain open.
+Status: isolated runtime locally qualified; hosted qualification/publication and source ratification remain open.
 Date: 2026-11-23, America/La_Paz
 Sole implementation row: [T013P07](tasks.md); no new task list.
 
@@ -72,18 +72,71 @@ A facade, cache label or aggregate digest cannot conceal those calls.
 
 ## Current source evidence
 
-The measured collection adds 126 substantive cases: 3,707 full parent identities
-and 3,285 mandatory native identities, retaining every original identity/order,
-module fingerprint and anchor prefix. These are measured counts, not full-run
-pass claims. Matrix changes contain only measured metadata and substantive anchors.
+The frozen implementation source is `a78196b2344f94df2d6794b6891aea0350320460`.
+The measured collection adds 126 substantive cases, preserving all 3,581 original
+full parent identities and relative order, prior module fingerprints and anchor
+prefixes. Matrix changes contain only measured metadata and substantive anchors.
+The new module identity digest is
+`6e4fff8619c201ecf5de01c11a0c3e2dc2140df98f35501ec08f117eae48e095`.
 
-The strengthened focused run passed 483 cases; two new owner-process cases
-revealed an input-framing defect, and both passed after that test correction.
-The final 13 affected graph, byte-bound, fresh-process and missing-state cases
-pass. The first five repository gates pass. Fresh exact-source full/native
-execution, all seven ordered gates, independent teardown and local review
-closeout remain required. T013P07 stays unchecked; hosted qualification and
-owner source acceptance of this new runtime remain separate.
+| Exact-source local qualification | Result |
+| --- | --- |
+| Full | 3,707 parents plus 11 subtests; 2533.525 seconds; zero failures/errors/skips |
+| Mandatory native | 3,285 cases; 2426.608 seconds; zero failures/errors/skips |
+| Ordered gates | Both pins, YAML syntax, plain/strict validation, full tests and pinned OpenSpec pass |
+| Local Codex expert review | Nine roles clear applicable corrections; no actionable finding remains |
+| Actual source verification | All 425 root Git blobs and 421 selected dependency blobs match the frozen bytes before/after execution |
+| Freeze manifest SHA-256 | `ef8f893130cf8e44337d1c2b2930e4a2f1477c7150dbe6b4edf81489810f6acd` |
+
+The full pytest step exited zero. Its wrapper then exited2 because the final
+OpenSpec step used an empty offline npm cache. The first replacement correctly
+verified the artifact/locked closure but refused execution on a no-exec temporary
+mount. Both failed environment attempts are retained as diagnostics. A separate
+network-disabled closeout used a private copy of the existing warm npm cache,
+the exact existing package tarball, unchanged pin/integrity/committed lockfile,
+and executable temporary storage. The pinned wrapper verifies the artifact and
+closed dependency tree and passes all-corpus validation on the same frozen source.
+The aggregate seven-gate receipt preserves the original wrapper exit2 and actual
+full-pytest exit0; it does not relabel that original container exit as successful.
+No product, test, matrix, pin, threshold or limit changed during recovery.
+
+Fresh full/native auditors independently match every executed node identity to
+the measured collections. Each checks three P05 connected proofs, all 223
+measurement nonce journals unissued/consumed, all three P06 positive role store
+pairs and131 fixture-cleanup receipts (130 original P06 plus the P07 mTLS
+integration). These cover28 known capabilities and one unknown outcome that
+remains indeterminate, without reissuance.
+
+Each independent P07 audit verifies three full graph positives from actual
+read-only provider/catalog/namespace/controller/credential state: all14 exact
+resources,16 dependency edges, permanent tombstones, original receipt/generation/
+operation joins, exactly16 issued-and-retired handles, current independent404,
+and all12 excluded provider objects plus three retained state slots at their
+selected paths and original identities/digests. All24 missing/substituted/duplicate
+fact countercontrols refuse before disposal. This supplements the five existing
+preservation positives; it does not substitute P07 fixtures for them.
+
+Full/native audits inspect20,168/20,173 process records,427 journals and133 helper
+receipts respectively; these are record counts, not distinct process counts.
+No live attributable generation or initial teardown failure remains. Both
+qualification namespaces are removed before their auditors inspect retained
+volumes. Both exact owned roots, audit namespaces and labelled volumes are then
+removed, with actual absence verified. The19 owned focused diagnostic roots are
+separately inventoried/audited and removed after checking their recorded process
+generations, six helper receipts and returned credential retirement. Two additional
+reviewer-owned case directories in shared pytest session20 are independently
+inventoried and archived as earlier review diagnostics. Each retains one original
+claim, a truthful pending result and16 revoked handles; their zero/one DELETE
+counts distinguish after-claim from effect-before-ack loss. Exact device/inode
+guards protect removal, and the shared pytest parent and unrelated sessions are
+preserved. These older diagnostic fixtures are not promoted to current frozen
+qualification. No shared bench, cache, dependency checkout or unrelated worktree
+is removed or restarted.
+
+The final documentation closeout preserves all417 other frozen root inputs and
+all421 selected dependency blobs. T013P07 stays unchecked because its accepted
+plan also requires hosted qualification; publishing this new runtime, hosted CI,
+later source ratification and operational/live acceptance remain separate.
 
 The fixtures exercise the complete14-resource/16-edge graph and16 registered
 credential outcomes, actual retained provider/catalog/journal/controller objects,

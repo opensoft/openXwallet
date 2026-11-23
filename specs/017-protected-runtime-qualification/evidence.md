@@ -1,14 +1,20 @@
-## P07 runtime candidate under isolated qualification - 2026-11-23
+## P07 isolated runtime qualified locally - 2026-11-23
 
-Both accepted source merges now have successful independent main CI. The
+Both accepted source merges have successful independent main CI. The
 [implementation record](p3-retirement-implementation.md) describes the internal
 reconciler, separate observer, fixed accounting and substantive source fixtures.
-The measured corpus has 126 additions, preserving all parent identities/order;
-3,707 full parents and 3,285 native identities are required. Focused controls
-and five fast gates pass; full/native exact-source qualification, independent
-teardown and review closeout remain open. T013P07 stays unchecked. Publication,
-P08/P09 and operational/human/consumer acceptance remain separate. Setup/dispatch
-unauthorized; feedback deferred; historical blocked writes unreplayed.
+Exact source a78196b2344f94df2d6794b6891aea0350320460 passes 3,707 full parents
+plus 11 subtests, all 3,285 native cases and seven ordered local gates, with zero
+failures/errors/skips. The 126 additions preserve all prior identities/order.
+Nine local Codex expert roles clear applicable corrections. Independent audits
+verify retained state before disposing of their audited roots. Both producer and
+audit namespaces, both labelled volumes and all19 owned focused roots are absent.
+The final closeout changes owning Markdown only.
+
+T013P07 remains unchecked pending hosted qualification; runtime publication and
+owner source acceptance remain separate. P08/P09 and operational/human/consumer
+acceptance stay outside this commission. Setup/dispatch unauthorized; feedback
+deferred; historical blocked writes unreplayed.
 
 ## Source-accepted accounting and isolated P07 continuation - 2026-11-23
 
@@ -4760,3 +4766,33 @@ raw archives and receipts remain retained. No fixture was created for preparatio
 The prior Desktop audit independently removed all 16 owned P06 volumes before
 cutover. The new native Docker engine also has no P06 fixture objects; this is
 not a fresh query of the stopped Desktop engine, which was not restarted here.
+
+
+## 2026-11-23 P07 exact-source local qualification
+
+The [P07 implementation record](p3-retirement-implementation.md) records the
+ordered accepted merges and successful independent main CI, frozen runtime
+a78196b2344f94df2d6794b6891aea0350320460, 126 substantive additions, full3,707
+parents plus11subtests and native3,285 cases, zero failures/errors/skips, seven
+ordered local gates, nine-role local Codex review and independent retained-state
+audits. The OpenSpec offline-cache/no-exec diagnostics remain distinct from the
+successful unchanged-source replacement gate and aggregate qualification.
+
+The retained evidence packet is
+/workspace/projects/.factory-binding-qa/runtime-next-20261112T171205Z/p3-retirement-implementation-20261123/.
+Its qualification-r1 retains the425-input freeze,421dependency Git-blob proof,
+actualJUnit/ordered/aggregate receipts, both original namespace exits, three
+full-graph P07 positives and24countercontrols per audit, original P05/P06 nonce/
+credential checks, independent preservation/process/cleanup audits, and actual
+owned-container/volume absence. Focused diagnostic inventory/audit/removal receipts
+retain the19 exact roots and six helper-generation receipts. A separate reviewer
+archive retains the two exact earlier process-loss case directories, their
+independent pending/revocation audit and guarded-removal proof. Shared pytest
+parents and unrelated sessions are preserved. All417 non-closeout inputs and four
+selected dependency heads/trees remain unchanged.
+
+This closes local implementation/testing/cleanup only. All task checkbox states
+remain unchanged; T013P07 awaits hosted qualification. No runtime PR, hosted
+connector review, scanner result, source acceptance or operational grant is
+inferred. P08/P09 and live roles/provider/custody/human/consumer gates remain open.
+Setup/dispatch unauthorized; feedback deferred; historical blocked writes unreplayed.

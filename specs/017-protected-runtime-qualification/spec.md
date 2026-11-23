@@ -1,14 +1,20 @@
-## P07 runtime candidate under isolated qualification - 2026-11-23
+## P07 isolated runtime qualified locally - 2026-11-23
 
-Both accepted source merges now have successful independent main CI. The
+Both accepted source merges have successful independent main CI. The
 [implementation record](p3-retirement-implementation.md) describes the internal
 reconciler, separate observer, fixed accounting and substantive source fixtures.
-The measured corpus has 126 additions, preserving all parent identities/order;
-3,707 full parents and 3,285 native identities are required. Focused controls
-and five fast gates pass; full/native exact-source qualification, independent
-teardown and review closeout remain open. T013P07 stays unchecked. Publication,
-P08/P09 and operational/human/consumer acceptance remain separate. Setup/dispatch
-unauthorized; feedback deferred; historical blocked writes unreplayed.
+Exact source a78196b2344f94df2d6794b6891aea0350320460 passes 3,707 full parents
+plus 11 subtests, all 3,285 native cases and seven ordered local gates, with zero
+failures/errors/skips. The 126 additions preserve all prior identities/order.
+Nine local Codex expert roles clear applicable corrections. Independent audits
+verify retained state before disposing of their audited roots. Both producer and
+audit namespaces, both labelled volumes and all19 owned focused roots are absent.
+The final closeout changes owning Markdown only.
+
+T013P07 remains unchecked pending hosted qualification; runtime publication and
+owner source acceptance remain separate. P08/P09 and operational/human/consumer
+acceptance stay outside this commission. Setup/dispatch unauthorized; feedback
+deferred; historical blocked writes unreplayed.
 
 ## Source-accepted accounting and isolated P07 continuation - 2026-11-23
 
