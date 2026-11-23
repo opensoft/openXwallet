@@ -759,3 +759,54 @@ CASES['H12'] += _nodes('test_azure_issuance',
 
 CASES['H11'] += _nodes('test_azure_issuance',
     'private_enrollment_scrubs_direct_termination_before_effects')
+
+
+# T013P07: measured additions; preserve every parent identity and anchor prefix.
+MODULE_COUNTS['tests/runtime_binding/test_azure_retirement.py'] = 126
+MODULE_DIGESTS['tests/runtime_binding/test_azure_retirement.py'] = '6e4fff8619c201ecf5de01c11a0c3e2dc2140df98f35501ec08f117eae48e095'
+CASES['R01'] += _nodes('test_azure_retirement',
+    'complete_pilot_retirement_uses_real_clocks_and_actual_graph',
+    'actual_same_deployment_run_registration_and_receipt',
+    'exact_batch_read_never_omits_or_rebinds_namespace_entries',
+    'original_read_only_receipt_batch_rejects_truncation_before_cache_use',
+    'original_async_delete_error_cannot_become_success_from_a_locator')
+CASES['H06'] += _nodes('test_azure_retirement',
+    'actual_mtls_issuance_and_original_runtime_retirement_feed_separate_observer')
+CASES['H07'] += _nodes('test_azure_retirement',
+    'read_only_observer_and_worker_are_denied_real_write_methods',
+    'external_owner_survives_three_actual_authenticated_client_process_losses',
+    'mutator_principal_cannot_be_relabelled_as_the_independent_observer')
+CASES['H10'] += _nodes('test_azure_retirement',
+    'fixed_original_pool_and_clock',
+    'each_class_refuses_before_the_first_over_budget_effect',
+    'callback_cannot_refund_or_replace_the_original_account',
+    'genuine_later_registration_has_one_new_clock_and_the_original_meter',
+    'real_setup_expiry_does_not_renew_creation_but_external_cleanup_works',
+    'current_late_observer_reports_failed_without_renewing_cleanup',
+    'frozen_delete_request_expiry_is_checked_at_the_actual_send',
+    'expired_supporting_assessment_cannot_become_current_complete_receipt',
+    'approved_future_cleanup_start_refuses_before_claim_or_admission',
+    'nested_failure_burn_cannot_be_erased_by_its_enclosing_callback',
+    'invalid_clock_history_is_sanitized_and_terminal',
+    'physical_namespace_oversize_is_bounded_and_cannot_satisfy_refusal_by_fixture_error')
+CASES['H11'] += _nodes('test_azure_retirement',
+    'concurrent_duplicate_triggers_share_one_claim_and_no_second_effect',
+    'ambiguous_delete_never_replays_and_independent_reader_stays_truthful',
+    'lost_cleanup_claim_ack_refuses_mutation_and_is_not_a_second_allocation',
+    'each_actual_preservation_change_prevents_complete',
+    'actual_missing_runtime_credential_cleanup_prevents_complete',
+    'missing_actual_issued_handle_refuses_instead_of_omitting_it',
+    'independent_observer_requires_actual_terminal_tombstone_not_write_ack',
+    'failed_original_authorization_retains_one_account_and_never_reacquires',
+    'failed_handoff_cannot_become_registration_success_on_retry',
+    'actual_mutation_owner_process_loss_cannot_transfer_and_fresh_reader_is_truthful',
+    'each_pending_poll_must_authenticate_the_original_operation_before_retry',
+    'unrelated_large_receipt_archive_cannot_increase_original_operation_reads')
+CASES['H12'] += _nodes('test_azure_retirement',
+    'private_direct_termination_cannot_leak_payload_or_context',
+    'private_clock_termination_is_closed_without_payload_or_context')
+
+CASES['H10'] += _nodes('test_azure_retirement',
+    'bounded_reader_rejects_oversize_metadata_before_any_blob_materialization')
+CASES['H11'] += _nodes('test_azure_retirement',
+    'missing_selected_retained_service_state_is_never_reinitialized')

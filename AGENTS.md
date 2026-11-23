@@ -1,3 +1,42 @@
+## P07 runtime candidate under isolated qualification - 2026-11-23
+
+Both accepted source merges now have successful independent main CI. The
+[implementation record](specs/017-protected-runtime-qualification/p3-retirement-implementation.md) describes the internal
+reconciler, separate observer, fixed accounting and substantive source fixtures.
+The measured corpus has 126 additions, preserving all parent identities/order;
+3,707 full parents and 3,285 native identities are required. Focused controls
+and five fast gates pass; full/native exact-source qualification, independent
+teardown and review closeout remain open. T013P07 stays unchecked. Publication,
+P08/P09 and operational/human/consumer acceptance remain separate. Setup/dispatch
+unauthorized; feedback deferred; historical blocked writes unreplayed.
+
+## Source-accepted accounting and isolated P07 continuation - 2026-11-23
+
+Brett Heap ratified factory #1365 at `89dbe6e6640361c36321968725932058aa802e2b`
+with adapter #104 at `ea7a46206413ba5392734fa67def7dcef6861835` for source
+acceptance only, directed ordered landing when green, then resumed T013P07 in
+isolation. Factory landed first as `587841747ffbbff0d91facee34ac22e76ec632e2`;
+adapter landed second as `bfdfba05aad1e3b673bc0a3513297eb749a2cc1e`, with the
+identical adapter ratified tree. Independent post-merge CI is tracked separately.
+
+The exact accepted intrinsic policy is
+`openxfactory-infrastructure-retirement-accounting-internal-v1`, commitment
+`sha256:21b62c2621f3d98e5358c1ba4c5b0345a0237d10cfa52e59bea122487688979e`.
+The normative factory policy requires exclusive durable handoff, refusal on
+ambiguity, per-pool original ownership with a separate observer, exact cleanup
+claim/anchor ownership and allocation binding, serialized admission/debits and
+read-only original-slot resolution. The new intrinsic cleanup/observation paths
+preserve ordinary ReadBudget and setup clipping. Fixed graph, caps and clocks
+cannot be raised or facts omitted to force a pass.
+
+Only existing T013P07 is commissioned. Its two eligibility gates now consume
+this accepted source decision; the historical unchanged-budget failure stays
+historical. Record and qualify the actual full selected graph, physical nested
+calls, real clocks, crash/identity/privacy/one-send controls and independent
+cleanup. T013P07 remains unchecked until its required qualification is complete.
+P08/P09, setup/dispatch, service/role appointments, live/human/consumer acceptance
+remain separate. Feedback deferred; historical blocked writes unreplayed.
+
 ## P07 bounded accounting amendment candidate - 2026-11-23 America/La_Paz
 
 Brett commissioned the complete pilot inventory, bounded source amendment, paired

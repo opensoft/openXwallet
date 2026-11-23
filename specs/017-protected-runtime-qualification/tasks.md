@@ -1,3 +1,42 @@
+## P07 runtime candidate under isolated qualification - 2026-11-23
+
+Both accepted source merges now have successful independent main CI. The
+[implementation record](p3-retirement-implementation.md) describes the internal
+reconciler, separate observer, fixed accounting and substantive source fixtures.
+The measured corpus has 126 additions, preserving all parent identities/order;
+3,707 full parents and 3,285 native identities are required. Focused controls
+and five fast gates pass; full/native exact-source qualification, independent
+teardown and review closeout remain open. T013P07 stays unchecked. Publication,
+P08/P09 and operational/human/consumer acceptance remain separate. Setup/dispatch
+unauthorized; feedback deferred; historical blocked writes unreplayed.
+
+## Source-accepted accounting and isolated P07 continuation - 2026-11-23
+
+Brett Heap ratified factory #1365 at `89dbe6e6640361c36321968725932058aa802e2b`
+with adapter #104 at `ea7a46206413ba5392734fa67def7dcef6861835` for source
+acceptance only, directed ordered landing when green, then resumed T013P07 in
+isolation. Factory landed first as `587841747ffbbff0d91facee34ac22e76ec632e2`;
+adapter landed second as `bfdfba05aad1e3b673bc0a3513297eb749a2cc1e`, with the
+identical adapter ratified tree. Independent post-merge CI is tracked separately.
+
+The exact accepted intrinsic policy is
+`openxfactory-infrastructure-retirement-accounting-internal-v1`, commitment
+`sha256:21b62c2621f3d98e5358c1ba4c5b0345a0237d10cfa52e59bea122487688979e`.
+The normative factory policy requires exclusive durable handoff, refusal on
+ambiguity, per-pool original ownership with a separate observer, exact cleanup
+claim/anchor ownership and allocation binding, serialized admission/debits and
+read-only original-slot resolution. The new intrinsic cleanup/observation paths
+preserve ordinary ReadBudget and setup clipping. Fixed graph, caps and clocks
+cannot be raised or facts omitted to force a pass.
+
+Only existing T013P07 is commissioned. Its two eligibility gates now consume
+this accepted source decision; the historical unchanged-budget failure stays
+historical. Record and qualify the actual full selected graph, physical nested
+calls, real clocks, crash/identity/privacy/one-send controls and independent
+cleanup. T013P07 remains unchecked until its required qualification is complete.
+P08/P09, setup/dispatch, service/role appointments, live/human/consumer acceptance
+remain separate. Feedback deferred; historical blocked writes unreplayed.
+
 ## P07 bounded accounting amendment candidate - 2026-11-23 America/La_Paz
 
 Brett commissioned the complete pilot inventory, bounded source amendment, paired
@@ -689,7 +728,7 @@ create a factory/consumer duplicate task list. R01-R12 trace to the factory delt
 - [x] T013P04 [O] Implement source-selected original-runner capture and bounded phase transport; files: scripts/workload_factory_binding_runtime/azure_composition/runner_transport.py, tests/runtime_binding/test_azure_runner_transport.py; verify: exact trusted origin/path policy, frozen private bearer/endpoint, valid signed-claim/provider-correlation positive and URL/redirect/proxy/source/phase/credential-export mutations within original limits, no discovery token (R04/R11).
 - [x] T013P05 [O] Implement protected local worker-host adapters and authenticated complete-byte remote measurement/finalization composition, preserving original local manager/types/profiles and R03/R06 boundaries — files: `scripts/workload_factory_binding_runtime/azure_composition/local_host.py`, `scripts/workload_factory_binding_runtime/azure_composition/remote_evidence.py`, `scripts/workload_factory_binding_runtime/hosted/readback.py`, `tests/runtime_binding/test_azure_measurement.py`, `tests/runtime_binding/matrix_contract.py`, `AGENTS.md`, `specs/017-protected-runtime-qualification/tasks.md`, `specs/017-protected-runtime-qualification/spec.md`, `specs/017-protected-runtime-qualification/plan.md`, `specs/017-protected-runtime-qualification/p3-measurement-plan.md`, `specs/017-protected-runtime-qualification/p3-measurement-transaction-plan.md`, `specs/017-protected-runtime-qualification/p3-measurement-implementation.md`, `specs/017-protected-runtime-qualification/evidence.md` — verify: `python3 -B tests/runtime_binding/conformance.py --owner-code "$WALLET_BINDING_OWNER_CODE" --temp-root "$PILOT_QUALIFICATION_ROOT"`
 - [x] T013P06 [O] Wire independently approved enrollment/issuance, peer credentials and retained state boundaries; files: `scripts/workload_factory_binding_runtime/azure_composition/issuance.py`, `tests/runtime_binding/test_azure_issuance.py`, `tests/runtime_binding/matrix_contract.py`, `AGENTS.md`, `specs/017-protected-runtime-qualification/p3-issuance-plan.md`, `specs/017-protected-runtime-qualification/p3-azure-composition-plan.md`, `specs/017-protected-runtime-qualification/spec.md`, `specs/017-protected-runtime-qualification/plan.md`, `specs/017-protected-runtime-qualification/tasks.md`, `specs/017-protected-runtime-qualification/evidence.md`; verify: approved role positive, valid-preimage worker denial, nonce/host/source/fingerprint/effective-scope mutations, no self-enrollment/MI/key leakage and no runtime ledger initialization/reset/rollback (R06).
-- [ ] T013P07 [O] Implement the separate external namespace/watchdog infrastructure reconciler; files: scripts/workload_factory_binding_runtime/azure_composition/retirement.py, tests/runtime_binding/test_azure_retirement.py; verify: partial-setup/expiry/predispatch and post-P7 closed receipt variants, no invented unavailable facts, no-name-reuse/sole-writer/per-kind order, original-operation/control-loss reconciliation, trigger deduplication, independent absence/revocation/preservation and separately authorized read-only late failure with no renewal/budget reset; no RG/force/cascade/retry or old-report relabel (R07/R09/R10).
+- [ ] T013P07 [O] Implement the separate external namespace/watchdog infrastructure reconciler; files: scripts/workload_factory_binding_runtime/azure_composition/retirement.py, scripts/workload_factory_binding_runtime/azure_composition/namespace.py, scripts/workload_factory_binding_runtime/azure_composition/provider.py, tests/runtime_binding/test_azure_retirement.py, tests/runtime_binding/matrix_contract.py; verify: partial-setup/expiry/predispatch and post-P7 closed receipt variants, no invented unavailable facts, no-name-reuse/sole-writer/per-kind order, original-operation/control-loss reconciliation, trigger deduplication, independent absence/revocation/preservation and separately authorized read-only late failure with no renewal/budget reset; no RG/force/cascade/retry or old-report relabel (R07/R09/R10).
 - [ ] T013P08 [O] Integrate an explicitly source-selected companion entrypoint and reviewed deployment packaging/workflow route; files: scripts/prepare-azure-protected-runtime.py, scripts/workload_factory_binding_runtime/azure_composition/entrypoint.py, deploy/qa-wallet-mfa/, .github/workflows/protected-runtime-qualification-run.yml, tests/runtime_binding/test_azure_entrypoint.py; verify: existing operational_bindings/default entrypoint unchanged/refusing, three inputs/seven runtime/eight source roles and same-commit phase permissions preserved, no env/file/plugin activation and no execution/setup from source selection alone (R02).
 - [ ] T013P09 [O] Qualify exact isolated P3 source, reconcile operator guidance and prepare later source review/acceptance handoff; files: tests/runtime_binding/matrix_contract.py, specs/017-protected-runtime-qualification/p3-azure-composition-acceptance.md, p3-azure-composition-quickstart.md, evidence.md; verify: complete R01-R12 positive/refusal/crash matrix, measured preserved old full/native IDs/fingerprints, original budgets/deadlines/body caps with fitting complete positives, independent fixture cleanup and honest source-only results; T001/T013/T014/T015/consumerT002 and operational grants remain open (R01/R02/R07/R11/R12).
 
