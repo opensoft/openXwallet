@@ -714,8 +714,8 @@ CASES['H10'] += _nodes("test_azure_measurement",
 
 
 # T013P06: measured additions only; preserve all prior rows and anchor prefixes.
-MODULE_COUNTS['tests/runtime_binding/test_azure_issuance.py'] = 127
-MODULE_DIGESTS['tests/runtime_binding/test_azure_issuance.py'] = '4891ce9484126e40421a48c96c8e883ae5e0729a07ef4b0093ce1c809e4fd3e2'
+MODULE_COUNTS['tests/runtime_binding/test_azure_issuance.py'] = 130
+MODULE_DIGESTS['tests/runtime_binding/test_azure_issuance.py'] = 'f2ee678b278bbdc44e0bb2430d85d37cc70be3c01b55d93bbe1e27054ae6abd1'
 CASES['H06'] += _nodes('test_azure_issuance',
     'complete_roles_and_unused_worker_preimages_fit_original_bounds',
     'enrollment_self_claim_cannot_select_authority',
@@ -756,3 +756,6 @@ CASES['H12'] += _nodes('test_azure_issuance',
     'known_cleanup_handle_survives_issuance_dependency_failure',
     'returned_mint_token_is_retained_before_postresponse_material_check',
     'caller_reply_pair_closes_with_traceback_held_before_gc')
+
+CASES['H11'] += _nodes('test_azure_issuance',
+    'private_enrollment_scrubs_direct_termination_before_effects')

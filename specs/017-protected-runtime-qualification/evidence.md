@@ -1,3 +1,20 @@
+## P06 Sonar fixture correction - 2026-11-22 America/La_Paz
+
+PR #103 head `6845a8554c31` passes all four source jobs, but Sonar rejects the
+fixture's caught input-validation assertion (reliability4). Coverage is 96.5%;
+the other five unchanged gate conditions pass. Explicit HTTP input validation
+replaces that assertion, and 45 composite test assertions are split in their
+original evaluation order. The before-allocation privacy control now observes
+its selected failure directly instead of comparing unrelated process-wide FDs.
+The private BaseException sanitization boundary remains deliberate; three real
+mTLS controls add direct termination-payload refusals before effects. No product
+runtime, profile, permission, pin, workflow, quality threshold or limit changes.
+T013P06 reopens pending focused controls, new measured identities, full/native
+qualification, independent cleanup, local review and replacement exact-head CI.
+Earlier qualified sources and run45097854796 remain historical evidence, not
+owner source acceptance. Setup/dispatch unauthorized; feedback deferred;
+historical blocked writes unreplayed.
+
 ## P06 final local qualification - 2026-11-22 America/La_Paz
 
 Corrected source `38af15b92d823a0469c11565176367e5daa66bad` passes all seven

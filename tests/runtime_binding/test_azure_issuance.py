@@ -68,7 +68,8 @@ def composed(enrollment, provider, tmp_path):
         def do_POST(self):
             try:
                 n = int(self.headers['Content-Length'])
-                assert 0 < n <= 16384
+                if not 0 < n <= 16384:
+                    raise ValueError('request-body-length-refused')
                 raw = self.rfile.read(n)
                 if self.path == '/enroll':value = c.actor.enroll(raw, channel=self.connection)
                 elif self.path == '/private':value = c.actor.deliver(raw, channel=self.connection)
@@ -109,7 +110,8 @@ def composed(enrollment, provider, tmp_path):
     finally:
         server.shutdown();server.server_close();thread.join(timeout=5)
         c.stop.set();broker_thread.join(timeout=5);server_channel.close();channel.close()
-        assert not thread.is_alive() and not broker_thread.is_alive()
+        assert not thread.is_alive()
+        assert not broker_thread.is_alive()
         # Explicit fixture administration is separate from the tested failure.
         # Audit known capabilities before disposing keys/state. Unknown returned-
         # response loss remains indeterminate in the tested path, never success.
@@ -131,21 +133,33 @@ def composed(enrollment, provider, tmp_path):
 @pytest.mark.parametrize('enrollment',['broker','reader','source-reader'],indirect=True)
 def test_complete_roles_and_unused_worker_preimages_fit_original_bounds(composed,tmp_path):
     c=composed; d=c.decision;b=ReadBudget(d);state=b.state;end=d.end;deadline=d.deadline;started=time.monotonic()
-    assert rows(c.s.ledger)==[] and rows(c.p.ledger)==[]
+    assert rows(c.s.ledger)==[]
+    assert rows(c.p.ledger)==[]
     assert c.call(c.worker,'/enroll',c.s.raw).status==403
-    assert rows(c.s.ledger)==[] and c.p.calls==[]
+    assert rows(c.s.ledger)==[]
+    assert c.p.calls==[]
     peer=c.enrolled()
     assert c.call(c.worker,'/private',c.body).status==403
-    assert rows(c.p.ledger)==[] and c.p.calls==[] and c.resolutions==[]
+    assert rows(c.p.ledger)==[]
+    assert c.p.calls==[]
+    assert c.resolutions==[]
     result=c.call(peer,'/private',c.body);assert result.status==200
     cap=c.actor.pending(c.p.ref)
     assert json.loads(result.body)=={'role':c.s.selection.role,'credential':cap.credential}
-    assert cap.use_until<=deadline and cap._decision is d and c.p.active[cap.credential]
+    assert cap.use_until<=deadline
+    assert cap._decision is d
+    assert c.p.active[cap.credential]
     retirement=Retirement(capability=cap,selection=c.p.selection,writer=c.p.transport(),observer=c.p.transport(),decision=d)
-    assert retirement.retire()['state']=='retired' and not c.p.active[cap.credential]
-    assert d._hosted_reads is state and d.end==end and d.deadline<=deadline and d.remaining()>0
+    assert retirement.retire()['state']=='retired'
+    assert not c.p.active[cap.credential]
+    assert d._hosted_reads is state
+    assert d.end==end
+    assert d.deadline<=deadline
+    assert d.remaining()>0
     assert state['counts']=={'protection':0,'source':4,'control':2,'arm':0,'key':1,'private':12}
-    assert len(c.p.calls)==7 and c.resolutions==[True] and time.monotonic()-started<10
+    assert len(c.p.calls)==7
+    assert c.resolutions==[True]
+    assert time.monotonic()-started<10
     (tmp_path/'p06-positive.json').write_text(json.dumps({'role':c.s.selection.role,'counts':state['counts'],
         'worker_unused_preimages_denied':True,'same_bytes_approved':True,'retired':True,
         'elapsed_seconds':time.monotonic()-started,'provider_calls':7,'kernel_resolutions':1},indent=2))
@@ -158,7 +172,9 @@ def test_complete_roles_and_unused_worker_preimages_fit_original_bounds(composed
 def test_enrollment_self_claim_cannot_select_authority(composed,field,value):
     c=composed
     result=c.call(c.bootstrap,'/enroll',{**c.s.raw,field:value})
-    assert result.status==403 and rows(c.s.ledger)==[] and c.p.calls==[]
+    assert result.status==403
+    assert rows(c.s.ledger)==[]
+    assert c.p.calls==[]
     assert c.call(c.bootstrap,'/enroll',c.s.raw).status==200
 
 
@@ -169,7 +185,8 @@ def test_independent_enrollment_facts_cannot_be_self_approved(composed,field,val
     c=composed;s=c.s
     s.facts=replace(EnrollmentCurrent(s.authority.principal,s.authority.selection_digest,s.selection.ref,s.nonce,True,s.now,s.now+30),**{field:value})
     assert c.call(c.bootstrap,'/enroll',s.raw).status==403
-    assert rows(s.ledger)==[] and c.p.calls==[]
+    assert rows(s.ledger)==[]
+    assert c.p.calls==[]
     s.facts=None
     assert c.call(c.bootstrap,'/enroll',s.raw).status==200
 
@@ -180,10 +197,12 @@ def test_provider_failure_is_unavailable_and_consumed_without_retry(composed,cha
     assert c.call(peer,'/private',c.body).status==503
     before=len(c.p.calls)
     assert rows(c.p.ledger)[0][2]=='consumed'
-    assert c.call(peer,'/private',c.body).status==503 and len(c.p.calls)==before
+    assert c.call(peer,'/private',c.body).status==503
+    assert len(c.p.calls)==before
     if change in ('permissions','expired','expiry','repository','repo-id'):
         cap=c.actor.pending(c.p.ref)
-        assert c.p.active[cap.credential] and 'credential' not in cap.readback()
+        assert c.p.active[cap.credential]
+        assert 'credential' not in cap.readback()
 
 
 @pytest.mark.parametrize('field,value',[
@@ -193,7 +212,9 @@ def test_independent_issuance_approval_precedes_reservation(composed,field,value
     c=composed;peer=c.enrolled();i=c.actor.issuer;p=c.p
     p.current=replace(IssuanceCurrent(i.principal,i.selection_digest,p.ref,p.nonce,True,p.now,p.now+30),**{field:value})
     assert c.call(peer,'/private',c.body).status==503
-    assert rows(p.ledger)==[] and p.calls==[] and c.resolutions==[]
+    assert rows(p.ledger)==[]
+    assert p.calls==[]
+    assert c.resolutions==[]
 
 
 @pytest.mark.parametrize('mutation',['role','enrollment_digest','case','plan','host','source','bootstrap','key','principal','reader','ledger','transport'])
@@ -211,7 +232,9 @@ def test_selected_binding_substitution_refuses_before_effects(composed,mutation,
         identity=NonceLedger.initialize(tmp_path/'other-ledger');a.issuer.ledger=NonceLedger(tmp_path/'other-ledger',identity=identity)
     elif mutation=='transport':a.provider.http=c.p.transport()
     assert c.call(c.bootstrap,'/enroll',c.s.raw).status in (403,503)
-    assert rows(c.s.ledger)==[] and rows(c.p.ledger)==[] and c.p.calls==[]
+    assert rows(c.s.ledger)==[]
+    assert rows(c.p.ledger)==[]
+    assert c.p.calls==[]
 
 
 @pytest.mark.parametrize('store',['enrollment','issuance'])
@@ -239,7 +262,8 @@ def test_retained_store_refuses_without_initialization_or_repair(composed,store,
         peer=PrivateHttps(ca_file=str(c.s.ca_file),certificate=str(cp),private_key=str(kp),fixture_origin=c.origin)
         assert c.call(peer,'/private',c.body).status==503
     else:assert response.status in (403,503)
-    assert c.p.calls==[] and (db.read_bytes() if db.exists() else None)==before
+    assert c.p.calls==[]
+    assert (db.read_bytes() if db.exists() else None)==before
 
 
 @pytest.mark.parametrize('mutation',['ledger','counts','members','phase','end','deadline','clock','counter','nested-refund'])
@@ -264,7 +288,8 @@ def test_nested_callback_cannot_refund_or_replace_original_authority(composed,mu
     c.s.authority.read_current=reader
     c.actor=c.construct()
     assert c.call(c.bootstrap,'/enroll',c.s.raw).status in (403,503)
-    assert rows(c.s.ledger)==[] and c.p.calls==[]
+    assert rows(c.s.ledger)==[]
+    assert c.p.calls==[]
 
 
 @pytest.mark.parametrize('group',['private','key','source','control'])
@@ -285,7 +310,8 @@ def test_precharged_original_budget_cannot_be_replaced_for_minting(composed,grou
 def test_original_closed_route_validated_before_fixture_translation(composed,method,url):
     c=composed
     with pytest.raises(BindingError):c.actor.provider.exchange(method,url,headers={},decision=c.decision)
-    assert c.p.calls==[] and ReadBudget(c.decision).count('private')==0
+    assert c.p.calls==[]
+    assert ReadBudget(c.decision).count('private')==0
 
 
 def test_original_authority_cannot_be_renewed_but_private_cleanup_survives(composed):
@@ -293,22 +319,28 @@ def test_original_authority_cannot_be_renewed_but_private_cleanup_survives(compo
     cap=c.actor.pending(c.p.ref);end=c.decision.end
     c.s.now+=11;c.p.now=c.s.now
     with pytest.raises(BindingError):c.actor.issuer.resolve(c.p.ref,c.p.nonce,decision=Decision(clock=lambda:c.s.now))
-    assert c.actor.pending(c.p.ref) is cap and c.decision.end==end
-    assert c.cleanup(cap).retire()['state']=='retired' and not c.p.active[cap.credential]
+    assert c.actor.pending(c.p.ref) is cap
+    assert c.decision.end==end
+    assert c.cleanup(cap).retire()['state']=='retired'
+    assert not c.p.active[cap.credential]
 
 
 @pytest.mark.parametrize('cancel',[False,True])
 def test_private_failure_and_cancellation_scrub_context_while_traceback_retained(composed,monkeypatch,cancel):
-    c=composed;canary='PRIVATE-CANARY-DO-NOT-RETAIN';fds=set(os.listdir('/proc/self/fd'))
+    c=composed;canary='PRIVATE-CANARY-DO-NOT-RETAIN';calls=[]
     def failed(*_a,**_k):
+        calls.append(True)
         raise KeyboardInterrupt(canary) if cancel else RuntimeError(canary)
     monkeypatch.setattr(composition,'credential_request',failed)
     caught=None
     try:composition.private(lambda:c.actor._credential(deadline=c.decision.deadline))
     except BaseException as error:caught=error
     assert type(caught) is (KeyboardInterrupt if cancel else BindingError)
-    assert caught.__context__ is None and caught.__cause__ is None and canary not in repr(caught)
-    assert set(os.listdir('/proc/self/fd'))==fds and caught.__traceback__ is not None
+    assert caught.__context__ is None
+    assert caught.__cause__ is None
+    assert canary not in repr(caught)
+    assert calls==[True]
+    assert caught.__traceback__ is not None
 
 
 def test_runtime_composition_has_no_activation_or_serializable_private_state(composed):
@@ -317,7 +349,8 @@ def test_runtime_composition_has_no_activation_or_serializable_private_state(com
         with pytest.raises(BindingError):pickle.dumps(value)
         assert 'fixture-vault-credential' not in repr(value)
     assert not hasattr(c.actor,'serve_forever')
-    assert c.p.calls==[] and rows(c.p.ledger)==[]
+    assert c.p.calls==[]
+    assert rows(c.p.ledger)==[]
 
 
 @pytest.mark.parametrize('lost',['mint-response','post-mint-approval','retirement-response'])
@@ -344,13 +377,15 @@ def test_uncertainty_retains_consumption_and_never_replays_send(composed,monkeyp
         assert retirer.reconcile()['state']=='retired'
         assert sum(method=='DELETE' for method,_ in c.p.calls)==1
     else:
-        assert result.status==503 and rows(c.p.ledger)[0][2]=='consumed'
+        assert result.status==503
+        assert rows(c.p.ledger)[0][2]=='consumed'
         if lost=='post-mint-approval':assert c.actor.pending(c.p.ref).expires_at is None
         else:
             with pytest.raises(BindingError):c.actor.pending(c.p.ref)
         before=list(c.p.calls)
         c.p.current=None
-        assert c.call(peer,'/private',c.body).status==503 and c.p.calls==before
+        assert c.call(peer,'/private',c.body).status==503
+        assert c.p.calls==before
         assert sum(path=='/app/installations/88/access_tokens' for _,path in c.p.calls)==1
 
 
@@ -359,7 +394,8 @@ def test_reconstruction_with_same_store_cannot_replay_a_completed_attempt(compos
     cap=c.actor.pending(c.p.ref);before=list(c.p.calls)
     # The trusted embedding may reconstruct its actor, but not initialize state.
     c.actor=c.construct()
-    assert c.call(peer,'/private',c.body).status==503 and c.p.calls==before
+    assert c.call(peer,'/private',c.body).status==503
+    assert c.p.calls==before
     reopened=NonceLedger(c.p.ledger.directory,identity=c.p.ledger.identity)
     assert reopened.state(c.p.ref,decision=c.decision)['state']=='issued'
     assert c.cleanup(cap).retire()['state']=='retired'
@@ -371,7 +407,8 @@ def test_concurrent_valid_attempts_have_one_durable_winner(composed):
     for thread in threads:thread.start()
     for thread in threads:thread.join(timeout=12);assert not thread.is_alive()
     assert sorted(results)==[200,503]
-    assert len(rows(c.p.ledger))==1 and rows(c.p.ledger)[0][2]=='issued'
+    assert len(rows(c.p.ledger))==1
+    assert rows(c.p.ledger)[0][2]=='issued'
     assert sum(path=='/app/installations/88/access_tokens' for _,path in c.p.calls)==1
 
 
@@ -387,14 +424,16 @@ def test_current_time_or_approval_change_cannot_deliver_another_credential(compo
     if change=='enrollment-revoked':assert c.call(peer,'/private',c.body).status==403
     else:
         with pytest.raises(BindingError):c.call(peer,'/private',c.body)
-    assert c.p.calls==[] and rows(c.p.ledger)==[]
+    assert c.p.calls==[]
+    assert rows(c.p.ledger)==[]
 
 
 @pytest.mark.parametrize('field,value',[('role','broker'),('nonce','f'*64),('ref','issuance:other'),('url','https://example.invalid')])
 def test_private_request_cannot_select_role_destination_or_approval(composed,field,value):
     c=composed;peer=c.enrolled()
     assert c.call(peer,'/private',{**c.body,field:value}).status in (403,503)
-    assert c.p.calls==[] and rows(c.p.ledger)==[]
+    assert c.p.calls==[]
+    assert rows(c.p.ledger)==[]
 
 
 @pytest.mark.parametrize('changed',['ca','cert','key','resolver','provider-check'])
@@ -405,7 +444,8 @@ def test_late_selected_material_and_capability_substitution_refuses(composed,cha
     elif changed=='resolver':c.actor.issuer.vault_credential=lambda **_:'unselected-credential'
     else:c.actor.provider.check=lambda:None
     assert c.call(peer,'/private',c.body).status in (403,503)
-    assert c.p.calls==[] and rows(c.p.ledger)==[]
+    assert c.p.calls==[]
+    assert rows(c.p.ledger)==[]
 
 
 @pytest.mark.parametrize('group',['protection','source','control','arm','key','private'])
@@ -413,13 +453,15 @@ def test_already_overdrawn_enclosing_group_refuses_before_enrollment(composed,gr
     c=composed;b=ReadBudget(c.decision)
     b.state['counts'][group]={'protection':3,'source':4,'control':2,'arm':24,'key':3,'private':12}[group]+1
     assert c.call(c.bootstrap,'/enroll',c.s.raw).status==403
-    assert rows(c.s.ledger)==[] and c.p.calls==[]
+    assert rows(c.s.ledger)==[]
+    assert c.p.calls==[]
 
 
 def test_replacing_operation_decision_cannot_renew_enrollment(composed):
     c=composed;c.actor.decision=Decision(clock=lambda:c.s.now)
     assert c.call(c.bootstrap,'/enroll',c.s.raw).status==403
-    assert rows(c.s.ledger)==[] and c.p.calls==[]
+    assert rows(c.s.ledger)==[]
+    assert c.p.calls==[]
 
 
 def test_kernel_worker_cannot_resolve_selected_issuer_capability(composed):
@@ -428,12 +470,16 @@ def test_kernel_worker_cannot_resolve_selected_issuer_capability(composed):
         process=subprocess.Popen([sys.executable,'-I','-B',str(Path(__file__).with_name('credential_worker.py')),str(c.channel.fileno())],
             pass_fds=(c.channel.fileno(),),stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,
             env={'PATH':os.defpath,'LANG':'C.UTF-8'})
-        assert select.select([process.stdout],[],[],3)[0] and process.stdout.readline()==b'ready\n'
+        assert select.select([process.stdout],[],[],3)[0]
+        assert process.stdout.readline()==b'ready\n'
         ReadBudget(c.decision).consume('private')
         raw,_=process.communicate(canonical({'role':'issuer','operation':'resolver'})+b'\n',timeout=5)
-        assert process.returncode==0 and json.loads(raw)['status']=='denied' and c.resolutions==[]
+        assert process.returncode==0
+        assert json.loads(raw)['status']=='denied'
+        assert c.resolutions==[]
         assert c.actor._credential(deadline=c.decision.deadline)=='fixture-vault-credential'
-        assert c.resolutions==[True] and ReadBudget(c.decision).count('private')==2
+        assert c.resolutions==[True]
+        assert ReadBudget(c.decision).count('private')==2
     finally:
         if process is not None:
             if process.poll() is None:process.kill()
@@ -455,10 +501,14 @@ def test_known_cleanup_handle_survives_issuance_dependency_failure(composed,tmp_
     before=list(c.p.calls)
     if failure=='credential-channel':c.channel.close()
     else:Path(getattr(transport,failure)).unlink()
-    assert c.actor.pending(c.p.ref) is cap and cap.use_until==use_until and cap._decision is original
-    assert c.p.calls==before and c.p.active[cap.credential]
+    assert c.actor.pending(c.p.ref) is cap
+    assert cap.use_until==use_until
+    assert cap._decision is original
+    assert c.p.calls==before
+    assert c.p.active[cap.credential]
     with pytest.raises(BindingError):c.actor.issuer.resolve(c.p.ref,c.p.nonce,decision=c.decision)
-    assert c.cleanup(cap).retire()['state']=='retired' and not c.p.active[cap.credential]
+    assert c.cleanup(cap).retire()['state']=='retired'
+    assert not c.p.active[cap.credential]
 
 
 def test_returned_mint_token_is_retained_before_postresponse_deadline_check(composed,monkeypatch):
@@ -471,8 +521,11 @@ def test_returned_mint_token_is_retained_before_postresponse_deadline_check(comp
     monkeypatch.setattr(PrivateHttps,'exchange',exchange);c.actor=c.construct()
     with pytest.raises(BindingError):c.call(peer,'/private',c.body)
     cap=c.actor.pending(c.p.ref)
-    assert rows(c.p.ledger)[0][2]=='consumed' and cap.expires_at is None
-    assert cap.use_until<=deadline and cap._decision is c.decision and c.decision.end==end
+    assert rows(c.p.ledger)[0][2]=='consumed'
+    assert cap.expires_at is None
+    assert cap.use_until<=deadline
+    assert cap._decision is c.decision
+    assert c.decision.end==end
     assert c.p.active[cap.credential]
     assert sum(path=='/app/installations/88/access_tokens' for _,path in c.p.calls)==1
     with pytest.raises(BindingError):c.actor.issuer.resolve(c.p.ref,c.p.nonce,decision=Decision(clock=lambda:c.s.now))
@@ -493,8 +546,10 @@ def test_returned_mint_token_is_retained_before_postresponse_material_check(comp
     monkeypatch.setattr(PrivateHttps,'exchange',exchange);c.actor=c.construct(transport=transport)
     assert c.call(peer,'/private',c.body).status in (403,503)
     cap=c.actor.pending(c.p.ref)
-    assert cap.expires_at is None and rows(c.p.ledger)[0][2]=='consumed'
-    assert c.p.active[cap.credential] and c.cleanup(cap).retire()['state']=='retired'
+    assert cap.expires_at is None
+    assert rows(c.p.ledger)[0][2]=='consumed'
+    assert c.p.active[cap.credential]
+    assert c.cleanup(cap).retire()['state']=='retired'
 
 
 @pytest.mark.parametrize('field',['ledger','role','selection_digest','ref','_decision'])
@@ -507,7 +562,8 @@ def test_private_cleanup_lookup_keeps_original_capability_ownership(composed,fie
     try:
         with pytest.raises(BindingError):c.actor.pending(c.p.ref)
     finally:c.actor.issuer._pending[c.p.ref]=cap
-    assert c.actor.pending(c.p.ref) is cap and c.p.active[cap.credential]
+    assert c.actor.pending(c.p.ref) is cap
+    assert c.p.active[cap.credential]
 
 
 @pytest.mark.parametrize('cancel',[False,True])
@@ -529,8 +585,11 @@ def test_caller_reply_pair_closes_with_traceback_held_before_gc(composed,monkeyp
         try:composition.private(lambda:c.actor._credential(deadline=c.decision.deadline))
         except BaseException as error:caught=error
         assert type(caught) is (KeyboardInterrupt if cancel else BindingError)
-        assert caught.__traceback__ is not None and caught.__context__ is None and caught.__cause__ is None
-        assert canary not in repr(caught) and len(pairs)==1
+        assert caught.__traceback__ is not None
+        assert caught.__context__ is None
+        assert caught.__cause__ is None
+        assert canary not in repr(caught)
+        assert len(pairs)==1
         reader,writer,observer=pairs[0]
         assert reader.fileno()==writer.fileno()==-1
         observer.settimeout(.2);assert observer.recv(16)==b''
@@ -542,4 +601,38 @@ def test_caller_reply_pair_closes_with_traceback_held_before_gc(composed,monkeyp
     for name in os.listdir('/proc/self/fd'):
         try:live.append(os.readlink('/proc/self/fd/'+name))
         except FileNotFoundError:pass
-    assert caught.__traceback__ is not None and len(owned)==2 and owned.isdisjoint(live)
+    assert caught.__traceback__ is not None
+    assert len(owned)==2
+    assert owned.isdisjoint(live)
+
+
+class _PrivateTermination(BaseException):
+    pass
+
+
+@pytest.mark.parametrize('exception_type',[SystemExit,GeneratorExit,_PrivateTermination])
+def test_private_enrollment_scrubs_direct_termination_before_effects(composed,exception_type):
+    c=composed;canary='PRIVATE-ENROLLMENT-TERMINATION';calls=[]
+    def fail(ref,*,deadline):
+        calls.append(ref)
+        raise exception_type(canary)
+    c.s.authority.read_current=fail
+    c.actor=c.construct()
+    result=c.call(c.bootstrap,'/enroll',c.s.raw)
+    assert result.status==403
+    assert json.loads(result.body)=={'error':ERROR}
+    assert canary.encode() not in result.body
+    assert calls==[c.s.selection.ref]
+    assert len(c.exceptions)==1
+    caught=c.exceptions[0]
+    assert type(caught) is BindingError
+    assert caught.args==(ERROR,)
+    assert caught.__traceback__ is not None
+    assert caught.__context__ is None
+    assert caught.__cause__ is None
+    assert canary not in repr(caught)
+    assert canary.encode() not in pickle.dumps(caught)
+    assert rows(c.s.ledger)==[]
+    assert rows(c.p.ledger)==[]
+    assert c.p.calls==[]
+    assert c.resolutions==[]
