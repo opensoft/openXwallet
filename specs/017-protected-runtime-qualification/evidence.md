@@ -1,3 +1,21 @@
+## P06 Sonar correction locally qualified - 2026-11-23 America/La_Paz
+
+Source `475efdfceff5e02d0408a6f7fb8d4b072c9bf2a6` passes all seven ordered gates,
+3,581 full parents plus 11 subtests and all 3,159 native cases, with zero
+failures/errors/skips. All 130 canonical P06 cases and nine external controls
+pass (139 focused). Explicit fixture input validation and 45 ordered assertion
+splits address the actionable Sonar findings without changing product runtime,
+profiles, permissions, pins, workflows, quality thresholds or runtime limits.
+Three real mTLS direct-termination controls substantiate the intentional private
+BaseException sanitizer; its S5754 advisory is reviewed, not suppressed or falsely
+reported resolved. Nine local Codex roles clear the bounded correction.
+Independent audits pass and all sixteen owned P06 volumes/containers are absent;
+all four dependency heads/trees/status remain unchanged. Only isolated T013P06
+closes. This is a prepublication checkpoint: final exact-head hosted CI, final
+Markdown review and owner source ratification remain separate. P07-P09,
+setup/dispatch and live acceptance remain ungranted. Feedback deferred; historical
+blocked writes unreplayed. Earlier dated checkpoints retain historical meaning.
+
 ## P06 Sonar fixture correction - 2026-11-22 America/La_Paz
 
 PR #103 head `6845a8554c31` passes all four source jobs, but Sonar rejects the
@@ -4512,3 +4530,83 @@ source ratification remain separate. It is local Codex review, with no hosted
 connector receipt claimed. Setup/dispatch unauthorized; feedback deferred;
 historical blocked writes unreplayed. P07-P09, operational feature017 gates and
 live human/provider/consumer acceptance remain open.
+
+
+## P06 Sonar correction qualification
+
+Source `475efdfceff5e02d0408a6f7fb8d4b072c9bf2a6` corrects the fixture validation
+and assertion diagnostics identified by Sonar at published6845. Run45097854796
+passed all four source jobs and exact full/native identities; its complete
+coverage artifacts independently verify every one of 102 production Python
+files and the genuine3577+1 partition. The server evaluated all six unchanged
+conditions: reliability4 failed from one caught fixture assertion; coverage96.5%,
+duplication0%, security/maintainability1 and reviewed hotspots100% passed.
+That source remains diagnostic history; it is not a passed final qualification.
+
+The fixture now rejects invalid Content-Length using explicit ValueError before
+body read/actor entry. All45 composite assertions are split without changing
+left-to-right evaluation, side effects, readiness-before-read or guarded indexing.
+An independent AST proof finds all original functions unchanged after that split,
+except the explicit fixture guard and the before-allocation injected-failure
+control. The latter observes its one selected failure instead of a process-wide
+FD-number snapshot; actual allocated-pair closure, EOF, held traceback and owned
+socket-identity assertions remain required.
+
+| Gate | Corrected-source result |
+| --- | --- |
+| Frozen manifest | 417 inputs; SHA-256 `50422a6223df6bd9aee56af2992fec7d2ee74f8a60ef1124ad7216d4aa393edf` |
+| Focused | 130 canonical cases plus six descriptor and three invalid-HTTP controls; 139 pass in275.353 seconds |
+| Full | 3,581 parents plus11subtests; 2400.595 seconds; failures/errors/skips0 |
+| Native | 3,159 cases; 2255.673 seconds; failures/errors/skips0 |
+| Ordered gates | Both pins, YAML, plain, strict, full and pinned OpenSpec pass |
+| Local Codex review | Nine roles clear exact source correction bytes; no remaining actionable finding |
+
+Only three parameterized identities are appended. All earlier full/native IDs and
+relative order, every non-P06 module count/digest and every CASES anchor prefix are
+preserved. P06 has130 identities, SHA-256
+`f2ee678b278bbdc44e0bb2430d85d37cc70be3c01b55d93bbe1e27054ae6abd1`;
+only the H11 prefix for those three controls is appended.
+
+The focused independent audit verifies139 cleanup receipts,411 generation records,
+three positive store pairs, six descriptor controls with the intended failure
+traceback line and three valid-mTLS invalid-length refusals without actor entry.
+All deliberate aliases close in finally. Fresh full/native audits each verify
+130 P06 cleanup receipts, three positive role store pairs, five preservation cases,
+223 unissued measurement journals and four missing-purpose refusal counterchecks.
+Process record counts are20,173/20,177; these are records, not distinct processes.
+The wrong preservation count refuses deletion before touching retained identities.
+Known returned handles retire; unknown outcomes stay consumed/indeterminate. No
+initial teardown failure or live owned generation remains. Both new volumes and
+producer namespaces are absent, and all sixteen owned P06 volumes across earlier
+phases remain absent. All four dependency heads, trees and statuses are unchanged.
+
+Only isolated T013P06 closes. Final published-head CI, document review and source
+ratification remain separate; no hosted Codex connector receipt is claimed.
+Setup/dispatch unauthorized; feedback deferred; historical blocked writes
+unreplayed. P07-P09 and operational/human/provider/consumer gates remain open.
+
+## P06 private error boundary disposition
+
+Sonar S5754 recommends propagating SystemExit in general application exception
+handling. This source-selected private wire boundary must instead prevent raw
+credential-bearing termination payloads from escaping. SystemExit, GeneratorExit
+and custom direct BaseException subclasses can all carry such arguments.
+Narrowing the catch or reraising the original object would violate that boundary.
+KeyboardInterrupt remains a fresh sanitized cancellation; Unavailable retains its
+bounded classification; other failures become a fresh BindingError(ERROR), raised
+outside the handler so the original cause/context is absent. Product code is
+unchanged from the previously reviewed correction and follows the accepted R04
+privacy boundary.
+
+The three new controls exercise valid real mTLS enrollment with an independently
+selected current reader raising each termination type. They retain the resulting
+error and require exact fixed BindingError args, absent cause/context, no canary
+in wire/representation/serialized error, exactly one reader call, empty enrollment
+and issuance ledgers and no provider or credential-resolver effect. These are
+substantive pre-effect refusals, not an invalid-input substitute.
+
+The local security, static, contract and reliability review accepts retaining this
+behavior. S5754 is an intentional reviewed advisory; no suppression, issue-status
+mutation or quality-gate change is made, and no claim of zero unresolved Sonar
+advisories is implied. Fresh analysis must report its actual state. This does not
+supply owner source ratification or any operational/live grant.

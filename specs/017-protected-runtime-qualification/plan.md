@@ -1,3 +1,21 @@
+## P06 Sonar correction locally qualified - 2026-11-23 America/La_Paz
+
+Source `475efdfceff5e02d0408a6f7fb8d4b072c9bf2a6` passes all seven ordered gates,
+3,581 full parents plus 11 subtests and all 3,159 native cases, with zero
+failures/errors/skips. All 130 canonical P06 cases and nine external controls
+pass (139 focused). Explicit fixture input validation and 45 ordered assertion
+splits address the actionable Sonar findings without changing product runtime,
+profiles, permissions, pins, workflows, quality thresholds or runtime limits.
+Three real mTLS direct-termination controls substantiate the intentional private
+BaseException sanitizer; its S5754 advisory is reviewed, not suppressed or falsely
+reported resolved. Nine local Codex roles clear the bounded correction.
+Independent audits pass and all sixteen owned P06 volumes/containers are absent;
+all four dependency heads/trees/status remain unchanged. Only isolated T013P06
+closes. This is a prepublication checkpoint: final exact-head hosted CI, final
+Markdown review and owner source ratification remain separate. P07-P09,
+setup/dispatch and live acceptance remain ungranted. Feedback deferred; historical
+blocked writes unreplayed. Earlier dated checkpoints retain historical meaning.
+
 ## P06 Sonar fixture correction - 2026-11-22 America/La_Paz
 
 PR #103 head `6845a8554c31` passes all four source jobs, but Sonar rejects the
