@@ -1,3 +1,59 @@
+## P07 bounded accounting amendment candidate - 2026-11-23 America/La_Paz
+
+Brett commissioned the complete pilot inventory, bounded source amendment, paired
+PRs, CI and local Codex review, then presentation for source ratification.
+The [paired subplan](specs/017-protected-runtime-qualification/p3-retirement-accounting-plan.md) selects14
+ephemeral resources/16edges, fixed disjoint prepaid registration/cleanup/observation
+pools, explicit clock/byte bounds and burn-on-owner-loss behavior. Old per-kind/
+parser measurements are distinguished from the proposed orchestration schedule;
+no new runtime positive is claimed. Exact paired source acceptance precedes
+dependent product code. T013P07 and all task/owner checkbox states stay unchanged.
+Old runtime/test/matrix/profile/pin/workflow bytes remain identical. Setup/dispatch
+unauthorized; feedback deferred; historical blocked writes unreplayed. Earlier
+dated checkpoints below retain their original historical scope.
+
+## Current P07 eligibility fallback - 2026-11-23 America/La_Paz
+
+Brett commissioned isolated T013P07 at `33b2502818fb`, starting with both
+eligibility gates. [The checkpoint](specs/017-protected-runtime-qualification/p3-retirement-eligibility.md)
+records correct setup-expiry refusal and measured original private-budget
+exhaustion before the second resource completes; namespace I/O is also unmetered.
+Follow [the proposed accounting subplan](specs/017-protected-runtime-qualification/p3-retirement-accounting-plan.md).
+The accepted P07 guard requires a governed factory/adapter source decision before
+dependent code. No replacement cap/phase/timer is selected or ratified. Product/
+test/matrix bytes and checkbox states remain unchanged; T013P07 stays incomplete.
+The six passing diagnostic controls and offline documentation gates are not full
+P07 qualification. Owned diagnostic stores were audited, archived and removed
+from working roots without further provider sends. No setup/dispatch, P08/P09,
+feedback or replay of blocked writes is authorized. Earlier checkpoints below
+retain their historical scope.
+
+## P06 source accepted; P07 preparation only - 2026-11-23 America/La_Paz
+
+Brett source-ratified openXwallet #103 at
+`6796cccfc5912d9ddcf05a8cc5c694e67cb88c33` and directed normal landing,
+independent main CI verification, then T013P07 preparation. Normal squash merge
+`4b64db85fc28881656ef7e73c0c4a1dd760c9078` preserves the exact ratified tree.
+Main run 45135684248 passes all five effective jobs after a Sonar-only retry of
+a scanner-download HTTP403. The four successful source jobs and their original
+execution evidence were retained. The actual main analysis matches the merge;
+all six unchanged conditions pass: coverage 87.5%, duplication 0.1%, reviewed
+hotspots 100%, ratings 1. The original August 27 manual baseline remains intact.
+The independent Linux audit verifies all 102 production files, six configurations,
+four pinned repository trees, genuine coverage provenance, the exact 3,581 full
+parents plus 11 subtests, and all 3,159 native identities. The earlier P06
+sanitizer advisory remains documented; no Sonar issue status or gate was changed.
+
+Only the existing T013P07 subplan is prepared. Its implementation is not
+commissioned, and every task/owner checkbox retains its prior state. The plan
+gates separate cleanup authority and complete-graph budget fit; it accepts no
+reservation/window rewrite, per-resource budget reset or new contract. P08-P09
+and live/operator/human/consumer gates remain separate. Setup/dispatch unauthorized;
+feedback deferred; historical blocked writes unreplayed. Earlier dated checkpoints
+retain their original historical meaning.
+
+Current preparation: [T013P07 retirement subplan](specs/017-protected-runtime-qualification/p3-retirement-plan.md).
+
 ## P06 Sonar correction locally qualified - 2026-11-23 America/La_Paz
 
 Source `475efdfceff5e02d0408a6f7fb8d4b072c9bf2a6` passes all seven ordered gates,

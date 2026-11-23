@@ -1,0 +1,287 @@
+{
+  "repository": "opensoft/openXwallet",
+  "source_acceptance": {
+    "PR": 103,
+    "ratified_head": "6796cccfc5912d9ddcf05a8cc5c694e67cb88c33",
+    "merge_commit": "4b64db85fc28881656ef7e73c0c4a1dd760c9078",
+    "tree": "5bec465200373c2f83bc7cbbbda40dd4d944958a",
+    "normal_squash_merge": true,
+    "admin_override_used": false
+  },
+  "CI": {
+    "run_id": 45135684248,
+    "url": "https://github.com/opensoft/openXwallet/actions/runs/45135684248",
+    "event": "push",
+    "effective_attempt": 2,
+    "successful_jobs": 5,
+    "full_parent_tests": 3581,
+    "full_subtests": 11,
+    "native_cases": 3159,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "exact_case_identity_sets": true,
+    "coverage_partition": {
+      "primary": 3580,
+      "isolated": 1,
+      "union": 3581,
+      "disjoint": true
+    },
+    "four_same_source_manifests": true,
+    "scanner_retry": "Attempt1 pinned-binary download HTTP403 before analysis; only failed Sonar job rerun, original passing source jobs/artifacts/timestamps retained"
+  },
+  "Sonar": {
+    "analysis_id": "0460e2be-23a2-403e-bfde-0a33f7fcb24f",
+    "status": "OK",
+    "ignored_conditions": false,
+    "definition_id": 9,
+    "declared_conditions": 6,
+    "evaluated_conditions": 6,
+    "metrics": {
+      "new_reliability_rating": "1",
+      "new_security_rating": "1",
+      "new_maintainability_rating": "1",
+      "new_coverage": "87.5",
+      "new_duplicated_lines_density": "0.1",
+      "new_security_hotspots_reviewed": "100.0"
+    },
+    "PR_analysis_only": false,
+    "main": true,
+    "new_code_advisories_since_original_baseline": 45,
+    "introduced_since_qualified_parent": [
+      {
+        "rule": "python:S5754",
+        "component": "opensoft_openXwallet:scripts/workload_factory_binding_runtime/azure_composition/issuance.py",
+        "line": 29,
+        "status": "OPEN",
+        "type": "CODE_SMELL"
+      }
+    ]
+  },
+  "original_baseline": {
+    "key": "d434a8d1-6d41-4cfe-9413-e1868fc1c18d",
+    "date": "2026-08-27T11:16:42+0000",
+    "events": [],
+    "projectVersion": "not provided",
+    "manualNewCodePeriodBaseline": true,
+    "revision": "63f5a1adac89f017e70bab9a4ffe7cf02d6e6705"
+  },
+  "main_measures": {
+    "new_coverage": 87.46078773091669,
+    "new_lines_to_cover": 18364.0
+  },
+  "fresh_main_readback": {
+    "checked_at": "2026-11-23T13:20:19.253401+00:00",
+    "GitHub_main_before": "4b64db85fc28881656ef7e73c0c4a1dd760c9078",
+    "GitHub_main_after": "4b64db85fc28881656ef7e73c0c4a1dd760c9078",
+    "latest_Sonar_main_analysis": {
+      "key": "0460e2be-23a2-403e-bfde-0a33f7fcb24f",
+      "date": "2026-11-23T09:22:17+0000",
+      "events": [
+        {
+          "key": "AaIHt95k1PZk3DZfps9r",
+          "category": "VERSION",
+          "name": "not provided"
+        }
+      ],
+      "projectVersion": "not provided",
+      "manualNewCodePeriodBaseline": false,
+      "revision": "4b64db85fc28881656ef7e73c0c4a1dd760c9078"
+    },
+    "complete_history_entries_read": 12,
+    "original_baseline": {
+      "key": "d434a8d1-6d41-4cfe-9413-e1868fc1c18d",
+      "date": "2026-08-27T11:16:42+0000",
+      "events": [],
+      "projectVersion": "not provided",
+      "manualNewCodePeriodBaseline": true,
+      "revision": "63f5a1adac89f017e70bab9a4ffe7cf02d6e6705"
+    },
+    "original_baseline_unchanged": true,
+    "all_revisions_match": true,
+    "as_of_readback_only": true,
+    "no_permanent_freshness_guarantee": true,
+    "public_API_used": true,
+    "evaluated_conditions": 6,
+    "metrics": {
+      "new_reliability_rating": "1",
+      "new_security_rating": "1",
+      "new_maintainability_rating": "1",
+      "new_coverage": "87.5",
+      "new_duplicated_lines_density": "0.1",
+      "new_security_hotspots_reviewed": "100.0"
+    },
+    "new_issue_count": 45,
+    "new_issue_rules": {
+      "python:S5754": 4,
+      "python:S1186": 2,
+      "python:S7498": 2,
+      "python:S5778": 21,
+      "python:S6353": 1,
+      "python:S1192": 1,
+      "python:S5713": 1,
+      "shell:S7688": 8,
+      "shell:S7677": 2,
+      "shell:S7689": 2,
+      "shell:S1192": 1
+    },
+    "hotspots": 0,
+    "main_measures": {
+      "coverage": "87.3",
+      "new_coverage": "87.46078773091669",
+      "new_lines_to_cover": "18364"
+    }
+  },
+  "independent_local_audit": {
+    "checked_at": "2026-11-23T13:19:45.911074+00:00",
+    "reporter": "Existing cached Linux Python3.12 and coverage7.16.2",
+    "source_files": 102,
+    "config_files": 6,
+    "four_pinned_repository_revisions_and_trees": {
+      ".": {
+        "revision": "4b64db85fc28881656ef7e73c0c4a1dd760c9078",
+        "tree": "5bec465200373c2f83bc7cbbbda40dd4d944958a"
+      },
+      "openWallet": {
+        "revision": "8be8a2a6af125058ffe956cafbf1e62858d82dd9",
+        "tree": "2230b3ed22e7a967aa6cb8fda2faac11bf0fc8fd"
+      },
+      "openWallet/code": {
+        "revision": "6fb72ed4c820d927775ccb698c5cfbd8adff71d7",
+        "tree": "98fa0f88a7809aab443df5b404ca8e7286b807e6"
+      },
+      "openWallet/spec": {
+        "revision": "878293fb3ed84073dd7e285f56f4fee62413297e",
+        "tree": "3288405a0cebcf15085654ba0121c4d307675eff"
+      }
+    },
+    "candidate_tree_matches_ci": true,
+    "complete_archive_id": 14804840283,
+    "archive_sha256": "90633d12458f92b9fe998fccdb3f15db23ae2ee7293184eec5a0b0243cf6ea09",
+    "archive_digest_verified": true,
+    "all_production_denominators_including_zero_hit_files": true,
+    "raw_branch_data_and_parent_child_core_probes": true,
+    "complete_assertion_phase_partition": {
+      "primary": 3580,
+      "isolated": 1,
+      "disjoint_complete_equal_assertions": true
+    },
+    "exact_native_identities": true,
+    "interpreters": {
+      "primary": "Python3.12/CTracer",
+      "isolated": "Python3.14/SysMonitor"
+    },
+    "execution": {
+      "runtime": {
+        "python": [
+          3,
+          12,
+          16
+        ],
+        "coverage_version": "7.16.2",
+        "core": null,
+        "tests": 3581,
+        "nodeids_sha256": "6f4d6844721adaa68aa60ccd28f3babe4b7f7ddbd7f18764dab5f903b3ed17b5",
+        "collection_sha256": "6f4d6844721adaa68aa60ccd28f3babe4b7f7ddbd7f18764dab5f903b3ed17b5"
+      },
+      "coverage": {
+        "python": [
+          3,
+          12,
+          16
+        ],
+        "coverage_version": "7.16.2",
+        "core": "CTracer",
+        "tests": 3580,
+        "nodeids_sha256": "cfca270b829424d10e6a00cef322f3649244f5ff4f4bfbc2398ff833cb322572",
+        "collection_sha256": "6f4d6844721adaa68aa60ccd28f3babe4b7f7ddbd7f18764dab5f903b3ed17b5",
+        "core_probe": {
+          "parent": {
+            "python": [
+              3,
+              12,
+              16
+            ],
+            "coverage_version": "7.16.2",
+            "core": "CTracer"
+          },
+          "child": {
+            "python": [
+              3,
+              12,
+              16
+            ],
+            "coverage_version": "7.16.2",
+            "core": "CTracer"
+          }
+        }
+      },
+      "isolated": {
+        "python": [
+          3,
+          14,
+          10
+        ],
+        "coverage_version": "7.16.2",
+        "core": "SysMonitor",
+        "tests": 1,
+        "nodeids_sha256": "4dd2d225014a1ba02e3f2d41a30e25c7ca100a24a5cb4a742ebc486b670d9f22",
+        "collection_sha256": "6f4d6844721adaa68aa60ccd28f3babe4b7f7ddbd7f18764dab5f903b3ed17b5",
+        "core_probe": {
+          "parent": {
+            "python": [
+              3,
+              14,
+              10
+            ],
+            "coverage_version": "7.16.2",
+            "core": "SysMonitor"
+          },
+          "child": {
+            "python": [
+              3,
+              14,
+              10
+            ],
+            "coverage_version": "7.16.2",
+            "core": "SysMonitor"
+          }
+        }
+      },
+      "cross_version": {
+        "python312": {
+          "python": [
+            3,
+            12,
+            16
+          ],
+          "core": "CTracer"
+        },
+        "python314": {
+          "python": [
+            3,
+            14,
+            10
+          ],
+          "core": "SysMonitor"
+        },
+        "passed": true,
+        "reporting_python": [
+          3,
+          12,
+          16
+        ]
+      }
+    },
+    "coverage_suite_reported_executions": {
+      "tests": 10025,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "native_cases": 3159
+  },
+  "qualification_scope": "P06 source acceptance and main CI; P07 preparation draft only, not P07 implementation, live qualification or operational authorization",
+  "setup_dispatch_authorized": false,
+  "preparation_scope": "Documentation only. Offline documentation gates and scope audit are recorded at the local preparation commit; no P07 runtime qualification claim."
+}

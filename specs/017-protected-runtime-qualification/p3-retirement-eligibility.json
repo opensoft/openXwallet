@@ -1,0 +1,217 @@
+{
+  "baseline_head": "33b2502818fbf86d4b33e700fd61cb1c717b6886",
+  "classification": "P07 eligibility diagnostics only; full P07 positive absent",
+  "diagnostic_tests": {
+    "passed": 6,
+    "seconds": 5.06,
+    "clock_model": "frozen original fixture clocks; no elapsed-deadline qualification"
+  },
+  "results": {
+    "cleanup-provider-expiry": {
+      "existing_route": "refuses",
+      "setup_not_after": 1000600,
+      "observation_now": 1000601,
+      "delete_sends": 0,
+      "new_provider_get_sends": 0,
+      "new_namespace_mutations": 0,
+      "original_incarnation_admitted": true,
+      "separate_cleanup_capability_route_exists": false,
+      "result": "unresolved eligibility: an additive authorized cleanup path is required",
+      "clock_model": "Original fixture frozen wall/monotonic; scope/counter diagnostic only, not elapsed-deadline qualification"
+    },
+    "cleanup-namespace-expiry": {
+      "existing_route": "refuses",
+      "new_store_calls_before_refusal": 0,
+      "original_state": "admitted",
+      "scope_rewrite_used": false,
+      "clock_model": "Original fixture frozen wall/monotonic; scope/counter diagnostic only, not elapsed-deadline qualification"
+    },
+    "late-grammar": {
+      "result": "pass",
+      "scope": "existing closed pure grammar control only; not service-origin or live observer qualification",
+      "product_changes": false,
+      "clock_model": "Original fixture frozen wall/monotonic; scope/counter diagnostic only, not elapsed-deadline qualification"
+    },
+    "whole-graph-budget": {
+      "result": "does-not-fit",
+      "scope": "smallest existing complete six-kind graph, same Provider/cache and original Decision",
+      "resource_count": 6,
+      "completed": [
+        {
+          "kind": "vm",
+          "before": {
+            "private": 0,
+            "arm": 0
+          },
+          "after": {
+            "private": 9,
+            "arm": 3
+          },
+          "complete": true
+        }
+      ],
+      "refusal": {
+        "kind": "os_disk",
+        "before": {
+          "private": 9,
+          "arm": 3
+        },
+        "after": {
+          "private": 12,
+          "arm": 5
+        },
+        "chain": [
+          {
+            "error": "azure-provider-refused",
+            "frames": [
+              {
+                "file": "test_p07_eligibility.py",
+                "line": 75,
+                "function": "test_complete_six_kind_graph_one_original_decision"
+              },
+              {
+                "file": "provider.py",
+                "line": 537,
+                "function": "retire"
+              }
+            ]
+          },
+          {
+            "error": "azure-provider-refused",
+            "frames": [
+              {
+                "file": "provider.py",
+                "line": 525,
+                "function": "retire"
+              },
+              {
+                "file": "provider.py",
+                "line": 396,
+                "function": "observe"
+              }
+            ]
+          },
+          {
+            "error": "hosted-readback-refused",
+            "frames": [
+              {
+                "file": "provider.py",
+                "line": 393,
+                "function": "observe"
+              },
+              {
+                "file": "provider.py",
+                "line": 359,
+                "function": "_exchange"
+              },
+              {
+                "file": "provider.py",
+                "line": 317,
+                "function": "_receipt"
+              },
+              {
+                "file": "provider.py",
+                "line": 302,
+                "function": "_call"
+              },
+              {
+                "file": "readback.py",
+                "line": 222,
+                "function": "consume"
+              },
+              {
+                "file": "evidence.py",
+                "line": 30,
+                "function": "require"
+              }
+            ]
+          }
+        ]
+      },
+      "delete_sends": [
+        "/subscriptions/11111111-1111-1111-1111-111111111111/resourceGroups/pilot-qa/providers/Microsoft.Compute/virtualMachines/pilot-vm"
+      ],
+      "states": {
+        "vm": "absent-tombstoned",
+        "os_disk": "admitted",
+        "nic": "admitted",
+        "public_ip": "admitted",
+        "vnet": "admitted",
+        "nsg": "admitted"
+      },
+      "one_original_decision": true,
+      "deadline_not_extended": true,
+      "monotonic_end_not_extended": true,
+      "namespace_port_calls_observed_separately": 32,
+      "namespace_calls_included_in_ReadBudget": false,
+      "retained_image_preserved": true,
+      "not_a_full_S1_graph_positive": true,
+      "clock_model": "Original fixture frozen wall/monotonic; scope/counter diagnostic only, not elapsed-deadline qualification"
+    },
+    "per-resource-cost": {
+      "classification": "cost diagnostic using accepted old per-resource controls; deliberately not one-budget P07 qualification",
+      "resources": [
+        {
+          "kind": "vm",
+          "private": 9,
+          "arm": 3,
+          "namespace_calls": 14
+        },
+        {
+          "kind": "os_disk",
+          "private": 10,
+          "arm": 4,
+          "namespace_calls": 16
+        },
+        {
+          "kind": "nic",
+          "private": 10,
+          "arm": 4,
+          "namespace_calls": 16
+        },
+        {
+          "kind": "public_ip",
+          "private": 10,
+          "arm": 4,
+          "namespace_calls": 16
+        },
+        {
+          "kind": "vnet",
+          "private": 10,
+          "arm": 4,
+          "namespace_calls": 16
+        },
+        {
+          "kind": "nsg",
+          "private": 11,
+          "arm": 5,
+          "namespace_calls": 18
+        }
+      ],
+      "sum_of_separate_decision_costs": {
+        "private": 60,
+        "arm": 24,
+        "namespace_calls": 96
+      },
+      "namespace_calls_not_charged_to_ReadBudget": true,
+      "scope": "not full S1, no proposed cap is inferred from this sum"
+    }
+  },
+  "teardown": {
+    "classification": "owned diagnostic fixture filesystem teardown only; no provider/runtime cleanup success claimed",
+    "stores_audited": 24,
+    "working_roots_removed": [
+      "eligibility/fixtures",
+      "eligibility/per-resource-cost",
+      "eligibility/diagnostic-r0/fixtures",
+      "eligibility/diagnostic-r0/real-clock-fixture-diagnostic"
+    ],
+    "all_working_roots_absent": true,
+    "evidence_archive": "diagnostic-stores.tar.gz",
+    "archive_sha256": "6a750b38f6f8a08be433ac5363b97cf441e4bef1bd0715d61af80ecc0dc20419",
+    "archive_verified_against_audit": true,
+    "remaining_synthetic_effects": "preserved honestly in archived state, not completed with extra provider sends"
+  },
+  "numeric_replacement_policy": null,
+  "dependent_product_implementation": "blocked pending complete measured policy and exact paired acceptance"
+}

@@ -1,3 +1,63 @@
+## P07 bounded accounting amendment candidate - 2026-11-23 America/La_Paz
+
+Brett commissioned the complete pilot inventory, bounded source amendment, paired
+PRs, CI and local Codex review, then presentation for source ratification.
+The [paired subplan](p3-retirement-accounting-plan.md) selects14
+ephemeral resources/16edges, fixed disjoint prepaid registration/cleanup/observation
+pools, explicit clock/byte bounds and burn-on-owner-loss behavior. Old per-kind/
+parser measurements are distinguished from the proposed orchestration schedule;
+no new runtime positive is claimed. Exact paired source acceptance precedes
+dependent product code. T013P07 and all task/owner checkbox states stay unchanged.
+Old runtime/test/matrix/profile/pin/workflow bytes remain identical. Setup/dispatch
+unauthorized; feedback deferred; historical blocked writes unreplayed. Earlier
+dated checkpoints below retain their original historical scope.
+
+## P07 eligibility commission blocked before dependent code - 2026-11-23 America/La_Paz
+
+Brett commissioned isolated T013P07 at `33b2502818fb`, beginning with both
+eligibility gates. [Diagnostics](p3-retirement-eligibility.md) confirm correct
+setup-expiry refusal and an actual original-budget failure: same Decision/cache
+completes VM at private9/ARM3, then refuses OS-disk observation at private12/ARM5.
+Five resources remain; 32 namespace calls are additionally unmetered. Six passing
+diagnostic controls are not a complete first-pilot positive or elapsed-time fit.
+
+The accepted plan requires a governed factory/adapter amendment before dependent
+code. The [proposed paired subplan](p3-retirement-accounting-plan.md) selects no
+replacement cap/phase/timer; full inventory and finite numeric selections remain
+blocking. All 24 synthetic stores were independently audited and hash-archived;
+four owned working roots removed without completing the graph by extra provider
+sends. Product/runtime/test/matrix/profile/pin/workflow bytes and all checkbox
+states remain unchanged; T013P07 stays unchecked. No full/native P07 qualification,
+publication, CI or new source acceptance is claimed. Setup/dispatch unauthorized;
+feedback deferred; historical blocked writes unreplayed. Earlier checkpoints
+retain their historical scope.
+
+## P06 source accepted; P07 preparation only - 2026-11-23 America/La_Paz
+
+Brett source-ratified openXwallet #103 at
+`6796cccfc5912d9ddcf05a8cc5c694e67cb88c33` and directed normal landing,
+independent main CI verification, then T013P07 preparation. Normal squash merge
+`4b64db85fc28881656ef7e73c0c4a1dd760c9078` preserves the exact ratified tree.
+Main run 45135684248 passes all five effective jobs after a Sonar-only retry of
+a scanner-download HTTP403. The four successful source jobs and their original
+execution evidence were retained. The actual main analysis matches the merge;
+all six unchanged conditions pass: coverage 87.5%, duplication 0.1%, reviewed
+hotspots 100%, ratings 1. The original August 27 manual baseline remains intact.
+The independent Linux audit verifies all 102 production files, six configurations,
+four pinned repository trees, genuine coverage provenance, the exact 3,581 full
+parents plus 11 subtests, and all 3,159 native identities. The earlier P06
+sanitizer advisory remains documented; no Sonar issue status or gate was changed.
+
+Only the existing T013P07 subplan is prepared. Its implementation is not
+commissioned, and every task/owner checkbox retains its prior state. The plan
+gates separate cleanup authority and complete-graph budget fit; it accepts no
+reservation/window rewrite, per-resource budget reset or new contract. P08-P09
+and live/operator/human/consumer gates remain separate. Setup/dispatch unauthorized;
+feedback deferred; historical blocked writes unreplayed. Earlier dated checkpoints
+retain their original historical meaning.
+
+Current preparation: [T013P07 retirement subplan](p3-retirement-plan.md) and [qualified parent receipt](p3-retirement-parent-main-qualification.json).
+
 ## P06 Sonar correction locally qualified - 2026-11-23 America/La_Paz
 
 Source `475efdfceff5e02d0408a6f7fb8d4b072c9bf2a6` passes all seven ordered gates,
