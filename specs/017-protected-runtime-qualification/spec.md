@@ -1,3 +1,20 @@
+## P06 final local qualification - 2026-11-22 America/La_Paz
+
+Corrected source `38af15b92d823a0469c11565176367e5daa66bad` passes all seven
+ordered gates, 3,578 full parents plus 11 subtests and all 3,156 mandatory native
+cases, with zero failures/errors/skips. The focused run passes all 127 P06 cases
+plus six real descriptor-ownership controls. The cleanup assertion now follows
+both owned kernel socket identities, tolerates disappearing unrelated descriptors,
+and still rejects retained reader/writer aliases with the traceback held.
+Nine local Codex roles clear the bounded correction. Independent audits verify
+retained state, preservation and no live owned generations; both new volumes are
+removed and all thirteen P06 volumes across initial/review phases remain absent.
+Only T013P06 closes in isolation. Final published-head CI, final Markdown-only
+review and owner source ratification remain separate. Earlier qualified sources
+and the cancelled failed run45086080069 are historical. P07-P09, setup/dispatch
+and live human/provider/consumer acceptance remain ungranted. Feedback deferred;
+historical blocked writes unreplayed.
+
 ## P06 hosted assertion correction - 2026-11-22 America/La_Paz
 
 PR #103 head `330a295bbe84` is superseded for qualification. Hosted run

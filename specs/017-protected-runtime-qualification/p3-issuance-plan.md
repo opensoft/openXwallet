@@ -1,5 +1,22 @@
 # T013P06 enrollment and issuance subplan
 
+## P06 final local qualification - 2026-11-22 America/La_Paz
+
+Corrected source `38af15b92d823a0469c11565176367e5daa66bad` passes all seven
+ordered gates, 3,578 full parents plus 11 subtests and all 3,156 mandatory native
+cases, with zero failures/errors/skips. The focused run passes all 127 P06 cases
+plus six real descriptor-ownership controls. The cleanup assertion now follows
+both owned kernel socket identities, tolerates disappearing unrelated descriptors,
+and still rejects retained reader/writer aliases with the traceback held.
+Nine local Codex roles clear the bounded correction. Independent audits verify
+retained state, preservation and no live owned generations; both new volumes are
+removed and all thirteen P06 volumes across initial/review phases remain absent.
+Only T013P06 closes in isolation. Final published-head CI, final Markdown-only
+review and owner source ratification remain separate. Earlier qualified sources
+and the cancelled failed run45086080069 are historical. P07-P09, setup/dispatch
+and live human/provider/consumer acceptance remain ungranted. Feedback deferred;
+historical blocked writes unreplayed.
+
 ## P06 hosted assertion correction - 2026-11-22 America/La_Paz
 
 PR #103 head `330a295bbe84` is superseded for qualification. Hosted run
@@ -13,14 +30,14 @@ focused ownership controls, fresh full/native qualification, independent cleanup
 local review and replacement exact-head hosted CI. Earlier receipts are historical.
 Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.
 
-Status: the PR #103 review correction is implemented, reviewed and qualified in
-isolation at runtime/test/matrix source `051d4583ee4ada5ad3167a0abd740cc9ed1b6bc1`.
-All 127 P06 cases, 3,578 full parents plus 11 subtests, 3,156 native cases and seven
-ordered gates pass. Independent cleanup and nine-role local review pass. Both
-cleanup findings are closed and only T013P06 is checked in isolation. Final
-published-head CI, Markdown-only final review and owner source ratification remain
-separate; setup/dispatch, P07-P09 and live human/consumer/provider acceptance stay
-ungranted. Earlier qualification/preparation checkpoints below are historical.
+Status: the final ownership-oracle correction is qualified at source
+`38af15b92d823a0469c11565176367e5daa66bad`. All seven ordered gates,
+3,578 full parents plus 11 subtests, 3,156 native cases and 133 focused cases
+pass with zero failures/errors/skips. Independent cleanup and nine-role local
+review pass; only T013P06 is checked in isolation. Final published-head CI,
+Markdown-only review and owner source ratification remain separate. Setup,
+dispatch, P07-P09 and live provider/human/consumer acceptance remain ungranted.
+Earlier dated checkpoints below are historical.
 
 ## Accepted source and qualification gates
 

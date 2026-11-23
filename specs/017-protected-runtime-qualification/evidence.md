@@ -1,3 +1,20 @@
+## P06 final local qualification - 2026-11-22 America/La_Paz
+
+Corrected source `38af15b92d823a0469c11565176367e5daa66bad` passes all seven
+ordered gates, 3,578 full parents plus 11 subtests and all 3,156 mandatory native
+cases, with zero failures/errors/skips. The focused run passes all 127 P06 cases
+plus six real descriptor-ownership controls. The cleanup assertion now follows
+both owned kernel socket identities, tolerates disappearing unrelated descriptors,
+and still rejects retained reader/writer aliases with the traceback held.
+Nine local Codex roles clear the bounded correction. Independent audits verify
+retained state, preservation and no live owned generations; both new volumes are
+removed and all thirteen P06 volumes across initial/review phases remain absent.
+Only T013P06 closes in isolation. Final published-head CI, final Markdown-only
+review and owner source ratification remain separate. Earlier qualified sources
+and the cancelled failed run45086080069 are historical. P07-P09, setup/dispatch
+and live human/provider/consumer acceptance remain ungranted. Feedback deferred;
+historical blocked writes unreplayed.
+
 ## P06 hosted assertion correction - 2026-11-22 America/La_Paz
 
 PR #103 head `330a295bbe84` is superseded for qualification. Hosted run
@@ -4431,3 +4448,50 @@ incomplete results are diagnostic. Source records and execution evidence do not
 constitute a hosted Codex connector review. Setup/dispatch unauthorized; feedback
 deferred; historical blocked writes unreplayed. P07-P09 and operational feature017
 T001/T013/T014/T015 remain open.
+
+
+## P06 final local qualification 2026-11-22
+
+Source `38af15b92d823a0469c11565176367e5daa66bad` preserves the product runtime
+from the previously reviewed correction and fixes the CI cleanup-test oracle.
+Run45086080069 at330a executed every full parent and subtest; its sole failure
+was the unowned process-wide FD-number snapshot, after both owned endpoints and
+EOF had passed. It was cancelled as superseded; neither that run nor its unexecuted
+native/Sonar analysis steps qualify this source. The new assertion captures both owned
+kernel socket identities and refuses any surviving alias. Only transient missing
+unrelated descriptor entries are tolerated; actual closure, EOF, sanitization and
+held traceback assertions remain mandatory.
+
+| Qualification | Exact corrected-source result |
+| --- | --- |
+| Frozen input manifest | 417 inputs; SHA-256 `a234d311a219de84104c7cef352207f6cd9fd1f08ff793054fe3221f8597eb2e` |
+| Focused | 127 canonical P06 cases plus six external ownership controls; 133 pass in 242.61 seconds |
+| Full | 3,578 parent cases plus 11 subtests; 3432.933 seconds; zero failures/errors/skips |
+| Native | 3,156 cases; 3233.405 seconds; zero failures/errors/skips |
+| Ordered gates | Both pins, YAML, plain, strict, full and pinned OpenSpec pass |
+| Local Codex review | Nine roles clear the exact correction bytes; no remaining actionable finding |
+
+The six external controls exercise unrelated real descriptor closure and retained
+reader/writer aliases for both cancellation outcomes. Unrelated closure passes;
+retained reader aliases fail the owned-identity assertion, and retained writer
+aliases prevent EOF. The controls close their deliberate aliases in `finally`.
+Their independent audit verifies 133 cleanup receipts, three correct positive
+store pairs, 408 generation records and no live owned generation, then removes
+that dedicated volume. No runtime, identity, matrix, pin, workflow or limit changes.
+
+Fresh full/native audits each verify all 127 P06 cleanup receipts, three positive
+role store pairs, five existing preservation cases, 223 unissued measurement nonce
+journals and four missing-purpose counterchecks. Full/native process record counts
+are 20,209/20,201; these are records, not distinct process counts. The incorrect
+preservation-count control refuses deletion before touching retained identities.
+Known returned handles are retired; unknown outcomes remain consumed/indeterminate.
+Both producer namespaces, owned scratch roots and volumes are removed. All thirteen
+P06 volumes across the initial and review phases are now absent, as are all owned
+fixture containers. All four dependency heads, trees and statuses are preserved.
+
+This closes only isolated T013P06. The final closeout changes owning Markdown
+records only; final published-head hosted CI, final document review and owner
+source ratification remain separate. It is local Codex review, with no hosted
+connector receipt claimed. Setup/dispatch unauthorized; feedback deferred;
+historical blocked writes unreplayed. P07-P09, operational feature017 gates and
+live human/provider/consumer acceptance remain open.
