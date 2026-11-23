@@ -1,3 +1,9 @@
+# Historical eligibility baseline; current bounded source candidate
+
+The record below is the unchanged-policy checkpoint at33b2502818fb, before the current inventory/amendment commission. Its no-cap-selected status was true at that checkpoint. The current proposed source selections are in [paired accounting plan](p3-retirement-accounting-plan.md).
+
+The old failure remains diagnostic; no new runtime positive is claimed.
+
 # T013P07 eligibility checkpoint
 
 Date: 2026-11-23, America/La_Paz

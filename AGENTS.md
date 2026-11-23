@@ -1,3 +1,17 @@
+## P07 bounded accounting amendment candidate - 2026-11-23 America/La_Paz
+
+Brett commissioned the complete pilot inventory, bounded source amendment, paired
+PRs, CI and local Codex review, then presentation for source ratification.
+The [paired subplan](specs/017-protected-runtime-qualification/p3-retirement-accounting-plan.md) selects14
+ephemeral resources/16edges, fixed disjoint prepaid registration/cleanup/observation
+pools, explicit clock/byte bounds and burn-on-owner-loss behavior. Old per-kind/
+parser measurements are distinguished from the proposed orchestration schedule;
+no new runtime positive is claimed. Exact paired source acceptance precedes
+dependent product code. T013P07 and all task/owner checkbox states stay unchanged.
+Old runtime/test/matrix/profile/pin/workflow bytes remain identical. Setup/dispatch
+unauthorized; feedback deferred; historical blocked writes unreplayed. Earlier
+dated checkpoints below retain their original historical scope.
+
 ## Current P07 eligibility fallback - 2026-11-23 America/La_Paz
 
 Brett commissioned isolated T013P07 at `33b2502818fb`, starting with both

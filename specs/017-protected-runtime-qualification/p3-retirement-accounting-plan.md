@@ -1,84 +1,100 @@
-# Proposed P07 infrastructure accounting amendment
+# P07 bounded accounting source amendment
 
-Status: local proposed source plan; numeric selections unresolved; no dependent code
+Status: source candidate; exact paired ratification pending; no product code
 Date: 2026-11-23, America/La_Paz
-Feature: 017-protected-runtime-qualification
 Sole implementation row: [tasks.md](tasks.md), existing unchecked T013P07
 
-## Authority and eligibility
+## Commission and owner
 
-Brett's commission implements/tests P07 at `33b2502818fb`, beginning with the
-two [plan eligibility gates](p3-retirement-plan.md#eligibility-before-dependent-implementation).
-The [measured diagnostic checkpoint](p3-retirement-eligibility.md) shows setup-only
-routes correctly refuse after expiry and direct six-kind reuse exhausts the
-ordinary private12 budget before the second resource finishes. Namespace calls
-are additionally unmetered. The accepted plan requires this factory/adapter
-amendment preparation before dependent implementation; it accepts no new cap.
+Brett commissioned completing the pilot call inventory and bounded accounting
+amendment, both candidate PRs, hosted CI and local Codex review, then presentation
+for ratification. The [original eligibility failure](p3-retirement-eligibility.md)
+and [P07 plan](p3-retirement-plan.md) remain historical evidence and the reason
+for this governed correction. No failing full positive is relabeled successful.
 
-Factory candidate: `opensoft/openXfactory`,
-`openspec/changes/bound-infrastructure-retirement-accounting/`.
-Its proposal/design/spec/evidence/handoff form the proposed owner packet.
-No frozen parent, predecessor amendment or neutral profile is rewritten.
+Factory owns `bound-infrastructure-retirement-accounting`, including its exact
+policy, complete machine inventory, non-product deriver and acceptance scenarios.
+This feature owns only the paired source handoff now; no product/test/matrix/
+profile/workflow/pin/dependency byte changes. The source selections below are
+proposed and do not grant a live cleanup authority.
 
-## Proposed source boundary
+## Exact first-pilot selection and limits
 
-A future source-selected infrastructure policy must account for the entire
-original registration/reconciliation/result scope separately from old runtime
-proof/readback limits. Define authenticated scope, durable cumulative charges,
-one-send attempts and exact expiry binding across duplicate triggers and
-reconstruction. Every actual registration/state/namespace/provider/ARM/fence/
-receipt/revocation/preservation/observer/audit call must consume the selected
-original allowance before use, including nested callbacks, polls and failures.
-A losing conditional write is actual I/O. Hidden remote work is not free local
-work; mere cached labels cannot establish aggregate authenticated provenance.
+The source graph is three VM/OS-disk/NIC sets, one control public IP, one VNet and
+three role-specific NSGs:14 resources,16 dependency edges. This amendment explicitly
+resolves S1's formerly open NSG count; it selects no fourth host, extra IP, separate
+subnet deletion or added disposable resource. Two retained data disks, measured
+image, vault, evidence/watchdog infrastructure, protected state and all three RG
+parents are excluded from deletion. Maximum16 actual issued credential handles
+must all be registered; unsupported/missing outcome evidence prevents complete.
 
-Separate setup rollback/run cleanup paths remain additive in their owning
-namespace/provider modules, using authentic original cleanup authority and exact
-registered incarnations. Keep old setup-window refusal. A current read-only late
-observer cannot renew proof/cleanup, reset consumed counters or send mutation.
-Do not change the reservation/window, parser/profile, retained exclusions,
-per-kind/API/dependency rules, unsupported provider semantics or original
-one-send claims. Keep maximum24 and complete16KiB receipt bounds.
+| Pool | Private | ARM | Namespace backend | Journal | Application bytes |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Registration including actual later run link | 128 | 0 | 128 | 32 | 1 MiB |
+| One original cleanup | 768 | 160 | 512 | 128 | 12 MiB |
+| One independently current read-only observation | 192 | 48 | 128 | 32 | 3 MiB |
 
-## Measurement and source-decision gate
+Whole fixed maxima:1088/208/768/192 calls and16MiB; no pool/class borrowing.
+The conservative proposed full schedule totals927/168/447/122. It counts both
+authenticated state façade exchanges and physical backend I/O. Failed CAS,
+journal work, callbacks, polls, reconstruction and uncertainty reloads all cost
+slots before actual calls; hidden SDK retry/redirect/pagination is forbidden.
+The trace is a source schedule, not measured new runtime behavior.
 
-The full first-pilot S1 graph, including the retained/shared inventory and all
-registration/observer/recovery work, needs a reproducible independent call trace,
-complete serialized sizes and real elapsed-time model. The existing six-kind
-partial trace and sum of separate per-resource controls cannot select a new cap.
-No replacement number, timer, internal phase identifier or activation is selected.
+Original registration transactions <=30seconds; one original cleanup <=300seconds;
+one independently authorized observation <=60seconds; calls <=10seconds and
+original remaining time. Actual approval/original absolute cleanup expiry always
+clips these maxima. Current fences can shorten individual sends but never extend
+the original cleanup clock. Existing10second proof/readback Decision,
+private12/ARM24 and all old phases remain byte-identical.
 
-The proposed decision sequence is: complete the non-product inventory and explicit
-finite numeric policy; review that complete paired source packet; obtain exact
-owner source acceptance; then resume dependent isolated code under the accepted
-limits. This is a dependency explanation for the existing row, not a second
-implementation checklist. Any diagnostic allowance must be separately explicit
-and can never count as product eligibility or a qualified fitting positive.
+Complete synthetic unchanged-parser fixtures measure reservation8056,
+provisioned9855, final-link716, setup-result4720 and run-result5908bytes, all below
+the existing16384cap. Synthetic identities are not deployed/provider provenance.
+No real elapsed-time fit is claimed by parser or old frozen-clock diagnostics.
 
-Still unresolved: exact per-scope/per-operation numeric limits, closed retained
-charge/attempt representation and authenticated recovery semantics, and the
-original absolute-expiry/local-timer binding. These are blocking source decisions.
-Do not patch ReadBudget defaults, use a larger old phase, replace a Decision per
-resource, omit state/observer I/O or retry/reset a consumed attempt to work around
-them. A later isolated implementation commission cannot waive this source gate.
+## Allocation, loss and observation semantics
 
-## Later implementation and qualification handoff
+The protected external registration service durably prepays each entire fixed
+pool to one authenticated owner incarnation before handoff/first effect. Live
+before-call counters and complete-byte counts share that original allocation.
+Journal I/O itself consumes journal slots; it does not trigger recursively funded
+debit writes. A failed acknowledgement never refunds an allocation.
 
-After exact paired source acceptance, existing T013P07 owns the proposed
-`azure_composition/retirement.py` and substantive retirement tests, with narrowly
-additive owning namespace/provider paths and measured matrix changes recorded in
-that same row. Before changing a shared accounting owner, inspect all its
-consumers and retain every old phase/counter/deadline assertion. No neutral pin
-moves or new dependency is selected.
+The original mutation pool is nontransferable. On owner process/incarnation loss,
+unused budget burns and mutation continuation refuses. Retained original state
+allows a separately current independent observer to derive truthful incomplete/
+indeterminate/late-failed results from its own original single-use pool, without
+a new mutation/proof timer. The independent external owner survives control/gate/
+worker loss; its own loss is explicitly fail-closed, not a cleanup SLA.
 
-All original P07 controls remain required: exact setup/run facts, independent
-origin, one winner under trigger/crash races, per-kind identity/fence/order,
-original-operation completion, control/gate/worker loss, permanent tombstones,
-retained preservation/revocation, late read-only failure and observer expiry.
-Preserve old source node identities/fingerprints/anchors; run applicable ordered
-gates, full/native exact-source qualification, local review, eventual hosted CI
-and independent teardown. A focused diagnostic pass closes none of those gates.
+The factory policy defines closed immutable allocation anchor/cleanup claim/
+genuine run-binding records in already selected external state, without adding
+keys to old namespace or retirement profiles. Public labels/digests do not grant
+identity/authority. Run binding is added only when genuine final facts exist;
+setup receipts never require fictitious final/provisioned fields.
 
-No P08/P09 implementation, deployment builder, service/role appointment,
-operational accepted_commit, setup/dispatch, live human/domain/consumer acceptance
-or feedback submission is authorized. Historical blocked writes remain unreplayed.
+At most four accepted trigger deliveries and three reads of each original create/
+delete operation are selected. No resend of an ambiguous destructive attempt is
+authorized. Current read-only observation after cleanup expiry derives failed;
+spent/missing/expired observer authority refuses emission.
+
+## Implementation and qualification after source acceptance
+
+Exact paired source ratification must precede dependent implementation. The sole
+existing T013P07 row later owns retirement.py, substantive tests and narrowly
+additive owning namespace/provider paths. Record concrete changed paths in that
+same row; no second task list or new feature is introduced.
+
+Prove an actual complete selected graph under these fixed caps, clocks, nested
+physical calls and privacy limits. Preserve all original setup/run/never-created
+facts, supported API/generation/dependency/fence rules, one-send/trigger/crash/
+original-operation controls, independent absence/revocation/preservation,
+permanent tombstones and late observation/refusal. Preserve old node IDs/order/
+fingerprints/anchors and qualify full/native exact source, local review, hosted
+CI and independent fixture teardown before checking P07. A failure returns to
+governance; no increasing caps or omitting facts to force a pass.
+
+P08/P09, service/role appointments, operational accepted_commit/UTC windows,
+setup/dispatch, live provider/RBAC/human/consumer acceptance and feedback remain
+outside this commission. Historical blocked writes remain unreplayed.
