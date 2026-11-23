@@ -1,3 +1,159 @@
+## P06 Sonar correction locally qualified - 2026-11-23 America/La_Paz
+
+Source `475efdfceff5e02d0408a6f7fb8d4b072c9bf2a6` passes all seven ordered gates,
+3,581 full parents plus 11 subtests and all 3,159 native cases, with zero
+failures/errors/skips. All 130 canonical P06 cases and nine external controls
+pass (139 focused). Explicit fixture input validation and 45 ordered assertion
+splits address the actionable Sonar findings without changing product runtime,
+profiles, permissions, pins, workflows, quality thresholds or runtime limits.
+Three real mTLS direct-termination controls substantiate the intentional private
+BaseException sanitizer; its S5754 advisory is reviewed, not suppressed or falsely
+reported resolved. Nine local Codex roles clear the bounded correction.
+Independent audits pass and all sixteen owned P06 volumes/containers are absent;
+all four dependency heads/trees/status remain unchanged. Only isolated T013P06
+closes. This is a prepublication checkpoint: final exact-head hosted CI, final
+Markdown review and owner source ratification remain separate. P07-P09,
+setup/dispatch and live acceptance remain ungranted. Feedback deferred; historical
+blocked writes unreplayed. Earlier dated checkpoints retain historical meaning.
+
+## P06 Sonar fixture correction - 2026-11-22 America/La_Paz
+
+PR #103 head `6845a8554c31` passes all four source jobs, but Sonar rejects the
+fixture's caught input-validation assertion (reliability4). Coverage is 96.5%;
+the other five unchanged gate conditions pass. Explicit HTTP input validation
+replaces that assertion, and 45 composite test assertions are split in their
+original evaluation order. The before-allocation privacy control now observes
+its selected failure directly instead of comparing unrelated process-wide FDs.
+The private BaseException sanitization boundary remains deliberate; three real
+mTLS controls add direct termination-payload refusals before effects. No product
+runtime, profile, permission, pin, workflow, quality threshold or limit changes.
+T013P06 reopens pending focused controls, new measured identities, full/native
+qualification, independent cleanup, local review and replacement exact-head CI.
+Earlier qualified sources and run45097854796 remain historical evidence, not
+owner source acceptance. Setup/dispatch unauthorized; feedback deferred;
+historical blocked writes unreplayed.
+
+## P06 final local qualification - 2026-11-22 America/La_Paz
+
+Corrected source `38af15b92d823a0469c11565176367e5daa66bad` passes all seven
+ordered gates, 3,578 full parents plus 11 subtests and all 3,156 mandatory native
+cases, with zero failures/errors/skips. The focused run passes all 127 P06 cases
+plus six real descriptor-ownership controls. The cleanup assertion now follows
+both owned kernel socket identities, tolerates disappearing unrelated descriptors,
+and still rejects retained reader/writer aliases with the traceback held.
+Nine local Codex roles clear the bounded correction. Independent audits verify
+retained state, preservation and no live owned generations; both new volumes are
+removed and all thirteen P06 volumes across initial/review phases remain absent.
+Only T013P06 closes in isolation. Final published-head CI, final Markdown-only
+review and owner source ratification remain separate. Earlier qualified sources
+and the cancelled failed run45086080069 are historical. P07-P09, setup/dispatch
+and live human/provider/consumer acceptance remain ungranted. Feedback deferred;
+historical blocked writes unreplayed.
+
+## P06 hosted assertion correction - 2026-11-22 America/La_Paz
+
+PR #103 head `330a295bbe84` is superseded for qualification. Hosted run
+45086080069 completed all 3,578 full parents and 11 subtests, with one new
+cleanup-oracle failure: both owned endpoints closed and EOF passed, but an
+unrelated descriptor disappeared from the process-wide FD-number snapshot.
+The test now checks the two owned kernel socket identities, including aliases,
+while tolerating disappearing unrelated entries. Product/runtime, test identities,
+matrix, pins, limits and workflows are unchanged. T013P06 is reopened pending
+focused ownership controls, fresh full/native qualification, independent cleanup,
+local review and replacement exact-head hosted CI. Earlier receipts are historical.
+Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.
+
+## Reviewed P06 local qualification for publication - 2026-11-22 America/La_Paz
+
+Corrected runtime/test/matrix source `051d4583ee4ada5ad3167a0abd740cc9ed1b6bc1`
+passes all seven ordered gates, 3,578 full parent cases plus 11 subtests, and all
+3,156 mandatory native cases, with zero failures/errors/skips. All 127 P06 cases
+and the three original external reproductions pass. Nine local Codex review roles
+clear the initial scope and correction delta; both reproduced P2 cleanup findings
+are closed, with no remaining actionable finding. Five guard baselines pass and
+all five weakened copies fail their intended assertions without fixture errors.
+Independent audits pass; all owned fixture containers and ten P06 volumes across
+the initial/publication phases are absent. Only T013P06 is complete in isolation.
+This is the prepublication source checkpoint: final exact-head hosted CI, final
+Markdown-only review and owner source ratification remain separate. P07-P09,
+setup/dispatch and live provider/issuer/human/consumer acceptance remain ungranted.
+Feedback deferred; blocked writes unreplayed. Earlier dated status is historical.
+
+## T013P06 publication review corrections - 2026-11-22 America/La_Paz
+
+PR #103 source review reproduced two cleanup defects at `3891066d06ac`: a valid
+returned mint response could be discarded before its handle was recorded at a
+deadline boundary, and known handle lookup depended on live issuance socket/TLS
+material. The bounded composition correction preserves the owning issuer's
+record-before-postcheck ordering for only the selected mint route and retains
+private cleanup ownership independently of issuance-only liveness. Fresh focused,
+complete full/native qualification, independent cleanup, exact-head hosted CI and
+final local review remain pending. T013P06 is reopened until those local gates
+pass. Earlier qualifications remain historical. No primitive, profile, role,
+request field, runtime limit, source target or default activation changes.
+Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.
+
+## T013P06 isolated qualification complete - 2026-11-22 America/La_Paz
+
+T013P06 runtime/test/matrix source `ff6ccd7e8d07fc99afc346ba5a8a0c3b88b42e80`
+passes all seven ordered gates, 3,561 full parent tests plus 11 subtests, and all
+3,139 mandatory native cases, with zero failures, errors or skips. All 110 P06
+cases pass. Every prior identity, count/digest and matrix anchor prefix remains.
+Independent audits verify retained state, ten preservation cases in total, no
+surviving owned generations and removal of all five owned fixture volumes.
+Only existing T013P06 is complete in isolation; publication, hosted CI, local
+Codex review and owner source ratification remain separate. P07-P09 and all
+operational/human/consumer gates remain open. Setup/dispatch unauthorized;
+feedback deferred; blocked writes unreplayed. Earlier dated status is historical.
+
+## Current T013P06 isolated implementation commission - 2026-11-22 America/La_Paz
+
+Brett commissioned implementation and testing of the existing T013P06 row using
+prepared plan `5dc47167444d`. The explicit source composition reuses existing
+CSR enrollment, intrinsic App-role delivery, kernel credential and retirement
+ports, preserving pre-opened stores and one original Decision with charged nested
+I/O. It adds no listener, default activation, request field, profile or limit.
+Full/native qualification and independent cleanup remain pending; the existing
+T013P06 row stays unchecked. Earlier dated status below is historical.
+P07-P09, publication, setup/dispatch, live service appointments and human/consumer
+acceptance remain separate. Feedback is deferred; blocked writes unreplayed.
+
+## Historical qualified main and P06 preparation - 2026-11-22 America/La_Paz
+
+Brett source-ratified #101 at `dc9ec9eb5e81` and #102 at `26e6a1efe739`.
+The latter landed normally, without an approval override, as
+`4ca798601566091564a5696fdd89559f8d207885`; its tree exactly matches the
+ratified candidate. [Fresh main CI](https://github.com/opensoft/openXwallet/actions/runs/45055670097)
+passes all five jobs, all 3,451 full parent tests plus 11 subtests and all
+3,029 mandatory native cases, with zero failures, errors or skips.
+All six unchanged Sonar conditions are evaluated and green: new coverage
+87.4%, duplication 0.1%, reviewed hotspots 100%, and all three ratings at 1.
+The original August 27 baseline is retained. Fresh GitHub main and the latest
+Sonar main analysis agree on that merge in the [source qualification receipt](p3-parent-main-qualification.json).
+This is an as-of source readback, not a permanent freshness or operational grant.
+The two earlier #101 main timeouts remain diagnostic history.
+
+Only [T013P06 preparation](p3-issuance-plan.md) is commissioned now.
+Its existing implementation row stays unchecked; no P06 code or tests exist.
+P07-P09, setup/dispatch, live issuer/provider appointments and human/consumer
+acceptance remain separate. Feedback is deferred and blocked writes unreplayed.
+Earlier dated status below is historical; feature017 operational tasks remain open.
+
+## Historical #101 acceptance and initial P06 preparation - 2026-11-22 America/La_Paz
+
+Brett ratified #101 at `dc9ec9eb5e81508ce99134b8c2c4a88c417aae88` for
+source acceptance. Normal merge `841f1bd230ac4452d5663adc50569c072cd4d32f`
+has the exact reviewed tree. Main CI attempt 1 timed out during native after the
+full suite passed; attempt 2 also timed out at the same cap during native.
+Both full suites passed, but neither native run completed and Sonar skipped.
+Main qualification remains open; earlier PR/local qualification is distinct.
+
+P06 preparation is authorized and captured in [the bounded subplan](p3-issuance-plan.md).
+The existing T013P06 implementation row remains unchecked. No P06 code/tests,
+setup/dispatch, P07-P09, live services or human/consumer acceptance are granted.
+Feedback remains deferred and blocked writes unreplayed. Earlier dated status
+below is historical; source acceptance does not supply operational authority.
+
 ## Current P05 qualification closeout - 2026-11-21 America/La_Paz
 
 P05 runtime source `0b174962aa504399bea7873189c8dc89a9e32fc4` now passes all seven ordered
@@ -472,7 +628,7 @@ create a factory/consumer duplicate task list. R01-R12 trace to the factory delt
 - [x] T013P03 [O] Implement bounded per-kind Azure readback/operation capabilities and measured-image/two-retained-disk compatibility; files: scripts/workload_factory_binding_runtime/azure_composition/provider.py, tests/runtime_binding/test_azure_provider.py; verify: exact documented API/incarnation/dependency/terminal-operation and Detach semantics, no marketplace-ID substitution, unsupported type/replacement/pending-write refusal and no live provider request (R05/R08/R09).
 - [x] T013P04 [O] Implement source-selected original-runner capture and bounded phase transport; files: scripts/workload_factory_binding_runtime/azure_composition/runner_transport.py, tests/runtime_binding/test_azure_runner_transport.py; verify: exact trusted origin/path policy, frozen private bearer/endpoint, valid signed-claim/provider-correlation positive and URL/redirect/proxy/source/phase/credential-export mutations within original limits, no discovery token (R04/R11).
 - [x] T013P05 [O] Implement protected local worker-host adapters and authenticated complete-byte remote measurement/finalization composition, preserving original local manager/types/profiles and R03/R06 boundaries — files: `scripts/workload_factory_binding_runtime/azure_composition/local_host.py`, `scripts/workload_factory_binding_runtime/azure_composition/remote_evidence.py`, `scripts/workload_factory_binding_runtime/hosted/readback.py`, `tests/runtime_binding/test_azure_measurement.py`, `tests/runtime_binding/matrix_contract.py`, `AGENTS.md`, `specs/017-protected-runtime-qualification/tasks.md`, `specs/017-protected-runtime-qualification/spec.md`, `specs/017-protected-runtime-qualification/plan.md`, `specs/017-protected-runtime-qualification/p3-measurement-plan.md`, `specs/017-protected-runtime-qualification/p3-measurement-transaction-plan.md`, `specs/017-protected-runtime-qualification/p3-measurement-implementation.md`, `specs/017-protected-runtime-qualification/evidence.md` — verify: `python3 -B tests/runtime_binding/conformance.py --owner-code "$WALLET_BINDING_OWNER_CODE" --temp-root "$PILOT_QUALIFICATION_ROOT"`
-- [ ] T013P06 [O] Wire independently approved enrollment/issuance, peer credentials and retained state boundaries; files: scripts/workload_factory_binding_runtime/azure_composition/issuance.py, tests/runtime_binding/test_azure_issuance.py; verify: approved role positive, valid-preimage worker denial, nonce/host/source/fingerprint/effective-scope mutations, no self-enrollment/MI/key leakage and no runtime ledger initialization/reset/rollback (R06).
+- [x] T013P06 [O] Wire independently approved enrollment/issuance, peer credentials and retained state boundaries; files: `scripts/workload_factory_binding_runtime/azure_composition/issuance.py`, `tests/runtime_binding/test_azure_issuance.py`, `tests/runtime_binding/matrix_contract.py`, `AGENTS.md`, `specs/017-protected-runtime-qualification/p3-issuance-plan.md`, `specs/017-protected-runtime-qualification/p3-azure-composition-plan.md`, `specs/017-protected-runtime-qualification/spec.md`, `specs/017-protected-runtime-qualification/plan.md`, `specs/017-protected-runtime-qualification/tasks.md`, `specs/017-protected-runtime-qualification/evidence.md`; verify: approved role positive, valid-preimage worker denial, nonce/host/source/fingerprint/effective-scope mutations, no self-enrollment/MI/key leakage and no runtime ledger initialization/reset/rollback (R06).
 - [ ] T013P07 [O] Implement the separate external namespace/watchdog infrastructure reconciler; files: scripts/workload_factory_binding_runtime/azure_composition/retirement.py, tests/runtime_binding/test_azure_retirement.py; verify: partial-setup/expiry/predispatch and post-P7 closed receipt variants, no invented unavailable facts, no-name-reuse/sole-writer/per-kind order, original-operation/control-loss reconciliation, trigger deduplication, independent absence/revocation/preservation and separately authorized read-only late failure with no renewal/budget reset; no RG/force/cascade/retry or old-report relabel (R07/R09/R10).
 - [ ] T013P08 [O] Integrate an explicitly source-selected companion entrypoint and reviewed deployment packaging/workflow route; files: scripts/prepare-azure-protected-runtime.py, scripts/workload_factory_binding_runtime/azure_composition/entrypoint.py, deploy/qa-wallet-mfa/, .github/workflows/protected-runtime-qualification-run.yml, tests/runtime_binding/test_azure_entrypoint.py; verify: existing operational_bindings/default entrypoint unchanged/refusing, three inputs/seven runtime/eight source roles and same-commit phase permissions preserved, no env/file/plugin activation and no execution/setup from source selection alone (R02).
 - [ ] T013P09 [O] Qualify exact isolated P3 source, reconcile operator guidance and prepare later source review/acceptance handoff; files: tests/runtime_binding/matrix_contract.py, specs/017-protected-runtime-qualification/p3-azure-composition-acceptance.md, p3-azure-composition-quickstart.md, evidence.md; verify: complete R01-R12 positive/refusal/crash matrix, measured preserved old full/native IDs/fingerprints, original budgets/deadlines/body caps with fitting complete positives, independent fixture cleanup and honest source-only results; T001/T013/T014/T015/consumerT002 and operational grants remain open (R01/R02/R07/R11/R12).

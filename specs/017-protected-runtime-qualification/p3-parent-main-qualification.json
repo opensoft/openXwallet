@@ -1,0 +1,90 @@
+{
+  "repository": "opensoft/openXwallet",
+  "source_acceptance": {
+    "PR": 102,
+    "ratified_head": "26e6a1efe739610a39a756e31582cbf03dff7bf1",
+    "merge_commit": "4ca798601566091564a5696fdd89559f8d207885",
+    "tree": "6d98e9698de4ea77ecee7e823f75899032f14b5b",
+    "normal_squash_merge": true,
+    "admin_override_used": false
+  },
+  "CI": {
+    "run_id": 45055670097,
+    "url": "https://github.com/opensoft/openXwallet/actions/runs/45055670097",
+    "event": "push",
+    "successful_jobs": 5,
+    "combined_full_native_seconds": 5724,
+    "full_parent_tests": 3451,
+    "full_subtests": 11,
+    "native_cases": 3029,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "exact_case_identity_sets": true,
+    "coverage_partition": {
+      "primary": 3450,
+      "isolated": 1,
+      "union": 3451,
+      "disjoint": true,
+      "all_selected_phase_reports_passed": true
+    },
+    "four_same_source_manifests": true,
+    "all_pinned_dependency_trees_match": true
+  },
+  "Sonar": {
+    "analysis_id": "2ffd9d70-7ec6-440f-b01e-a4e758aa9df3",
+    "status": "OK",
+    "ignored_conditions": false,
+    "definition_id": 9,
+    "declared_conditions": 6,
+    "evaluated_conditions": 6,
+    "metrics": {
+      "new_reliability_rating": "1",
+      "new_security_rating": "1",
+      "new_maintainability_rating": "1",
+      "new_coverage": "87.4",
+      "new_duplicated_lines_density": "0.1",
+      "new_security_hotspots_reviewed": "100.0"
+    },
+    "PR_analysis_only": false,
+    "main": true
+  },
+  "original_baseline": {
+    "key": "d434a8d1-6d41-4cfe-9413-e1868fc1c18d",
+    "date": "2026-08-27T11:16:42+0000",
+    "events": [],
+    "projectVersion": "not provided",
+    "manualNewCodePeriodBaseline": true,
+    "revision": "63f5a1adac89f017e70bab9a4ffe7cf02d6e6705"
+  },
+  "main_measures": {
+    "new_coverage": 87.36689254598258,
+    "new_lines_to_cover": 18156.0
+  },
+  "fresh_main_readback": {
+    "checked_at": "2026-11-22T20:11:21.312469+00:00",
+    "GitHub_main_before": "4ca798601566091564a5696fdd89559f8d207885",
+    "GitHub_main_after": "4ca798601566091564a5696fdd89559f8d207885",
+    "latest_Sonar_main_analysis": {
+      "key": "2ffd9d70-7ec6-440f-b01e-a4e758aa9df3",
+      "date": "2026-11-22T20:09:05+0000",
+      "events": [
+        {
+          "key": "AaIE4XumIgZiFB_GLXdV",
+          "category": "VERSION",
+          "name": "not provided"
+        }
+      ],
+      "projectVersion": "not provided",
+      "manualNewCodePeriodBaseline": false,
+      "revision": "4ca798601566091564a5696fdd89559f8d207885"
+    },
+    "complete_history_entries_read": 14,
+    "all_revisions_match": true,
+    "as_of_readback_only": true,
+    "no_permanent_freshness_guarantee": true,
+    "public_API_used": true
+  },
+  "qualification_scope": "source only; not P06 implementation or operational authorization",
+  "setup_dispatch_authorized": false
+}

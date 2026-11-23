@@ -1,3 +1,159 @@
+## P06 Sonar correction locally qualified - 2026-11-23 America/La_Paz
+
+Source `475efdfceff5e02d0408a6f7fb8d4b072c9bf2a6` passes all seven ordered gates,
+3,581 full parents plus 11 subtests and all 3,159 native cases, with zero
+failures/errors/skips. All 130 canonical P06 cases and nine external controls
+pass (139 focused). Explicit fixture input validation and 45 ordered assertion
+splits address the actionable Sonar findings without changing product runtime,
+profiles, permissions, pins, workflows, quality thresholds or runtime limits.
+Three real mTLS direct-termination controls substantiate the intentional private
+BaseException sanitizer; its S5754 advisory is reviewed, not suppressed or falsely
+reported resolved. Nine local Codex roles clear the bounded correction.
+Independent audits pass and all sixteen owned P06 volumes/containers are absent;
+all four dependency heads/trees/status remain unchanged. Only isolated T013P06
+closes. This is a prepublication checkpoint: final exact-head hosted CI, final
+Markdown review and owner source ratification remain separate. P07-P09,
+setup/dispatch and live acceptance remain ungranted. Feedback deferred; historical
+blocked writes unreplayed. Earlier dated checkpoints retain historical meaning.
+
+## P06 Sonar fixture correction - 2026-11-22 America/La_Paz
+
+PR #103 head `6845a8554c31` passes all four source jobs, but Sonar rejects the
+fixture's caught input-validation assertion (reliability4). Coverage is 96.5%;
+the other five unchanged gate conditions pass. Explicit HTTP input validation
+replaces that assertion, and 45 composite test assertions are split in their
+original evaluation order. The before-allocation privacy control now observes
+its selected failure directly instead of comparing unrelated process-wide FDs.
+The private BaseException sanitization boundary remains deliberate; three real
+mTLS controls add direct termination-payload refusals before effects. No product
+runtime, profile, permission, pin, workflow, quality threshold or limit changes.
+T013P06 reopens pending focused controls, new measured identities, full/native
+qualification, independent cleanup, local review and replacement exact-head CI.
+Earlier qualified sources and run45097854796 remain historical evidence, not
+owner source acceptance. Setup/dispatch unauthorized; feedback deferred;
+historical blocked writes unreplayed.
+
+## P06 final local qualification - 2026-11-22 America/La_Paz
+
+Corrected source `38af15b92d823a0469c11565176367e5daa66bad` passes all seven
+ordered gates, 3,578 full parents plus 11 subtests and all 3,156 mandatory native
+cases, with zero failures/errors/skips. The focused run passes all 127 P06 cases
+plus six real descriptor-ownership controls. The cleanup assertion now follows
+both owned kernel socket identities, tolerates disappearing unrelated descriptors,
+and still rejects retained reader/writer aliases with the traceback held.
+Nine local Codex roles clear the bounded correction. Independent audits verify
+retained state, preservation and no live owned generations; both new volumes are
+removed and all thirteen P06 volumes across initial/review phases remain absent.
+Only T013P06 closes in isolation. Final published-head CI, final Markdown-only
+review and owner source ratification remain separate. Earlier qualified sources
+and the cancelled failed run45086080069 are historical. P07-P09, setup/dispatch
+and live human/provider/consumer acceptance remain ungranted. Feedback deferred;
+historical blocked writes unreplayed.
+
+## P06 hosted assertion correction - 2026-11-22 America/La_Paz
+
+PR #103 head `330a295bbe84` is superseded for qualification. Hosted run
+45086080069 completed all 3,578 full parents and 11 subtests, with one new
+cleanup-oracle failure: both owned endpoints closed and EOF passed, but an
+unrelated descriptor disappeared from the process-wide FD-number snapshot.
+The test now checks the two owned kernel socket identities, including aliases,
+while tolerating disappearing unrelated entries. Product/runtime, test identities,
+matrix, pins, limits and workflows are unchanged. T013P06 is reopened pending
+focused ownership controls, fresh full/native qualification, independent cleanup,
+local review and replacement exact-head hosted CI. Earlier receipts are historical.
+Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.
+
+## Reviewed P06 local qualification for publication - 2026-11-22 America/La_Paz
+
+Corrected runtime/test/matrix source `051d4583ee4ada5ad3167a0abd740cc9ed1b6bc1`
+passes all seven ordered gates, 3,578 full parent cases plus 11 subtests, and all
+3,156 mandatory native cases, with zero failures/errors/skips. All 127 P06 cases
+and the three original external reproductions pass. Nine local Codex review roles
+clear the initial scope and correction delta; both reproduced P2 cleanup findings
+are closed, with no remaining actionable finding. Five guard baselines pass and
+all five weakened copies fail their intended assertions without fixture errors.
+Independent audits pass; all owned fixture containers and ten P06 volumes across
+the initial/publication phases are absent. Only T013P06 is complete in isolation.
+This is the prepublication source checkpoint: final exact-head hosted CI, final
+Markdown-only review and owner source ratification remain separate. P07-P09,
+setup/dispatch and live provider/issuer/human/consumer acceptance remain ungranted.
+Feedback deferred; blocked writes unreplayed. Earlier dated status is historical.
+
+## T013P06 publication review corrections - 2026-11-22 America/La_Paz
+
+PR #103 source review reproduced two cleanup defects at `3891066d06ac`: a valid
+returned mint response could be discarded before its handle was recorded at a
+deadline boundary, and known handle lookup depended on live issuance socket/TLS
+material. The bounded composition correction preserves the owning issuer's
+record-before-postcheck ordering for only the selected mint route and retains
+private cleanup ownership independently of issuance-only liveness. Fresh focused,
+complete full/native qualification, independent cleanup, exact-head hosted CI and
+final local review remain pending. T013P06 is reopened until those local gates
+pass. Earlier qualifications remain historical. No primitive, profile, role,
+request field, runtime limit, source target or default activation changes.
+Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.
+
+## T013P06 isolated qualification complete - 2026-11-22 America/La_Paz
+
+T013P06 runtime/test/matrix source `ff6ccd7e8d07fc99afc346ba5a8a0c3b88b42e80`
+passes all seven ordered gates, 3,561 full parent tests plus 11 subtests, and all
+3,139 mandatory native cases, with zero failures, errors or skips. All 110 P06
+cases pass. Every prior identity, count/digest and matrix anchor prefix remains.
+Independent audits verify retained state, ten preservation cases in total, no
+surviving owned generations and removal of all five owned fixture volumes.
+Only existing T013P06 is complete in isolation; publication, hosted CI, local
+Codex review and owner source ratification remain separate. P07-P09 and all
+operational/human/consumer gates remain open. Setup/dispatch unauthorized;
+feedback deferred; blocked writes unreplayed. Earlier dated status is historical.
+
+## Current T013P06 isolated implementation commission - 2026-11-22 America/La_Paz
+
+Brett commissioned implementation and testing of the existing T013P06 row using
+prepared plan `5dc47167444d`. The explicit source composition reuses existing
+CSR enrollment, intrinsic App-role delivery, kernel credential and retirement
+ports, preserving pre-opened stores and one original Decision with charged nested
+I/O. It adds no listener, default activation, request field, profile or limit.
+Full/native qualification and independent cleanup remain pending; the existing
+T013P06 row stays unchecked. Earlier dated status below is historical.
+P07-P09, publication, setup/dispatch, live service appointments and human/consumer
+acceptance remain separate. Feedback is deferred; blocked writes unreplayed.
+
+## Historical qualified main and P06 preparation - 2026-11-22 America/La_Paz
+
+Brett source-ratified #101 at `dc9ec9eb5e81` and #102 at `26e6a1efe739`.
+The latter landed normally, without an approval override, as
+`4ca798601566091564a5696fdd89559f8d207885`; its tree exactly matches the
+ratified candidate. [Fresh main CI](https://github.com/opensoft/openXwallet/actions/runs/45055670097)
+passes all five jobs, all 3,451 full parent tests plus 11 subtests and all
+3,029 mandatory native cases, with zero failures, errors or skips.
+All six unchanged Sonar conditions are evaluated and green: new coverage
+87.4%, duplication 0.1%, reviewed hotspots 100%, and all three ratings at 1.
+The original August 27 baseline is retained. Fresh GitHub main and the latest
+Sonar main analysis agree on that merge in the [source qualification receipt](p3-parent-main-qualification.json).
+This is an as-of source readback, not a permanent freshness or operational grant.
+The two earlier #101 main timeouts remain diagnostic history.
+
+Only [T013P06 preparation](p3-issuance-plan.md) is commissioned now.
+Its existing implementation row stays unchecked; no P06 code or tests exist.
+P07-P09, setup/dispatch, live issuer/provider appointments and human/consumer
+acceptance remain separate. Feedback is deferred and blocked writes unreplayed.
+Earlier dated status below is historical; feature017 operational tasks remain open.
+
+## Historical #101 acceptance and initial P06 preparation - 2026-11-22 America/La_Paz
+
+Brett ratified #101 at `dc9ec9eb5e81508ce99134b8c2c4a88c417aae88` for
+source acceptance. Normal merge `841f1bd230ac4452d5663adc50569c072cd4d32f`
+has the exact reviewed tree. Main CI attempt 1 timed out during native after the
+full suite passed; attempt 2 also timed out at the same cap during native.
+Both full suites passed, but neither native run completed and Sonar skipped.
+Main qualification remains open; earlier PR/local qualification is distinct.
+
+P06 preparation is authorized and captured in [the bounded subplan](p3-issuance-plan.md).
+The existing T013P06 implementation row remains unchecked. No P06 code/tests,
+setup/dispatch, P07-P09, live services or human/consumer acceptance are granted.
+Feedback remains deferred and blocked writes unreplayed. Earlier dated status
+below is historical; source acceptance does not supply operational authority.
+
 ## Current P05 qualification closeout - 2026-11-21 America/La_Paz
 
 P05 runtime source `0b174962aa504399bea7873189c8dc89a9e32fc4` now passes all seven ordered
@@ -4088,3 +4244,369 @@ Sonar skipped. Brett accepted only the bounded main coverage cap amendment to
 90 minutes. Feature019 T013 requires replacement exact-head coverage and the
 actual unchanged six-condition Sonar gate before PR #101 source acceptance.
 No main deployment or consumer/live qualification follows from isolated P05.
+
+## 2026-11-22 P05 source acceptance and P06 preparation
+
+Brett accepted [#101](https://github.com/opensoft/openXwallet/pull/101) at
+`dc9ec9eb5e81508ce99134b8c2c4a88c417aae88` for source only. Normal squash merge
+`841f1bd230ac4452d5663adc50569c072cd4d32f` preserves tree
+`829dca6f3cc795edb7a80a81ec6a80fa9b6a1a8f`, with no administrative override.
+All required and runnable PR checks were green; optional Sourcery skipped its
+diff-size limit. Local expert and unchanged-runtime GLM evidence remain the
+review basis, not a hosted Codex review claim.
+
+[Main run 45019228544](https://github.com/opensoft/openXwallet/actions/runs/45019228544)
+at that merge passed coverage, isolated coverage and source conformance. Its
+combined full/native job passed 3,451 full tests plus 11 subtests in 2,866.35s,
+then exceeded the 90-minute job cap at 71 percent native progress. There was no
+logged assertion failure, but native did not finish and Sonar skipped. The
+cancelled attempt remains diagnostic. The one unchanged managed-runner retry
+also exceeded the same cap: 3,451 full tests plus 11 subtests passed in 2,928.41s;
+native reached 68 percent without a logged assertion failure, then was cancelled
+and Sonar skipped. No third retry was issued. The six-file ordinary source-CI
+cap proposal from 90 to 120 minutes remains unapplied pending owner acceptance;
+other caps, runtime limits and operational permissions remain unchanged. Main
+CI has not been verified green.
+
+The [P06 subplan](p3-issuance-plan.md) records accepted R06 ports, independent
+approval and mTLS/role bindings, fixed openXwallet App scope, original budgets,
+retained state and future substantive controls. The branch contains planning
+only; both future P06 module/test paths remain absent, its task unchecked and
+all operational/human/consumer gates open.
+
+## Parent main qualification and P06 preparation refresh - 2026-11-22
+
+Source-ratified #102 landed normally as `4ca798601566091564a5696fdd89559f8d207885`
+with tree `6d98e9698de4ea77ecee7e823f75899032f14b5b`, exactly the approved
+candidate tree. [Main run45055670097](https://github.com/opensoft/openXwallet/actions/runs/45055670097)
+passes all five jobs and the complete full/native identity sets. The combined
+job took 5,724 seconds under the accepted 120-minute source-CI cap; runtime,
+coverage, quality, dependency and protected-workflow limits were unchanged.
+
+The [durable source receipt](p3-parent-main-qualification.json) records all
+3,451 full parent tests plus 11 subtests and 3,029 native cases with zero
+failures, errors or skips, four same-source manifests, matching dependency trees
+and complete complementary coverage. Main Sonar analysis
+`2ffd9d70-7ec6-440f-b01e-a4e758aa9df3` evaluates all six original conditions:
+87.4% new coverage, 0.1% new duplication, 100% reviewed hotspots and all three
+ratings at 1. Its original baseline remains analysis
+`d434a8d1-6d41-4cfe-9413-e1868fc1c18d` at 2026-08-27T11:16:42Z, with
+18,156 real new lines to cover. The fresh public latest-analysis readback and
+GitHub main before/after both identify the merged source. This is timestamped
+source qualification, not a permanent latest-tip guarantee.
+
+Both prior #101 main attempts remain cancelled diagnostic records. The new
+main run is independent of the earlier five-condition PR gate and supplies no
+P06 implementation, deployment, enrollment, App grant or operational approval.
+Only the existing P06 plan/context is refreshed; its implementation row and all
+feature017 operational gates remain unchecked. Feature019 T013/T016 source-CI
+maintenance is complete against this main receipt. Feedback stays deferred and
+neither historical blocked write was replayed.
+
+
+## T013P06 isolated candidate and qualification start - 2026-11-22
+
+Brett commissioned implementation/testing of existing T013P06 using prepared
+plan `5dc47167444d`. The explicit composition reuses owning enrollment,
+InstallationIssuer/RoleDelivery, kernel credentials and InstallationRetirer.
+No shared primitive, default activation, wire profile, role or runtime cap changes.
+Selections, material bytes, pre-opened store identities, original Decision and
+accounting objects/highwaters are checked across callbacks and actual I/O.
+Provider route validation precedes selected fixture translation; every provider
+call is charged to private plus source/control/key, and the credential RPC is
+charged separately. Trusted local current readers must charge any actual I/O
+through existing clients. Host-root/platform administration remains a common TCB.
+
+The corrected standalone eligibility experiment passes all three App roles.
+Independent read-only audit retains issued enrollment and retired token state,
+34 reaped helper generations and original bounds. Its first missing JSON
+Content-Type fixture failure remains diagnostic. The first composition run
+passed 73 cases before exposing an unsanitized route-parser exception; the
+composition boundary was corrected. Replacement runs pass 102 and then all 110
+final cases. The separate collection attempt missing a writable capture temp
+root is also diagnostic; its corrected collection succeeds without changing
+product inputs. These attempts are not complete full/native qualification.
+
+Actual measured collection is 3,561 full parents and 3,139 native cases, adding
+110 P06 identities while preserving all 3,451/3,029 prior identities and their
+sorted identity order, all earlier counts/digests and matrix anchor prefixes.
+The existing task stays unchecked pending frozen complete gates/native and
+independent cleanup. Lost mint-response controls remain consumed and unknown;
+only known returned private capabilities can undergo verified retirement.
+Provider/admin facts are isolated doubles. Existing mandatory confinement and
+FD cancellation controls remain required alongside P06's actual mTLS and kernel
+worker controls. No isolated result establishes live issuer administration,
+assigned identity, real provider behavior or human/consumer acceptance.
+Publication, hosted CI, local Codex review and source ratification are later gates.
+Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.
+
+
+## T013P06 isolated qualification closeout - 2026-11-22
+
+Brett commissioned existing T013P06 from prepared plan `5dc47167444d`. Frozen
+runtime/test/matrix head is `ff6ccd7e8d07fc99afc346ba5a8a0c3b88b42e80`; all 417
+inputs were checked before and after execution and independent auditing. The
+source manifest SHA-256 is
+`1d10d170c12d10ba246a9d50e4eac46edc256231d2bb6227c572294f00a67107`.
+This closeout changes only the owning Markdown records and the existing P06
+checkbox; runtime, tests, matrix and accepted pins remain byte-identical.
+
+| Check | Verified result |
+| --- | --- |
+| Focused P06 | 110 passed |
+| Ordered source gates | Both pins, YAML, normal, strict, full and pinned OpenSpec: seven passed |
+| Full regression | 3,561 parents plus 11 subtests; 2,459.926 seconds; zero failures/errors/skips |
+| Mandatory native | 3,139 cases; 2,334.927 seconds; PASS; zero failures/errors/skips |
+| Matrix preservation | All prior 3,451/3,029 identities, counts/digests, sorted identity order and anchor prefixes preserved |
+| Guard countercontrols | Three baselines pass; each corresponding weakened isolated copy fails its intended assertion without fixture errors |
+
+The three real CSR/mTLS/kernel/RSA provider positives prove valid unused worker
+requests refuse before reservation/sign/mint and the same bytes then succeed
+through the approved actor. Broker, reader and source-reader retain exact
+permissions and fixed installation/repository/versioned-key selection. The
+complete sequence, including worker controls and actual verified retirement,
+fits original bounds at private12/source4/control2/key1: seven provider calls and
+one separately charged kernel credential RPC. The existing actual confinement,
+passive-reply and retained-traceback FD/EOF controls also pass in full/native.
+No shared primitive, role/profile/wire field, runtime limit or activation changes.
+
+Each independent post-container audit verifies all three P06 positive store pairs
+(issued enrollment, retired App), 110 P06 cleanup receipts, all five existing
+preservation cases and 223 unissued measurement nonce journals. Full/native
+process audit records total 20,032/20,039 respectively; these are records, not a
+claim of distinct processes. No attributable generations or initial teardown
+failures remain. Before deletion, both P05 nonce-purpose and both P06 store-purpose
+presence counterchecks refuse missing-state qualification while preserving the
+original journal hashes. The preservation-count countercheck likewise refuses
+deletion before touching any retained file. All five owned eligibility, focused,
+guard, full and native volumes are removed, and all owned containers are absent.
+Source and the four selected dependency heads, trees and status remain unchanged.
+The qualification harness and bounded evidence/logs are retained outside the product worktree.
+
+Lost mint-response controls remain consumed and unknown; they are not reported
+as verified token retirement. Known returned handles use existing private
+retirement and independent refusal readback. The isolated provider fixtures and
+all owned process namespaces are gone. No live provider/issuer administration,
+hardware rollback resistance or live human/consumer acceptance is established.
+
+Earlier fixture/route/auditor diagnostics are retained as diagnostics. Only
+T013P06 is closed in isolation. Publication, exact-head hosted CI, local Codex
+review and owner source ratification are later gates. P07-P09, T001/T013/T014/T015,
+operational appointments and codeXfactory consumer/human gates remain open.
+Setup/dispatch unauthorized; feedback deferred; historical blocked writes unreplayed.
+
+
+## P06 publication-review cleanup correction
+
+Local Codex review of PR #103 reproduced P06-R1 and P06-R2 at `3891066d06ac`.
+Three real isolated controls fail at the intended assertions without fixture
+errors: valid returned mint response lost at the post-return deadline, and known
+handle lookup blocked by closed credential channel or missing selected TLS key.
+These failures supersede the earlier source's cleanup claim for those scenarios.
+
+The existing owning issuer deliberately stores a token before its post-mint
+current-authority check. The composition now returns only the exact selected
+GitHub access-token mint response directly to that ordering. All before-send
+checks and charges, the issuer's mandatory current checks, and the enclosing
+actor guard remain in force; expired/changed authority still refuses delivery.
+Other provider operations keep their post-return checks. This adds no new send,
+retry, budget, role, destination, primitive or wire behavior.
+
+Private pending lookup now retains original issuer, ledger/path/identity, scope,
+role and Decision ownership. It validates the exact IssuedToken against that
+selection without reading an issuance-only socket, TLS material, clock or live
+storage. This grants cleanup access only; use remains non-renewing and the
+existing Retirement checks actual identity/state before provider effects.
+
+The corrected source passes all 127 P06 cases and the three original external
+reproductions. Seventeen appended identities cover both delivered/post-mint
+failure outcomes across all issuance dependencies, deadline/material loss after
+a valid returned response, five capability-ownership substitutions and actual
+caller reply-pair cancellation with retained traceback, unchanged FD set and EOF.
+All 110 original P06 IDs and every other existing ID/fingerprint/anchor prefix
+remain. Collection is 3,578 full parents plus the existing 11 subtests and 3,156
+native cases. Complete frozen qualification and independent cleanup are pending.
+Initial hosted run45079406606 was intentionally cancelled as superseded, not
+promoted to qualification. Hosted CI and local final-delta review require the
+corrected exact head. Setup/dispatch unauthorized; feedback deferred; blocked
+writes unreplayed. P07-P09 and live human/consumer/provider acceptance stay open.
+
+
+## P06 reviewed local qualification - 2026-11-22
+
+PR #103 initial head `3891066d06ac` is superseded by the bounded correction.
+P06-R1 (returned mint response lost before cleanup capture at a deadline) and
+P06-R2 (known cleanup handle tied to live issuance dependencies) were reproduced
+by three actual isolated controls with no fixture errors. Their corrected
+source is `051d4583ee4ada5ad3167a0abd740cc9ed1b6bc1`; every one of its 417 frozen
+inputs matched before/after complete qualification and independent auditing.
+Manifest SHA-256: `7af078acb37aca1526e2448f171c4498ba087eb6ac9abf744a302cad7190d697`.
+
+| Gate | Verified corrected-source result |
+| --- | --- |
+| Focused | 127 P06 cases plus all three original external reproductions pass |
+| Full | 3,578 parents plus 11 subtests; 2,694.149 seconds; zero failures/errors/skips |
+| Native | 3,156 cases; 2,515.456 seconds; PASS; zero failures/errors/skips |
+| Ordered gates | Both pins, YAML, plain, strict, full and pinned OpenSpec pass |
+| Local Codex panel | Nine source roles review initial scope plus correction delta; both P2s closed; no remaining actionable finding |
+| Guard controls | Five original baselines pass; all five weakened isolated copies fail intended call assertions without fixture errors |
+
+The 17 appended cases preserve all 110 originalP06 identities and every prior
+non-P06 fingerprint, count, identity and matrix anchor prefix. They prove both
+successful and post-mint-refused known handles survive channel/CA/certificate/key
+loss, valid returned mint tokens are retained before deadline/material postchecks,
+lookup rejects five ownership substitutions, and actual caller reply endpoints
+close with exception tracebacks held while FD/EOF assertions run. No primitive,
+profile, schema, role, limit, pin, target or activation change is introduced.
+
+Each full/native independent audit verifies three P06 positive store pairs,
+127 cleanup receipts, five existing preservation cases and 223 unissued
+measurement nonce journals. Full/native process records total 20,175/20,176;
+these are records, not distinct-process counts. Four missing-purpose presence
+counterchecks per run refuse qualification while original journal hashes remain
+unchanged. Wrong preservation counts refuse deletion before touching the 599
+retained file identities in each run. No initial teardown failures or attributable
+live generations remain. All five publication-phase owned volumes are removed;
+the initial five P06 volumes remain absent, as do all owned fixture containers.
+The source and four accepted dependency heads/trees/status are unchanged.
+
+The deliberately lost/unknown token outcomes stay consumed and indeterminate;
+known returned handles are independently retired. The provider/admin doubles
+and isolated namespaces are gone. No live administration, hardware rollback
+resistance or human/consumer acceptance is inferred. Full reports, countercontrols,
+source manifests and bounded readback are retained outside the product worktree.
+
+This local checkpoint closes only T013P06 in isolation. Final published-head
+hosted CI, Markdown-only delta review and owner source ratification remain open.
+Initial hosted run 45079406606 was intentionally cancelled as superseded. Its
+incomplete results are diagnostic. Source records and execution evidence do not
+constitute a hosted Codex connector review. Setup/dispatch unauthorized; feedback
+deferred; historical blocked writes unreplayed. P07-P09 and operational feature017
+T001/T013/T014/T015 remain open.
+
+
+## P06 final local qualification 2026-11-22
+
+Source `38af15b92d823a0469c11565176367e5daa66bad` preserves the product runtime
+from the previously reviewed correction and fixes the CI cleanup-test oracle.
+Run45086080069 at330a executed every full parent and subtest; its sole failure
+was the unowned process-wide FD-number snapshot, after both owned endpoints and
+EOF had passed. It was cancelled as superseded; neither that run nor its unexecuted
+native/Sonar analysis steps qualify this source. The new assertion captures both owned
+kernel socket identities and refuses any surviving alias. Only transient missing
+unrelated descriptor entries are tolerated; actual closure, EOF, sanitization and
+held traceback assertions remain mandatory.
+
+| Qualification | Exact corrected-source result |
+| --- | --- |
+| Frozen input manifest | 417 inputs; SHA-256 `a234d311a219de84104c7cef352207f6cd9fd1f08ff793054fe3221f8597eb2e` |
+| Focused | 127 canonical P06 cases plus six external ownership controls; 133 pass in 242.61 seconds |
+| Full | 3,578 parent cases plus 11 subtests; 3432.933 seconds; zero failures/errors/skips |
+| Native | 3,156 cases; 3233.405 seconds; zero failures/errors/skips |
+| Ordered gates | Both pins, YAML, plain, strict, full and pinned OpenSpec pass |
+| Local Codex review | Nine roles clear the exact correction bytes; no remaining actionable finding |
+
+The six external controls exercise unrelated real descriptor closure and retained
+reader/writer aliases for both cancellation outcomes. Unrelated closure passes;
+retained reader aliases fail the owned-identity assertion, and retained writer
+aliases prevent EOF. The controls close their deliberate aliases in `finally`.
+Their independent audit verifies 133 cleanup receipts, three correct positive
+store pairs, 408 generation records and no live owned generation, then removes
+that dedicated volume. No runtime, identity, matrix, pin, workflow or limit changes.
+
+Fresh full/native audits each verify all 127 P06 cleanup receipts, three positive
+role store pairs, five existing preservation cases, 223 unissued measurement nonce
+journals and four missing-purpose counterchecks. Full/native process record counts
+are 20,209/20,201; these are records, not distinct process counts. The incorrect
+preservation-count control refuses deletion before touching retained identities.
+Known returned handles are retired; unknown outcomes remain consumed/indeterminate.
+Both producer namespaces, owned scratch roots and volumes are removed. All thirteen
+P06 volumes across the initial and review phases are now absent, as are all owned
+fixture containers. All four dependency heads, trees and statuses are preserved.
+
+This closes only isolated T013P06. The final closeout changes owning Markdown
+records only; final published-head hosted CI, final document review and owner
+source ratification remain separate. It is local Codex review, with no hosted
+connector receipt claimed. Setup/dispatch unauthorized; feedback deferred;
+historical blocked writes unreplayed. P07-P09, operational feature017 gates and
+live human/provider/consumer acceptance remain open.
+
+
+## P06 Sonar correction qualification
+
+Source `475efdfceff5e02d0408a6f7fb8d4b072c9bf2a6` corrects the fixture validation
+and assertion diagnostics identified by Sonar at published6845. Run45097854796
+passed all four source jobs and exact full/native identities; its complete
+coverage artifacts independently verify every one of 102 production Python
+files and the genuine3577+1 partition. The server evaluated all six unchanged
+conditions: reliability4 failed from one caught fixture assertion; coverage96.5%,
+duplication0%, security/maintainability1 and reviewed hotspots100% passed.
+That source remains diagnostic history; it is not a passed final qualification.
+
+The fixture now rejects invalid Content-Length using explicit ValueError before
+body read/actor entry. All45 composite assertions are split without changing
+left-to-right evaluation, side effects, readiness-before-read or guarded indexing.
+An independent AST proof finds all original functions unchanged after that split,
+except the explicit fixture guard and the before-allocation injected-failure
+control. The latter observes its one selected failure instead of a process-wide
+FD-number snapshot; actual allocated-pair closure, EOF, held traceback and owned
+socket-identity assertions remain required.
+
+| Gate | Corrected-source result |
+| --- | --- |
+| Frozen manifest | 417 inputs; SHA-256 `50422a6223df6bd9aee56af2992fec7d2ee74f8a60ef1124ad7216d4aa393edf` |
+| Focused | 130 canonical cases plus six descriptor and three invalid-HTTP controls; 139 pass in275.353 seconds |
+| Full | 3,581 parents plus11subtests; 2400.595 seconds; failures/errors/skips0 |
+| Native | 3,159 cases; 2255.673 seconds; failures/errors/skips0 |
+| Ordered gates | Both pins, YAML, plain, strict, full and pinned OpenSpec pass |
+| Local Codex review | Nine roles clear exact source correction bytes; no remaining actionable finding |
+
+Only three parameterized identities are appended. All earlier full/native IDs and
+relative order, every non-P06 module count/digest and every CASES anchor prefix are
+preserved. P06 has130 identities, SHA-256
+`f2ee678b278bbdc44e0bb2430d85d37cc70be3c01b55d93bbe1e27054ae6abd1`;
+only the H11 prefix for those three controls is appended.
+
+The focused independent audit verifies139 cleanup receipts,411 generation records,
+three positive store pairs, six descriptor controls with the intended failure
+traceback line and three valid-mTLS invalid-length refusals without actor entry.
+All deliberate aliases close in finally. Fresh full/native audits each verify
+130 P06 cleanup receipts, three positive role store pairs, five preservation cases,
+223 unissued measurement journals and four missing-purpose refusal counterchecks.
+Process record counts are20,173/20,177; these are records, not distinct processes.
+The wrong preservation count refuses deletion before touching retained identities.
+Known returned handles retire; unknown outcomes stay consumed/indeterminate. No
+initial teardown failure or live owned generation remains. Both new volumes and
+producer namespaces are absent, and all sixteen owned P06 volumes across earlier
+phases remain absent. All four dependency heads, trees and statuses are unchanged.
+
+Only isolated T013P06 closes. Final published-head CI, document review and source
+ratification remain separate; no hosted Codex connector receipt is claimed.
+Setup/dispatch unauthorized; feedback deferred; historical blocked writes
+unreplayed. P07-P09 and operational/human/provider/consumer gates remain open.
+
+## P06 private error boundary disposition
+
+Sonar S5754 recommends propagating SystemExit in general application exception
+handling. This source-selected private wire boundary must instead prevent raw
+credential-bearing termination payloads from escaping. SystemExit, GeneratorExit
+and custom direct BaseException subclasses can all carry such arguments.
+Narrowing the catch or reraising the original object would violate that boundary.
+KeyboardInterrupt remains a fresh sanitized cancellation; Unavailable retains its
+bounded classification; other failures become a fresh BindingError(ERROR), raised
+outside the handler so the original cause/context is absent. Product code is
+unchanged from the previously reviewed correction and follows the accepted R04
+privacy boundary.
+
+The three new controls exercise valid real mTLS enrollment with an independently
+selected current reader raising each termination type. They retain the resulting
+error and require exact fixed BindingError args, absent cause/context, no canary
+in wire/representation/serialized error, exactly one reader call, empty enrollment
+and issuance ledgers and no provider or credential-resolver effect. These are
+substantive pre-effect refusals, not an invalid-input substitute.
+
+The local security, static, contract and reliability review accepts retaining this
+behavior. S5754 is an intentional reviewed advisory; no suppression, issue-status
+mutation or quality-gate change is made, and no claim of zero unresolved Sonar
+advisories is implied. Fresh analysis must report its actual state. This does not
+supply owner source ratification or any operational/live grant.
