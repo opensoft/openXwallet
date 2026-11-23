@@ -12,7 +12,8 @@ for ratification. The [original eligibility failure](p3-retirement-eligibility.m
 and [P07 plan](p3-retirement-plan.md) remain historical evidence and the reason
 for this governed correction. No failing full positive is relabeled successful.
 
-Factory owns `bound-infrastructure-retirement-accounting`, including its exact
+[Factory PR #1365](https://github.com/opensoft/openXfactory/pull/1365) owns
+`bound-infrastructure-retirement-accounting`, including its exact
 policy, complete machine inventory, non-product deriver and acceptance scenarios.
 This feature owns only the paired source handoff now; no product/test/matrix/
 profile/workflow/pin/dependency byte changes. The source selections below are
@@ -44,7 +45,8 @@ The trace is a source schedule, not measured new runtime behavior.
 Original registration transactions <=30seconds; one original cleanup <=300seconds;
 one independently authorized observation <=60seconds; calls <=10seconds and
 original remaining time. Actual approval/original absolute cleanup expiry always
-clips these maxima. Current fences can shorten individual sends but never extend
+clips these maxima. Current writer fences apply before destructive sends; read-only polls retain
+original read/operation scope. Fences can shorten those sends but never extend
 the original cleanup clock. Existing10second proof/readback Decision,
 private12/ARM24 and all old phases remain byte-identical.
 
