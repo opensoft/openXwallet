@@ -1,5 +1,18 @@
 # T013P06 enrollment and issuance subplan
 
+## P06 hosted assertion correction - 2026-11-22 America/La_Paz
+
+PR #103 head `330a295bbe84` is superseded for qualification. Hosted run
+45086080069 completed all 3,578 full parents and 11 subtests, with one new
+cleanup-oracle failure: both owned endpoints closed and EOF passed, but an
+unrelated descriptor disappeared from the process-wide FD-number snapshot.
+The test now checks the two owned kernel socket identities, including aliases,
+while tolerating disappearing unrelated entries. Product/runtime, test identities,
+matrix, pins, limits and workflows are unchanged. T013P06 is reopened pending
+focused ownership controls, fresh full/native qualification, independent cleanup,
+local review and replacement exact-head hosted CI. Earlier receipts are historical.
+Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.
+
 Status: the PR #103 review correction is implemented, reviewed and qualified in
 isolation at runtime/test/matrix source `051d4583ee4ada5ad3167a0abd740cc9ed1b6bc1`.
 All 127 P06 cases, 3,578 full parents plus 11 subtests, 3,156 native cases and seven

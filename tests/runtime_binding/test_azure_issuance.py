@@ -514,9 +514,11 @@ def test_private_cleanup_lookup_keeps_original_capability_ownership(composed,fie
 def test_caller_reply_pair_closes_with_traceback_held_before_gc(composed,monkeypatch,cancel):
     c=composed;canary='PRIVATE-PAIR-CANCELLATION';pairs=[];raised=[];caught=None
     original_pair=composition.socket.socketpair;original_remaining=Decision.remaining
-    baseline=set(os.listdir('/proc/self/fd'))
+    owned=set()
     def pair(*args,**kwargs):
-        reader,writer=original_pair(*args,**kwargs);observer=reader.dup();pairs.append((reader,writer,observer));return reader,writer
+        reader,writer=original_pair(*args,**kwargs)
+        owned.update(os.readlink('/proc/self/fd/'+str(x.fileno())) for x in (reader,writer))
+        observer=reader.dup();pairs.append((reader,writer,observer));return reader,writer
     def remaining(decision):
         if decision is c.decision and pairs and not raised:
             raised.append(True)
@@ -534,4 +536,10 @@ def test_caller_reply_pair_closes_with_traceback_held_before_gc(composed,monkeyp
         observer.settimeout(.2);assert observer.recv(16)==b''
     finally:
         for reader,writer,observer in pairs:reader.close();writer.close();observer.close()
-    assert caught.__traceback__ is not None and set(os.listdir('/proc/self/fd'))==baseline
+    # Other fixture threads may close unrelated descriptors during this call.
+    # Inspect the two owned kernel socket identities, including any leaked alias.
+    live=[]
+    for name in os.listdir('/proc/self/fd'):
+        try:live.append(os.readlink('/proc/self/fd/'+name))
+        except FileNotFoundError:pass
+    assert caught.__traceback__ is not None and len(owned)==2 and owned.isdisjoint(live)
