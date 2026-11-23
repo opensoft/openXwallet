@@ -1,3 +1,19 @@
+## Current P07 eligibility fallback - 2026-11-23 America/La_Paz
+
+Brett commissioned isolated T013P07 at `33b2502818fb`, starting with both
+eligibility gates. [The checkpoint](specs/017-protected-runtime-qualification/p3-retirement-eligibility.md)
+records correct setup-expiry refusal and measured original private-budget
+exhaustion before the second resource completes; namespace I/O is also unmetered.
+Follow [the proposed accounting subplan](specs/017-protected-runtime-qualification/p3-retirement-accounting-plan.md).
+The accepted P07 guard requires a governed factory/adapter source decision before
+dependent code. No replacement cap/phase/timer is selected or ratified. Product/
+test/matrix bytes and checkbox states remain unchanged; T013P07 stays incomplete.
+The six passing diagnostic controls and offline documentation gates are not full
+P07 qualification. Owned diagnostic stores were audited, archived and removed
+from working roots without further provider sends. No setup/dispatch, P08/P09,
+feedback or replay of blocked writes is authorized. Earlier checkpoints below
+retain their historical scope.
+
 ## P06 source accepted; P07 preparation only - 2026-11-23 America/La_Paz
 
 Brett source-ratified openXwallet #103 at
