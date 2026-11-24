@@ -1380,14 +1380,26 @@ def test_actual_same_deployment_run_registration_and_receipt(tmp_path):
 
 def test_real_setup_expiry_does_not_renew_creation_but_external_cleanup_works(tmp_path):
     pilot = Pilot(tmp_path, setup_seconds=15)
-    pilot.register()
+    legacy = pilot.provider(PROVISIONER_WRITER)
+    resource = pilot.reserved.value["resources"][0]
+    policy = legacy._policy(resource["resource_path"])
+    attempt = resource["create_attempt_ref"]
     end = pilot.reserved.value["window"]["not_after"]
+    healthy = legacy._request("PUT", policy, attempt, pilot.decision())
+    assert healthy.path == resource["resource_path"]
+    assert healthy.expires_at <= end
+    pilot.register()
     while int(time.time()) < end:
         time.sleep(.02)
     count = len(pilot.port.sends("PUT"))
-    generation = next(iter(pilot.generations.values()))
+    expired = pilot.decision()
+    # Exercise the production setup-window guard directly: handoff fencing or
+    # an already-admitted namespace state must not satisfy the expiry assertion.
     with pytest.raises(BindingError):
-        pilot.provider(PROVISIONER_WRITER).retire(generation, attempt_ref="retirement:expired-setup", decision=pilot.decision())
+        legacy._request("PUT", policy, attempt, expired)
+    creation = pilot.decision()
+    with pytest.raises(BindingError):
+        legacy.create(resource["resource_path"], decision=creation)
     assert len(pilot.port.sends("PUT")) == count
     assert pilot.port.sends("DELETE") == []
     pilot.cleanup()
@@ -1489,8 +1501,9 @@ def test_read_only_observer_and_worker_are_denied_real_write_methods(tmp_path):
         b"", (), pilot.reserved.digest, resource["resource_path"], resource["kind"], "retirement:forbidden", pilot.clock(), pilot.clock() + 10)
     for principal in ("reader:independent-observer", "worker:runtime", PROVISIONER_WRITER):
         client = PilotProviderClient(pilot, principal, pilot.keys[principal])
+        decision = pilot.decision()
         with pytest.raises(PermissionError):
-            client.exchange(request, decision=pilot.decision(), timeout=1, before_send=lambda:None)
+            client.exchange(request, decision=decision, timeout=1, before_send=lambda:None)
         healthy = replace(request, method="GET", attempt_ref="observe:healthy")
         assert client.exchange(healthy, decision=pilot.decision(), timeout=1, before_send=lambda:None).status == 404
     assert pilot.port.sends("DELETE") == []
