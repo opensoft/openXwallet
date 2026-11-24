@@ -4778,8 +4778,8 @@ ordered local gates, nine-role local Codex review and independent retained-state
 audits. The OpenSpec offline-cache/no-exec diagnostics remain distinct from the
 successful unchanged-source replacement gate and aggregate qualification.
 
-The retained evidence packet is
-/workspace/projects/.factory-binding-qa/runtime-next-20261112T171205Z/p3-retirement-implementation-20261123/.
+The retained operator-selected QA evidence packet is
+`p3-retirement-implementation-20261123`.
 Its qualification-r1 retains the425-input freeze,421dependency Git-blob proof,
 actualJUnit/ordered/aggregate receipts, both original namespace exits, three
 full-graph P07 positives and24countercontrols per audit, original P05/P06 nonce/
@@ -4796,3 +4796,22 @@ remain unchanged; T013P07 awaits hosted qualification. No runtime PR, hosted
 connector review, scanner result, source acceptance or operational grant is
 inferred. P08/P09 and live roles/provider/custody/human/consumer gates remain open.
 Setup/dispatch unauthorized; feedback deferred; historical blocked writes unreplayed.
+
+
+## 2026-11-23 T013P07 candidate publication
+
+Brett commissions the candidate PR, hosted source CI, local Codex expert review,
+resolution of findings and presentation for source-only ratification. Initial
+local documentation head is6a2e07ffbdca90b4250f5571bf0c9916f59a41ee, with
+qualified runtime a78196b2344f94df2d6794b6891aea0350320460 and accepted parent
+bfdfba05aad1e3b673bc0a3513297eb749a2cc1e. New source-specific reports reside in
+operator-selected evidence packet `p3-retirement-publication-20261123`.
+Host-specific paths in the new qualification documentation are replaced by these
+portable packet identifiers; product/test/matrix bytes are preserved.
+
+This commission supplies no merge/source ratification, P08/P09 implementation,
+setup/dispatch, role appointment or live human/provider/custody/consumer grant.
+T013P07 remains unchecked through candidate review. GitHub Codex connector
+review is deferred under the explicit local-review instruction; local expert
+review and actual hosted checks must be reported separately. Feedback deferred;
+historical blocked writes unreplayed.

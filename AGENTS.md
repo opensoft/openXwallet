@@ -1,3 +1,16 @@
+## T013P07 candidate publication commission - 2026-11-23
+
+Brett commissions the P07 candidate PR, hosted source CI, local Codex expert
+review, finding resolution and presentation of the exact head for source-only
+ratification. The existing feature017 T013P07 row remains the sole task.
+The earlier qualified runtime is a78196b2344f94df2d6794b6891aea0350320460;
+publication work must preserve its evidence provenance and renew qualification
+for substantive corrections. T013P07 stays unchecked through candidate review.
+No merge, source acceptance, P08/P09 or operational/live authority is inferred.
+Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.
+GitHub connector review remains deferred under the explicit local-review choice.
+Earlier dated checkpoints below retain their historical scope.
+
 ## P07 isolated runtime qualified locally - 2026-11-23
 
 Both accepted source merges have successful independent main CI. The

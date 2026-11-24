@@ -1,6 +1,6 @@
 # T013P07 isolated retirement implementation
 
-Status: isolated runtime locally qualified; hosted qualification/publication and source ratification remain open.
+Status: isolated runtime locally qualified; candidate publication and hosted/local review commissioned; source ratification remains open.
 Date: 2026-11-23, America/La_Paz
 Sole implementation row: [T013P07](tasks.md); no new task list.
 
@@ -154,10 +154,12 @@ watchdog survival, live custody, human approval or a cleanup SLA.
 Only existing T013P07 is commissioned. P08/P09, service/role appointments,
 operational accepted commits/windows and live human/consumer acceptance remain
 separate. Setup and dispatch are unauthorized. Feedback is deferred. Historical
-blocked writes remain unreplayed. No new runtime PR or merge is inferred.
+blocked writes remain unreplayed. Candidate publication, hosted source CI, local expert review and finding resolution
+are commissioned. No merge or source acceptance is inferred.
 
-Run artifacts remain in the owned
-`p3-retirement-implementation-20261123` evidence packet under
-`/workspace/projects/.factory-binding-qa/runtime-next-20261112T171205Z/`.
+Run artifacts remain in the operator-selected QA evidence store, packet
+`p3-retirement-implementation-20261123`. The new candidate review packet is
+`p3-retirement-publication-20261123`; these identifiers are portable and do not
+select a host-specific filesystem path.
 Final source/run manifests and independent cleanup receipts must distinguish
 diagnostics, exact-source qualification and later publication.
