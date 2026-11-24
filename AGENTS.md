@@ -1,3 +1,77 @@
+## P07 publication correction candidate - 2026-11-24
+
+PR #105 commissions source review and qualification only. The R11 correction
+returns fresh fixed refusals outside private parsing handlers. The original
+checkpoint spans later registration construction; failure burns its original
+allocation. Production profiles, pins, runtime limits and defaults are unchanged.
+Actual collection is3,731full/3,309native, including150P07 cases; prior identities,
+fingerprints and anchor prefixes remain. Earlier passes are historical; final
+exact-head qualification and local review evidence belong to
+[PR #105](https://github.com/opensoft/openXwallet/pull/105).
+Eight delegated review roles returned; one service-blocked reliability turn
+remains unverified and is not retried or routed elsewhere. T013P07 stays unchecked
+through candidate review. Source acceptance/merge and P08/P09 remain ungranted.
+Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.
+Earlier dated records below retain their exact historical scope.
+
+## T013P07 candidate publication commission - 2026-11-23
+
+Brett commissions the P07 candidate PR, hosted source CI, local Codex expert
+review, finding resolution and presentation of the exact head for source-only
+ratification. The existing feature017 T013P07 row remains the sole task.
+The earlier qualified runtime is a78196b2344f94df2d6794b6891aea0350320460;
+publication work must preserve its evidence provenance and renew qualification
+for substantive corrections. T013P07 stays unchecked through candidate review.
+No merge, source acceptance, P08/P09 or operational/live authority is inferred.
+Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.
+GitHub connector review remains deferred under the explicit local-review choice.
+Earlier dated checkpoints below retain their historical scope.
+
+## P07 isolated runtime qualified locally - 2026-11-23
+
+Both accepted source merges have successful independent main CI. The
+[implementation record](specs/017-protected-runtime-qualification/p3-retirement-implementation.md) describes the internal
+reconciler, separate observer, fixed accounting and substantive source fixtures.
+Exact source a78196b2344f94df2d6794b6891aea0350320460 passes 3,707 full parents
+plus 11 subtests, all 3,285 native cases and seven ordered local gates, with zero
+failures/errors/skips. The 126 additions preserve all prior identities/order.
+Nine local Codex expert roles clear applicable corrections. Independent audits
+verify retained state before disposing of their audited roots. Both producer and
+audit namespaces, both labelled volumes and all19 owned focused roots are absent.
+The final closeout changes owning Markdown only.
+
+T013P07 remains unchecked pending hosted qualification; runtime publication and
+owner source acceptance remain separate. P08/P09 and operational/human/consumer
+acceptance stay outside this commission. Setup/dispatch unauthorized; feedback
+deferred; historical blocked writes unreplayed.
+
+## Source-accepted accounting and isolated P07 continuation - 2026-11-23
+
+Brett Heap ratified factory #1365 at `89dbe6e6640361c36321968725932058aa802e2b`
+with adapter #104 at `ea7a46206413ba5392734fa67def7dcef6861835` for source
+acceptance only, directed ordered landing when green, then resumed T013P07 in
+isolation. Factory landed first as `587841747ffbbff0d91facee34ac22e76ec632e2`;
+adapter landed second as `bfdfba05aad1e3b673bc0a3513297eb749a2cc1e`, with the
+identical adapter ratified tree. Independent post-merge CI is tracked separately.
+
+The exact accepted intrinsic policy is
+`openxfactory-infrastructure-retirement-accounting-internal-v1`, commitment
+`sha256:21b62c2621f3d98e5358c1ba4c5b0345a0237d10cfa52e59bea122487688979e`.
+The normative factory policy requires exclusive durable handoff, refusal on
+ambiguity, per-pool original ownership with a separate observer, exact cleanup
+claim/anchor ownership and allocation binding, serialized admission/debits and
+read-only original-slot resolution. The new intrinsic cleanup/observation paths
+preserve ordinary ReadBudget and setup clipping. Fixed graph, caps and clocks
+cannot be raised or facts omitted to force a pass.
+
+Only existing T013P07 is commissioned. Its two eligibility gates now consume
+this accepted source decision; the historical unchanged-budget failure stays
+historical. Record and qualify the actual full selected graph, physical nested
+calls, real clocks, crash/identity/privacy/one-send controls and independent
+cleanup. T013P07 remains unchecked until its required qualification is complete.
+P08/P09, setup/dispatch, service/role appointments, live/human/consumer acceptance
+remain separate. Feedback deferred; historical blocked writes unreplayed.
+
 ## P07 bounded accounting amendment candidate - 2026-11-23 America/La_Paz
 
 Brett commissioned the complete pilot inventory, bounded source amendment, paired

@@ -204,15 +204,21 @@ def _locator(url, *, path, kind):
     return url
 
 
-def _succeeded(reply, url):
+def _operation_status(reply, url):
     check(reply.status == 200 and reply.locator is None)
     status = _object(reply.body)
     check(set(status) <= {"status", "name", "id", "startTime", "endTime", "percentComplete", "properties", "error"})
-    check(status.get("status") == "Succeeded" and status.get("error") is None)
     if "name" in status:
         check(status["name"] == urlsplit(url).path.split("/")[-1])
     if "id" in status:
         check(status["id"] == urlsplit(url).path)
+
+    return status
+
+
+def _succeeded(reply, url):
+    status = _operation_status(reply, url)
+    check(status.get("status") == "Succeeded" and status.get("error") is None)
 
 
 class Provider:
@@ -262,6 +268,10 @@ class Provider:
             check(len(data_paths) <= 2 and len(set(data_paths)) == len(data_paths))
         except Exception:
             raise BindingError(ERROR) from None
+
+    def cleanup_view(self, context):
+        """Additive cleanup/read-only view; no ordinary constructor selects it."""
+        return _RetirementProvider(self, context)
 
     def _claims(self, path):
         policy = self._policy(path)
@@ -471,7 +481,7 @@ class Provider:
         except Exception:
             raise BindingError(ERROR) from None
 
-    def _generation(self, generation, decision):
+    def _generation_history(self, generation, decision):
         check(type(generation) is Generation)
         original = self._receipt(generation.creation_receipt, decision, active=False)
         policy = self._policy(original.request.path)
@@ -501,6 +511,9 @@ class Provider:
         check(recorded.request.url == ARM + generation.path + _API_VERSION_QUERY + VERSIONS[self._policy(generation.path).kind])
         check(_model(recorded.reply, self._policy(generation.path)) == generation.identity)
         check(recorded.reply.identity_ref == generation.identity_ref)
+
+    def _generation(self, generation, decision):
+        self._generation_history(generation, decision)
         current = self._namespace.read(self._reserved, generation.path, decision=decision).value
         check(current["creation"] == {"incarnation_ref": generation.identity_ref,
               "create_operation_ref": generation.creation_receipt,
@@ -550,6 +563,231 @@ class Provider:
             check(observed.status == 404)
             self._namespace.transition(self._reserved, operation.path, state="absent-tombstoned",
                 observation_ref=observed.receipt_ref, decision=decision)
+            return observed.receipt_ref
+        except Exception:
+            raise BindingError(ERROR) from None
+
+
+
+class _RetirementProvider(Provider):
+    def __init__(self, original, context):
+        from .retirement import _Context
+        check(type(original) is Provider and type(context) is _Context)
+        context.check(original._reserved)
+        self.__dict__ = dict(original.__dict__)
+        self._context = context
+        self._namespace = original._namespace.cleanup_view(context)
+        self._caches = weakref.WeakKeyDictionary()
+        self._cache_lock = threading.RLock()
+        self._fence_end = None
+
+    def create(self, *args, **kwargs):
+        raise BindingError(ERROR) from None
+
+    def admit(self, *args, **kwargs):
+        raise BindingError(ERROR) from None
+
+    def _call(self, group, function, decision, *args, **kwargs):
+        check(decision is self._context)
+        return self._context.invoke(group, function, *args, **kwargs)
+
+    def _request(self, method, policy, attempt, decision, *, url=None):
+        check(decision is self._context and method in ("GET", "DELETE"))
+        self._context.check(self._reserved, write=method == "DELETE")
+        ref(attempt)
+        now = decision.now()
+        return Request(method, url or ARM + policy.path + _API_VERSION_QUERY + VERSIONS[policy.kind],
+                       b"", (), self._reserved.digest, policy.path, policy.kind,
+                       attempt, now, decision.deadline)
+
+    def _fence(self, path, decision, *, retiring=False):
+        self._context.check(self._reserved, write=True)
+        value = self._call("private", self._fencing.read, decision, path)
+        check(type(value) is Fence)
+        before = self._reserved.value
+        check((value.reservation_digest, value.generation_ref, value.resource_path, value.writer_ref)
+              == (self._reserved.digest, before["namespace_generation_ref"], path, self._writer))
+        check(value.ordinary_writers == (self._writer,) and value.outstanding_operations == ())
+        check(value.admission_ref == self._admission)
+        check(type(value.observed_at) is int and type(value.expires_at) is int
+              and value.observed_at <= decision.now() < value.expires_at <= value.observed_at + 60)
+        self._fence_end = value.expires_at
+
+    def _exchange(self, request, decision, guard=lambda: None):
+        mutating = request.method == "DELETE"
+        self._context.check(self._reserved, write=mutating)
+        guard()
+        end = decision.deadline
+        if mutating:
+            check(self._fence_end is not None)
+            end = min(end, self._fence_end)
+        request = replace(request, expires_at=min(request.expires_at, end))
+
+        def before_send():
+            guard()
+            self._context.check(self._reserved, write=mutating)
+            check(decision.now() < request.expires_at <= decision.deadline)
+            if mutating:
+                check(request.expires_at <= self._fence_end)
+
+        reply = self._call("arm", self._port.exchange, decision, request, before_send=before_send)
+        check(type(reply) is Reply and type(reply.status) is int)
+        check(type(reply.body) is bytes and len(reply.body) <= 1048576)
+        check(self._receipt(reply.receipt_ref, decision) == Receipt(request, reply))
+        return reply
+
+    def prefetch_receipts(self, references, *, decision):
+        """One bounded authenticated immutable batch, with no hidden pagination.
+
+        The selected port returns all requested original records in one physical
+        bounded backend query. Current resource/fence observations are never cached.
+        Complete response bytes and both facade/backend calls use this context.
+        """
+        check(decision is self._context and type(references) is tuple
+              and 0 < len(references) <= 64 and len(set(references)) == len(references))
+        for reference in references:
+            ref(reference)
+        with self._cache_lock:
+            cache = self._caches.setdefault(decision, {})
+            missing = tuple(value for value in references if value not in cache)
+        if not missing:
+            return
+        values = self._call("private", self._receipts.read_many, decision, missing)
+        check(type(values) is tuple and len(values) == len(missing))
+        for reference, value in zip(missing, values):
+            check(type(value) is Receipt and type(value.reply) is Reply
+                  and value.reply.receipt_ref == reference)
+        # Authentication belongs to this selected port, not the tuple labels.
+        # Each caller still runs all original per-record scope/model validation.
+        with self._cache_lock:
+            for reference, value in zip(missing, values):
+                check(reference not in cache or cache[reference] == value)
+            cache.update(zip(missing, values))
+
+    def _receipt(self, reference, decision, *, active=True):
+        ref(reference)
+        with self._cache_lock:
+            cache = self._caches.setdefault(decision, {})
+            value = cache.get(reference)
+        if value is None:
+            value = self._call("private", self._receipts.read, decision, reference)
+        check(type(value) is Receipt and type(value.request) is Request and type(value.reply) is Reply)
+        request = value.request
+        check(value.reply.receipt_ref == reference and request.reservation_digest == self._reserved.digest)
+        policy = self._policy(request.path)
+        check(request.kind == policy.kind and request.method in ("GET", "PUT", "DELETE"))
+        ref(request.attempt_ref)
+        check(request.body == (policy.create_body if request.method == "PUT" else b""))
+        check(request.headers == ((("If-None-Match", "*"),)
+              if request.method == "PUT" and policy.kind == "vm" else ()))
+        check(request.claims == (self._claims(request.path) if request.method == "PUT" else ()))
+        expected_url = ARM + request.path + _API_VERSION_QUERY + VERSIONS[policy.kind]
+        if request.method == "GET" and request.url != expected_url:
+            _locator(request.url, path=request.path, kind=policy.kind)
+        else:
+            check(request.url == expected_url)
+        check(type(request.not_before) is int and type(request.expires_at) is int
+              and request.not_before < request.expires_at and request.not_before <= decision.now())
+        window = self._reserved.value["window"]
+        if request.method == "PUT":
+            check(window["not_before"] <= request.not_before < request.expires_at <= window["not_after"])
+        else:
+            check((window["not_before"] <= request.not_before < request.expires_at <= window["not_after"])
+                  or (self._context.cleanup_start <= request.not_before
+                      < request.expires_at <= self._context.cleanup_end)
+                  or (request.method == "GET" and self._context.grant.not_before <= request.not_before
+                      < request.expires_at <= self._context.grant.not_after))
+        with self._cache_lock:
+            check(reference not in cache or cache[reference] == value)
+            cache[reference] = value
+        return value
+
+    def _terminal(self, operation, method, decision):
+        from .retirement import _OperationPending
+        check(type(operation) is Operation)
+        original = self._receipt(operation.receipt_ref, decision, active=False)
+        request, reply = original.request, original.reply
+        check(request.method == method and request.path == operation.path)
+        policy = self._policy(operation.path)
+        check(reply.status in ((200, 201, 202) if method == "PUT" else (200, 202, 204)))
+        if reply.locator is None:
+            check(reply.status in ((200, 201) if method == "PUT" else (200, 204)))
+            if method == "PUT":
+                check(_object(reply.body)["properties"].get("provisioningState") == "Succeeded")
+            return request, reply, reply.receipt_ref
+        url = _locator(reply.locator, path=operation.path, kind=policy.kind)
+        for _ in range(3):
+            self._context.poll(operation.receipt_ref, method)
+            poll = self._exchange(self._request("GET", policy, request.attempt_ref,
+                                               decision, url=url), decision)
+            status = _operation_status(poll, url)
+            if status.get("status") in ("InProgress", "Running", "Accepted"):
+                continue
+            _succeeded(poll, url)
+            return request, reply, poll.receipt_ref
+        raise _OperationPending()
+
+    def recover_generation(self, generation, *, decision):
+        self._context.check(self._reserved, write=True)
+        self._generation_history(generation, decision)
+        current = self._namespace.read(self._reserved, generation.path, decision=decision).value
+        check(current["state"] in ("create-consumed", "pending", "quarantined")
+              and "creation" not in current and "retirement_attempt_ref" not in current)
+        self._namespace.transition(self._reserved, generation.path, state="admitted",
+                observation_ref=generation.readback_receipt,
+                creation={"incarnation_ref": generation.identity_ref,
+                          "create_operation_ref": generation.creation_receipt,
+                          "creation_readback_ref": generation.readback_receipt}, decision=decision)
+        return generation
+
+    def recorded_terminal_state(self, operation, terminal_ref, *, method, decision):
+        check(type(operation) is Operation)
+        original = self._receipt(operation.receipt_ref, decision, active=False)
+        check(original.request.method == method and original.request.path == operation.path)
+        reply = original.reply
+        check(reply.status in ((200, 201, 202) if method == "PUT" else (200, 202, 204)))
+        if reply.locator is None:
+            check(terminal_ref == reply.receipt_ref)
+            check(reply.status in ((200, 201) if method == "PUT" else (200, 204)))
+            if method == "PUT":
+                check(_object(reply.body)["properties"].get("provisioningState") == "Succeeded")
+        else:
+            url = _locator(reply.locator, path=operation.path, kind=original.request.kind)
+            terminal = self._receipt(terminal_ref, decision, active=False)
+            check(terminal.request.method == "GET" and terminal.request.url == url
+                  and terminal.request.path == operation.path
+                  and terminal.request.attempt_ref == original.request.attempt_ref
+                  and terminal.request.not_before >= original.request.not_before)
+            status = _operation_status(terminal.reply, url)
+            state = status.get("status")
+            check(state in ("Succeeded", "Failed", "Canceled", "InProgress", "Running", "Accepted"))
+            if state == "Succeeded":
+                check(status.get("error") is None)
+            return state
+        return "Succeeded"
+
+    def recorded_terminal(self, operation, terminal_ref, *, method, decision):
+        check(self.recorded_terminal_state(operation, terminal_ref,
+                                          method=method, decision=decision) == "Succeeded")
+        return self._receipt(operation.receipt_ref, decision, active=False)
+
+    def retire(self, generation, *, attempt_ref, decision):
+        self._context.check(self._reserved, write=True)
+        return super().retire(generation, attempt_ref=attempt_ref, decision=decision)
+
+    def deletion_complete(self, operation, generation, *, decision):
+        try:
+            self._context.check(self._reserved, write=True)
+            request, _, _ = self._terminal(operation, "DELETE", decision)
+            check(operation.path == generation.path)
+            current = self._generation(generation, decision)
+            check(current["state"] in ("retiring", "quarantined")
+                  and current["retirement_attempt_ref"] == request.attempt_ref)
+            policy = self._policy(operation.path)
+            observed = self._exchange(self._request("GET", policy, request.attempt_ref, decision), decision)
+            check(observed.status == 404)
+            self._namespace.transition(self._reserved, operation.path, state="absent-tombstoned",
+                                      observation_ref=observed.receipt_ref, decision=decision)
             return observed.receipt_ref
         except Exception:
             raise BindingError(ERROR) from None

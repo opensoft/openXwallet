@@ -58,6 +58,10 @@ class Namespace:
             "resource_keys": list(keys),
         }
 
+    def cleanup_view(self, context):
+        """Source-selected P07 view; ordinary setup methods retain their clipping."""
+        return _RetirementNamespace(self, context)
+
     def _call(self, operation, decision, *args, **kwargs):
         try:
             value = getattr(self._store, operation)(
@@ -106,11 +110,19 @@ class Namespace:
 
     def _current(self, reserved, path, decision):
         before = self._bound(reserved, decision)
+        resource, key = self._selected_resource(before, path)
+        snap = self._call("read", decision, key)
+        return self._checked_current(reserved, resource, snap)
+
+    @staticmethod
+    def _selected_resource(before, path):
         key = arm_key(path)
         resource = next((r for r in before["resources"]
                          if arm_key(r["resource_path"]) == key), None)
         check(resource is not None and resource["resource_path"] == path)
-        snap = self._call("read", decision, key)
+        return resource, key
+
+    def _checked_current(self, reserved, resource, snap):
         value = document(snap.raw)
         state = value.get("state")
         check(type(state) is str and state in STATES)
@@ -256,3 +268,70 @@ class Namespace:
             return result
         except Exception:
             raise BindingError(ERROR) from None
+
+
+class _RetirementNamespace(Namespace):
+    def __init__(self, original, context):
+        from .retirement import _Context
+        check(type(original) is Namespace and type(context) is _Context)
+        context.check(context.reserved)
+        self._store, self._identity = original._store, dict(original._identity)
+        self._context = context
+
+    def reserve(self, *args, **kwargs):
+        raise BindingError(ERROR) from None
+
+    def consume_create(self, *args, **kwargs):
+        raise BindingError(ERROR) from None
+
+    def provisioned(self, raw, *, reserved, authenticated_readback, decision):
+        check(decision is self._context and self._context.account.pool == "registration"
+              and self._context.account._meter["run_transaction"])
+        return super().provisioned(raw, reserved=reserved,
+                                  authenticated_readback=authenticated_readback, decision=decision)
+
+    def _setup(self, reserved, decision):
+        check(decision is self._context)
+        self._context.check(reserved, write=True)
+
+    def _call(self, operation, decision, *args, **kwargs):
+        failed = False
+        value = None
+        try:
+            check(decision is self._context and operation in ("read", "read_many", "replace"))
+            self._context.check(self._context.reserved, write=operation == "replace")
+            value = self._context.state(self._store, operation, *args, **kwargs)
+            snapshots = value if operation == "read_many" else (value,)
+            check(type(snapshots) is tuple)
+            for selected in snapshots:
+                check(type(selected) is Snapshot and type(selected.etag) is str
+                      and 0 < len(selected.etag) <= 160)
+                document(selected.raw)
+        except BaseException:
+            failed = True
+        if failed:
+            raise BindingError(ERROR) from None
+        return value
+
+    def transition(self, reserved, path, *, state, **kwargs):
+        check(state in ("admitted", "retiring", "quarantined", "absent-tombstoned"))
+        return super().transition(reserved, path, state=state, **kwargs)
+
+
+    def read_set(self, reserved, *, decision):
+        """Independent read-only exact set inside one non-reused catalog interval."""
+        check(decision is self._context and self._context.account.pool == "observation")
+        first, _ = self._index(decision)
+        before = self._bound(reserved, decision)
+        selected = [self._selected_resource(before, item["resource_path"])
+                    for item in before["resources"]]
+        keys = tuple(key for _, key in selected)
+        snapshots = self._call("read_many", decision, keys)
+        check(type(snapshots) is tuple and len(snapshots) == len(selected))
+        records = []
+        for (resource, _), snap in zip(selected, snapshots):
+            self._checked_current(reserved, resource, snap)
+            records.append(Record(snap.raw))
+        last, _ = self._index(decision)
+        check(last == first)
+        return tuple(records)
