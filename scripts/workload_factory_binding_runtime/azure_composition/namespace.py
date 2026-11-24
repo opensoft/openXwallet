@@ -295,6 +295,8 @@ class _RetirementNamespace(Namespace):
         self._context.check(reserved, write=True)
 
     def _call(self, operation, decision, *args, **kwargs):
+        failed = False
+        value = None
         try:
             check(decision is self._context and operation in ("read", "read_many", "replace"))
             self._context.check(self._context.reserved, write=operation == "replace")
@@ -305,9 +307,11 @@ class _RetirementNamespace(Namespace):
                 check(type(selected) is Snapshot and type(selected.etag) is str
                       and 0 < len(selected.etag) <= 160)
                 document(selected.raw)
-            return value
-        except Exception:
+        except BaseException:
+            failed = True
+        if failed:
             raise BindingError(ERROR) from None
+        return value
 
     def transition(self, reserved, path, *, state, **kwargs):
         check(state in ("admitted", "retiring", "quarantined", "absent-tombstoned"))

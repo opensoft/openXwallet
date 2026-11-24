@@ -1529,7 +1529,7 @@ def test_private_direct_termination_cannot_leak_payload_or_context(tmp_path, ter
 
 
 def test_current_late_observer_reports_failed_without_renewing_cleanup(tmp_path):
-    pilot = Pilot(tmp_path, created=False, cleanup_seconds=4)
+    pilot = Pilot(tmp_path, created=False, cleanup_seconds=15)
     pilot.register();pilot.cleanup();pilot.original_runtime_cleanup()
     original = pilot.actor._cleanup.account
     counts, end, mono = original.counts, original.deadline, original.monotonic_end
@@ -2106,3 +2106,170 @@ def test_missing_selected_retained_service_state_is_never_reinitialized(tmp_path
     selected.unlink()
     with pytest.raises(BindingError):pilot.observe()
     assert not selected.exists()
+
+
+@pytest.mark.parametrize("encoding", ["json", "utf8"])
+@pytest.mark.parametrize("port", [
+    "journal-read-register", "journal-ack-register", "journal-read-observe",
+    "namespace-single-register", "namespace-batch-observe",
+    "run-deployed-register", "run-linked-register",
+    "run-deployed-observe", "run-linked-observe", "provider-body-observe",
+])
+def test_authenticated_malformed_reply_has_a_fresh_private_refusal(tmp_path, monkeypatch, port, encoding):
+    """Healthy selected ports return malformed bodies; their parser context is private."""
+    import traceback
+    marker = "private-reply-fixture-marker"
+    raw = (b'{"private":"' + marker.encode() + b'",' if encoding == "json"
+           else b"\xff" + marker.encode())
+    pilot = Pilot(tmp_path, created=port.startswith("run-") or port.startswith("provider-"))
+    seen = []
+    if port.endswith("-register") and not port.startswith("run-"):
+        call = retry = pilot.register
+        if port.startswith("journal-"):
+            name = "create_only" if port == "journal-ack-register" else "read"
+            original = getattr(pilot.actor.journal, name)
+            def changed(*args, **kwargs):
+                result = original(*args, **kwargs)
+                seen.append("authenticated-journal-return")
+                return replace(result, raw=raw)
+            setattr(pilot.actor.journal, name, changed)
+        else:
+            original = pilot.facade.exchange
+            def changed(operation, args, kwargs, **options):
+                result = original(operation, args, kwargs, **options)
+                if operation == "read":
+                    seen.append("authenticated-namespace-return")
+                    return replace(result, raw=raw)
+                return result
+            pilot.facade.exchange = changed
+    else:
+        pilot.register()
+        if port.startswith("run-"):
+            if port.endswith("-observe"):
+                pilot.register_actual_run()
+                observer = pilot.observer()
+                client = observer.control
+                call = retry = observer.observe
+                pilot.pool = "observation"
+            else:
+                client = pilot.actor.control
+                call, retry = pilot.register_actual_run, pilot.actor.register_run
+            original = client.run_facts
+            def changed(*args, **kwargs):
+                facts = original(*args, **kwargs)
+                seen.append("authenticated-run-facts-return")
+                if port.startswith("run-deployed-"):
+                    return replace(facts, deployed=raw)
+                return replace(facts, linked=raw, authority=replace(facts.authority, expected=raw))
+            client.run_facts = changed
+        else:
+            observer = pilot.observer()
+            call = retry = observer.observe
+            pilot.pool = "observation"
+            if port == "journal-read-observe":
+                original = observer.journal.read
+                def changed(*args, **kwargs):
+                    result = original(*args, **kwargs)
+                    seen.append("authenticated-journal-return")
+                    return replace(result, raw=raw)
+                observer.journal.read = changed
+            elif port == "namespace-batch-observe":
+                original = pilot.facade.exchange
+                def changed(operation, args, kwargs, **options):
+                    result = original(operation, args, kwargs, **options)
+                    if operation == "read_many":
+                        seen.append("authenticated-namespace-batch-return")
+                        return (replace(result[0], raw=raw),) + result[1:]
+                    return result
+                pilot.facade.exchange = changed
+            else:
+                original_identity = provider_module._identity
+                def checked_identity(reply, policy):
+                    if reply.body == raw:
+                        seen.append("authenticated-provider-parser")
+                    return original_identity(reply, policy)
+                monkeypatch.setattr(provider_module, "_identity", checked_identity)
+                def changed(request, reply):
+                    if request.method == "GET" and reply.status == 200:
+                        seen.append("authenticated-provider-return")
+                        return replace(reply, body=raw)
+                    return reply
+                pilot.port.reply_mutation = changed
+    before = {method: list(pilot.port.sends(method)) for method in ("PUT", "DELETE")}
+    with pytest.raises(BindingError) as caught:
+        call()
+    error = caught.value
+    held_traceback = error.__traceback__
+    assert seen
+    if port == "provider-body-observe":
+        assert "authenticated-provider-parser" in seen
+    assert held_traceback is not None
+    assert error.__cause__ is None
+    assert error.__context__ is None
+    assert error.args == (r.ERROR,)
+    rendered = "".join(traceback.format_exception(type(error), error, held_traceback))
+    assert marker not in rendered
+    for method, previous in before.items():
+        assert pilot.port.sends(method) == previous
+    with closing(existing_db(pilot.journal.path)) as db:
+        for suffix in ("observation-assessment", "observation-result"):
+            row = db.execute("SELECT COUNT(*) FROM blobs WHERE name=?",
+                             (r._key(pilot.reserved, suffix),)).fetchone()
+            assert row[0] == 0
+    authorizations = sum(operation == "authorize" for _, _, operation in pilot.events)
+    with pytest.raises(BindingError):
+        retry()
+    assert sum(operation == "authorize" for _, _, operation in pilot.events) == authorizations
+
+
+@pytest.mark.parametrize("clock_kind", ["wall", "monotonic"])
+def test_later_registration_constructs_under_the_original_checkpoint(clock_kind):
+    clock = Clock()
+    holder = {}
+    guarded = []
+    def callback():
+        if "original" in holder:
+            guarded.append(any(check.account is holder["original"]
+                               for check in r._ACTIVE_ACCOUNTS.get()))
+        return clock.wall if clock_kind == "wall" else clock.mono
+    original = r._Account("registration", owner="owner:original", deadline=clock.wall + 1000,
+                          clock=callback if clock_kind == "wall" else lambda: clock.wall,
+                          monotonic=callback if clock_kind == "monotonic" else lambda: clock.mono)
+    original.charge("private", size=7)
+    counts, size = original.counts, original.bytes_used
+    holder["original"] = original
+    later = r._Account._later_registration(original, key=r._TRANSACTION,
+                                           deadline=clock.wall + 1000)
+    assert guarded
+    assert all(guarded)
+    assert later._meter is original._meter
+    assert later.counts == counts
+    assert later.bytes_used == size
+    with pytest.raises(BindingError):
+        r._Account._later_registration(original, key=r._TRANSACTION,
+                                        deadline=clock.wall + 1000)
+
+
+@pytest.mark.parametrize("clock_kind", ["wall", "monotonic"])
+def test_failed_later_registration_construction_burns_its_original_pool(clock_kind):
+    clock = Clock()
+    armed = []
+    def callback():
+        if armed:
+            raise ValueError("fixture-clock-unavailable")
+        return clock.wall if clock_kind == "wall" else clock.mono
+    original = r._Account("registration", owner="owner:original", deadline=clock.wall + 1000,
+                          clock=callback if clock_kind == "wall" else lambda: clock.wall,
+                          monotonic=callback if clock_kind == "monotonic" else lambda: clock.mono)
+    original.charge("private", size=7)
+    armed.append(True)
+    with pytest.raises(BindingError) as caught:
+        r._Account._later_registration(original, key=r._TRANSACTION,
+                                        deadline=clock.wall + 1000)
+    assert caught.value.args == (r.ERROR,)
+    assert caught.value.__context__ is None
+    assert caught.value.__cause__ is None
+    assert original._meter["burned"] is True
+    assert original._meter["run_transaction"] is True
+    with pytest.raises(BindingError):
+        original.charge("private")

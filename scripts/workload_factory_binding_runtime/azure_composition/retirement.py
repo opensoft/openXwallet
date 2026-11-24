@@ -5,6 +5,7 @@ The embedding supplies independently authenticated, already selected service por
 A counter or canonical record is not an authorization capability.
 """
 from dataclasses import asdict, dataclass, fields, is_dataclass
+from functools import wraps
 from contextlib import contextmanager
 from contextvars import ContextVar
 import base64
@@ -31,6 +32,21 @@ LIMITS = MappingProxyType({
 DURATIONS = MappingProxyType({"registration": 30, "cleanup": 300, "observation": 60})
 _TRANSACTION = object()
 
+
+def _private_result(function):
+    """Expose only a fresh fixed refusal from the selected private P07 API."""
+    @wraps(function)
+    def invoke(*args, **kwargs):
+        failed = False
+        value = None
+        try:
+            value = function(*args, **kwargs)
+        except BaseException:
+            failed = True
+        if failed:
+            raise BindingError(ERROR) from None
+        return value
+    return invoke
 
 def _check(condition):
     if not condition:
@@ -190,8 +206,17 @@ class _Account:
             _check(os.getpid() == original._pid and not original._meter["burned"]
                    and not original._meter["run_transaction"])
             original._meter["run_transaction"] = True
-            later = cls("registration", owner=original.owner, deadline=deadline,
-                        clock=original._clock, monotonic=original._monotonic)
+            failed = False
+            later = None
+            try:
+                with _checkpoint(original):
+                    later = cls("registration", owner=original.owner, deadline=deadline,
+                                clock=original._clock, monotonic=original._monotonic)
+            except BaseException:
+                failed = True
+            if failed:
+                original.burn()
+                raise BindingError(ERROR) from None
             later._meter, later._counts, later._lock = original._meter, original._counts, original._lock
             return later
 
@@ -576,6 +601,7 @@ def _key(reserved, suffix):
     return PROFILE + ":" + _registration_ref(reserved) + ":" + suffix
 
 
+@_private_result
 def _snapshot(value):
     from .namespace import Snapshot
     _check(type(value) is Snapshot and type(value.etag) is str and 0 < len(value.etag) <= 160)
@@ -683,6 +709,7 @@ class Reconciler:
         _check(verified.raw == raw)
         return verified
 
+    @_private_result
     def register(self):
         with self._lock:
             self._alive()
@@ -719,6 +746,7 @@ class Reconciler:
             return self._anchor
 
 
+    @_private_result
     def register_run(self):
         with self._lock:
             self._alive()
@@ -744,6 +772,7 @@ class Reconciler:
             self._deployed, self._linked = deployed, linked
             return self._run
 
+    @_private_result
     def cleanup(self, trigger_ref):
         """Return the durable original claim, never a completion attestation."""
         with self._lock:
@@ -927,6 +956,7 @@ class Observer:
         _check(checked.raw == raw)
         return checked
 
+    @_private_result
     def observe(self):
         with self._lock:
             _check(os.getpid() == self._pid and not self._spent)

@@ -1,6 +1,6 @@
 # T013P07 isolated retirement implementation
 
-Status: isolated runtime locally qualified; candidate publication and hosted/local review commissioned; source ratification remains open.
+Status: publication correction candidate; earlier local passes are historical; corrected-source qualification and source ratification remain open.
 Date: 2026-11-23, America/La_Paz
 Sole implementation row: [T013P07](tasks.md); no new task list.
 
@@ -163,3 +163,39 @@ Run artifacts remain in the operator-selected QA evidence store, packet
 select a host-specific filesystem path.
 Final source/run manifests and independent cleanup receipts must distinguish
 diagnostics, exact-source qualification and later publication.
+
+
+## Publication review correction 2026-11-24
+
+At published4a385366abed884efe5f262a526cf5c26733f61d, review found private parser
+exceptions escaping after authenticated I/O. Fresh fixed refusals now leave the
+selected P07 operations, snapshot validation and retirement namespace view outside
+their handlers. Journal, namespace, run-facts and provider-body paths are covered
+without changing neutral parsers. The original checkpoint spans genuine later
+registration construction; failure burns that original pool.
+
+Twenty malformed JSON/UTF8 controls cover ten healthy authenticated reply routes.
+They retain errors/tracebacks and require fixed args, absent cause/context/marker,
+no qualification emission or new PUT/DELETE, and no reauthorization. Provider
+replies are changed before immutable receipt persistence and parser reach is
+explicitly asserted. Four construction controls cover both clocks under the
+original checkpoint and original-pool burn. Actual collection adds24identities:
+3,731full,3,309native and150P07; old identities/order and anchor prefixes remain.
+
+Local attempts stay diagnostic: initial24focused controls passed but the provider
+pair initially stopped at receipt mismatch. An owning run passed149/150, failing
+during cleanup in the synthetic four-second fixture. Its initial cleanup window
+is now15seconds, selected before effects; expiry/no-renewal assertions remain.
+The strengthened25case overlay attempt passed22, with three failures during
+ordinary fixture creation/admission before injection. Setup already has600seconds;
+these failures are not attributed to a30second setup window. A dedicated-storage
+attempt was interrupted and retained. None is promoted to corrected-source
+full/native qualification.
+
+Production registration30/cleanup300/observation60second pool bounds, ten-second
+calls, quotas and body caps remain unchanged. Final published-head hosted source
+CI/full/native evidence and local review disposition belong to PR #105. Eight
+delegated roles returned; the service-blocked reliability turn stays unverified.
+No flagged request is retried or routed elsewhere. Source ratification/merge and
+all operational/live grants remain separate; setup/dispatch unauthorized, feedback
+deferred and historical blocked writes unreplayed.

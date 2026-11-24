@@ -762,8 +762,8 @@ CASES['H11'] += _nodes('test_azure_issuance',
 
 
 # T013P07: measured additions; preserve every parent identity and anchor prefix.
-MODULE_COUNTS['tests/runtime_binding/test_azure_retirement.py'] = 126
-MODULE_DIGESTS['tests/runtime_binding/test_azure_retirement.py'] = '6e4fff8619c201ecf5de01c11a0c3e2dc2140df98f35501ec08f117eae48e095'
+MODULE_COUNTS['tests/runtime_binding/test_azure_retirement.py'] = 150
+MODULE_DIGESTS['tests/runtime_binding/test_azure_retirement.py'] = '370c6182306d5c7808e83c2f9ff322a843813c13efefda14221454cfff5e2366'
 CASES['R01'] += _nodes('test_azure_retirement',
     'complete_pilot_retirement_uses_real_clocks_and_actual_graph',
     'actual_same_deployment_run_registration_and_receipt',
@@ -810,3 +810,12 @@ CASES['H10'] += _nodes('test_azure_retirement',
     'bounded_reader_rejects_oversize_metadata_before_any_blob_materialization')
 CASES['H11'] += _nodes('test_azure_retirement',
     'missing_selected_retained_service_state_is_never_reinitialized')
+
+# P07 publication correction: actual full/native collection, original prefix retained.
+CASES['R01'] += _nodes('test_azure_retirement',
+    'authenticated_malformed_reply_has_a_fresh_private_refusal')
+CASES['H12'] += _nodes('test_azure_retirement',
+    'authenticated_malformed_reply_has_a_fresh_private_refusal')
+CASES['H10'] += _nodes('test_azure_retirement',
+    'later_registration_constructs_under_the_original_checkpoint',
+    'failed_later_registration_construction_burns_its_original_pool')

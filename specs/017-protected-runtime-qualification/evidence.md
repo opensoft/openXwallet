@@ -1,3 +1,19 @@
+## P07 publication correction candidate - 2026-11-24
+
+PR #105 commissions source review and qualification only. The R11 correction
+returns fresh fixed refusals outside private parsing handlers. The original
+checkpoint spans later registration construction; failure burns its original
+allocation. Production profiles, pins, runtime limits and defaults are unchanged.
+Actual collection is3,731full/3,309native, including150P07 cases; prior identities,
+fingerprints and anchor prefixes remain. Earlier passes are historical; final
+exact-head qualification and local review evidence belong to
+[PR #105](https://github.com/opensoft/openXwallet/pull/105).
+Eight delegated review roles returned; one service-blocked reliability turn
+remains unverified and is not retried or routed elsewhere. T013P07 stays unchecked
+through candidate review. Source acceptance/merge and P08/P09 remain ungranted.
+Setup/dispatch unauthorized; feedback deferred; blocked writes unreplayed.
+Earlier dated records below retain their exact historical scope.
+
 ## P07 isolated runtime qualified locally - 2026-11-23
 
 Both accepted source merges have successful independent main CI. The
@@ -4815,3 +4831,14 @@ T013P07 remains unchecked through candidate review. GitHub Codex connector
 review is deferred under the explicit local-review instruction; local expert
 review and actual hosted checks must be reported separately. Feedback deferred;
 historical blocked writes unreplayed.
+
+
+## P07 publication correction evidence 2026-11-24
+
+Final exact-head source CI/full/native and local review dispositions are recorded
+on [PR #105](https://github.com/opensoft/openXwallet/pull/105). Operator-selected
+packet p3-retirement-publication-20261123 retains actual Linux collection, focused
+JUnit, source hashes, diagnostic local failures and owned-fixture records. The
+implementation record distinguishes the bounded correction from earlier passes
+and current execution limitations. This supplies no source acceptance, merge or
+operational grant; all holds remain and T013P07 stays unchecked through review.
