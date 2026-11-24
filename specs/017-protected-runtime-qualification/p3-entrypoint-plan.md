@@ -1,7 +1,7 @@
 # T013P08 source-selected companion and packaging subplan
 
-Status: prepared subplan after accepted P07 and verified main source CI.
-P08 implementation is not commissioned.
+Status: commissioned isolated subplan; Gate B stopped on physical accounting.
+Dependent implementation awaits exact paired source acceptance of the proposed amendment.
 Date: 2026-11-24, America/La_Paz
 
 ## Parent source and authority
@@ -24,8 +24,10 @@ its namespace mutation; its cause remains unknown. One explicitly approved
 coverage/dependent-analysis retry passed at unchanged source, tests and bounds.
 Original passing source artifacts were retained. No additional retry is inferred.
 
-Only P08 preparation is commissioned. The sole executable task list remains
-[tasks.md](tasks.md). P08/P09 implementation, T001/T013/T014/T015, role appointments,
+Only P08 isolated implementation was commissioned. Its required eligibility fallback
+is now active; see [measured eligibility](p3-entrypoint-eligibility.md) and the
+[proposed accounting amendment](p3-entrypoint-accounting-plan.md). The sole executable task list remains
+[tasks.md](tasks.md). Dependent P08 implementation, P09, T001/T013/T014/T015, role appointments,
 setup, dispatch and independent human/consumer acceptance remain separate.
 Feedback is deferred; historical blocked writes remain unreplayed.
 
@@ -78,8 +80,10 @@ pricing and UTC windows remain explicit later operator gates.
 
 ## First implementation eligibility gates
 
-These gates belong to existing T013P08. They have not been executed during
-preparation. A partial P05 positive or old report does not close either gate.
+These gates belong to existing T013P08. Gate A is eligible in an isolated prototype;
+Gate B refuses under original private12 after physical prepayment. The linked
+eligibility record preserves all19 controls and the independent audit. No partial
+P05 positive, old report or offline inventory closes the complete Gate B.
 
 ### Gate A: closed source route and admission graph
 

@@ -1,3 +1,20 @@
+## P08 eligibility stopped; physical accounting amendment draft - 2026-11-24
+
+Brett commissioned isolated T013P08 using plan75fc1feb3474, starting with both
+eligibility gates. Gate A is eligible in an isolated prototype; Gate B correctly
+refuses under unchanged private12 when all nested lifecycle requests are prepaid.
+Physical handoff costs14/18 and final cleanup with audit costs7/17 for1/3 credentials.
+Nineteen focused controls and the fresh independent cleanup audit pass; no full,
+native, hosted or complete P08 qualification is claimed. Runtime/tests/workflows,
+pins and matrix bytes were restored to the prepared-plan baseline.
+
+The [eligibility record](p3-entrypoint-eligibility.md) and proposed
+[accounting subplan](p3-entrypoint-accounting-plan.md) implement the accepted
+plan's governed fallback. Factory change bound-remote-lifecycle-accounting is a
+prospective source candidate; exact paired acceptance precedes dependent code.
+T013P08/P09 remain unchecked. Setup/dispatch unauthorized; feedback deferred;
+historical blocked writes unreplayed. Earlier dated scope records below are historical.
+
 ## P07 publication correction candidate - 2026-11-24
 
 PR #105 commissions source review and qualification only. The R11 correction
@@ -754,10 +771,12 @@ create a factory/consumer duplicate task list. R01-R12 trace to the factory delt
 
 T013P07 accepted-source closure and independent main qualification are recorded in
 [p3-entrypoint-parent-main-qualification.json](p3-entrypoint-parent-main-qualification.json).
-The next [T013P08 subplan](p3-entrypoint-plan.md) is prepared only; its first gates
-must prove the closed companion graph and legitimate sealed-result handoff using
-existing retained references and original budgets. The row below remains the sole
-implementation task; its listed paths reconcile the actual graph/result owners.
+The [T013P08 subplan](p3-entrypoint-plan.md) was commissioned in isolation. Gate A
+is eligible in the isolated prototype; Gate B stops on unchanged private12 after
+physical prepayment. The [eligibility record](p3-entrypoint-eligibility.md) and
+[proposed accounting subplan](p3-entrypoint-accounting-plan.md) preserve that failure.
+The row below remains the sole implementation task, unchecked until complete
+qualification after exact paired source acceptance.
 
 - [ ] T013P08 [O] Integrate an explicitly source-selected companion entrypoint and reviewed deployment packaging/workflow route; files: scripts/prepare-azure-protected-runtime.py, scripts/workload_factory_binding_runtime/azure_composition/entrypoint.py, scripts/workload_factory_binding_runtime/azure_composition/remote_evidence.py, scripts/workload_factory_binding_runtime/github_bootstrap/graph.py, scripts/workload_factory_binding_runtime/github_bootstrap/controller.py, scripts/workload_factory_binding_runtime/hosted/staging.py, scripts/workload_factory_binding_runtime/hosted/github_readback.py, deploy/qa-wallet-mfa/, .github/workflows/protected-runtime-qualification-run.yml, tests/runtime_binding/test_azure_entrypoint.py, tests/runtime_binding/test_azure_measurement.py, tests/runtime_binding/matrix_contract.py; verify: existing operational_bindings/default entrypoint unchanged/refusing, three inputs/seven runtime/eight source roles and same-commit phase permissions preserved, no env/file/plugin activation and no execution/setup from source selection alone (R02).
 - [ ] T013P09 [O] Qualify exact isolated P3 source, reconcile operator guidance and prepare later source review/acceptance handoff; files: tests/runtime_binding/matrix_contract.py, specs/017-protected-runtime-qualification/p3-azure-composition-acceptance.md, p3-azure-composition-quickstart.md, evidence.md; verify: complete R01-R12 positive/refusal/crash matrix, measured preserved old full/native IDs/fingerprints, original budgets/deadlines/body caps with fitting complete positives, independent fixture cleanup and honest source-only results; T001/T013/T014/T015/consumerT002 and operational grants remain open (R01/R02/R07/R11/R12).

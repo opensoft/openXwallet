@@ -1,3 +1,20 @@
+## P08 eligibility stopped; physical accounting amendment draft - 2026-11-24
+
+Brett commissioned isolated T013P08 using plan75fc1feb3474, starting with both
+eligibility gates. Gate A is eligible in an isolated prototype; Gate B correctly
+refuses under unchanged private12 when all nested lifecycle requests are prepaid.
+Physical handoff costs14/18 and final cleanup with audit costs7/17 for1/3 credentials.
+Nineteen focused controls and the fresh independent cleanup audit pass; no full,
+native, hosted or complete P08 qualification is claimed. Runtime/tests/workflows,
+pins and matrix bytes were restored to the prepared-plan baseline.
+
+The [eligibility record](specs/017-protected-runtime-qualification/p3-entrypoint-eligibility.md) and proposed
+[accounting subplan](specs/017-protected-runtime-qualification/p3-entrypoint-accounting-plan.md) implement the accepted
+plan's governed fallback. Factory change bound-remote-lifecycle-accounting is a
+prospective source candidate; exact paired acceptance precedes dependent code.
+T013P08/P09 remain unchecked. Setup/dispatch unauthorized; feedback deferred;
+historical blocked writes unreplayed. Earlier dated scope records below are historical.
+
 ## P07 source accepted; P08 preparation only - 2026-11-24
 
 Brett Heap source-ratified [openXwallet #105](https://github.com/opensoft/openXwallet/pull/105)
