@@ -1,5 +1,10 @@
 # P3 preparation and future isolated-source verification
 
+Current bounded preparation (2026-11-24): [T013P08](p3-entrypoint-plan.md).
+P07 is source-accepted and qualified; P08 implementation remains uncommissioned.
+Earlier proposal and commission labels retain their original checkpoint scope;
+see the current [owner record](p3-design-basis-acceptance.md#2026-11-24-105-source-acceptance-and-p08-preparation).
+
 Status: source decision accepted; first P01/P02 isolated source commissioned; setup/dispatch unauthorized
 
 ## Inspect the planning packet
@@ -59,3 +64,17 @@ missing. Correcting checkout requires no product/test/pin/expectation change.
 See [commission, source boundary and isolated verification](p3-namespace-implementation.md).
 Only T013P01/T013P02 are commissioned. Source checkout/tests are not operational
 setup. Later P3 source work, provider requests, setup and dispatch remain gated.
+
+## Current next slice: P08 preparation only
+
+P07 is source-accepted and independently qualified on main; the [parent receipt](p3-entrypoint-parent-main-qualification.json)
+retains exact-source evidence and the approved bounded source-CI retry. Read the
+[P08 subplan](p3-entrypoint-plan.md) before any future implementation commission.
+Start with its two eligibility gates: the closed authenticated companion route,
+then the complete independently authorized remote handoff into unchanged full
+qualification. Package integration follows only a fitting connected positive.
+
+Use the same source-only checkout and declared py-bench validation commands above.
+This preparation adds no executable, test, deployment command, filled parameter,
+credential, grant or state initialization. The original default CLI continues to
+refuse; P08/P09 implementation and every setup/protected-dispatch gate remain open.

@@ -1,5 +1,10 @@
 # P3 internal composition interfaces
 
+Current bounded preparation (2026-11-24): [T013P08](../p3-entrypoint-plan.md).
+P07 is source-accepted and qualified; P08 implementation remains uncommissioned.
+Earlier proposal and commission labels retain their original checkpoint scope;
+see the current [owner record](../p3-design-basis-acceptance.md#2026-11-24-105-source-acceptance-and-p08-preparation).
+
 Status: proposed; no source implementation or operational endpoint
 Owner: factory add-protected-runtime-azure-composition, supporting-docs/composition-boundary.md
 
@@ -54,3 +59,21 @@ budget or retry; observing completion after the approved cleanup deadline still
 fails qualification. If current observation authority is absent, emission refuses
 and missing authenticated evidence fails visibly. Proposed16KiB envelope caps
 do not alter the existing larger per-reader caps.
+
+## P08 source integration refinement
+
+This is internal wiring under accepted factory R02/R03/R07/R11/R12; no new external
+profile, role, claim, manual input or authority is introduced. The [P08 subplan](../p3-entrypoint-plan.md)
+requires separate fixed old/companion command validation through every authenticated
+graph consumer. Existing workflow filenames, three inputs, phases, permissions,
+job caps, seven runtime services and eight source roles remain fixed.
+
+The proposed sealed-result consumption operation belongs to remote_evidence.py.
+Its original state binding and independent authorizer must establish the actual
+complete-byte/run handoff before existing FinalizationBinding/FinalizedPlan are
+constructed. It reuses LifecycleServer.load_final and the prepare operation;
+Qualifier performs its existing single full admission before proof. Exact local
+types, owning-kernel checks, bridge/lifecycle/Decision identity and all original
+budgets stay intact. No new RPC, public schema or report aggregation is selected.
+If existing references cannot support these semantics, a governed amendment must
+precede dependent implementation. Preparation creates no such code or endpoint.

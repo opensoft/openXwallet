@@ -1,5 +1,10 @@
 # P3 source research and decisions
 
+Current bounded preparation (2026-11-24): [T013P08](p3-entrypoint-plan.md).
+P07 is source-accepted and qualified; P08 implementation remains uncommissioned.
+Earlier proposal and commission labels retain their original checkpoint scope;
+see the current [owner record](p3-design-basis-acceptance.md#2026-11-24-105-source-acceptance-and-p08-preparation).
+
 Status: planning research complete; no live capability qualification
 Date: 2026-11-19
 
@@ -45,3 +50,29 @@ network routes, full pricing and absolute windows cannot be invented. They are
 explicit future operator gates, not unresolved source-algorithm defaults. Any
 contradiction discovered in source acceptance requires a governed amendment before
 implementation; no hidden fallback is authorized.
+
+## 2026-11-24 P08 research refinement
+
+Decision: preserve the old CLI/default and select one literal companion command
+through trusted source construction. Rationale: the graph validator and its
+Controller, staging and current GitHub readback consumers all authenticate that
+command; editing YAML alone cannot select a valid new route. Alternatives such
+as a flag, arbitrary callback/path, environment or data-file switch are refused.
+
+Decision: add the sealed-result consumption seam in its existing owner module,
+remote_evidence.py, only after the implementation gates identify the exact original
+launch/store/registration state and independent complete-byte/run authorizer.
+Rationale: VerifiedRemote alone is not full admission; existing FinalizationBinding
+and FinalizedPlan constructors supply no authority. The owning lifecycle checks
+and Qualifier's single existing admit_finalized call remain mandatory. A private
+one-shot capability is not durable cross-process exactly-once state.
+
+Decision: package immutable reviewed source and launch wiring while preserving
+consume-before-send ephemeral ownership. Rationale: a bulk ARM/Bicep deployment
+would bypass the existing namespace/provider/reconciler operation model. Retained
+foundation setup and actual service activation remain separate operator acts.
+
+The [P08 subplan](p3-entrypoint-plan.md) captures the source decisions and amendment
+boundary. Two read-only planning research agents and their bounded consistency
+follow-ups informed it; no implementation or live capability result is claimed.
+Concrete live configuration remains a later operator gate, not a source default.

@@ -1,0 +1,456 @@
+{
+  "repository": "opensoft/openXwallet",
+  "source_acceptance": {
+    "PR": 105,
+    "ratified_head": "f087ef06f13c77e45d319406cf84a14d14b34264",
+    "merge_commit": "2b1608513339f8fe09045f4e872cd5e61d86c200",
+    "tree": "d29040759a212b26f8f65a876d152bcff7a33160",
+    "normal_merge": true,
+    "admin_override_used": false,
+    "owner_record": "https://github.com/opensoft/openXwallet/pull/105#issuecomment-7141309208"
+  },
+  "CI": {
+    "run_id": 45464492415,
+    "url": "https://github.com/opensoft/openXwallet/actions/runs/45464492415",
+    "event": "push",
+    "effective_attempt": 2,
+    "successful_jobs": 5,
+    "jobs": [
+      {
+        "name": "coverage-tests",
+        "databaseId": 138755570469,
+        "startedAt": "2026-11-24T20:30:28Z",
+        "completedAt": "2026-11-24T21:41:52Z",
+        "conclusion": "success"
+      },
+      {
+        "name": "isolated-coverage",
+        "databaseId": 138755573170,
+        "startedAt": "2026-11-24T18:54:15Z",
+        "completedAt": "2026-11-24T18:54:54Z",
+        "conclusion": "success"
+      },
+      {
+        "name": "pytest-suite",
+        "databaseId": 138755574383,
+        "startedAt": "2026-11-24T18:54:15Z",
+        "completedAt": "2026-11-24T20:29:11Z",
+        "conclusion": "success"
+      },
+      {
+        "name": "source-conformance",
+        "databaseId": 138755575059,
+        "startedAt": "2026-11-24T18:54:15Z",
+        "completedAt": "2026-11-24T19:02:29Z",
+        "conclusion": "success"
+      },
+      {
+        "name": "sonar-analysis",
+        "databaseId": 138798421273,
+        "startedAt": "2026-11-24T21:41:54Z",
+        "completedAt": "2026-11-24T21:43:50Z",
+        "conclusion": "success"
+      }
+    ],
+    "full_parent_tests": 3731,
+    "full_subtests": 11,
+    "native_cases": 3309,
+    "P07_cases": 150,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "exact_case_identity_sets": true,
+    "coverage_partition": {
+      "primary": 3730,
+      "isolated": 1,
+      "union": 3731,
+      "disjoint": true
+    },
+    "four_same_source_manifests": true,
+    "original_attempt_diagnostic": {
+      "failed_job": 138695632464,
+      "failed_case": "tests/runtime_binding/test_azure_measurement.py::test_actual_original_manager_or_protected_target_change_refuses[namespace]",
+      "location": "initial healthy client.read before namespace mutation",
+      "passed": 3729,
+      "failed": 1,
+      "deselected": 1,
+      "subtests_passed": 11,
+      "cause": "not established"
+    },
+    "approved_retry": "Brett explicitly approved one targeted offline coverage job and dependent Sonar at unchanged source after the original workflow finished. Existing passing jobs and artifacts retained; no test, threshold, runtime limit or workflow change. Protected setup/dispatch hold unchanged."
+  },
+  "final_run_API_provenance": {
+    "conclusion": "success",
+    "event": "push",
+    "head_sha": "2b1608513339f8fe09045f4e872cd5e61d86c200",
+    "id": 45464492415,
+    "path": ".github/workflows/pytest-suite.yml",
+    "run_attempt": 2,
+    "run_started_at": "2026-11-24T20:30:23Z",
+    "status": "completed",
+    "updated_at": "2026-11-24T21:43:51Z"
+  },
+  "published_main_receipt": "https://github.com/opensoft/openXwallet/pull/105#issuecomment-7145405502",
+  "Sonar": {
+    "analysis_id": "dc9e6253-e684-489c-8dcf-bfdb0d3041e3",
+    "status": "OK",
+    "ignored_conditions": false,
+    "definition_id": 9,
+    "declared_conditions": 6,
+    "evaluated_conditions": 6,
+    "metrics": {
+      "new_reliability_rating": "1",
+      "new_security_rating": "1",
+      "new_maintainability_rating": "1",
+      "new_coverage": "87.8",
+      "new_duplicated_lines_density": "0.1",
+      "new_security_hotspots_reviewed": "100.0"
+    },
+    "main": true,
+    "PR_analysis_only": false,
+    "issues_since_original_baseline": 54,
+    "reviewed_P07_path_issues": [
+      {
+        "key": "AaIPg7kUSwcVmEk8u9b-",
+        "rule": "python:S5754",
+        "component": "opensoft_openXwallet:scripts/workload_factory_binding_runtime/azure_composition/namespace.py",
+        "line": 310,
+        "status": "OPEN",
+        "type": "CODE_SMELL"
+      },
+      {
+        "key": "AaIPg7kgSwcVmEk8u9cA",
+        "rule": "python:S5754",
+        "component": "opensoft_openXwallet:scripts/workload_factory_binding_runtime/azure_composition/retirement.py",
+        "line": 44,
+        "status": "OPEN",
+        "type": "CODE_SMELL"
+      },
+      {
+        "key": "AaIPg7kgSwcVmEk8u9cB",
+        "rule": "python:S5754",
+        "component": "opensoft_openXwallet:scripts/workload_factory_binding_runtime/azure_composition/retirement.py",
+        "line": 215,
+        "status": "OPEN",
+        "type": "CODE_SMELL"
+      },
+      {
+        "key": "AaIPg7iESwcVmEk8u9b9",
+        "rule": "python:S3776",
+        "component": "opensoft_openXwallet:scripts/workload_factory_binding_runtime/azure_composition/provider.py",
+        "line": 667,
+        "status": "OPEN",
+        "type": "CODE_SMELL"
+      },
+      {
+        "key": "AaIPg7kgSwcVmEk8u9cC",
+        "rule": "python:S3776",
+        "component": "opensoft_openXwallet:scripts/workload_factory_binding_runtime/azure_composition/retirement.py",
+        "line": 235,
+        "status": "OPEN",
+        "type": "CODE_SMELL"
+      },
+      {
+        "key": "AaIPg7kgSwcVmEk8u9cD",
+        "rule": "python:S5754",
+        "component": "opensoft_openXwallet:scripts/workload_factory_binding_runtime/azure_composition/retirement.py",
+        "line": 253,
+        "status": "OPEN",
+        "type": "CODE_SMELL"
+      },
+      {
+        "key": "AaIPg7kgSwcVmEk8u9cE",
+        "rule": "python:S5754",
+        "component": "opensoft_openXwallet:scripts/workload_factory_binding_runtime/azure_composition/retirement.py",
+        "line": 511,
+        "status": "OPEN",
+        "type": "CODE_SMELL"
+      },
+      {
+        "key": "AaIPg7kgSwcVmEk8u9b_",
+        "rule": "python:S1192",
+        "component": "opensoft_openXwallet:scripts/workload_factory_binding_runtime/azure_composition/retirement.py",
+        "line": 624,
+        "status": "OPEN",
+        "type": "CODE_SMELL"
+      },
+      {
+        "key": "AaIPg7kgSwcVmEk8u9cF",
+        "rule": "python:S3776",
+        "component": "opensoft_openXwallet:scripts/workload_factory_binding_runtime/azure_composition/retirement.py",
+        "line": 1062,
+        "status": "OPEN",
+        "type": "CODE_SMELL"
+      }
+    ],
+    "issue_statuses_changed": false
+  },
+  "original_baseline": {
+    "key": "d434a8d1-6d41-4cfe-9413-e1868fc1c18d",
+    "date": "2026-08-27T11:16:42+0000",
+    "events": [],
+    "projectVersion": "not provided",
+    "manualNewCodePeriodBaseline": true,
+    "revision": "63f5a1adac89f017e70bab9a4ffe7cf02d6e6705"
+  },
+  "fresh_main_readback": {
+    "checked_at": "2026-11-24T21:46:46.031206+00:00",
+    "GitHub_main_before": "2b1608513339f8fe09045f4e872cd5e61d86c200",
+    "GitHub_main_after": "2b1608513339f8fe09045f4e872cd5e61d86c200",
+    "latest_Sonar_main_analysis": {
+      "key": "dc9e6253-e684-489c-8dcf-bfdb0d3041e3",
+      "date": "2026-11-24T21:42:45+0000",
+      "events": [
+        {
+          "key": "AaIPg7pxSwcVmEk8u9cG",
+          "category": "VERSION",
+          "name": "not provided"
+        }
+      ],
+      "projectVersion": "not provided",
+      "manualNewCodePeriodBaseline": false,
+      "revision": "2b1608513339f8fe09045f4e872cd5e61d86c200"
+    },
+    "complete_history_entries_read": 12,
+    "original_baseline": {
+      "key": "d434a8d1-6d41-4cfe-9413-e1868fc1c18d",
+      "date": "2026-08-27T11:16:42+0000",
+      "events": [],
+      "projectVersion": "not provided",
+      "manualNewCodePeriodBaseline": true,
+      "revision": "63f5a1adac89f017e70bab9a4ffe7cf02d6e6705"
+    },
+    "original_baseline_unchanged": true,
+    "all_revisions_match": true,
+    "as_of_readback_only": true,
+    "no_permanent_freshness_guarantee": true,
+    "public_API_used": true,
+    "evaluated_conditions": 6,
+    "metrics": {
+      "new_reliability_rating": "1",
+      "new_security_rating": "1",
+      "new_maintainability_rating": "1",
+      "new_coverage": "87.8",
+      "new_duplicated_lines_density": "0.1",
+      "new_security_hotspots_reviewed": "100.0"
+    },
+    "main_measures": {
+      "coverage": "87.7",
+      "new_coverage": "87.8331545507055",
+      "new_lines_to_cover": "19450"
+    },
+    "new_issue_count": 54,
+    "P07_maintainability_dispositions": [
+      {
+        "key": "AaIPg7kUSwcVmEk8u9b-",
+        "rule": "python:S5754",
+        "component": "opensoft_openXwallet:scripts/workload_factory_binding_runtime/azure_composition/namespace.py",
+        "line": 310,
+        "status": "OPEN",
+        "type": "CODE_SMELL"
+      },
+      {
+        "key": "AaIPg7kgSwcVmEk8u9cA",
+        "rule": "python:S5754",
+        "component": "opensoft_openXwallet:scripts/workload_factory_binding_runtime/azure_composition/retirement.py",
+        "line": 44,
+        "status": "OPEN",
+        "type": "CODE_SMELL"
+      },
+      {
+        "key": "AaIPg7kgSwcVmEk8u9cB",
+        "rule": "python:S5754",
+        "component": "opensoft_openXwallet:scripts/workload_factory_binding_runtime/azure_composition/retirement.py",
+        "line": 215,
+        "status": "OPEN",
+        "type": "CODE_SMELL"
+      },
+      {
+        "key": "AaIPg7iESwcVmEk8u9b9",
+        "rule": "python:S3776",
+        "component": "opensoft_openXwallet:scripts/workload_factory_binding_runtime/azure_composition/provider.py",
+        "line": 667,
+        "status": "OPEN",
+        "type": "CODE_SMELL"
+      },
+      {
+        "key": "AaIPg7kgSwcVmEk8u9cC",
+        "rule": "python:S3776",
+        "component": "opensoft_openXwallet:scripts/workload_factory_binding_runtime/azure_composition/retirement.py",
+        "line": 235,
+        "status": "OPEN",
+        "type": "CODE_SMELL"
+      },
+      {
+        "key": "AaIPg7kgSwcVmEk8u9cD",
+        "rule": "python:S5754",
+        "component": "opensoft_openXwallet:scripts/workload_factory_binding_runtime/azure_composition/retirement.py",
+        "line": 253,
+        "status": "OPEN",
+        "type": "CODE_SMELL"
+      },
+      {
+        "key": "AaIPg7kgSwcVmEk8u9cE",
+        "rule": "python:S5754",
+        "component": "opensoft_openXwallet:scripts/workload_factory_binding_runtime/azure_composition/retirement.py",
+        "line": 511,
+        "status": "OPEN",
+        "type": "CODE_SMELL"
+      },
+      {
+        "key": "AaIPg7kgSwcVmEk8u9b_",
+        "rule": "python:S1192",
+        "component": "opensoft_openXwallet:scripts/workload_factory_binding_runtime/azure_composition/retirement.py",
+        "line": 624,
+        "status": "OPEN",
+        "type": "CODE_SMELL"
+      },
+      {
+        "key": "AaIPg7kgSwcVmEk8u9cF",
+        "rule": "python:S3776",
+        "component": "opensoft_openXwallet:scripts/workload_factory_binding_runtime/azure_composition/retirement.py",
+        "line": 1062,
+        "status": "OPEN",
+        "type": "CODE_SMELL"
+      }
+    ],
+    "issue_statuses_changed": false
+  },
+  "source_inventory": {
+    "production_files": 103,
+    "configuration_files": 6,
+    "repositories": {
+      ".": {
+        "revision": "2b1608513339f8fe09045f4e872cd5e61d86c200",
+        "tree": "d29040759a212b26f8f65a876d152bcff7a33160"
+      },
+      "openWallet": {
+        "revision": "8be8a2a6af125058ffe956cafbf1e62858d82dd9",
+        "tree": "2230b3ed22e7a967aa6cb8fda2faac11bf0fc8fd"
+      },
+      "openWallet/code": {
+        "revision": "6fb72ed4c820d927775ccb698c5cfbd8adff71d7",
+        "tree": "98fa0f88a7809aab443df5b404ca8e7286b807e6"
+      },
+      "openWallet/spec": {
+        "revision": "878293fb3ed84073dd7e285f56f4fee62413297e",
+        "tree": "3288405a0cebcf15085654ba0121c4d307675eff"
+      }
+    },
+    "reporting_python": [
+      3,
+      12
+    ],
+    "cross_version_denominator_passed": true,
+    "receipt_members_verified": 16
+  },
+  "artifacts": [
+    {
+      "id": 14967956667,
+      "name": "wallet-sonar-complete",
+      "sha256": "sha256:3fa18e2f94dc10b571853f33b62303c348310521a09438dbfeae3ea3dc7377aa",
+      "bytes": 189694732,
+      "created_at": "2026-11-24T21:42:35Z"
+    },
+    {
+      "id": 14967078859,
+      "name": "wallet-sonar-primary",
+      "sha256": "sha256:e1b728c75443700b10c2960db0035cd5b71ffeea55ba8ee9fe159e9818601eae",
+      "bytes": 161417382,
+      "created_at": "2026-11-24T21:41:49Z"
+    },
+    {
+      "id": 14966698564,
+      "name": "wallet-sonar-gate",
+      "sha256": "sha256:e1500a3412ad1f9db1fbe78c6132ad709cf050c9d78941f3845fa743edbd0af4",
+      "bytes": 937,
+      "created_at": "2026-11-24T21:43:48Z"
+    },
+    {
+      "id": 14960189245,
+      "name": "wallet-sonar-runtime",
+      "sha256": "sha256:678ead1a223b0f44d7692f780f137cc1a150567b5fcb3660b08153eecb84a310",
+      "bytes": 301599,
+      "created_at": "2026-11-24T20:29:05Z"
+    },
+    {
+      "id": 14955071697,
+      "name": "wallet-sonar-isolated",
+      "sha256": "sha256:a7f0d6d1fb62532c868f502f48de216f116d2b6f88c2e5904b1f590b614b5cac",
+      "bytes": 626525,
+      "created_at": "2026-11-24T18:54:51Z"
+    },
+    {
+      "id": 14955052633,
+      "name": "wallet-sonar-auxiliary",
+      "sha256": "sha256:7c8b7c031288e64862bfcaa86e26ec9107bdfba67e4ca6cf869b6c8859f4fe02",
+      "bytes": 12999905,
+      "created_at": "2026-11-24T19:02:26Z"
+    }
+  ],
+  "source_byte_verification": {
+    "at": "2026-11-24T21:00:20.886523+00:00",
+    "source": "2b1608513339f8fe09045f4e872cd5e61d86c200",
+    "tree": "d29040759a212b26f8f65a876d152bcff7a33160",
+    "production_file_bytes_verified_against_retained_ratified_checkout": 103,
+    "configuration_file_bytes_verified": 6,
+    "four_repository_identities_match_qualified_pin_trees": true,
+    "ratified_and_merge_trees_identical": true,
+    "runtime_or_source_modified": false
+  },
+  "actual_source_tree_readback": {
+    "at": "2026-11-24T21:05:10.225882+00:00",
+    "repositories": {
+      ".": {
+        "revision": "f087ef06f13c77e45d319406cf84a14d14b34264",
+        "tree": "d29040759a212b26f8f65a876d152bcff7a33160",
+        "clean": true
+      },
+      "openWallet": {
+        "revision": "8be8a2a6af125058ffe956cafbf1e62858d82dd9",
+        "tree": "2230b3ed22e7a967aa6cb8fda2faac11bf0fc8fd",
+        "clean": true
+      },
+      "openWallet/code": {
+        "revision": "6fb72ed4c820d927775ccb698c5cfbd8adff71d7",
+        "tree": "98fa0f88a7809aab443df5b404ca8e7286b807e6",
+        "clean": true
+      },
+      "openWallet/spec": {
+        "revision": "878293fb3ed84073dd7e285f56f4fee62413297e",
+        "tree": "3288405a0cebcf15085654ba0121c4d307675eff",
+        "clean": true
+      }
+    },
+    "main_merge_same_ratified_tree": true
+  },
+  "independent_evidence_verification": {
+    "GitHub_archive_digests": true,
+    "source_tree": true,
+    "complete_raw_receipt_members": true,
+    "full_native_identity_sets": true,
+    "complete_production_denominator": true,
+    "passed_test_phases_no_xfail": true,
+    "cross_version": true,
+    "separate_original_baseline": true,
+    "verifier_runtime": "Windows-native Python artifact inspection; project source tests executed by hosted Linux CI"
+  },
+  "review_provenance": {
+    "local_expert_roles_returned": 8,
+    "separate_reliability_turn": "service-blocked, unverified, not retried or rerouted",
+    "GitHub_connector": "deferred under explicit local-review choice",
+    "P07_maintainability_advisories": "Nine disclosed open advisories retained; no issue suppression, acceptance or status change"
+  },
+  "authority": {
+    "source_only": true,
+    "P08_preparation_only": true,
+    "P08_implementation": false,
+    "P09": false,
+    "setup": false,
+    "protected_dispatch": false,
+    "live_human_consumer_acceptance": false,
+    "feedback": "deferred",
+    "blocked_writes_replayed": false
+  },
+  "checked_at": "2026-11-24T21:48:37.832719+00:00"
+}
