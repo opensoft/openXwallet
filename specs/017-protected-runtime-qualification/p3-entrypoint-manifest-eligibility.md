@@ -63,7 +63,9 @@ Prepare an explicit original-registration descriptor and retention contract,
 with its paired plan, before implementing a new wire or record grammar. The
 [design working draft](p3-entrypoint-registration-design-draft.md) compares carrying
 the descriptor from existing staging exchanges with an explicitly budgeted new
-read. Neither is source-ratified or implemented here. The proposed source design uses existing staging/retention; it remains unratified.
+read. Neither is source-ratified or implemented here. The v2 source design uses existing staging capture plus an explicit bounded runner
+claim acquisition; route A failed review on the actual phase placement. V2 remains
+unratified and unimplemented.
 
 The sole executable list remains [tasks.md](tasks.md), unchecked T013P08. P09,
 T001/T013/T014/T015, roles and live/human/consumer acceptance remain separate.

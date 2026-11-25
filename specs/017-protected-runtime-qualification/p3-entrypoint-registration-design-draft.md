@@ -1,6 +1,6 @@
 # Original-registration handoff design working draft
 
-Status: alternatives retained for context; proposed route A selected for drafting only, unratified.
+Status: alternatives retained for context; v2 route B selected after route-A architecture finding, unratified.
 Date: 2026-11-25, America/La_Paz.
 
 ## Problem and required result
@@ -23,12 +23,16 @@ registered resource equality at prepare and independent acknowledgement.
 
 | Route | Proposed source work | Consequence |
 | --- | --- | --- |
-| A: carry from existing staging exchanges (recommended drafting basis) | A distinct closed internal descriptor returned by the existing authenticated registration/acknowledgement path; sealed capture and original retained-state handoff across phase/process boundaries | Avoids inventing a new manifest-read RPC, but requires explicit wire and retention/record grammar ownership plus a demonstrated caller materialization path |
-| B: explicit bounded manifest acquisition | A source-fixed owner read before dependent handoff, with original-attempt consumption, peer/scope/store binding and full physical prepayment | Requires a revised acquisition sequence and measured accounting amendment; it cannot be hidden inside the just-accepted totals |
+| A: staging capture plus caller-local materialization (rejected first draft) | A distinct closed internal descriptor returned by the existing authenticated registration/acknowledgement path; sealed capture and original retained-state handoff across phase/process boundaries | Avoids inventing a new manifest-read RPC, but requires explicit wire and retention/record grammar ownership plus a demonstrated caller materialization path |
+| B: staging capture plus explicit bounded original claim acquisition (v2 drafting basis) | A source-fixed owner read before dependent handoff, with original-attempt consumption, peer/scope/store binding and full physical prepayment | Requires a revised acquisition sequence and measured accounting amendment; it cannot be hidden inside the just-accepted totals |
 
-The proposed route-A factory retain-original-registration-manifest draft and
-[paired registration plan](p3-entrypoint-registration-plan.md) now define the
-recommended original controller-store placement and same-row claim. The source design remains unratified.
+Local architecture review found that route A has no actual phase bridge: qualify
+runs on the GitHub runner while its required original store is controller-local.
+The v2 factory packet and paired plan select one explicit budgeted claim acquisition,
+keeping the runner's exact full proof in place. Capture still uses existing staging
+calls; one new authenticated endpoint consumes the original controller slot and
+returns facts. The proposed cumulative bound is13+2N (max19); no old policy bytes
+change. This is source arithmetic only and remains unratified/unimplemented.
 
 A source proposal must choose and fully define one path. No hypothetical callback,
 fixture-private store, source-independent JSON/file input or generic plugin may
@@ -37,7 +41,7 @@ consumer must be mapped to the existing composition before implementation. If
 that mapping needs a new backend, role, grant or managed resource, disclose it for
 governance rather than treating it as an existing prerequisite.
 
-## Recommended route A contract work
+## Shared original capture and retention work
 
 Specify a complete owner-derived credential-resource projection from the original
 registration, binding registration_digest, original retained-store identity,

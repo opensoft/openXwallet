@@ -12,12 +12,14 @@ records the contract audit and independent36-database fixture audit/disposal. Th
 prototype is archived; runtime/tests/workflows/matrix/pins are restored to source.
 
 The source-only factory retain-original-registration-manifest proposal and
-[paired subplan](specs/017-protected-runtime-qualification/p3-entrypoint-registration-plan.md) propose descriptor capture
-on the existing owner exchanges, original controller-store v2 retention and one
-same-row handoff claim before I/O. New wire/record code requires exact paired source
+[paired subplan](specs/017-protected-runtime-qualification/p3-entrypoint-registration-plan.md) propose v2 descriptor capture
+on existing owner exchanges, original controller-store v2 retention, and one
+explicit budgeted runner acquisition/claim. The first controller-local proof
+draft failed review because the current phase route has no invocation bridge. New wire/record code requires exact paired source
 acceptance. The footprint below is planned, not implementation permission. Only
 existing T013P08 remains owner and unchecked; P09 and T001/T013/T014/T015 stay open.
-No backend, lookup, cap, role or grant is added here. Setup/dispatch unauthorized;
+No backend or runtime role is added. One new internal claim operation/permission
+and cumulative13+2N source bound are proposed, unratified and unimplemented. Setup/dispatch unauthorized;
 feedback deferred; blocked writes unreplayed. Earlier dated records below retain
 their historical checkpoint meaning.
 
