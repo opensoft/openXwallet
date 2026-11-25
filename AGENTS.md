@@ -1,3 +1,26 @@
+## Accepted source and P08 registration handoff draft - 2026-11-25
+
+Brett source-ratified factory #1368 at01c574bd1f64 and wallet #106 at5306efd72c98,
+directed factory-first landing when green and resumed existing T013P08 in isolation.
+Normal merges8833c7d001b3a and12cdf3161c5d preserve the exact ratified trees, without
+administrative overrides. Independent main source CI remains in progress.
+
+Fresh Gate A passes15 controls. Gate B cannot establish original authenticated
+registration/resources/store material at the caller; no selected budget or handoff
+was implemented. [Eligibility evidence](specs/017-protected-runtime-qualification/p3-entrypoint-manifest-eligibility.md)
+records the contract audit and independent36-database fixture audit/disposal. The
+prototype is archived; runtime/tests/workflows/matrix/pins are restored to source.
+
+The source-only factory retain-original-registration-manifest proposal and
+[paired subplan](specs/017-protected-runtime-qualification/p3-entrypoint-registration-plan.md) propose descriptor capture
+on the existing owner exchanges, original controller-store v2 retention and one
+same-row handoff claim before I/O. New wire/record code requires exact paired source
+acceptance. The footprint below is planned, not implementation permission. Only
+existing T013P08 remains owner and unchecked; P09 and T001/T013/T014/T015 stay open.
+No backend, lookup, cap, role or grant is added here. Setup/dispatch unauthorized;
+feedback deferred; blocked writes unreplayed. Earlier dated records below retain
+their historical checkpoint meaning.
+
 ## Current P08 accounting source publication - 2026-11-24
 
 Brett resumed publication of the governed fallback. Candidates are

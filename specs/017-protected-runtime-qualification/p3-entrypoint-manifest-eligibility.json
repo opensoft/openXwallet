@@ -1,0 +1,118 @@
+{
+  "status": "source eligibility record; implementation stopped before selected accounting/handoff",
+  "date": "2026-11-25",
+  "source_acceptance": {
+    "factory_PR": 1368,
+    "factory_head": "01c574bd1f64",
+    "factory_merge": "8833c7d001b3a",
+    "wallet_PR": 106,
+    "wallet_head": "5306efd72c98",
+    "wallet_merge": "12cdf3161c5d",
+    "source_only": true,
+    "ratified_merge_trees_equal": true,
+    "administrative_override": false
+  },
+  "policy_sha256": "fd198b7d7e8e786b5d5f64257ec0e276e881ea5364b265cb9ccb519208f77fa7",
+  "main_CI": {
+    "factory_run": 45539468581,
+    "wallet_run": 45539488585,
+    "qualification": "in progress, independent verification pending"
+  },
+  "Gate_A": {
+    "cases": 15,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "source_consumers": [
+      "github_bootstrap/graph.py",
+      "github_bootstrap/controller.py",
+      "hosted/github_readback.py",
+      "hosted/staging.py",
+      "hosted/stage_controller.py",
+      "hosted/stage_http.py"
+    ],
+    "prototype_archived": true,
+    "product_source_restored": true
+  },
+  "Gate_B": {
+    "eligibility": "not established: original authenticated registration/resource/store capability missing from caller inputs",
+    "ports": {
+      "RemoteBindings": [
+        "plan",
+        "independent_plan",
+        "primary",
+        "independent",
+        "roots",
+        "stage_principal",
+        "read_stage",
+        "authority_principal"
+      ],
+      "PlanBindings": [
+        "approved_plan_digest",
+        "load_plan",
+        "verifier",
+        "policy",
+        "facts_principal",
+        "read_facts",
+        "environment_principal",
+        "read_environment",
+        "clock",
+        "monotonic"
+      ],
+      "StagingReadback": [
+        "principal_ref",
+        "plan_digest",
+        "case_ref",
+        "run_id",
+        "run_attempt",
+        "launch_ref",
+        "cleanup_ref",
+        "generation",
+        "state",
+        "observed_at",
+        "expires_at"
+      ]
+    },
+    "wire_fact_fields": {
+      "register": "registration_digest",
+      "status": "registration_digest owner closed expires_at cleanup_until generation_bound",
+      "ack-stage": "scope_digest unit_digest state expires_at registration_digest",
+      "ack-final": "registration_digest plan_digest generation_digest observed_at expires_at principal_ref"
+    },
+    "contract_shape_controls": 7,
+    "handoff_RPC_sends": 0,
+    "selected_budget_changes": 0,
+    "new_wire_or_authority_added": false,
+    "full_positive": "not performed"
+  },
+  "independent_fixture_audit": {
+    "sqlite_integrity_checks": 36,
+    "file_or_link_hashes": 155,
+    "readonly_fixture_mount": true,
+    "source_hashes_match": true,
+    "store_repairs": 0,
+    "audited_temporary_entries_disposed": 151,
+    "fixture_tmp_absent": true,
+    "owned_test_audit_containers_removed": 3,
+    "live_cleanup_qualification": false
+  },
+  "authority": {
+    "P08_complete": false,
+    "P09": false,
+    "setup": false,
+    "dispatch": false,
+    "live_human_consumer_acceptance": false,
+    "feedback": "deferred",
+    "blocked_writes_replayed": false
+  },
+  "source_hashes_basis": "Audited Gate A prototype snapshot at Gate B contract audit, before restoration; not all hashes describe the restored product tree. gate-a-source-manifest.json binds all candidate/original route bytes.",
+  "audited_source_snapshot_sha256": {
+    "azure_composition/remote_evidence.py": "31d8fd68c1ad17610367048b4af3e3c606c7cafd3468718758c66614c9aa4e95",
+    "hosted/admission.py": "d3a40443f8f160c821a192f765865809b2a3ffb1f56098ad9c0adad84301e8d1",
+    "hosted/finalization.py": "169e4674b4e2e9fdfc924e40db46f9f4016ecb21ae6783b8212c732cdfb5ff59",
+    "hosted/lifecycle.py": "e47286d770f85daa3301227648086920606e385c8866e1c140f198f35621eace",
+    "hosted/lifecycle_service.py": "c82be1d0e8608519979d03fce36e026a4b7b8fa9c27f711d97f8ccdbf4224b2d",
+    "hosted/stage_client.py": "9717689ec4373da4a37d9643ee94cb23b37d29f977c85ded7d99ea13ad1b1c02",
+    "hosted/stage_controller.py": "7923b74de375d028c7c95425dbfb2d7f3f7fda4e803193efde885f2df41679bd"
+  }
+}
