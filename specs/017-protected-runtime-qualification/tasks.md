@@ -1,3 +1,20 @@
+## Current P08 accounting source publication - 2026-11-24
+
+Brett resumed publication of the governed fallback. Candidates are
+[openXfactory #1368](https://github.com/opensoft/openXfactory/pull/1368) and
+[openXwallet #106](https://github.com/opensoft/openXwallet/pull/106). The actual
+factory ledger is generated with this PR identity. CI and local Codex expert
+review are in progress; no source acceptance, merge or runtime implementation
+is inferred. See the [paired subplan](p3-entrypoint-accounting-plan.md).
+
+Isolated P08 was commissioned and its eligibility work stopped on original
+private12 after physical accounting. It did not complete Gate B or full proof.
+The new original-registration manifest-retention condition is also unproven at
+the caller. Dependent selected accounting and handoff require exact paired source
+acceptance and fresh eligibility. T013P08/P09 stay unchecked. Setup/dispatch remain
+unauthorized, feedback deferred, blocked writes unreplayed. Earlier dated scope
+records below retain their historical checkpoint meaning.
+
 ## P08 eligibility stopped; physical accounting amendment draft - 2026-11-24
 
 Brett commissioned isolated T013P08 using plan75fc1feb3474, starting with both

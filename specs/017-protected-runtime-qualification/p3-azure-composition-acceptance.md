@@ -1,9 +1,10 @@
 # P3 source acceptance and traceability matrix
 
-Current bounded preparation (2026-11-24): [T013P08](p3-entrypoint-plan.md).
-P07 is source-accepted and qualified; P08 implementation remains uncommissioned.
+Current P08 source publication (2026-11-24): [T013P08](p3-entrypoint-plan.md).
+P07 is source-accepted and qualified. Isolated P08 was commissioned; Gate B stopped
+on original private12. Dependent work awaits exact paired accounting acceptance.
 Earlier proposal and commission labels retain their original checkpoint scope;
-see the current [owner record](p3-design-basis-acceptance.md#2026-11-24-105-source-acceptance-and-p08-preparation).
+see the current [commission/eligibility record](p3-design-basis-acceptance.md#2026-11-24-p08-eligibility-and-paired-accounting-publication).
 
 Status: proposed future controls; none executed as new runtime tests
 Authority: exact P3 source acceptance and isolated commission required first

@@ -1,11 +1,12 @@
 # P3 preparation and future isolated-source verification
 
-Current bounded preparation (2026-11-24): [T013P08](p3-entrypoint-plan.md).
-P07 is source-accepted and qualified; P08 implementation remains uncommissioned.
+Current P08 source publication (2026-11-24): [T013P08](p3-entrypoint-plan.md).
+P07 is source-accepted and qualified. Isolated P08 was commissioned; Gate B stopped
+on original private12. Dependent work awaits exact paired accounting acceptance.
 Earlier proposal and commission labels retain their original checkpoint scope;
-see the current [owner record](p3-design-basis-acceptance.md#2026-11-24-105-source-acceptance-and-p08-preparation).
+see the current [commission/eligibility record](p3-design-basis-acceptance.md#2026-11-24-p08-eligibility-and-paired-accounting-publication).
 
-Status: source decision accepted; first P01/P02 isolated source commissioned; setup/dispatch unauthorized
+Status: P07 accepted source; isolated P08 commissioned and stopped at eligibility; accounting source review pending; setup/dispatch unauthorized
 
 ## Inspect the planning packet
 
@@ -62,19 +63,24 @@ missing. Correcting checkout requires no product/test/pin/expectation change.
 ## First bounded source slice
 
 See [commission, source boundary and isolated verification](p3-namespace-implementation.md).
-Only T013P01/T013P02 are commissioned. Source checkout/tests are not operational
+Historical P01/P02 checkpoint: only those two rows were commissioned. Source checkout/tests are not operational
 setup. Later P3 source work, provider requests, setup and dispatch remain gated.
 
-## Current next slice: P08 preparation only
+## Current next step: paired accounting source acceptance
 
 P07 is source-accepted and independently qualified on main; the [parent receipt](p3-entrypoint-parent-main-qualification.json)
-retains exact-source evidence and the approved bounded source-CI retry. Read the
-[P08 subplan](p3-entrypoint-plan.md) before any future implementation commission.
-Start with its two eligibility gates: the closed authenticated companion route,
-then the complete independently authorized remote handoff into unchanged full
-qualification. Package integration follows only a fitting connected positive.
+retains exact-source evidence and the approved bounded source-CI retry. Isolated
+P08 was commissioned at75fc1feb3474. Its [eligibility record](p3-entrypoint-eligibility.md)
+shows Gate A eligible and Gate B stopped on original private12. Its new caller
+manifest-retention condition also remains unproven. No complete proof is qualified.
 
-Use the same source-only checkout and declared py-bench validation commands above.
-This preparation adds no executable, test, deployment command, filled parameter,
-credential, grant or state initialization. The original default CLI continues to
-refuse; P08/P09 implementation and every setup/protected-dispatch gate remain open.
+Review the paired [accounting subplan](p3-entrypoint-accounting-plan.md) and real
+candidate PRs before exact paired source ratification. Only after acceptance may
+dependent P08 repeat both eligibility gates, prove original retained material and
+complete connected handoff within all accepted limits. Package integration follows
+only a fitting connected positive. P09 remains separate.
+
+Use source-only checkout and declared bench validation. The publication supplies
+no executing workflow SHA, filled deployment parameters, credentials, grant or
+state initialization. Original default CLI refusal, setup/protected-dispatch holds,
+feedback deferral and blocked-write prohibitions remain in force.

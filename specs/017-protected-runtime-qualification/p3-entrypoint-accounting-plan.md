@@ -4,7 +4,7 @@ Status: draft
 Date: 2026-11-24, America/La_Paz
 Factory change: `bound-remote-lifecycle-accounting` in opensoft/openXfactory.
 Policy: `openxfactory-remote-lifecycle-accounting-internal-v1`.
-Policy file SHA-256: `a5cf053187a03dfcf8fa6d41b2a121c338606520a3cd7e2f7d7b4be41a2a9c54`.
+Policy file SHA-256: `fd198b7d7e8e786b5d5f64257ec0e276e881ea5364b265cb9ccb519208f77fa7`.
 
 ## Authority and eligibility
 
@@ -23,7 +23,7 @@ contracts remain intact. P09 and live/human/consumer gates stay separate.
 ## Proposed source selection and conservation
 
 Select the factory policy by trusted source construction before first I/O from the
-immutable authenticated original RunPlan credential manifest, with1<=N<=3. No CLI,
+immutable authenticated original registration credential-resource manifest, with1<=N<=3. No CLI,
 profile, file, environment, worker/callback or plugin selector may choose a cap.
 Do not remove credentials or observations to fit. The original manifest and scope
 must be checked before and after blocking work.
@@ -69,9 +69,30 @@ success and the current19 controls cannot close that requirement.
 
 ## Publication and operational gates
 
-This local candidate has no PR identity, generated factory ledger, hosted CI or
-fresh local expert review. Complete those through a separately commissioned
-publication step, then present exact paired heads for source-only ratification.
+Brett resumed the source publication step. The paired candidates are factory
+[#1368](https://github.com/opensoft/openXfactory/pull/1368) and adapter
+[#106](https://github.com/opensoft/openXwallet/pull/106); the factory ledger uses its
+actual PR identity. Hosted CI and local Codex expert review are in progress.
+Resolve findings and verify final exact-head evidence before presenting the pair
+for source-only ratification.
 The policy digest above identifies bytes, not acceptance or a live grant.
 Setup/dispatch, T001/T013/T014/T015 and independent live/human/consumer acceptance
 remain unauthorized. Feedback deferred; historical blocked writes unreplayed.
+
+## Pre-I/O manifest eligibility
+
+The existing durable source is registration.resources, created before finalization,
+not a final RunPlan that is constructed afterward. Bind its exact credential rows
+to the original registration digest, retained-store identity and scope. Existing
+prepare_final later requires the RunPlan resources to equal resources_for(state);
+that equality remains mandatory, not a substitute for the earlier source binding.
+
+The current caller does not yet demonstrate retention of this material:
+RemoteBindings has no registration/resource capability and the lifecycle wire
+receipts expose a digest, not the manifest. Before selected accounting or handoff
+I/O, eligibility must prove how trusted source construction retains/authenticates
+the original material at that caller. A supplied count, a later RunPlan, a newly
+constructed approval or an extra unbudgeted lookup cannot supply it. If existing
+retained inputs cannot do so without a new wire contract, role or authority,
+refuse and return to governance. This amendment does not claim that proof or
+silently add its missing port. No product implementation is accepted by this plan.
