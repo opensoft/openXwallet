@@ -1,0 +1,170 @@
+{
+  "Gate_A": "eligible in isolated prototype; 15 controls",
+  "Gate_B": "ineligible under unchanged physical private12",
+  "adapter_base": "75fc1feb3474a3fbbc74e37e0f61c5d0f249ada7",
+  "authority": {
+    "blocked_writes_replayed": false,
+    "dispatch": false,
+    "feedback": "deferred",
+    "setup": false
+  },
+  "earlier_diagnostic": "Initial test producer passed but its independent audit found an issued fixture record. It is unqualified and not repaired. Fresh final-r2 independently verifies retired issuance and consumed measurement/finalization records.",
+  "errors": 0,
+  "factory_base": "587841747ffbbff0d91facee34ac22e76ec632e2",
+  "failures": 0,
+  "focused_cases": 19,
+  "independent_audit": {
+    "lifecycle_witness_events": 111,
+    "nonce_databases": 16,
+    "passed": true,
+    "unexpected_processes": 0
+  },
+  "kind": "p08-eligibility-record",
+  "observations": {
+    "p08-fixed-cap-refusal.json": [
+      {
+        "attempted_next_debit": 13,
+        "budget_reset": false,
+        "cap": 12,
+        "elapsed_seconds": 1.6138006630062591,
+        "original_nonce_consumed": true,
+        "private_debits_at_refusal": 12,
+        "proof_performed": false,
+        "released": false,
+        "rpc_sends": [],
+        "same_original_decision": true,
+        "scope": "Gate B complete-positive eligibility refused under unchanged cap",
+        "takeover_acknowledged": false,
+        "tokens": 3
+      },
+      {
+        "attempted_next_debit": 13,
+        "budget_reset": false,
+        "cap": 12,
+        "elapsed_seconds": 1.706858755002031,
+        "original_nonce_consumed": true,
+        "private_debits_at_refusal": 12,
+        "proof_performed": false,
+        "released": false,
+        "rpc_sends": [
+          "prepare"
+        ],
+        "same_original_decision": true,
+        "scope": "Gate B complete-positive eligibility refused under unchanged cap",
+        "takeover_acknowledged": false,
+        "tokens": 1
+      }
+    ],
+    "p08-fixture-cleanup.json": [
+      {
+        "controller_private": 1,
+        "credentials_retired": true,
+        "mode": "audit-only-no-resend",
+        "mutating_rpc_sent": false,
+        "nested_server_private": 3,
+        "observed_kind": "final",
+        "scope": "fixture teardown evidence; no policy/qualification claim",
+        "tokens": 3
+      },
+      {
+        "controller_private": 2,
+        "credentials_retired": true,
+        "mode": "original-scope-cleanup",
+        "mutating_rpc_sent": true,
+        "nested_server_private": 12,
+        "observed_kind": "stage",
+        "scope": "fixture teardown evidence; no policy/qualification claim",
+        "tokens": 3
+      },
+      {
+        "controller_private": 2,
+        "credentials_retired": true,
+        "mode": "original-scope-cleanup",
+        "mutating_rpc_sent": true,
+        "nested_server_private": 4,
+        "observed_kind": "stage",
+        "scope": "fixture teardown evidence; no policy/qualification claim",
+        "tokens": 1
+      },
+      {
+        "controller_private": 1,
+        "credentials_retired": true,
+        "mode": "audit-only-no-resend",
+        "mutating_rpc_sent": false,
+        "nested_server_private": 1,
+        "observed_kind": "final",
+        "scope": "fixture teardown evidence; no policy/qualification claim",
+        "tokens": 1
+      }
+    ],
+    "p08-physical-accounting.json": [
+      {
+        "controller_private": 12,
+        "elapsed_seconds": 2.1940363989997422,
+        "gate_b_qualified": false,
+        "github": 12,
+        "nested_server_private": 6,
+        "physical_private": 18,
+        "protection": 12,
+        "scope": "diagnostic legacy-RPC accounting only; NOT Gate B qualification",
+        "tokens": 3
+      },
+      {
+        "controller_private": 12,
+        "elapsed_seconds": 1.9750826199888252,
+        "gate_b_qualified": false,
+        "github": 12,
+        "nested_server_private": 2,
+        "physical_private": 14,
+        "protection": 12,
+        "scope": "diagnostic legacy-RPC accounting only; NOT Gate B qualification",
+        "tokens": 1
+      }
+    ],
+    "p08-runtime-cleanup-accounting.json": [
+      {
+        "controller_private": 2,
+        "elapsed_seconds": 1.204350384999998,
+        "nested_server_private": 15,
+        "physical_private": 17,
+        "scope": "diagnostic physical cleanup accounting; no policy/qualification claim",
+        "tokens": 3
+      },
+      {
+        "controller_private": 2,
+        "elapsed_seconds": 0.6594093899911968,
+        "nested_server_private": 5,
+        "physical_private": 7,
+        "scope": "diagnostic physical cleanup accounting; no policy/qualification claim",
+        "tokens": 1
+      }
+    ]
+  },
+  "proposed_policy_sha256": "fd198b7d7e8e786b5d5f64257ec0e276e881ea5364b265cb9ccb519208f77fa7",
+  "prototype_sha256": {
+    "scripts/workload_factory_binding_runtime/azure_composition/remote_evidence.py": "58d75dd69ea8c62446dfdc18cc81fef1cc2c3e3127dfd3de29bfb213fbad9617",
+    "scripts/workload_factory_binding_runtime/github_bootstrap/controller.py": "df56a7acabdbbe22166bbcf812801803297149ab409f7d62ed201f657e7150b1",
+    "scripts/workload_factory_binding_runtime/github_bootstrap/graph.py": "e3f4a60830194d4eed3b4413d5f5c75c66c3c0de43600748f0b86b2285a3b148",
+    "scripts/workload_factory_binding_runtime/hosted/github_readback.py": "3395f2cc6fffeccf2cc7ae405afceb5354e1d19ecfa08673d600f53f309b9dbb",
+    "scripts/workload_factory_binding_runtime/hosted/stage_controller.py": "7923b74de375d028c7c95425dbfb2d7f3f7fda4e803193efde885f2df41679bd",
+    "scripts/workload_factory_binding_runtime/hosted/stage_http.py": "fb0786ddc560a70abbf787e4d02838c7746b3560817b0e600cb4e4bbbf55cd0d",
+    "scripts/workload_factory_binding_runtime/hosted/staging.py": "3e574f41efa1ebbb013d07184f06107d707429089b7f7f4d133df35f81dc5ef1",
+    "tests/runtime_binding/azure_entrypoint_fixture.py": "bae144499da4a1d0cf61a3ddd49f624d521a7b3793a87e0e82280b3bc713eaef",
+    "tests/runtime_binding/test_azure_entrypoint.py": "1d18c2d3a146c42b5afbe0a269ae58ac1d1a10f443e7af90280f496594251c7e"
+  },
+  "qualification": {
+    "full": false,
+    "hosted": false,
+    "native": false,
+    "p08_complete": false
+  },
+  "receipts_sha256": {
+    "audit-complete.json": "b6191b94c1771c34f2261351cd0c0c9ed5a9294dfbc6b74e012fe28f3302293a",
+    "frozen-source.json": "6ff46241a8d1ddff42ab212f9e54178d5cc8ec4fc5812e6aa699e911f0bf0f83",
+    "independent-audit.json": "e34b1fe500a55ccca9b849e9c099f63079e77bc1e5f926241fc61caa2bc5ac2d",
+    "pytest.xml": "bb156f6d5dd65f0c0077149bc324d3ac8a7f6cadad94561b0f554c8efc21169b",
+    "result.json": "e09bb99b8509fda4be84d40258b411fd4f7cf5a198628cc869fd4b4a9af15654"
+  },
+  "schema_version": 1,
+  "skips": 0
+}

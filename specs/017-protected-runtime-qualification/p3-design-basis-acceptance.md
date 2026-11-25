@@ -190,3 +190,48 @@ This documentation-only preparation uses the existing six fast offline gates,
 feature prerequisite, link, checkbox and non-document/pin/dependency preservation
 audits before its local commit. Main full/native source qualification is recorded
 above; the preparation creates no new executable, fixture, test or measured case.
+
+## 2026-11-24 #105 source acceptance and P08 preparation
+
+Brett Heap stated:
+
+> I ratify openXwallet #105 at f087ef06f13c77e45d319406cf84a14d14b34264 for source acceptance only. Land when green, verify main CI, then prepare T013P08. Keep setup/dispatch unauthorized, feedback deferred; don’t replay blocked writes.
+
+The [owner record](https://github.com/opensoft/openXwallet/pull/105#issuecomment-7141309208)
+and [parent main qualification receipt](p3-entrypoint-parent-main-qualification.json)
+record the exact head, ordinary merge, identical tree and independent main source
+qualification. The initial failed coverage result is retained as a diagnostic;
+its cause is not established. Brett explicitly approved the one targeted offline
+coverage/analysis retry at unchanged source. This exception authorizes no protected
+pilot setup or dispatch.
+
+The [P08 subplan](p3-entrypoint-plan.md) prepares only the existing T013P08 row.
+T013P07 closes for accepted and qualified isolated source; P08/P09 and
+T001/T013/T014/T015 remain unchecked. No operational accepted_commit, service,
+credential, grant, endpoint, UTC window or role confirmation is selected here.
+The independent runtime/infrastructure outcomes, exact old local types/profiles,
+three inputs, seven runtime/eight source roles, original budgets and old default
+refusal remain unchanged. Feedback is deferred; historical blocked writes remain
+unreplayed. P08 implementation requires a separate bounded commission.
+
+## 2026-11-24 P08 eligibility and paired accounting publication
+
+Brett commissioned isolated T013P08 using prepared plan75fc1feb3474 and then resumed
+source publication of its governed fallback. Gate A's15 isolated source-route
+controls are eligible; Gate B refuses under original private12 after complete
+physical prepayment. Nineteen focused controls do not qualify a full P08 positive.
+
+The [eligibility record](p3-entrypoint-eligibility.md) and
+[accounting subplan](p3-entrypoint-accounting-plan.md) now have paired candidates:
+[factory #1368](https://github.com/opensoft/openXfactory/pull/1368) and
+[adapter #106](https://github.com/opensoft/openXwallet/pull/106). The generated
+factory ledger names its real PR. CI, local expert review, finding resolution and
+exact-head presentation are commissioned; source ratification/merge are not.
+
+The original registration resource manifest exists before finalization; the final
+RunPlan does not. Trusted caller retention/authentication of that original material
+must be proved by eligibility before selected accounting or handoff work; current
+caller inputs do not yet demonstrate it. A new wire/role/authority need stops for
+governance. No cap, runtime code or operational grant is accepted by these drafts.
+T013P08/P09 and all live/human/consumer/setup/dispatch gates remain open. Feedback
+deferred; historical blocked writes unreplayed.

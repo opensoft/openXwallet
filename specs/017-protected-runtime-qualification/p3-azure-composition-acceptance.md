@@ -1,5 +1,11 @@
 # P3 source acceptance and traceability matrix
 
+Current P08 source publication (2026-11-24): [T013P08](p3-entrypoint-plan.md).
+P07 is source-accepted and qualified. Isolated P08 was commissioned; Gate B stopped
+on original private12. Dependent work awaits exact paired accounting acceptance.
+Earlier proposal and commission labels retain their original checkpoint scope;
+see the current [commission/eligibility record](p3-design-basis-acceptance.md#2026-11-24-p08-eligibility-and-paired-accounting-publication).
+
 Status: proposed future controls; none executed as new runtime tests
 Authority: exact P3 source acceptance and isolated commission required first
 Factory capability: protected-runtime-azure-composition
@@ -60,3 +66,21 @@ and the absence of a backward static/final-link commitment. A current read-only
 observer can emit late failure without any mutation; expired observation authority
 refuses emission and missing evidence fails qualification. No test may reset an
 original cleanup/proof Decision or accept late completion as timely success.
+
+## Prepared P08 source obligations
+
+The [P08 subplan](p3-entrypoint-plan.md) refines the existing T013P08 row, not a
+second executable task list. R02 must cover old/new authenticated graph consumers,
+fixed-command crossover refusal, unchanged old defaults and no ambient activation.
+R03/R06 must cover a complete independently authorized sealed-result handoff,
+real owning-kernel lifecycle and unchanged full admission/proof. R07/R10 must keep
+runtime cleanup and infrastructure receipts distinct, including partial-setup loss
+without fabricated final-run scope. R11 first requires a connected complete
+positive within original physical I/O, clock and body bounds. An inability to fit
+or preserve existing authority/state semantics triggers governed amendment.
+
+Existing full/native identities, module fingerprints and anchors are preserved;
+new counts are measured only after later implementation. Packaging checks must
+prove consume-before-send ownership and retained resource/tombstone preservation.
+These are future verification obligations, not passed controls. P08/P09 and all
+operational/human/consumer gates remain open after this documentation preparation.

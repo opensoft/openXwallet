@@ -1,3 +1,45 @@
+## Current P08 accounting source publication - 2026-11-24
+
+Brett resumed publication of the governed fallback. Candidates are
+[openXfactory #1368](https://github.com/opensoft/openXfactory/pull/1368) and
+[openXwallet #106](https://github.com/opensoft/openXwallet/pull/106). The actual
+factory ledger is generated with this PR identity. CI and local Codex expert
+review are in progress; no source acceptance, merge or runtime implementation
+is inferred. See the [paired subplan](p3-entrypoint-accounting-plan.md).
+
+Isolated P08 was commissioned and its eligibility work stopped on original
+private12 after physical accounting. It did not complete Gate B or full proof.
+The new original-registration manifest-retention condition is also unproven at
+the caller. Dependent selected accounting and handoff require exact paired source
+acceptance and fresh eligibility. T013P08/P09 stay unchecked. Setup/dispatch remain
+unauthorized, feedback deferred, blocked writes unreplayed. Earlier dated scope
+records below retain their historical checkpoint meaning.
+
+## P07 source accepted; P08 preparation only - 2026-11-24
+
+Brett Heap source-ratified [openXwallet #105](https://github.com/opensoft/openXwallet/pull/105)
+at f087ef06f13c77e45d319406cf84a14d14b34264. Normal merge
+2b1608513339f8fe09045f4e872cd5e61d86c200 preserves the exact ratified tree
+d29040759a212b26f8f65a876d152bcff7a33160, without an administrative override.
+Independent main source CI passes all five effective jobs: 3,731 full parents
+plus 11 subtests and 3,309 native cases, with zero failures/errors/skips.
+All six unchanged Sonar conditions pass against the original August 27 manual
+baseline. The initial coverage failure remains diagnostic with cause unknown;
+one explicitly approved targeted coverage/analysis retry used unchanged source,
+tests, thresholds and bounds. Existing passing source jobs/artifacts were retained.
+Eight local expert review roles returned; the separately service-blocked reliability
+turn remains unverified and was neither retried nor routed elsewhere. The nine
+disclosed P07 maintainability advisories remain open and are not suppressed.
+
+Only existing T013P08 is prepared. Its [subplan](p3-entrypoint-plan.md) starts with
+closed source-route propagation and a genuine complete-byte remote handoff into
+unchanged full qualification. P08/P09 implementation, T001/T013/T014/T015, role
+appointments and live human/consumer acceptance remain separate. T013P07 closes
+for accepted and qualified isolated source; P08/P09 stay unchecked. Setup and
+protected dispatch are unauthorized; feedback deferred; blocked writes unreplayed.
+See the [parent qualification receipt](p3-entrypoint-parent-main-qualification.json).
+Earlier dated records below retain their historical scope.
+
 ## P06 source accepted; P07 preparation only - 2026-11-23 America/La_Paz
 
 Brett source-ratified openXwallet #103 at

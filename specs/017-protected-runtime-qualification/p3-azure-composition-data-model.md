@@ -1,5 +1,11 @@
 # P3 deployment and remote evidence model
 
+Current P08 source publication (2026-11-24): [T013P08](p3-entrypoint-plan.md).
+P07 is source-accepted and qualified. Isolated P08 was commissioned; Gate B stopped
+on original private12. Dependent work awaits exact paired accounting acceptance.
+Earlier proposal and commission labels retain their original checkpoint scope;
+see the current [commission/eligibility record](p3-design-basis-acceptance.md#2026-11-24-p08-eligibility-and-paired-accounting-publication).
+
 Status: proposed source model; not operative configuration
 Canonical ownership: factory add-protected-runtime-azure-composition supporting-docs/composition-boundary.md
 
@@ -54,3 +60,22 @@ including order/kind/dependencies/policy/attempt/disposition. The setup-retireme
 variant also covers partial setup without any provisioned envelope. Distinct
 observation_authority_ref can authenticate a late failed observation, but cannot
 reset/renew expired cleanup/proof scope, budgets or operations.
+
+## P08 private source handoff refinement
+
+The [P08 subplan](p3-entrypoint-plan.md) introduces no new serialized entity or
+journal grammar. Existing VerifiedRemote is an opaque source capability, not a
+FinalizedPlan or a proof of full admission. Its future owner-module consumption
+operation must bind the exact selected finalizer, complete bytes, provenance,
+original Decision/ledger and frozen bindings. It must identify the existing
+staging_policy.launch_ref, retained store identity and HostedLifecycle registration/
+final-plan state. An ambiguous or lost original attempt refuses; a new capability
+cannot reconstruct approval or reset state.
+
+After independently corroborating actual scope, complete bytes, generation and
+current authority, the trusted producer may construct existing FinalizationBinding
+and FinalizedPlan. Their plain constructors are not authenticators. The original
+owning-kernel lifecycle and unchanged admission/qualification checks still apply.
+Generation retains launch_ref, host_ref, incarnation_ref, boot_id, invocation_ref,
+pid and start_time; bridge/lifecycle and qualification Decision identity are exact.
+Runtime cleanup and P07 infrastructure receipts remain separate existing artifacts.
