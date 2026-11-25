@@ -7,6 +7,9 @@ Factory change: retain-original-registration-manifest.
 ## Governing basis and authority
 
 Factory1368 and wallet106 are source accepted/landed with equal ratified trees.
+Their independent [main source-CI receipt](p3-entrypoint-registration-parent-main.json)
+verifies7 artifacts, four identical wallet measurements,3,731 full parents plus
+11 subtests/3,309 native cases and all6 evaluated Sonar conditions per repository.
 The [fresh eligibility record](p3-entrypoint-manifest-eligibility.md) proves Gate A's
 15 controls and confirms Gate B's missing original caller capability. The accepted
 [accounting subplan](p3-entrypoint-accounting-plan.md) requires this return to

@@ -11,7 +11,9 @@ at5306efd72c98 for source acceptance only. Normal merges8833c7d001b3a and
 12cdf3161c5d landed factory first, preserving both exact ratified trees without
 administrative overrides. He then commissioned existing T013P08 in isolation,
 starting with both eligibility gates. Independent main runs45539468581 and
-45539488585 remain in progress at this checkpoint; PR checks do not substitute.
+45539488585 were in progress at eligibility time. Both later passed; the
+[parent-main receipt](p3-entrypoint-registration-parent-main.json) verifies exact
+merge trees/artifacts and all6 evaluated Sonar conditions per repository.
 
 The accepted [accounting subplan](p3-entrypoint-accounting-plan.md) and factory
 bound-remote-lifecycle-accounting require authenticated original registration

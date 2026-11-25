@@ -16,7 +16,8 @@
   "main_CI": {
     "factory_run": 45539468581,
     "wallet_run": 45539488585,
-    "qualification": "in progress, independent verification pending"
+    "qualification": "both exact-merge source CI runs complete success;6/6 Sonar conditions evaluated/passing per repository",
+    "receipt": "p3-entrypoint-registration-parent-main.json"
   },
   "Gate_A": {
     "cases": 15,

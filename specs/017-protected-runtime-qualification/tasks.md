@@ -3,7 +3,9 @@
 Brett source-ratified factory #1368 at01c574bd1f64 and wallet #106 at5306efd72c98,
 directed factory-first landing when green and resumed existing T013P08 in isolation.
 Normal merges8833c7d001b3a and12cdf3161c5d preserve the exact ratified trees, without
-administrative overrides. Independent main source CI remains in progress.
+administrative overrides. Independent main source CI passes both exact merges;
+all6 Sonar conditions are evaluated/passing per repository. The paired subplan
+links its committed source-CI receipt.
 
 Fresh Gate A passes15 controls. Gate B cannot establish original authenticated
 registration/resources/store material at the caller; no selected budget or handoff

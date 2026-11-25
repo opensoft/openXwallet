@@ -1,0 +1,360 @@
+{
+  "at": "2026-11-25T05:22:26.909652+00:00",
+  "scope": "independent post-merge source CI for ratified factory1368/wallet106; not P08 runtime qualification",
+  "commits": [
+    {
+      "repo": "opensoft/openXfactory",
+      "PR": 1368,
+      "ratified_head": "01c574bd1f641d4607cf5ed0f84b70c2c89bcd74",
+      "merge": "8833c7d001b3aff0d9636872468cd46e809962d3",
+      "tree": "185732e938605d24acff3559bd67a7bb8734b780",
+      "workflow_run": 45539468581,
+      "event": "push",
+      "conclusion": "success",
+      "successful_jobs": 2
+    },
+    {
+      "repo": "opensoft/openXwallet",
+      "PR": 106,
+      "ratified_head": "5306efd72c988b8c02ff6931a2a0585ec312d62d",
+      "merge": "12cdf3161c5d44d37e0ab18c55f1d201105f2477",
+      "tree": "745250388329b799d863047b542ce987bb02095c",
+      "workflow_run": 45539488585,
+      "event": "push",
+      "conclusion": "success",
+      "successful_jobs": 5
+    }
+  ],
+  "artifacts": [
+    {
+      "repo": "opensoft/openXfactory",
+      "run": 45539468581,
+      "head": "8833c7d001b3aff0d9636872468cd46e809962d3",
+      "artifact_id": 14992096887,
+      "name": "sonar-gate",
+      "archive_sha256": "b8344459185d68ddf21e362d5214c122e05c5f7d49925b53eae3120339b3204e",
+      "archive_bytes": 936
+    },
+    {
+      "repo": "opensoft/openXfactory",
+      "run": 45539468581,
+      "head": "8833c7d001b3aff0d9636872468cd46e809962d3",
+      "artifact_id": 14991896507,
+      "name": "sonar-coverage",
+      "archive_sha256": "85fc3425aad91045b69248baed68fb277b63c3c6fa4ee58ae98dbb7900d6a1da",
+      "archive_bytes": 1076354
+    },
+    {
+      "repo": "opensoft/openXwallet",
+      "run": 45539488585,
+      "head": "12cdf3161c5d44d37e0ab18c55f1d201105f2477",
+      "artifact_id": 14994006924,
+      "name": "wallet-sonar-gate",
+      "archive_sha256": "1a256848508372a511d7920ea42d12a7d25184a500fb991949c8029f041cdb4a",
+      "archive_bytes": 936
+    },
+    {
+      "repo": "opensoft/openXwallet",
+      "run": 45539488585,
+      "head": "12cdf3161c5d44d37e0ab18c55f1d201105f2477",
+      "artifact_id": 14994715113,
+      "name": "wallet-sonar-runtime",
+      "archive_sha256": "eb9f7d8aa014a5824f952612b60de1987c9d556c22fcaeab7bf25438c921a0ad",
+      "archive_bytes": 301185
+    },
+    {
+      "repo": "opensoft/openXwallet",
+      "run": 45539488585,
+      "head": "12cdf3161c5d44d37e0ab18c55f1d201105f2477",
+      "artifact_id": 14988651984,
+      "name": "wallet-sonar-isolated",
+      "archive_sha256": "5db6aaac276101b47d82e12307879f3b06ca79183bce8898ea5776e97cc0ddec",
+      "archive_bytes": 626531
+    },
+    {
+      "repo": "opensoft/openXwallet",
+      "run": 45539488585,
+      "head": "12cdf3161c5d44d37e0ab18c55f1d201105f2477",
+      "artifact_id": 14988867253,
+      "name": "wallet-sonar-auxiliary",
+      "archive_sha256": "596a4e54fad4b4712e7d0e7b491ea6b5aa681b256295d5e463ee4587ae741ccb",
+      "archive_bytes": 13000224
+    },
+    {
+      "repo": "opensoft/openXwallet",
+      "run": 45539488585,
+      "head": "12cdf3161c5d44d37e0ab18c55f1d201105f2477",
+      "artifact_id": 14991608895,
+      "name": "wallet-sonar-primary",
+      "archive_sha256": "db05636c7f34ae0e5c6f18d1536ef2e322f8c68a15839430d48c0494f10f5515",
+      "archive_bytes": 161415039
+    }
+  ],
+  "all7_archive_digests_and_declared_members_verified": true,
+  "wallet": {
+    "four_identical_measurements": true,
+    "production_files": 103,
+    "config_files": 6,
+    "repository_identities": {
+      ".": {
+        "revision": "12cdf3161c5d44d37e0ab18c55f1d201105f2477",
+        "tree": "745250388329b799d863047b542ce987bb02095c"
+      },
+      "openWallet": {
+        "revision": "8be8a2a6af125058ffe956cafbf1e62858d82dd9",
+        "tree": "2230b3ed22e7a967aa6cb8fda2faac11bf0fc8fd"
+      },
+      "openWallet/code": {
+        "revision": "6fb72ed4c820d927775ccb698c5cfbd8adff71d7",
+        "tree": "98fa0f88a7809aab443df5b404ca8e7286b807e6"
+      },
+      "openWallet/spec": {
+        "revision": "878293fb3ed84073dd7e285f56f4fee62413297e",
+        "tree": "3288405a0cebcf15085654ba0121c4d307675eff"
+      }
+    },
+    "coverage_partition": [
+      3730,
+      1
+    ],
+    "partition_disjoint_and_complete": true,
+    "full_cases": 3731,
+    "native_cases": 3309,
+    "full_subtests": 11,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "test_phases_no_xfail": true,
+    "cross_version_cores": {
+      "primary": "CTracer",
+      "isolated": "SysMonitor"
+    }
+  },
+  "factory": {
+    "at": "2026-11-25T04:53:14.068201+00:00",
+    "repo": "opensoft/openXfactory",
+    "head": "8833c7d001b3aff0d9636872468cd46e809962d3",
+    "run": 45539468581,
+    "artifact_id": 14991896507,
+    "archive_sha256": "85fc3425aad91045b69248baed68fb277b63c3c6fa4ee58ae98dbb7900d6a1da",
+    "junit_total_cases": 10929,
+    "junit_suites": [
+      {
+        "name": "pytest",
+        "errors": "0",
+        "failures": "0",
+        "skipped": "6",
+        "tests": "11805",
+        "time": "3504.068",
+        "timestamp": "2026-11-25T03:24:56.242435+00:00",
+        "hostname": "runnervm0hi8g"
+      }
+    ],
+    "model_cases": 30,
+    "model_nonpassed": [],
+    "standing_inventory_cases": 1,
+    "standing_inventory_nonpassed": [],
+    "helper_coverage": {
+      "openspec/changes/bound-remote-lifecycle-accounting/supporting-docs/derive-inventory.py": {
+        "covered_lines": 105,
+        "num_statements": 105,
+        "percent_covered": 100.0,
+        "percent_covered_display": "100",
+        "missing_lines": 0,
+        "excluded_lines": 0,
+        "percent_statements_covered": 100.0,
+        "percent_statements_covered_display": "100",
+        "num_branches": 40,
+        "num_partial_branches": 0,
+        "covered_branches": 40,
+        "missing_branches": 0,
+        "percent_branches_covered": 100.0,
+        "percent_branches_covered_display": "100"
+      }
+    },
+    "coverage_totals": {
+      "covered_lines": 52131,
+      "num_statements": 67134,
+      "percent_covered": 75.346687211094,
+      "percent_covered_display": "75",
+      "missing_lines": 15003,
+      "excluded_lines": 863,
+      "percent_statements_covered": 77.6521583698275,
+      "percent_statements_covered_display": "78",
+      "num_branches": 28918,
+      "num_partial_branches": 3369,
+      "covered_branches": 20241,
+      "missing_branches": 8677,
+      "percent_branches_covered": 69.99446711390829,
+      "percent_branches_covered_display": "70"
+    },
+    "receipt_top_keys": [
+      "revision",
+      "tree",
+      "sources",
+      "configs",
+      "test_counts",
+      "coverage_version",
+      "artifacts"
+    ]
+  },
+  "Sonar": {
+    "opensoft/openXfactory": {
+      "analysis_id": "8f0685a8-9545-42d0-95ef-5a7dfb80f120",
+      "revision": "8833c7d001b3aff0d9636872468cd46e809962d3",
+      "main_analysis": true,
+      "status": "OK",
+      "ignoredConditions": false,
+      "declared_conditions": 6,
+      "evaluated_conditions": 6,
+      "metrics": [
+        {
+          "status": "OK",
+          "metricKey": "new_reliability_rating",
+          "comparator": "GT",
+          "periodIndex": 1,
+          "errorThreshold": "1",
+          "actualValue": "1"
+        },
+        {
+          "status": "OK",
+          "metricKey": "new_security_rating",
+          "comparator": "GT",
+          "periodIndex": 1,
+          "errorThreshold": "1",
+          "actualValue": "1"
+        },
+        {
+          "status": "OK",
+          "metricKey": "new_maintainability_rating",
+          "comparator": "GT",
+          "periodIndex": 1,
+          "errorThreshold": "1",
+          "actualValue": "1"
+        },
+        {
+          "status": "OK",
+          "metricKey": "new_coverage",
+          "comparator": "LT",
+          "periodIndex": 1,
+          "errorThreshold": "80",
+          "actualValue": "89.1"
+        },
+        {
+          "status": "OK",
+          "metricKey": "new_duplicated_lines_density",
+          "comparator": "GT",
+          "periodIndex": 1,
+          "errorThreshold": "3",
+          "actualValue": "0.2"
+        },
+        {
+          "status": "OK",
+          "metricKey": "new_security_hotspots_reviewed",
+          "comparator": "LT",
+          "periodIndex": 1,
+          "errorThreshold": "100",
+          "actualValue": "100.0"
+        }
+      ],
+      "periods": [
+        {
+          "index": 1,
+          "mode": "manual_baseline",
+          "date": "2026-09-09T23:37:08+0000"
+        }
+      ],
+      "baseline_analysis": {
+        "key": "d20bb52c-64fd-4090-986a-fd993f44ff86",
+        "date": "2026-09-09T23:37:08+0000",
+        "events": [],
+        "projectVersion": "not provided",
+        "manualNewCodePeriodBaseline": true,
+        "revision": "8480378acd806b112ebd0462e18a86a9026ab155"
+      }
+    },
+    "opensoft/openXwallet": {
+      "analysis_id": "c76a8eb8-6aa9-4f58-ba10-a5876bcb7b97",
+      "revision": "12cdf3161c5d44d37e0ab18c55f1d201105f2477",
+      "main_analysis": true,
+      "status": "OK",
+      "ignoredConditions": false,
+      "declared_conditions": 6,
+      "evaluated_conditions": 6,
+      "metrics": [
+        {
+          "status": "OK",
+          "metricKey": "new_reliability_rating",
+          "comparator": "GT",
+          "periodIndex": 1,
+          "errorThreshold": "1",
+          "actualValue": "1"
+        },
+        {
+          "status": "OK",
+          "metricKey": "new_security_rating",
+          "comparator": "GT",
+          "periodIndex": 1,
+          "errorThreshold": "1",
+          "actualValue": "1"
+        },
+        {
+          "status": "OK",
+          "metricKey": "new_maintainability_rating",
+          "comparator": "GT",
+          "periodIndex": 1,
+          "errorThreshold": "1",
+          "actualValue": "1"
+        },
+        {
+          "status": "OK",
+          "metricKey": "new_coverage",
+          "comparator": "LT",
+          "periodIndex": 1,
+          "errorThreshold": "80",
+          "actualValue": "87.8"
+        },
+        {
+          "status": "OK",
+          "metricKey": "new_duplicated_lines_density",
+          "comparator": "GT",
+          "periodIndex": 1,
+          "errorThreshold": "3",
+          "actualValue": "0.1"
+        },
+        {
+          "status": "OK",
+          "metricKey": "new_security_hotspots_reviewed",
+          "comparator": "LT",
+          "periodIndex": 1,
+          "errorThreshold": "100",
+          "actualValue": "100.0"
+        }
+      ],
+      "periods": [
+        {
+          "index": 1,
+          "mode": "manual_baseline",
+          "date": "2026-08-27T11:16:42+0000"
+        }
+      ],
+      "baseline_analysis": {
+        "key": "d434a8d1-6d41-4cfe-9413-e1868fc1c18d",
+        "date": "2026-08-27T11:16:42+0000",
+        "events": [],
+        "projectVersion": "not provided",
+        "manualNewCodePeriodBaseline": true,
+        "revision": "63f5a1adac89f017e70bab9a4ffe7cf02d6e6705"
+      }
+    }
+  },
+  "limits": {
+    "P08_complete": false,
+    "new_registration_contract": "proposed/unratified/unimplemented",
+    "setup": false,
+    "dispatch": false,
+    "live_human_consumer_acceptance": false,
+    "feedback": "deferred",
+    "blocked_writes_replayed": false
+  }
+}
